@@ -5,6 +5,7 @@ import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { AuthCard } from "@/components/auth/AuthCard";
+import { GoogleButton } from "@/components/auth/GoogleButton";
 
 function LoginForm() {
   const router = useRouter();
@@ -68,6 +69,20 @@ function LoginForm() {
           ✓ Account created — sign in below.
         </div>
       )}
+
+      {/* Google Sign-In */}
+      <GoogleButton callbackUrl="/dashboard" />
+
+      <div className="relative my-5">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-100" />
+        </div>
+        <div className="relative flex justify-center">
+          <span className="bg-white px-3 text-xs text-gray-400">
+            or continue with email
+          </span>
+        </div>
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
