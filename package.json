@@ -1,0 +1,13 @@
+{
+  "name": "burch-platform",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "echo \"Apps will be added in Sprint 1\"",
+    "build": "echo \"Build later\""
+  }
+}
