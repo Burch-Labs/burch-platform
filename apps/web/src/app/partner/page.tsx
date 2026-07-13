@@ -1,0 +1,113 @@
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { redirect } from "next/navigation";
+import { prisma } from "@/lib/prisma";
+import { NavBar } from "@/components/layout/NavBar";
+import Link from "next/link";
+
+export default async function PartnerPage() {
+  const session = await getServerSession(authOptions);
+  if (!session) redirect("/auth/login");
+  if (session.user.role !== "PARTNER" && session.user.role !== "ADMIN") {
+    redirect("/dashboard");
+  }
+
+  const partner = await prisma.partner.findUnique({
+    where: { userId: session.user.id },
+    include: {
+      _count: { select: { events: true, hotels: true, restaurants: true } },
+    },
+  });
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <NavBar />
+      <main className="max-w-5xl mx-auto px-6 py-12">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Partner Portal</h1>
+            <p className="text-sm text-gray-500 mt-1">
+              {partner ? partner.name : "Complete your partner profile to get started"}
+            </p>
+          </div>
+          <Link href="/dashboard" className="text-sm text-gray-500 hover:text-gray-700">
+            ← Dashboard
+          </Link>
+        </div>
+
+        {!partner ? (
+          /* Onboarding CTA */
+          <div className="bg-white rounded-2xl border border-dashed border-gray-200 p-10 text-center">
+            <p className="text-4xl mb-4">🏢</p>
+            <h2 className="text-lg font-semibold text-gray-900 mb-2">Set up your business</h2>
+            <p className="text-sm text-gray-500 mb-6 max-w-sm mx-auto">
+              Create your partner profile to start listing events, hotels, and restaurants on Burch.
+            </p>
+            <Link
+              href="/partner/onboarding"
+              className="inline-block bg-orange-600 text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:bg-orange-700 transition"
+            >
+              Get started
+            </Link>
+          </div>
+        ) : (
+          <>
+            {/* Status banner */}
+            {partner.status === "PENDING" && (
+              <div className="mb-6 rounded-xl bg-amber-50 border border-amber-200 px-5 py-4 flex items-start gap-3">
+                <span className="text-amber-500 text-lg">⏳</span>
+                <div>
+                  <p className="text-sm font-medium text-amber-800">Awaiting approval</p>
+                  <p className="text-sm text-amber-700 mt-0.5">
+                    Your partner account is under review. You&apos;ll be notified once approved.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Listing stats */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+              {[
+                { label: "Events", count: partner._count.events, href: "/partner/events", emoji: "🎉" },
+                { label: "Hotels", count: partner._count.hotels, href: "/partner/hotels", emoji: "🏨" },
+                { label: "Restaurants", count: partner._count.restaurants, href: "/partner/restaurants", emoji: "🍽️" },
+              ].map(({ label, count, href, emoji }) => (
+                <Link
+                  key={label}
+                  href={href}
+                  className="bg-white rounded-2xl border border-gray-200 p-6 hover:border-orange-300 hover:shadow-sm transition group"
+                >
+                  <span className="text-2xl mb-2 block">{emoji}</span>
+                  <p className="text-3xl font-bold text-gray-900 group-hover:text-orange-600 transition">
+                    {count}
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">{label}</p>
+                </Link>
+              ))}
+            </div>
+
+            {/* Quick actions */}
+            <div className="bg-white rounded-2xl border border-gray-200 p-6">
+              <h2 className="font-semibold text-gray-900 mb-4">Quick actions</h2>
+              <div className="flex flex-wrap gap-3">
+                {[
+                  { label: "Add event", href: "/partner/events/new" },
+                  { label: "Add hotel", href: "/partner/hotels/new" },
+                  { label: "Add restaurant", href: "/partner/restaurants/new" },
+                ].map(({ label, href }) => (
+                  <Link
+                    key={label}
+                    href={href}
+                    className="border border-gray-200 text-sm text-gray-700 px-4 py-2 rounded-lg hover:border-orange-300 hover:text-orange-600 transition"
+                  >
+                    + {label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
+      </main>
+    </div>
+  );
+}

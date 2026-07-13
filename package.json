@@ -9,5 +9,8 @@
   "scripts": {
     "dev": "cd apps/web && npm run dev",
     "build": "cd apps/web && npm run build"
+  },
+  "dependencies": {
+    "resend": "^6.17.2"
   }
 }
