@@ -7,7 +7,7 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "echo \"Apps will be added in Sprint 1\"",
-    "build": "echo \"Build later\""
+    "dev": "cd apps/web && npm run dev",
+    "build": "cd apps/web && npm run build"
   }
 }
