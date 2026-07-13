@@ -1,0 +1,2 @@
+- [Auth system design](auth-system.md) — email/password only now; Google + Resend wired but gated behind env vars; auto-verify when RESEND_API_KEY absent
+- [Project layout](project-layout.md) — Next.js 15 monorepo at apps/web; Prisma on Replit's built-in PostgreSQL; workflow: "Start application"
