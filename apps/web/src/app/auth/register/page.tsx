@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { AuthCard } from "@/components/auth/AuthCard";
-import { GoogleButton } from "@/components/auth/GoogleButton";
 
 type Role = "CUSTOMER" | "PARTNER";
 
@@ -31,7 +30,7 @@ export default function RegisterPage() {
   const [role, setRole] = useState<Role>("CUSTOMER");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [done, setDone] = useState(false);
+  const [pendingVerification, setPendingVerification] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -49,18 +48,29 @@ export default function RegisterPage() {
 
     if (!res.ok) {
       setError(data.error ?? "Something went wrong.");
+      return;
+    }
+
+    if (data.autoVerified) {
+      // Email service not configured — user is already verified, go to login
+      router.push("/auth/login?registered=1");
     } else {
-      setDone(true);
+      // Email verification required
+      setPendingVerification(true);
     }
   }
 
-  if (done) {
+  if (pendingVerification) {
     return (
-      <AuthCard title="Check your inbox" subtitle={`We sent a verification link to ${email}`}>
+      <AuthCard
+        title="Check your inbox"
+        subtitle={`We sent a verification link to ${email}`}
+      >
         <div className="rounded-xl bg-orange-50 border border-orange-100 p-5 text-center mb-6">
           <p className="text-3xl mb-2">📧</p>
-          <p className="text-sm text-gray-600">
-            Click the link in your email to activate your account. Check your spam folder if you don&apos;t see it.
+          <p className="text-sm text-gray-600 leading-relaxed">
+            Click the link in your email to activate your account. Check your
+            spam folder if you don&apos;t see it within a few minutes.
           </p>
         </div>
         <button
@@ -71,13 +81,16 @@ export default function RegisterPage() {
               body: JSON.stringify({ email }),
             });
           }}
-          className="w-full border border-gray-200 text-gray-600 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-50 transition mb-3"
+          className="w-full border border-gray-200 text-gray-600 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-50 transition mb-4"
         >
           Resend verification email
         </button>
         <p className="text-sm text-gray-500 text-center">
           Already verified?{" "}
-          <Link href="/auth/login" className="text-orange-600 font-medium hover:underline">
+          <Link
+            href="/auth/login"
+            className="text-orange-600 font-medium hover:underline"
+          >
             Sign in
           </Link>
         </p>
@@ -86,22 +99,16 @@ export default function RegisterPage() {
   }
 
   return (
-    <AuthCard title="Create your account" subtitle="Join Africa's experience platform">
-      <GoogleButton callbackUrl="/dashboard" />
-
-      <div className="relative my-5">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-gray-100" />
-        </div>
-        <div className="relative flex justify-center">
-          <span className="bg-white px-3 text-xs text-gray-400">or register with email</span>
-        </div>
-      </div>
-
+    <AuthCard
+      title="Create your account"
+      subtitle="Join Africa's experience platform"
+    >
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Role picker */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">I want to…</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            I want to…
+          </label>
           <div className="grid grid-cols-2 gap-3">
             {ROLES.map(({ value, label, description, emoji }) => (
               <button
@@ -123,7 +130,9 @@ export default function RegisterPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Full name</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Full name
+          </label>
           <input
             type="text"
             value={name}
@@ -135,7 +144,9 @@ export default function RegisterPage() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Email
+          </label>
           <input
             type="email"
             value={email}
@@ -147,7 +158,9 @@ export default function RegisterPage() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Password
+          </label>
           <input
             type="password"
             value={password}
@@ -175,13 +188,16 @@ export default function RegisterPage() {
         </button>
 
         <p className="text-xs text-gray-400 text-center">
-          By creating an account, you agree to our terms of service and privacy policy.
+          By creating an account you agree to our terms of service.
         </p>
       </form>
 
       <p className="text-sm text-gray-500 mt-6 text-center">
         Already have an account?{" "}
-        <Link href="/auth/login" className="text-orange-600 font-medium hover:underline">
+        <Link
+          href="/auth/login"
+          className="text-orange-600 font-medium hover:underline"
+        >
           Sign in
         </Link>
       </p>

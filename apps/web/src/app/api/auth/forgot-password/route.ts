@@ -4,9 +4,7 @@ import { sendPasswordResetEmail } from "@/lib/email";
 import { createPasswordResetToken } from "@/lib/tokens";
 import { z } from "zod";
 
-const schema = z.object({
-  email: z.string().email(),
-});
+const schema = z.object({ email: z.string().email() });
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,7 +12,7 @@ export async function POST(req: NextRequest) {
 
     const user = await prisma.user.findUnique({ where: { email } });
 
-    // Always return success to avoid email enumeration
+    // Always return success to prevent email enumeration
     if (user && user.password) {
       const token = await createPasswordResetToken(email);
       await sendPasswordResetEmail(email, token);

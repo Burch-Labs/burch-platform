@@ -1,11 +1,22 @@
-import { Resend } from "resend";
+/**
+ * Email utility — uses Resend when RESEND_API_KEY is set.
+ * In development without the key, links are logged to the console instead.
+ */
 
-const resend = new Resend(process.env.RESEND_API_KEY ?? "re_placeholder");
-
-const FROM = process.env.EMAIL_FROM ?? "Burch Platform <noreply@burch.africa>";
 const BASE_URL = process.env.NEXTAUTH_URL ?? "http://localhost:5000";
+const FROM = process.env.EMAIL_FROM ?? "Burch Platform <noreply@burch.africa>";
+const HAS_RESEND = !!process.env.RESEND_API_KEY;
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+// ─── Dev-mode fallback ────────────────────────────────────────────────────────
+
+function devLog(subject: string, url: string) {
+  console.log("\n" + "─".repeat(60));
+  console.log(`📧  [EMAIL — DEV MODE] ${subject}`);
+  console.log(`🔗  ${url}`);
+  console.log("─".repeat(60) + "\n");
+}
+
+// ─── HTML template ────────────────────────────────────────────────────────────
 
 function emailWrapper(content: string): string {
   return `<!DOCTYPE html>
@@ -16,7 +27,7 @@ function emailWrapper(content: string): string {
     <tr><td align="center">
       <table width="100%" style="max-width:520px;background:#ffffff;border-radius:16px;border:1px solid #e5e7eb;overflow:hidden;">
         <tr>
-          <td style="padding:32px 32px 0;border-bottom:none;">
+          <td style="padding:32px 32px 0;">
             <p style="margin:0 0 24px;font-size:22px;font-weight:700;color:#e85d04;">Burch</p>
             ${content}
           </td>
@@ -24,7 +35,7 @@ function emailWrapper(content: string): string {
         <tr>
           <td style="padding:24px 32px;background:#f9fafb;border-top:1px solid #e5e7eb;">
             <p style="margin:0;font-size:12px;color:#9ca3af;">
-              Africa's AI-Powered Experience Platform · You're receiving this because you have an account on Burch.
+              Africa's AI-Powered Experience Platform
             </p>
           </td>
         </tr>
@@ -42,7 +53,15 @@ function primaryButton(href: string, label: string): string {
 // ─── Email verification ───────────────────────────────────────────────────────
 
 export async function sendVerificationEmail(email: string, token: string): Promise<void> {
-  const url = `${BASE_URL}/auth/verify-email?token=${token}`;
+  const url = `${BASE_URL}/api/auth/verify-email?token=${token}`;
+
+  if (!HAS_RESEND) {
+    devLog("Verify your Burch account", url);
+    return;
+  }
+
+  const { Resend } = await import("resend");
+  const resend = new Resend(process.env.RESEND_API_KEY);
 
   await resend.emails.send({
     from: FROM,
@@ -55,10 +74,6 @@ export async function sendVerificationEmail(email: string, token: string): Promi
       </p>
       ${primaryButton(url, "Verify email address")}
       <p style="margin:0 0 8px;font-size:13px;color:#9ca3af;">Link expires in 24 hours.</p>
-      <p style="margin:0;font-size:13px;color:#9ca3af;">If you didn't create a Burch account, you can safely ignore this email.</p>
-      <div style="margin:24px 0 8px;padding:12px 16px;background:#f3f4f6;border-radius:8px;word-break:break-all;">
-        <p style="margin:0;font-size:12px;color:#6b7280;">Or copy this link: ${url}</p>
-      </div>
     `),
   });
 }
@@ -67,6 +82,14 @@ export async function sendVerificationEmail(email: string, token: string): Promi
 
 export async function sendPasswordResetEmail(email: string, token: string): Promise<void> {
   const url = `${BASE_URL}/auth/reset-password?token=${token}`;
+
+  if (!HAS_RESEND) {
+    devLog("Reset your Burch password", url);
+    return;
+  }
+
+  const { Resend } = await import("resend");
+  const resend = new Resend(process.env.RESEND_API_KEY);
 
   await resend.emails.send({
     from: FROM,
@@ -79,10 +102,9 @@ export async function sendPasswordResetEmail(email: string, token: string): Prom
       </p>
       ${primaryButton(url, "Reset password")}
       <p style="margin:0 0 8px;font-size:13px;color:#9ca3af;">Link expires in 1 hour.</p>
-      <p style="margin:0;font-size:13px;color:#9ca3af;">If you didn't request a password reset, you can safely ignore this email — your password won't change.</p>
-      <div style="margin:24px 0 8px;padding:12px 16px;background:#f3f4f6;border-radius:8px;word-break:break-all;">
-        <p style="margin:0;font-size:12px;color:#6b7280;">Or copy this link: ${url}</p>
-      </div>
+      <p style="margin:0;font-size:13px;color:#9ca3af;">If you didn't request this, ignore this email.</p>
     `),
   });
 }
+
+export { HAS_RESEND };

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { hash } from "bcryptjs";
 import { prisma } from "@/lib/prisma";
-import { sendVerificationEmail } from "@/lib/email";
+import { sendVerificationEmail, HAS_RESEND } from "@/lib/email";
 import { createEmailVerificationToken } from "@/lib/tokens";
 import { z } from "zod";
 
@@ -26,24 +26,30 @@ export async function POST(req: NextRequest) {
     }
 
     const hashed = await hash(password, 12);
-    await prisma.user.create({
-      data: { name, email, password: hashed, role },
-    });
 
-    // Send verification email
+    if (!HAS_RESEND) {
+      // No email service — auto-verify so users can log in immediately
+      await prisma.user.create({
+        data: { name, email, password: hashed, role, emailVerified: new Date() },
+      });
+      return NextResponse.json(
+        { message: "Account created successfully. You can now sign in.", autoVerified: true },
+        { status: 201 }
+      );
+    }
+
+    // Email service available — require verification
+    await prisma.user.create({ data: { name, email, password: hashed, role } });
     const token = await createEmailVerificationToken(email);
     await sendVerificationEmail(email, token);
 
     return NextResponse.json(
-      { message: "Account created. Please check your email to verify your account." },
+      { message: "Account created. Please check your email to verify your account.", autoVerified: false },
       { status: 201 }
     );
   } catch (err) {
     if (err instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: err.errors[0].message },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: err.errors[0].message }, { status: 400 });
     }
     console.error("[register]", err);
     return NextResponse.json({ error: "Something went wrong." }, { status: 500 });
