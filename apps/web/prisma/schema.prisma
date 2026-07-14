@@ -1,4 +1,4 @@
-// Burch Platform — Prisma Schema
+// Burch Platform — Complete Production Schema
 
 generator client {
   provider = "prisma-client-js"
@@ -22,10 +22,13 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  accounts Account[]
-  sessions Session[]
-  bookings Booking[]
-  partner  Partner?
+  accounts          Account[]
+  sessions          Session[]
+  bookings          Booking[]
+  partner           Partner?
+  hotelReviews      HotelReview[]
+  restaurantReviews RestaurantReview[]
+  tableReservations TableReservation[]
 
   @@map("users")
 }
@@ -90,7 +93,7 @@ model PasswordResetToken {
   @@map("password_reset_tokens")
 }
 
-// ─── Partner / Business ──────────────────────────────────────────────────────
+// ─── Partner ─────────────────────────────────────────────────────────────────
 
 model Partner {
   id          String        @id @default(cuid())
@@ -114,23 +117,23 @@ model Partner {
 // ─── Events ──────────────────────────────────────────────────────────────────
 
 model Event {
-  id           String        @id @default(cuid())
-  partnerId    String
-  title        String
-  description  String?
-  imageUrl     String?
-  category     EventCategory @default(OTHER)
-  city         String        @default("")
-  location     String
-  startDate    DateTime
-  endDate      DateTime
-  price        Decimal       @db.Decimal(10, 2)
-  currency     String        @default("KES")
-  capacity     Int
-  tags         String[]      @default([])
-  published    Boolean       @default(false)
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  id          String        @id @default(cuid())
+  partnerId   String
+  title       String
+  description String?
+  imageUrl    String?
+  category    EventCategory @default(OTHER)
+  city        String        @default("")
+  location    String
+  startDate   DateTime
+  endDate     DateTime
+  price       Decimal       @db.Decimal(10, 2)
+  currency    String        @default("KES")
+  capacity    Int
+  tags        String[]      @default([])
+  published   Boolean       @default(false)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 
   partner  Partner   @relation(fields: [partnerId], references: [id], onDelete: Cascade)
   bookings Booking[]
@@ -141,20 +144,28 @@ model Event {
 // ─── Hotels ──────────────────────────────────────────────────────────────────
 
 model Hotel {
-  id          String   @id @default(cuid())
-  partnerId   String
-  name        String
-  description String?
-  imageUrl    String?
-  location    String
-  starRating  Int?
-  published   Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           String   @id @default(cuid())
+  partnerId    String
+  name         String
+  description  String?
+  imageUrl     String?
+  images       String[] @default([])
+  city         String   @default("")
+  location     String
+  starRating   Int?
+  amenities    String[] @default([])
+  phone        String?
+  email        String?
+  checkInTime  String   @default("14:00")
+  checkOutTime String   @default("11:00")
+  published    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  partner  Partner   @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  partner  Partner       @relation(fields: [partnerId], references: [id], onDelete: Cascade)
   rooms    Room[]
   bookings Booking[]
+  reviews  HotelReview[]
 
   @@map("hotels")
 }
@@ -164,8 +175,14 @@ model Room {
   hotelId     String
   name        String
   description String?
+  imageUrl    String?
   price       Decimal  @db.Decimal(10, 2)
+  currency    String   @default("KES")
   capacity    Int      @default(1)
+  maxGuests   Int      @default(2)
+  bedType     String?
+  amenities   String[] @default([])
+  quantity    Int      @default(1)
   available   Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -176,24 +193,106 @@ model Room {
   @@map("rooms")
 }
 
+model HotelReview {
+  id        String   @id @default(cuid())
+  hotelId   String
+  userId    String
+  rating    Int
+  title     String?
+  comment   String
+  createdAt DateTime @default(now())
+
+  hotel Hotel @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("hotel_reviews")
+}
+
 // ─── Restaurants ─────────────────────────────────────────────────────────────
 
 model Restaurant {
-  id          String   @id @default(cuid())
-  partnerId   String
-  name        String
-  description String?
-  imageUrl    String?
-  location    String
-  cuisine     String?
-  published   Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           String   @id @default(cuid())
+  partnerId    String
+  name         String
+  description  String?
+  imageUrl     String?
+  images       String[] @default([])
+  city         String   @default("")
+  location     String
+  cuisine      String?
+  cuisines     String[] @default([])
+  priceRange   Int?
+  phone        String?
+  email        String?
+  website      String?
+  openingHours Json?
+  amenities    String[] @default([])
+  published    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  partner  Partner   @relation(fields: [partnerId], references: [id], onDelete: Cascade)
-  bookings Booking[]
+  partner      Partner            @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  menuItems    MenuItem[]
+  reviews      RestaurantReview[]
+  reservations TableReservation[]
+  bookings     Booking[]
 
   @@map("restaurants")
+}
+
+model MenuItem {
+  id           String  @id @default(cuid())
+  restaurantId String
+  name         String
+  description  String?
+  price        Decimal @db.Decimal(10, 2)
+  currency     String  @default("KES")
+  category     String
+  imageUrl     String?
+  available    Boolean @default(true)
+  sortOrder    Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@map("menu_items")
+}
+
+model RestaurantReview {
+  id           String   @id @default(cuid())
+  restaurantId String
+  userId       String
+  rating       Int
+  title        String?
+  comment      String
+  createdAt    DateTime @default(now())
+
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("restaurant_reviews")
+}
+
+model TableReservation {
+  id           String            @id @default(cuid())
+  restaurantId String
+  userId       String
+  date         DateTime
+  partySize    Int
+  name         String
+  email        String
+  phone        String?
+  notes        String?
+  status       ReservationStatus @default(PENDING)
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("table_reservations")
 }
 
 // ─── Bookings ────────────────────────────────────────────────────────────────
@@ -206,6 +305,8 @@ model Booking {
   quantity      Int           @default(1)
   totalAmount   Decimal       @db.Decimal(10, 2)
   currency      String        @default("KES")
+  checkIn       DateTime?
+  checkOut      DateTime?
   paymentRef    String?
   paymentMethod String?
   notes         String?
@@ -260,6 +361,13 @@ enum BookingType {
 }
 
 enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum ReservationStatus {
   PENDING
   CONFIRMED
   CANCELLED
