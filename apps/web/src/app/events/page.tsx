@@ -13,10 +13,35 @@ const PAGE_SIZE = 12;
 // Cache identical filter combinations for 60 s — safe since formatDate/formatCurrency
 // both accept strings, which is what JSON serialisation produces from Date/Decimal.
 const getEventsData = unstable_cache(
-  async (q: string, category: string, city: string, page: number) => {
+  async (
+    q: string,
+    category: string,
+    city: string,
+    dateFrom: string,
+    dateTo: string,
+    page: number
+  ) => {
+    // Build the startDate constraint: respect user-supplied bounds but always
+    // fall back to "now" as the lower bound so past events are never shown.
+    const now = new Date();
+    const fromDate = dateFrom ? new Date(dateFrom) : null;
+    const toDate = dateTo
+      ? (() => {
+          // Use end-of-day for the "to" date so events on that day are included
+          const d = new Date(dateTo);
+          d.setHours(23, 59, 59, 999);
+          return d;
+        })()
+      : null;
+
+    const startDateFilter: { gte?: Date; lte?: Date } = {
+      gte: fromDate && fromDate > now ? fromDate : now,
+    };
+    if (toDate) startDateFilter.lte = toDate;
+
     const where = {
       published: true,
-      startDate: { gte: new Date() },
+      startDate: startDateFilter,
       ...(q && {
         OR: [
           { title:       { contains: q, mode: "insensitive" as const } },
@@ -63,6 +88,8 @@ interface PageProps {
     q?: string;
     category?: string;
     city?: string;
+    dateFrom?: string;
+    dateTo?: string;
     page?: string;
   }>;
 }
@@ -72,11 +99,20 @@ async function EventsContent({ searchParams }: PageProps) {
   const q = sp.q?.trim() ?? "";
   const category = (sp.category as EventCategory) || undefined;
   const city = sp.city?.trim() ?? "";
+  const dateFrom = sp.dateFrom?.trim() ?? "";
+  const dateTo = sp.dateTo?.trim() ?? "";
   const page = Math.max(1, Number(sp.page ?? "1"));
 
-  const { events, total, cities } = await getEventsData(q, category ?? "", city, page);
+  const { events, total, cities } = await getEventsData(
+    q,
+    category ?? "",
+    city,
+    dateFrom,
+    dateTo,
+    page
+  );
   const totalPages = Math.ceil(total / PAGE_SIZE);
-  const hasFilters = q || category || city;
+  const hasFilters = q || category || city || dateFrom || dateTo;
 
   return (
     <div className="flex gap-6 items-start">
@@ -166,6 +202,8 @@ function buildHref(
   if (sp.q) params.set("q", sp.q);
   if (sp.category) params.set("category", sp.category);
   if (sp.city) params.set("city", sp.city);
+  if (sp.dateFrom) params.set("dateFrom", sp.dateFrom);
+  if (sp.dateTo) params.set("dateTo", sp.dateTo);
   if (page > 1) params.set("page", String(page));
   const qs = params.toString();
   return `/events${qs ? `?${qs}` : ""}`;

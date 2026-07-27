@@ -20,6 +20,8 @@ export function FilterSidebar({ cities }: FilterSidebarProps) {
 
   const activeCategory = params.get("category") ?? "";
   const activeCity = params.get("city") ?? "";
+  const activeDateFrom = params.get("dateFrom") ?? "";
+  const activeDateTo = params.get("dateTo") ?? "";
 
   function setParam(key: string, value: string) {
     const next = new URLSearchParams(params.toString());
@@ -36,7 +38,7 @@ export function FilterSidebar({ cities }: FilterSidebarProps) {
     startTransition(() => router.push(pathname));
   }
 
-  const hasFilters = activeCategory || activeCity;
+  const hasFilters = activeCategory || activeCity || activeDateFrom || activeDateTo;
 
   return (
     <aside className="w-full lg:w-56 flex-shrink-0">
@@ -51,6 +53,34 @@ export function FilterSidebar({ cities }: FilterSidebarProps) {
               Clear all
             </button>
           )}
+        </div>
+
+        {/* Date range */}
+        <div className="mb-5">
+          <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
+            Date range
+          </p>
+          <div className="flex flex-col gap-2">
+            <div>
+              <label className="text-xs text-gray-400 mb-1 block">From</label>
+              <input
+                type="date"
+                value={activeDateFrom}
+                onChange={(e) => setParam("dateFrom", e.target.value)}
+                className="w-full text-sm border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+              />
+            </div>
+            <div>
+              <label className="text-xs text-gray-400 mb-1 block">To</label>
+              <input
+                type="date"
+                value={activeDateTo}
+                min={activeDateFrom || undefined}
+                onChange={(e) => setParam("dateTo", e.target.value)}
+                className="w-full text-sm border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+              />
+            </div>
+          </div>
         </div>
 
         {/* Category */}
