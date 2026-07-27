@@ -254,50 +254,98 @@ export default async function HomePage() {
       </section>
 
       {/* ── Featured Restaurants ───────────────────────────────────────────── */}
-      {featuredRestaurants.length > 0 && (
-        <section className="border-t border-gray-200 py-14 bg-white">
-          <div className="max-w-5xl mx-auto px-6">
-            <div className="flex items-end justify-between mb-8">
-              <div>
-                <h2 className="font-display text-2xl font-semibold text-gray-900">
-                  Featured restaurants
-                </h2>
-                <p className="text-sm text-gray-400 mt-1">Top dining experiences across Africa</p>
-              </div>
-              <Link
-                href="/restaurants"
-                className="text-sm font-medium text-orange-600 hover:text-orange-700 transition flex items-center gap-1"
-              >
-                Browse all
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
+      <section className="border-t border-gray-200 py-14 bg-white">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="flex items-end justify-between mb-8">
+            <div>
+              <h2 className="font-display text-2xl font-semibold text-gray-900">
+                Featured restaurants
+              </h2>
+              <p className="text-sm text-gray-400 mt-1">Top dining experiences across Africa</p>
             </div>
+            <Link
+              href="/restaurants"
+              className="text-sm font-medium text-orange-600 hover:text-orange-700 transition flex items-center gap-1"
+            >
+              Browse all
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+          </div>
+          {featuredRestaurants.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
               {featuredRestaurants.map((restaurant, i) => (
                 <RestaurantCard key={restaurant.id} restaurant={restaurant as any} priority={i === 0} />
               ))}
             </div>
-          </div>
-        </section>
-      )}
+          ) : (
+            <div className="rounded-2xl border border-gray-200 bg-white px-8 py-12 text-center shadow-[0_1px_3px_0_rgba(30,21,16,0.05)]">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-orange-50 text-2xl">
+                🍽️
+              </div>
+              <h3 className="font-display text-lg font-semibold text-gray-900 mb-2">
+                No restaurants listed yet
+              </h3>
+              <p className="text-sm text-gray-500 mb-6 max-w-xs mx-auto">
+                Check back soon — great dining spots will be added here as partners join.
+              </p>
+              <Link
+                href="/restaurants"
+                className="inline-flex items-center gap-1.5 bg-orange-600 text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:bg-orange-700 transition shadow-sm"
+              >
+                Browse all restaurants
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </div>
+          )}
+        </div>
+      </section>
 
       {/* ── Featured Hotels ────────────────────────────────────────────────── */}
-      {featuredHotels.length > 0 && (
-        <section className="border-t border-gray-200 py-14 bg-white">
-          <div className="max-w-5xl mx-auto px-6">
-            <div className="flex items-end justify-between mb-8">
-              <div>
-                <h2 className="font-display text-2xl font-semibold text-gray-900">
-                  Featured hotels
-                </h2>
-                <p className="text-sm text-gray-400 mt-1">Standout stays across Africa</p>
+      <section className="border-t border-gray-200 py-14 bg-white">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="flex items-end justify-between mb-8">
+            <div>
+              <h2 className="font-display text-2xl font-semibold text-gray-900">
+                Featured hotels
+              </h2>
+              <p className="text-sm text-gray-400 mt-1">Standout stays across Africa</p>
+            </div>
+            <Link
+              href="/hotels"
+              className="text-sm font-medium text-orange-600 hover:text-orange-700 transition flex items-center gap-1"
+            >
+              Browse hotels
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+          </div>
+          {featuredHotels.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {featuredHotels.map((hotel, i) => (
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                <HotelCard key={hotel.id} hotel={hotel as any} priority={i === 0} />
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-2xl border border-gray-200 bg-white px-8 py-12 text-center shadow-[0_1px_3px_0_rgba(30,21,16,0.05)]">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-orange-50 text-2xl">
+                🏨
               </div>
+              <h3 className="font-display text-lg font-semibold text-gray-900 mb-2">
+                No hotels listed yet
+              </h3>
+              <p className="text-sm text-gray-500 mb-6 max-w-xs mx-auto">
+                Standout stays will appear here once partners publish their properties.
+              </p>
               <Link
                 href="/hotels"
-                className="text-sm font-medium text-orange-600 hover:text-orange-700 transition flex items-center gap-1"
+                className="inline-flex items-center gap-1.5 bg-orange-600 text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:bg-orange-700 transition shadow-sm"
               >
                 Browse hotels
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -305,15 +353,9 @@ export default async function HomePage() {
                 </svg>
               </Link>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {featuredHotels.map((hotel, i) => (
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                <HotelCard key={hotel.id} hotel={hotel as any} priority={i === 0} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+          )}
+        </div>
+      </section>
 
       {/* ── Partner CTA ────────────────────────────────────────────────────── */}
       <section className="max-w-5xl mx-auto px-6 py-14">
