@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { sendPartnerBookingNotification } from "@/lib/email";
+import { sendPartnerBookingNotification, sendGuestHotelConfirmation } from "@/lib/email";
 import { z } from "zod";
 
 const schema = z.object({
@@ -104,6 +104,21 @@ export async function POST(
         propertyType: "hotel",
         bookingDetail: `${nights} night${nights !== 1 ? "s" : ""} · ${checkInLabel} – ${checkOutLabel} · ${body.guests} guest${body.guests > 1 ? "s" : ""}`,
       }).catch((err) => console.error("[partner-notify] hotel booking email failed:", err));
+    }
+
+    // Confirm the guest — fire-and-forget so a mail failure never breaks the booking
+    const guestEmail = session.user.email;
+    if (guestEmail) {
+      sendGuestHotelConfirmation({
+        guestEmail,
+        guestName: session.user.name ?? guestEmail,
+        propertyName: hotel.name,
+        checkIn: checkInDate,
+        checkOut: checkOutDate,
+        nights,
+        totalAmount,
+        currency: room.currency,
+      }).catch((err) => console.error("[guest-confirm] hotel booking email failed:", err));
     }
 
     return NextResponse.json({ booking, nights }, { status: 201 });

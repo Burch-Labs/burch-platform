@@ -197,4 +197,145 @@ export async function sendPartnerBookingNotification(
   });
 }
 
+// ─── Guest booking confirmation ───────────────────────────────────────────────
+
+export interface GuestHotelConfirmationParams {
+  guestEmail: string;
+  guestName: string;
+  propertyName: string;
+  checkIn: Date;
+  checkOut: Date;
+  nights: number;
+  totalAmount: number;
+  currency: string;
+}
+
+export async function sendGuestHotelConfirmation(
+  params: GuestHotelConfirmationParams
+): Promise<void> {
+  const {
+    guestEmail,
+    guestName,
+    propertyName,
+    checkIn,
+    checkOut,
+    nights,
+    totalAmount,
+    currency,
+  } = params;
+
+  const subject = `Your booking at ${propertyName} is confirmed`;
+
+  const checkInLabel = checkIn.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
+  const checkOutLabel = checkOut.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
+  const amountLabel = new Intl.NumberFormat("en-US", { style: "currency", currency }).format(totalAmount);
+
+  if (!HAS_RESEND) {
+    devLog(subject, `${BASE_URL}/bookings`);
+    console.log(
+      `  Guest: ${guestName} | Property: ${propertyName} | ${checkInLabel} – ${checkOutLabel} | ${nights} night${nights !== 1 ? "s" : ""} | ${amountLabel}`
+    );
+    return;
+  }
+
+  const { Resend } = await import("resend");
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  await resend.emails.send({
+    from: FROM,
+    to: guestEmail,
+    subject,
+    html: emailWrapper(`
+      <h2 style="margin:0 0 8px;font-size:20px;color:#111827;">Booking confirmed!</h2>
+      <p style="margin:0 0 24px;font-size:15px;color:#6b7280;line-height:1.6;">
+        Hi ${guestName}, your stay at <strong style="color:#111827;">${propertyName}</strong> is confirmed. Here are your details:
+      </p>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#9ca3af;width:40%;">Property</td>
+          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${propertyName}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Check-in</td>
+          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${checkInLabel}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Check-out</td>
+          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${checkOutLabel}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Nights</td>
+          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${nights} night${nights !== 1 ? "s" : ""}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Total</td>
+          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${amountLabel}</td>
+        </tr>
+      </table>
+      <p style="margin:0 0 8px;font-size:13px;color:#9ca3af;">We look forward to hosting you. Have a wonderful stay!</p>
+    `),
+  });
+}
+
+export interface GuestReservationConfirmationParams {
+  guestEmail: string;
+  guestName: string;
+  restaurantName: string;
+  dateTime: Date;
+  partySize: number;
+}
+
+export async function sendGuestReservationConfirmation(
+  params: GuestReservationConfirmationParams
+): Promise<void> {
+  const { guestEmail, guestName, restaurantName, dateTime, partySize } = params;
+
+  const subject = `Your reservation at ${restaurantName} is confirmed`;
+
+  const dateLabel = dateTime.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
+  const timeLabel = dateTime.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+
+  if (!HAS_RESEND) {
+    devLog(subject, `${BASE_URL}/bookings`);
+    console.log(
+      `  Guest: ${guestName} | Restaurant: ${restaurantName} | ${dateLabel} at ${timeLabel} | ${partySize} guest${partySize !== 1 ? "s" : ""}`
+    );
+    return;
+  }
+
+  const { Resend } = await import("resend");
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  await resend.emails.send({
+    from: FROM,
+    to: guestEmail,
+    subject,
+    html: emailWrapper(`
+      <h2 style="margin:0 0 8px;font-size:20px;color:#111827;">Reservation confirmed!</h2>
+      <p style="margin:0 0 24px;font-size:15px;color:#6b7280;line-height:1.6;">
+        Hi ${guestName}, your table at <strong style="color:#111827;">${restaurantName}</strong> is confirmed. Here are your details:
+      </p>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#9ca3af;width:40%;">Restaurant</td>
+          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${restaurantName}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Date</td>
+          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${dateLabel}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Time</td>
+          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${timeLabel}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Party size</td>
+          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${partySize} guest${partySize !== 1 ? "s" : ""}</td>
+        </tr>
+      </table>
+      <p style="margin:0 0 8px;font-size:13px;color:#9ca3af;">We look forward to seeing you. Enjoy your dining experience!</p>
+    `),
+  });
+}
+
 export { HAS_RESEND };

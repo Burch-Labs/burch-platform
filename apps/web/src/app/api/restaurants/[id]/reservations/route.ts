@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { sendPartnerBookingNotification } from "@/lib/email";
+import { sendPartnerBookingNotification, sendGuestReservationConfirmation } from "@/lib/email";
 import { z } from "zod";
 
 const schema = z.object({
@@ -77,6 +77,15 @@ export async function POST(
         bookingDetail: `${body.partySize} guest${body.partySize !== 1 ? "s" : ""} · ${dateLabel} at ${timeLabel}`,
       }).catch((err) => console.error("[partner-notify] restaurant reservation email failed:", err));
     }
+
+    // Confirm the guest — fire-and-forget so a mail failure never breaks the reservation
+    sendGuestReservationConfirmation({
+      guestEmail: body.email,
+      guestName: body.name,
+      restaurantName: restaurant.name,
+      dateTime,
+      partySize: body.partySize,
+    }).catch((err) => console.error("[guest-confirm] restaurant reservation email failed:", err));
 
     return NextResponse.json({ reservation, restaurantName: restaurant.name }, { status: 201 });
   } catch (err) {
