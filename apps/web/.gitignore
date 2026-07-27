@@ -28,3 +28,4 @@ yarn-error.log*
 
 # turbopack
 .turbo
+tsconfig.tsbuildinfo
