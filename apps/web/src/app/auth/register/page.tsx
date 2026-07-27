@@ -32,6 +32,10 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [pendingVerification, setPendingVerification] = useState(false);
+  const [emailFailed, setEmailFailed] = useState(false);
+  const [resendState, setResendState] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [resendError, setResendError] = useState("");
+  const [resendCooldown, setResendCooldown] = useState(0);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -55,35 +59,106 @@ export default function RegisterPage() {
     if (data.autoVerified) {
       router.push("/auth/login?registered=1");
     } else {
+      if (data.emailFailed) setEmailFailed(true);
       setPendingVerification(true);
+    }
+  }
+
+  async function handleResend() {
+    setResendState("sending");
+    setResendError("");
+    try {
+      const res = await fetch("/api/auth/resend-verification", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        if (res.status === 429 && data.retryAfter) {
+          // Start a countdown
+          setResendCooldown(data.retryAfter);
+          setResendState("idle");
+          const interval = setInterval(() => {
+            setResendCooldown((prev) => {
+              if (prev <= 1) {
+                clearInterval(interval);
+                return 0;
+              }
+              return prev - 1;
+            });
+          }, 1000);
+        } else {
+          setResendError(data.error ?? "Failed to send email. Please try again.");
+          setResendState("error");
+        }
+      } else {
+        setEmailFailed(false);
+        setResendState("sent");
+        // Reset to idle after 5s
+        setTimeout(() => setResendState("idle"), 5000);
+      }
+    } catch {
+      setResendError("Network error. Please check your connection and try again.");
+      setResendState("error");
     }
   }
 
   if (pendingVerification) {
     return (
       <AuthCard
-        title="Check your inbox"
-        subtitle={`We sent a verification link to ${email}`}
+        title={emailFailed ? "Delivery issue" : "Check your inbox"}
+        subtitle={
+          emailFailed
+            ? "Your account is ready — we just couldn't send the email"
+            : `We sent a verification link to ${email}`
+        }
       >
-        <div className="rounded-xl bg-orange-50 border border-orange-100 p-5 text-center mb-6">
-          <p className="text-3xl mb-2">📧</p>
-          <p className="text-sm text-gray-600 leading-relaxed">
-            Click the link in your email to activate your account. Check your
-            spam folder if you don&apos;t see it within a few minutes.
-          </p>
-        </div>
+        {emailFailed ? (
+          <div className="rounded-xl bg-red-50 border border-red-200 p-5 text-center mb-6">
+            <p className="text-3xl mb-2">⚠️</p>
+            <p className="text-sm text-red-700 leading-relaxed font-medium mb-1">
+              Verification email failed to send
+            </p>
+            <p className="text-sm text-gray-600 leading-relaxed">
+              Your account has been created. Use the button below to try sending
+              the verification email again.
+            </p>
+          </div>
+        ) : (
+          <div className="rounded-xl bg-orange-50 border border-orange-100 p-5 text-center mb-6">
+            <p className="text-3xl mb-2">📧</p>
+            <p className="text-sm text-gray-600 leading-relaxed">
+              Click the link in your email to activate your account. Check your
+              spam folder if you don&apos;t see it within a few minutes.
+            </p>
+          </div>
+        )}
+
+        {resendState === "sent" && (
+          <div className="rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-700 mb-4 text-center">
+            ✓ Verification email sent — check your inbox.
+          </div>
+        )}
+
+        {resendState === "error" && resendError && (
+          <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700 mb-4">
+            {resendError}
+          </div>
+        )}
+
         <button
-          onClick={async () => {
-            await fetch("/api/auth/resend-verification", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ email }),
-            });
-          }}
-          className="w-full border border-gray-200 text-gray-600 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-50 transition mb-4"
+          onClick={handleResend}
+          disabled={resendState === "sending" || resendCooldown > 0}
+          className="w-full border border-gray-200 text-gray-600 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-50 transition mb-4 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Resend verification email
+          {resendState === "sending"
+            ? "Sending…"
+            : resendCooldown > 0
+            ? `Resend in ${resendCooldown}s`
+            : "Resend verification email"}
         </button>
+
         <p className="text-sm text-gray-500 text-center">
           Already verified?{" "}
           <Link

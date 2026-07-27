@@ -41,7 +41,21 @@ export async function POST(req: NextRequest) {
     // Email service available — require verification
     await prisma.user.create({ data: { name, email, password: hashed, role } });
     const token = await createEmailVerificationToken(email);
-    await sendVerificationEmail(email, token);
+
+    try {
+      await sendVerificationEmail(email, token);
+    } catch (emailErr) {
+      console.error("[register] Failed to send verification email:", emailErr);
+      // Account was created — let the user know they can resend
+      return NextResponse.json(
+        {
+          message: "Account created, but we couldn't send the verification email. You can request a new one below.",
+          autoVerified: false,
+          emailFailed: true,
+        },
+        { status: 201 }
+      );
+    }
 
     return NextResponse.json(
       { message: "Account created. Please check your email to verify your account.", autoVerified: false },
