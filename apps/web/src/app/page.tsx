@@ -2,6 +2,7 @@ import Link from "next/link";
 import { NavBar } from "@/components/layout/NavBar";
 import { RestaurantCard } from "@/components/restaurants/RestaurantCard";
 import { HotelCard } from "@/components/hotels/HotelCard";
+import { EventCard } from "@/components/events/EventCard";
 import { prisma } from "@/lib/prisma";
 
 const CATEGORIES = [
@@ -38,6 +39,21 @@ export default async function HomePage() {
         : null;
     const { reviews: _, ...rest } = h;
     return { ...rest, avgRating };
+  });
+
+  const upcomingEvents = await prisma.event.findMany({
+    where: {
+      published: true,
+      startDate: { gte: new Date() },
+    },
+    include: {
+      partner: {
+        include: { user: { select: { id: true, name: true, image: true } } },
+      },
+      _count: { select: { bookings: true } },
+    },
+    orderBy: { startDate: "asc" },
+    take: 3,
   });
 
   const rawRestaurants = await prisma.restaurant.findMany({
@@ -145,6 +161,33 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ── Upcoming Events ────────────────────────────────────────────────── */}
+      {upcomingEvents.length > 0 && (
+        <section className="max-w-5xl mx-auto px-6 py-14">
+          <div className="flex items-end justify-between mb-8">
+            <div>
+              <h2 className="font-display text-2xl font-semibold text-gray-900">Upcoming events</h2>
+              <p className="text-sm text-gray-400 mt-1">Don&apos;t miss what&apos;s on now across Africa</p>
+            </div>
+            <Link
+              href="/events"
+              className="text-sm font-medium text-orange-600 hover:text-orange-700 transition flex items-center gap-1"
+            >
+              Browse all events
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {upcomingEvents.map((event) => (
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              <EventCard key={event.id} event={event as any} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* ── AI Concierge CTA ───────────────────────────────────────────────── */}
       <section className="max-w-5xl mx-auto px-6 py-14">
