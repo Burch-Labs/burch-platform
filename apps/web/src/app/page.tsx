@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { NavBar } from "@/components/layout/NavBar";
 import { RestaurantCard } from "@/components/restaurants/RestaurantCard";
+import { HotelCard } from "@/components/hotels/HotelCard";
 import { prisma } from "@/lib/prisma";
 
 const CATEGORIES = [
@@ -17,6 +18,28 @@ const CATEGORIES = [
 const CITIES = ["Nairobi", "Lagos", "Accra", "Johannesburg", "Kigali", "Cairo"];
 
 export default async function HomePage() {
+  const rawHotels = await prisma.hotel.findMany({
+    where: { published: true },
+    include: {
+      partner: { select: { id: true, name: true } },
+      reviews: { select: { rating: true } },
+      rooms: { select: { price: true, currency: true } },
+      _count: { select: { rooms: true, reviews: true } },
+    },
+    orderBy: { name: "asc" },
+    take: 3,
+  });
+
+  const featuredHotels = rawHotels.map((h) => {
+    const ratings = h.reviews.map((rv) => rv.rating);
+    const avgRating =
+      ratings.length > 0
+        ? Math.round((ratings.reduce((a, b) => a + b, 0) / ratings.length) * 10) / 10
+        : null;
+    const { reviews: _, ...rest } = h;
+    return { ...rest, avgRating };
+  });
+
   const rawRestaurants = await prisma.restaurant.findMany({
     where: { published: true },
     include: {
@@ -188,6 +211,37 @@ export default async function HomePage() {
               {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
               {featuredRestaurants.map((restaurant) => (
                 <RestaurantCard key={restaurant.id} restaurant={restaurant as any} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── Featured Hotels ────────────────────────────────────────────────── */}
+      {featuredHotels.length > 0 && (
+        <section className="border-t border-gray-200 py-14 bg-white">
+          <div className="max-w-5xl mx-auto px-6">
+            <div className="flex items-end justify-between mb-8">
+              <div>
+                <h2 className="font-display text-2xl font-semibold text-gray-900">
+                  Featured hotels
+                </h2>
+                <p className="text-sm text-gray-400 mt-1">Standout stays across Africa</p>
+              </div>
+              <Link
+                href="/hotels"
+                className="text-sm font-medium text-orange-600 hover:text-orange-700 transition flex items-center gap-1"
+              >
+                Browse hotels
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {featuredHotels.map((hotel) => (
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                <HotelCard key={hotel.id} hotel={hotel as any} />
               ))}
             </div>
           </div>
