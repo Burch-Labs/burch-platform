@@ -5,6 +5,7 @@ import Link from "next/link";
 import { NavBar } from "@/components/layout/NavBar";
 import { prisma } from "@/lib/prisma";
 import { BookingStatus, ReservationStatus } from "@prisma/client";
+import { CancelButton } from "./CancelButton";
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 
@@ -328,6 +329,9 @@ export default async function DashboardPage() {
                         <p className="text-xs font-medium text-gray-700">
                           {b.currency} {Number(b.totalAmount).toLocaleString()}
                         </p>
+                        {(b.status === "PENDING" || b.status === "CONFIRMED") && (
+                          <CancelButton id={b.id} kind="booking" />
+                        )}
                       </div>
                     </div>
                   ))}
@@ -373,6 +377,9 @@ export default async function DashboardPage() {
                         <p className="text-xs font-medium text-gray-700">
                           {b.currency} {Number(b.totalAmount).toLocaleString()}
                         </p>
+                        {(b.status === "PENDING" || b.status === "CONFIRMED") && (
+                          <CancelButton id={b.id} kind="booking" />
+                        )}
                       </div>
                     </div>
                   ))}
@@ -412,8 +419,11 @@ export default async function DashboardPage() {
                           {` · ${r.partySize} guest${r.partySize !== 1 ? "s" : ""}`}
                         </p>
                       </div>
-                      <div className="flex-shrink-0">
+                      <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
                         <StatusBadge status={r.status} />
+                        {(r.status === "PENDING" || r.status === "CONFIRMED") && (
+                          <CancelButton id={r.id} kind="reservation" />
+                        )}
                       </div>
                     </div>
                   ))}
