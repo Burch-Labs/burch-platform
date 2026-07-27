@@ -97,10 +97,14 @@ export default async function HotelDetailPage({ params }: PageProps) {
           <span className="text-gray-600 truncate">{hotel.name}</span>
         </div>
 
-        {/* ── Gallery ────────────────────────────────────── */}
-        {allImages.length > 0 && (
+        {/* ── Gallery / placeholder ──────────────────────── */}
+        {allImages.length > 0 ? (
           <div className="mb-8">
             <HotelGallery images={allImages} name={hotel.name} />
+          </div>
+        ) : (
+          <div className="mb-8 h-64 sm:h-72 md:h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-amber-700 to-orange-900 flex items-center justify-center">
+            <span className="text-7xl opacity-60">🏨</span>
           </div>
         )}
 
