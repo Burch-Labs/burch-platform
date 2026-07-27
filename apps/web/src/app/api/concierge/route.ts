@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
+import { callClaude, extractJson, HAS_ANTHROPIC } from "@/lib/agents/claude";
 
 const schema = z.object({
   message: z.string().min(1).max(500),
@@ -185,7 +186,14 @@ export async function POST(req: NextRequest) {
 
     let raw: { text: string; recommendations: RawRec[]; itinerary: unknown; powered: string };
 
-    if (OPENAI_API_KEY) {
+    if (HAS_ANTHROPIC) {
+      const systemPrompt = buildSystemPrompt(ctx);
+      const text = await callClaude({
+        system: systemPrompt,
+        messages: [...(history ?? []).slice(-6), { role: "user", content: message }],
+      });
+      raw = { ...extractJson<{ text: string; recommendations: RawRec[]; itinerary: unknown }>(text), powered: "anthropic" };
+    } else if (OPENAI_API_KEY) {
       const systemPrompt = buildSystemPrompt(ctx);
       const messages = [
         { role: "system", content: systemPrompt },

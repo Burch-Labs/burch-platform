@@ -28,7 +28,8 @@
 
 ## AI
 
-- OpenAI API
+- Anthropic Claude API (AI agent framework)
+- OpenAI API (fallback)
 
 ## Email
 
