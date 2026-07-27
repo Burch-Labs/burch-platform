@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { unstable_cache } from "next/cache";
 import { NavBar } from "@/components/layout/NavBar";
 import { EventGrid } from "@/components/events/EventGrid";
 import { FilterSidebar } from "@/components/events/FilterSidebar";
@@ -8,6 +9,54 @@ import { EventCategory } from "@prisma/client";
 import Link from "next/link";
 
 const PAGE_SIZE = 12;
+
+// Cache identical filter combinations for 60 s — safe since formatDate/formatCurrency
+// both accept strings, which is what JSON serialisation produces from Date/Decimal.
+const getEventsData = unstable_cache(
+  async (q: string, category: string, city: string, page: number) => {
+    const where = {
+      published: true,
+      startDate: { gte: new Date() },
+      ...(q && {
+        OR: [
+          { title:       { contains: q, mode: "insensitive" as const } },
+          { description: { contains: q, mode: "insensitive" as const } },
+          { location:    { contains: q, mode: "insensitive" as const } },
+          { city:        { contains: q, mode: "insensitive" as const } },
+        ],
+      }),
+      ...(category && { category: category as EventCategory }),
+      ...(city && { city: { contains: city, mode: "insensitive" as const } }),
+    };
+    const [events, total, cityRows] = await Promise.all([
+      prisma.event.findMany({
+        where,
+        include: {
+          partner: {
+            select: {
+              id: true, name: true, logoUrl: true,
+              user: { select: { id: true, name: true, image: true } },
+            },
+          },
+          _count: { select: { bookings: true } },
+        },
+        orderBy: { startDate: "asc" },
+        take: PAGE_SIZE,
+        skip: (page - 1) * PAGE_SIZE,
+      }),
+      prisma.event.count({ where }),
+      prisma.event.findMany({
+        where: { published: true },
+        select: { city: true },
+        distinct: ["city"],
+        orderBy: { city: "asc" },
+      }),
+    ]);
+    return { events, total, cities: cityRows.map((r) => r.city).filter(Boolean) };
+  },
+  ["events-listing"],
+  { revalidate: 60 }
+);
 
 interface PageProps {
   searchParams: Promise<{
@@ -25,47 +74,7 @@ async function EventsContent({ searchParams }: PageProps) {
   const city = sp.city?.trim() ?? "";
   const page = Math.max(1, Number(sp.page ?? "1"));
 
-  const where = {
-    published: true,
-    startDate: { gte: new Date() },
-    ...(q && {
-      OR: [
-        { title: { contains: q, mode: "insensitive" as const } },
-        { description: { contains: q, mode: "insensitive" as const } },
-        { location: { contains: q, mode: "insensitive" as const } },
-        { city: { contains: q, mode: "insensitive" as const } },
-      ],
-    }),
-    ...(category && { category }),
-    ...(city && { city: { contains: city, mode: "insensitive" as const } }),
-  };
-
-  const [events, total, cityRows] = await Promise.all([
-    prisma.event.findMany({
-      where,
-      include: {
-        partner: {
-          select: {
-            id: true, name: true, logoUrl: true,
-            user: { select: { id: true, name: true, image: true } },
-          },
-        },
-        _count: { select: { bookings: true } },
-      },
-      orderBy: { startDate: "asc" },
-      take: PAGE_SIZE,
-      skip: (page - 1) * PAGE_SIZE,
-    }),
-    prisma.event.count({ where }),
-    prisma.event.findMany({
-      where: { published: true },
-      select: { city: true },
-      distinct: ["city"],
-      orderBy: { city: "asc" },
-    }),
-  ]);
-
-  const cities = cityRows.map((r) => r.city).filter(Boolean);
+  const { events, total, cities } = await getEventsData(q, category ?? "", city, page);
   const totalPages = Math.ceil(total / PAGE_SIZE);
   const hasFilters = q || category || city;
 

@@ -33,8 +33,8 @@ export function HotelCard({ hotel, priority = false }: HotelCardProps) {
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center">
-            <span className="text-5xl opacity-40">🏨</span>
+          <div className="w-full h-full bg-gradient-to-br from-amber-800 to-orange-900 flex items-center justify-center">
+            <span className="text-5xl opacity-30">🏨</span>
           </div>
         )}
 

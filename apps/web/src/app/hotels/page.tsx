@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { unstable_cache } from "next/cache";
 import Link from "next/link";
 import { NavBar } from "@/components/layout/NavBar";
 import { HotelGrid } from "@/components/hotels/HotelGrid";
@@ -8,6 +9,58 @@ import { SearchBar } from "@/components/events/SearchBar";
 import { prisma } from "@/lib/prisma";
 
 const PAGE_SIZE = 12;
+
+// Cache identical filter combinations for 60 s.
+const getHotelsData = unstable_cache(
+  async (q: string, city: string, stars: number, amenities: string[], sort: string, page: number) => {
+    const orderBy =
+      sort === "stars_desc" ? [{ starRating: "desc" as const }, { name: "asc" as const }]
+      : sort === "stars_asc" ? [{ starRating: "asc" as const }, { name: "asc" as const }]
+      : sort === "newest"   ? { createdAt: "desc" as const }
+      : { name: "asc" as const };
+
+    const where = {
+      published: true,
+      ...(q && {
+        OR: [
+          { name:        { contains: q, mode: "insensitive" as const } },
+          { description: { contains: q, mode: "insensitive" as const } },
+          { location:    { contains: q, mode: "insensitive" as const } },
+          { city:        { contains: q, mode: "insensitive" as const } },
+        ],
+      }),
+      ...(city      && { city:       { contains: city, mode: "insensitive" as const } }),
+      ...(stars > 0 && { starRating: stars }),
+      ...(amenities.length > 0 && { amenities: { hasEvery: amenities } }),
+    };
+
+    const [hotels, total, cityRows] = await Promise.all([
+      prisma.hotel.findMany({
+        where,
+        include: {
+          partner: { select: { id: true, name: true } },
+          rooms:   { select: { price: true, currency: true }, orderBy: { price: "asc" } },
+          _count:  { select: { rooms: true, reviews: true, bookings: true } },
+          reviews: { select: { rating: true } },
+        },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        orderBy: orderBy as any,
+        take: PAGE_SIZE,
+        skip: (page - 1) * PAGE_SIZE,
+      }),
+      prisma.hotel.count({ where }),
+      prisma.hotel.findMany({
+        where:    { published: true },
+        select:   { city: true },
+        distinct: ["city"],
+        orderBy:  { city: "asc" },
+      }),
+    ]);
+    return { hotels, total, cities: cityRows.map((r) => r.city).filter(Boolean) };
+  },
+  ["hotels-listing"],
+  { revalidate: 60 }
+);
 
 interface PageProps {
   searchParams: Promise<{
@@ -77,52 +130,7 @@ async function HotelsContent({ searchParams }: PageProps) {
   const sort      = sp.sort ?? "name";
   const page      = Math.max(1, Number(sp.page ?? "1"));
 
-  const orderBy =
-    sort === "stars_desc"
-      ? [{ starRating: "desc" as const }, { name: "asc" as const }]
-      : sort === "stars_asc"
-      ? [{ starRating: "asc" as const }, { name: "asc" as const }]
-      : sort === "newest"
-      ? { createdAt: "desc" as const }
-      : { name: "asc" as const };
-
-  const where = {
-    published: true,
-    ...(q && {
-      OR: [
-        { name:        { contains: q, mode: "insensitive" as const } },
-        { description: { contains: q, mode: "insensitive" as const } },
-        { location:    { contains: q, mode: "insensitive" as const } },
-        { city:        { contains: q, mode: "insensitive" as const } },
-      ],
-    }),
-    ...(city      && { city:       { contains: city, mode: "insensitive" as const } }),
-    ...(stars     && { starRating: stars }),
-    ...(amenities.length > 0 && { amenities: { hasEvery: amenities } }),
-  };
-
-  const [hotels, total, cityRows] = await Promise.all([
-    prisma.hotel.findMany({
-      where,
-      include: {
-        partner: { select: { id: true, name: true } },
-        rooms:   { select: { price: true, currency: true }, orderBy: { price: "asc" } },
-        _count:  { select: { rooms: true, reviews: true, bookings: true } },
-        reviews: { select: { rating: true } },
-      },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      orderBy: orderBy as any,
-      take: PAGE_SIZE,
-      skip: (page - 1) * PAGE_SIZE,
-    }),
-    prisma.hotel.count({ where }),
-    prisma.hotel.findMany({
-      where:    { published: true },
-      select:   { city: true },
-      distinct: ["city"],
-      orderBy:  { city: "asc" },
-    }),
-  ]);
+  const { hotels, total, cities } = await getHotelsData(q, city, stars ?? 0, amenities, sort, page);
 
   const hotelsWithRating = hotels.map((h) => {
     const ratings  = h.reviews.map((r) => r.rating);
@@ -134,7 +142,6 @@ async function HotelsContent({ searchParams }: PageProps) {
     return { ...rest, avgRating };
   });
 
-  const cities     = cityRows.map((r) => r.city).filter(Boolean);
   const totalPages = Math.ceil(total / PAGE_SIZE);
   const hasFilters = !!(q || city || stars || amenities.length > 0);
 
