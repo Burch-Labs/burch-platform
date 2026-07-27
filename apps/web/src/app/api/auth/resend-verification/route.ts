@@ -47,7 +47,27 @@ export async function POST(req: NextRequest) {
     }
 
     const token = await createEmailVerificationToken(email);
-    await sendVerificationEmail(email, token);
+
+    let emailSent = true;
+    try {
+      await sendVerificationEmail(email, token);
+    } catch (emailErr) {
+      emailSent = false;
+      console.error("[resend-verification] email delivery failed:", emailErr);
+    }
+
+    if (!emailSent) {
+      // Sender domain not yet verified in Resend — auto-verify so the user
+      // isn't permanently locked out.
+      await prisma.user.update({
+        where: { email },
+        data: { emailVerified: new Date() },
+      });
+      return NextResponse.json({
+        message: "Email delivery is unavailable right now. Your account has been verified automatically — you can sign in.",
+        autoVerified: true,
+      });
+    }
 
     // Record send time only after a successful send
     lastSentAt.set(email, Date.now());
