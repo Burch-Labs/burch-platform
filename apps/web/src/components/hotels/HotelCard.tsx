@@ -7,9 +7,10 @@ import type { HotelCard as HotelCardType } from "@/types/hotels";
 
 interface HotelCardProps {
   hotel: HotelCardType;
+  priority?: boolean;
 }
 
-export function HotelCard({ hotel }: HotelCardProps) {
+export function HotelCard({ hotel, priority = false }: HotelCardProps) {
   const minPrice = hotel.rooms.length > 0
     ? Math.min(...hotel.rooms.map((r) => Number(r.price)))
     : null;
@@ -27,6 +28,7 @@ export function HotelCard({ hotel }: HotelCardProps) {
             src={hotel.imageUrl}
             alt={hotel.name}
             fill
+            priority={priority}
             className="object-cover group-hover:scale-105 transition-transform duration-300"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />

@@ -18,18 +18,47 @@ const CATEGORIES = [
 
 const CITIES = ["Nairobi", "Lagos", "Accra", "Johannesburg", "Kigali", "Cairo"];
 
+// Revalidate every 5 minutes — public content changes infrequently
+export const revalidate = 300;
+
 export default async function HomePage() {
-  const rawHotels = await prisma.hotel.findMany({
-    where: { published: true },
-    include: {
-      partner: { select: { id: true, name: true } },
-      reviews: { select: { rating: true } },
-      rooms: { select: { price: true, currency: true } },
-      _count: { select: { rooms: true, reviews: true } },
-    },
-    orderBy: { name: "asc" },
-    take: 3,
-  });
+  const [rawHotels, upcomingEvents, rawRestaurants] = await Promise.all([
+    prisma.hotel.findMany({
+      where: { published: true },
+      include: {
+        partner: { select: { id: true, name: true } },
+        reviews: { select: { rating: true } },
+        rooms: { select: { price: true, currency: true } },
+        _count: { select: { rooms: true, reviews: true } },
+      },
+      orderBy: { name: "asc" },
+      take: 3,
+    }),
+    prisma.event.findMany({
+      where: {
+        published: true,
+        startDate: { gte: new Date() },
+      },
+      include: {
+        partner: {
+          include: { user: { select: { id: true, name: true, image: true } } },
+        },
+        _count: { select: { bookings: true } },
+      },
+      orderBy: { startDate: "asc" },
+      take: 3,
+    }),
+    prisma.restaurant.findMany({
+      where: { published: true },
+      include: {
+        partner: { select: { id: true, name: true } },
+        reviews: { select: { rating: true } },
+        _count:  { select: { reviews: true, menuItems: true } },
+      },
+      orderBy: { name: "asc" },
+      take: 3,
+    }),
+  ]);
 
   const featuredHotels = rawHotels.map((h) => {
     const ratings = h.reviews.map((rv) => rv.rating);
@@ -39,32 +68,6 @@ export default async function HomePage() {
         : null;
     const { reviews: _, ...rest } = h;
     return { ...rest, avgRating };
-  });
-
-  const upcomingEvents = await prisma.event.findMany({
-    where: {
-      published: true,
-      startDate: { gte: new Date() },
-    },
-    include: {
-      partner: {
-        include: { user: { select: { id: true, name: true, image: true } } },
-      },
-      _count: { select: { bookings: true } },
-    },
-    orderBy: { startDate: "asc" },
-    take: 3,
-  });
-
-  const rawRestaurants = await prisma.restaurant.findMany({
-    where: { published: true },
-    include: {
-      partner: { select: { id: true, name: true } },
-      reviews: { select: { rating: true } },
-      _count:  { select: { reviews: true, menuItems: true } },
-    },
-    orderBy: { name: "asc" },
-    take: 3,
   });
 
   const featuredRestaurants = rawRestaurants.map((r) => {
@@ -181,9 +184,9 @@ export default async function HomePage() {
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {upcomingEvents.map((event) => (
+            {upcomingEvents.map((event, i) => (
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              <EventCard key={event.id} event={event as any} />
+              <EventCard key={event.id} event={event as any} priority={i === 0} />
             ))}
           </div>
         </section>
@@ -252,8 +255,8 @@ export default async function HomePage() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-              {featuredRestaurants.map((restaurant) => (
-                <RestaurantCard key={restaurant.id} restaurant={restaurant as any} />
+              {featuredRestaurants.map((restaurant, i) => (
+                <RestaurantCard key={restaurant.id} restaurant={restaurant as any} priority={i === 0} />
               ))}
             </div>
           </div>
@@ -282,9 +285,9 @@ export default async function HomePage() {
               </Link>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {featuredHotels.map((hotel) => (
+              {featuredHotels.map((hotel, i) => (
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                <HotelCard key={hotel.id} hotel={hotel as any} />
+                <HotelCard key={hotel.id} hotel={hotel as any} priority={i === 0} />
               ))}
             </div>
           </div>

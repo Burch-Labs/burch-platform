@@ -7,9 +7,10 @@ import type { RestaurantCard as RestaurantCardType } from "@/types/restaurants";
 
 interface RestaurantCardProps {
   restaurant: RestaurantCardType;
+  priority?: boolean;
 }
 
-export function RestaurantCard({ restaurant }: RestaurantCardProps) {
+export function RestaurantCard({ restaurant, priority = false }: RestaurantCardProps) {
   return (
     <Link
       href={`/restaurants/${restaurant.id}`}
@@ -22,6 +23,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
             src={restaurant.imageUrl}
             alt={restaurant.name}
             fill
+            priority={priority}
             className="object-cover group-hover:scale-105 transition-transform duration-300"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />

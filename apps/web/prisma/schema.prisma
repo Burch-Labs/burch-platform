@@ -138,6 +138,9 @@ model Event {
   partner  Partner   @relation(fields: [partnerId], references: [id], onDelete: Cascade)
   bookings Booking[]
 
+  // Speeds up the common listing queries: published feed sorted by date, and city filter
+  @@index([published, startDate])
+  @@index([published, city])
   @@map("events")
 }
 
@@ -167,6 +170,7 @@ model Hotel {
   bookings Booking[]
   reviews  HotelReview[]
 
+  @@index([published])
   @@map("hotels")
 }
 
@@ -237,6 +241,7 @@ model Restaurant {
   reservations TableReservation[]
   bookings     Booking[]
 
+  @@index([published])
   @@map("restaurants")
 }
 

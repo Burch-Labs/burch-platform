@@ -7,9 +7,10 @@ import { formatCurrency, formatDate, formatTime, ticketsRemaining } from "@/lib/
 
 interface EventCardProps {
   event: EventWithPartner;
+  priority?: boolean;
 }
 
-export function EventCard({ event }: EventCardProps) {
+export function EventCard({ event, priority = false }: EventCardProps) {
   const colors = CATEGORY_COLORS[event.category];
   const remaining = ticketsRemaining(
     event.capacity,
@@ -30,6 +31,7 @@ export function EventCard({ event }: EventCardProps) {
             src={event.imageUrl}
             alt={event.title}
             fill
+            priority={priority}
             className="object-cover group-hover:scale-105 transition-transform duration-300"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />

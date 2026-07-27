@@ -10,6 +10,8 @@ const nextConfig: NextConfig = {
   // Allow Replit's proxied preview domain as a dev origin
   allowedDevOrigins: ["*.picard.replit.dev", "*.replit.dev"],
   images: {
+    // Cache optimised images in the Next.js image cache for 1 hour
+    minimumCacheTTL: 3600,
     remotePatterns: [
       {
         protocol: "https",
