@@ -3,7 +3,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { EventCategory } from "@prisma/client";
 import { redirect } from "next/navigation";
 
@@ -68,9 +68,9 @@ export async function createEvent(
     return { error: "Failed to create event" };
   }
 
-  // Invalidate homepage so the new event appears immediately
+  // Bust the events listing cache so the new event appears immediately
+  revalidateTag("events-listing");
   revalidatePath("/");
-  revalidatePath("/events");
   revalidatePath("/partner/events");
 
   redirect("/partner/events");
@@ -114,9 +114,9 @@ export async function updateEvent(
     return { error: "Failed to update event" };
   }
 
-  // Invalidate homepage whenever a published event changes (or is published now)
+  // Bust the events listing cache whenever a published event changes (or is published now)
+  revalidateTag("events-listing");
   revalidatePath("/");
-  revalidatePath("/events");
   revalidatePath(`/events/${eventId}`);
   revalidatePath("/partner/events");
 
@@ -146,8 +146,8 @@ export async function deleteEvent(eventId: string): Promise<{ error?: string }> 
     return { error: "Failed to delete event" };
   }
 
+  revalidateTag("events-listing");
   revalidatePath("/");
-  revalidatePath("/events");
   revalidatePath("/partner/events");
 
   return {};

@@ -49,7 +49,7 @@ const getRestaurantsData = unstable_cache(
     };
   },
   ["restaurants-listing"],
-  { revalidate: 60 }
+  { revalidate: 60, tags: ["restaurants-listing"] }
 );
 
 interface PageProps {

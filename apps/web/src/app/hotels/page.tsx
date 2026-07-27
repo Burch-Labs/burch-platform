@@ -59,7 +59,7 @@ const getHotelsData = unstable_cache(
     return { hotels, total, cities: cityRows.map((r) => r.city).filter(Boolean) };
   },
   ["hotels-listing"],
-  { revalidate: 60 }
+  { revalidate: 60, tags: ["hotels-listing"] }
 );
 
 interface PageProps {
