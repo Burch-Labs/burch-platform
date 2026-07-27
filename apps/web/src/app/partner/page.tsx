@@ -86,6 +86,25 @@ export default async function PartnerPage() {
               ))}
             </div>
 
+            {/* Bookings shortcut */}
+            <Link
+              href="/partner/bookings"
+              className="mb-4 flex items-center justify-between bg-white rounded-2xl border border-gray-200 px-6 py-4 hover:border-orange-300 hover:shadow-sm transition group"
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">📋</span>
+                <div>
+                  <p className="font-semibold text-gray-900 group-hover:text-orange-600 transition">
+                    Manage Bookings
+                  </p>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    View, confirm, and cancel bookings across all your properties
+                  </p>
+                </div>
+              </div>
+              <span className="text-gray-400 group-hover:text-orange-500 transition">→</span>
+            </Link>
+
             {/* Quick actions */}
             <div className="bg-white rounded-2xl border border-gray-200 p-6">
               <h2 className="font-semibold text-gray-900 mb-4">Quick actions</h2>

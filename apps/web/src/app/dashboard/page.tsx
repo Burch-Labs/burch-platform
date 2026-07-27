@@ -250,9 +250,9 @@ export default async function DashboardPage() {
   ];
 
   const partnerLinks = [
-    { emoji: "📊", label: "Overview",        href: "/partner",             desc: "Your business at a glance" },
-    { emoji: "🎉", label: "My Events",       href: "/partner/events",      desc: "Manage event listings" },
-    { emoji: "🏨", label: "My Hotels",       href: "/partner/hotels",      desc: "Manage hotel listings" },
+    { emoji: "📊", label: "Overview",        href: "/partner",          desc: "Your business at a glance" },
+    { emoji: "📋", label: "Bookings",        href: "/partner/bookings", desc: "Confirm & cancel bookings" },
+    { emoji: "🏨", label: "My Hotels",       href: "/partner/hotels",   desc: "Manage hotel listings" },
     { emoji: "🍽️", label: "My Restaurants",  href: "/partner/restaurants", desc: "Manage restaurant listings" },
   ];
 

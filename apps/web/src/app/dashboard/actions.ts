@@ -38,6 +38,7 @@ export async function partnerConfirmBooking(bookingId: string): Promise<{ error?
 
   await prisma.booking.update({ where: { id: bookingId }, data: { status: "CONFIRMED" } });
   revalidatePath("/dashboard");
+  revalidatePath("/partner/bookings");
   return {};
 }
 
@@ -59,6 +60,7 @@ export async function partnerCancelBooking(bookingId: string): Promise<{ error?:
 
   await prisma.booking.update({ where: { id: bookingId }, data: { status: "CANCELLED" } });
   revalidatePath("/dashboard");
+  revalidatePath("/partner/bookings");
   return {};
 }
 
@@ -84,6 +86,7 @@ export async function partnerConfirmReservation(reservationId: string): Promise<
     data: { status: "CONFIRMED" },
   });
   revalidatePath("/dashboard");
+  revalidatePath("/partner/bookings");
   return {};
 }
 
@@ -111,6 +114,7 @@ export async function partnerCancelReservation(reservationId: string): Promise<{
     data: { status: "CANCELLED" },
   });
   revalidatePath("/dashboard");
+  revalidatePath("/partner/bookings");
   return {};
 }
 
