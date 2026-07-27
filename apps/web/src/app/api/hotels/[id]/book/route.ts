@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { sendPartnerBookingNotification } from "@/lib/email";
 import { z } from "zod";
 
 const schema = z.object({
@@ -30,10 +31,14 @@ export async function POST(
       return NextResponse.json({ error: "Check-out must be after check-in." }, { status: 400 });
     }
 
-    // Verify hotel exists
+    // Verify hotel exists (include partner/user for notification)
     const hotel = await prisma.hotel.findUnique({
       where: { id, published: true },
-      select: { id: true, name: true },
+      select: {
+        id: true,
+        name: true,
+        partner: { select: { user: { select: { name: true, email: true } } } },
+      },
     });
     if (!hotel) {
       return NextResponse.json({ error: "Hotel not found." }, { status: 404 });
@@ -83,8 +88,23 @@ export async function POST(
         roomId: body.roomId,
         notes: `${body.guests} guest${body.guests > 1 ? "s" : ""}`,
       },
-      include: { room: true, hotel: true },
+      include: { room: true, hotel: true, user: { select: { name: true } } },
     });
+
+    // Notify the partner — fire-and-forget so a mail failure never breaks the booking
+    const partnerUser = hotel.partner?.user;
+    if (partnerUser?.email) {
+      const checkInLabel = checkInDate.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+      const checkOutLabel = checkOutDate.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+      sendPartnerBookingNotification({
+        partnerEmail: partnerUser.email,
+        partnerName: partnerUser.name ?? "Partner",
+        guestName: session.user.name ?? session.user.email ?? "A guest",
+        propertyName: hotel.name,
+        propertyType: "hotel",
+        bookingDetail: `${nights} night${nights !== 1 ? "s" : ""} · ${checkInLabel} – ${checkOutLabel} · ${body.guests} guest${body.guests > 1 ? "s" : ""}`,
+      }).catch((err) => console.error("[partner-notify] hotel booking email failed:", err));
+    }
 
     return NextResponse.json({ booking, nights }, { status: 201 });
   } catch (err) {

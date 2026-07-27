@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { sendPartnerBookingNotification } from "@/lib/email";
 import { z } from "zod";
 
 const schema = z.object({
@@ -29,7 +30,11 @@ export async function POST(
 
     const restaurant = await prisma.restaurant.findUnique({
       where: { id, published: true },
-      select: { id: true, name: true },
+      select: {
+        id: true,
+        name: true,
+        partner: { select: { user: { select: { name: true, email: true } } } },
+      },
     });
     if (!restaurant) {
       return NextResponse.json({ error: "Restaurant not found." }, { status: 404 });
@@ -57,6 +62,21 @@ export async function POST(
         status: "CONFIRMED",
       },
     });
+
+    // Notify the partner — fire-and-forget so a mail failure never breaks the reservation
+    const partnerUser = restaurant.partner?.user;
+    if (partnerUser?.email) {
+      const dateLabel = dateTime.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
+      const timeLabel = dateTime.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+      sendPartnerBookingNotification({
+        partnerEmail: partnerUser.email,
+        partnerName: partnerUser.name ?? "Partner",
+        guestName: body.name,
+        propertyName: restaurant.name,
+        propertyType: "restaurant",
+        bookingDetail: `${body.partySize} guest${body.partySize !== 1 ? "s" : ""} · ${dateLabel} at ${timeLabel}`,
+      }).catch((err) => console.error("[partner-notify] restaurant reservation email failed:", err));
+    }
 
     return NextResponse.json({ reservation, restaurantName: restaurant.name }, { status: 201 });
   } catch (err) {

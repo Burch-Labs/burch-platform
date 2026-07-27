@@ -107,4 +107,73 @@ export async function sendPasswordResetEmail(email: string, token: string): Prom
   });
 }
 
+// ─── Partner booking notification ────────────────────────────────────────────
+
+export interface PartnerBookingEmailParams {
+  partnerEmail: string;
+  partnerName: string;
+  guestName: string;
+  propertyName: string;
+  propertyType: "hotel" | "restaurant";
+  bookingDetail: string; // e.g. "Check-in: Jan 1 – Jan 3" or "2 guests on Jan 5 at 7:00 PM"
+  dashboardUrl?: string;
+}
+
+export async function sendPartnerBookingNotification(
+  params: PartnerBookingEmailParams
+): Promise<void> {
+  const {
+    partnerEmail,
+    partnerName,
+    guestName,
+    propertyName,
+    propertyType,
+    bookingDetail,
+    dashboardUrl = `${BASE_URL}/partner/bookings`,
+  } = params;
+
+  const subject = `New ${propertyType === "hotel" ? "booking" : "reservation"} at ${propertyName}`;
+
+  if (!HAS_RESEND) {
+    devLog(subject, dashboardUrl);
+    console.log(
+      `  Guest: ${guestName} | Property: ${propertyName} | Detail: ${bookingDetail}`
+    );
+    return;
+  }
+
+  const { Resend } = await import("resend");
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  const typeLabel = propertyType === "hotel" ? "booking" : "reservation";
+
+  await resend.emails.send({
+    from: FROM,
+    to: partnerEmail,
+    subject,
+    html: emailWrapper(`
+      <h2 style="margin:0 0 8px;font-size:20px;color:#111827;">New ${typeLabel} request</h2>
+      <p style="margin:0 0 24px;font-size:15px;color:#6b7280;line-height:1.6;">
+        Hi ${partnerName}, you have a new ${typeLabel} waiting for your attention.
+      </p>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#9ca3af;width:40%;">Guest</td>
+          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${guestName}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Property</td>
+          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${propertyName}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Details</td>
+          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${bookingDetail}</td>
+        </tr>
+      </table>
+      ${primaryButton(dashboardUrl, "View on dashboard")}
+      <p style="margin:0 0 8px;font-size:13px;color:#9ca3af;">Log in to confirm or manage this ${typeLabel}.</p>
+    `),
+  });
+}
+
 export { HAS_RESEND };
