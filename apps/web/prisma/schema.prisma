@@ -29,6 +29,7 @@ model User {
   hotelReviews      HotelReview[]
   restaurantReviews RestaurantReview[]
   tableReservations TableReservation[]
+  savedSearches     SavedSearch[]
 
   @@map("users")
 }
@@ -51,6 +52,25 @@ model Account {
 
   @@unique([provider, providerAccountId])
   @@map("accounts")
+}
+
+// ─── Saved Searches ───────────────────────────────────────────────────────────
+
+model SavedSearch {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  q         String   @default("")
+  category  String   @default("")
+  city      String   @default("")
+  dateFrom  String   @default("")
+  dateTo    String   @default("")
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@map("saved_searches")
 }
 
 model Session {

@@ -1,9 +1,12 @@
 import { Suspense } from "react";
 import { unstable_cache } from "next/cache";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { NavBar } from "@/components/layout/NavBar";
 import { EventGrid } from "@/components/events/EventGrid";
 import { FilterSidebar } from "@/components/events/FilterSidebar";
 import { SearchBar } from "@/components/events/SearchBar";
+import { SaveSearchButton } from "@/components/events/SaveSearchButton";
 import { prisma } from "@/lib/prisma";
 import { EventCategory } from "@prisma/client";
 import Link from "next/link";
@@ -103,14 +106,10 @@ async function EventsContent({ searchParams }: PageProps) {
   const dateTo = sp.dateTo?.trim() ?? "";
   const page = Math.max(1, Number(sp.page ?? "1"));
 
-  const { events, total, cities } = await getEventsData(
-    q,
-    category ?? "",
-    city,
-    dateFrom,
-    dateTo,
-    page
-  );
+  const [{ events, total, cities }, session] = await Promise.all([
+    getEventsData(q, category ?? "", city, dateFrom, dateTo, page),
+    getServerSession(authOptions),
+  ]);
   const totalPages = Math.ceil(total / PAGE_SIZE);
   const hasFilters = q || category || city || dateFrom || dateTo;
 
@@ -130,9 +129,14 @@ async function EventsContent({ searchParams }: PageProps) {
               ? "No events found"
               : `${total} event${total !== 1 ? "s" : ""}${hasFilters ? " matching your filters" : ""}`}
           </p>
-          {page > 1 && (
-            <p className="text-sm text-gray-400">Page {page} of {totalPages}</p>
-          )}
+          <div className="flex items-center gap-4">
+            <Suspense>
+              <SaveSearchButton isLoggedIn={!!session} />
+            </Suspense>
+            {page > 1 && (
+              <p className="text-sm text-gray-400">Page {page} of {totalPages}</p>
+            )}
+          </div>
         </div>
 
         {/* Grid */}

@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { BookingStatus, ReservationStatus } from "@prisma/client";
 import { CancelButton } from "./CancelButton";
 import { PartnerActionButtons } from "./PartnerActionButtons";
+import { SavedSearchesList } from "@/components/dashboard/SavedSearchesList";
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 
@@ -76,7 +77,7 @@ export default async function DashboardPage() {
   const { id: userId, role, name } = session.user;
 
   // ── Customer data ──────────────────────────────────────────────────────────
-  const [hotelBookings, eventBookings, reservations] =
+  const [hotelBookings, eventBookings, reservations, savedSearches] =
     role === "CUSTOMER"
       ? await Promise.all([
           prisma.booking.findMany({
@@ -104,8 +105,12 @@ export default async function DashboardPage() {
             orderBy: { createdAt: "desc" },
             take: 5,
           }),
+          prisma.savedSearch.findMany({
+            where: { userId },
+            orderBy: { createdAt: "desc" },
+          }),
         ])
-      : [[], [], []];
+      : [[], [], [], []];
 
   // ── Partner data ───────────────────────────────────────────────────────────
   const partnerSummary =
@@ -323,6 +328,25 @@ export default async function DashboardPage() {
         {/* ── CUSTOMER — booking history ──────────────────────────── */}
         {role === "CUSTOMER" && (
           <div className="space-y-10">
+
+            {/* Saved searches */}
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-base font-semibold text-gray-900">
+                  Saved searches
+                  {savedSearches.length > 0 && (
+                    <span className="ml-2 text-xs font-normal text-gray-400">({savedSearches.length})</span>
+                  )}
+                </h2>
+                <Link href="/events" className="text-xs text-orange-600 hover:text-orange-700 font-medium">
+                  Browse →
+                </Link>
+              </div>
+              <SavedSearchesList searches={savedSearches.map((s) => ({
+                ...s,
+                createdAt: s.createdAt.toISOString(),
+              }))} />
+            </div>
 
             {/* Hotel bookings */}
             <div>
