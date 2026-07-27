@@ -6,6 +6,17 @@ import { NavBar } from "@/components/layout/NavBar";
 import { prisma } from "@/lib/prisma";
 import { BookingStatus, ReservationStatus } from "@prisma/client";
 
+// ─── helpers ──────────────────────────────────────────────────────────────────
+
+function fmt(date: Date | null | undefined) {
+  if (!date) return "—";
+  return date.toLocaleDateString("en-KE", { day: "numeric", month: "short", year: "numeric" });
+}
+
+function fmtTime(date: Date) {
+  return date.toLocaleTimeString("en-KE", { hour: "2-digit", minute: "2-digit" });
+}
+
 // ─── Status badge ─────────────────────────────────────────────────────────────
 
 function StatusBadge({ status }: { status: BookingStatus | ReservationStatus }) {
@@ -62,34 +73,163 @@ export default async function DashboardPage() {
 
   const { id: userId, role, name } = session.user;
 
-  // Fetch hotel + event bookings and restaurant reservations in parallel
-  const [hotelBookings, eventBookings, reservations] = await Promise.all([
-    prisma.booking.findMany({
-      where: { userId, type: "HOTEL" },
-      include: {
-        hotel: { select: { id: true, name: true, city: true, imageUrl: true } },
-        room:  { select: { name: true } },
-      },
-      orderBy: { createdAt: "desc" },
-      take: 5,
-    }),
-    prisma.booking.findMany({
-      where: { userId, type: "EVENT" },
-      include: {
-        event: { select: { id: true, title: true, startDate: true, city: true, imageUrl: true } },
-      },
-      orderBy: { createdAt: "desc" },
-      take: 5,
-    }),
-    prisma.tableReservation.findMany({
-      where: { userId },
-      include: {
-        restaurant: { select: { id: true, name: true, city: true, imageUrl: true } },
-      },
-      orderBy: { createdAt: "desc" },
-      take: 5,
-    }),
-  ]);
+  // ── Customer data ──────────────────────────────────────────────────────────
+  const [hotelBookings, eventBookings, reservations] =
+    role === "CUSTOMER"
+      ? await Promise.all([
+          prisma.booking.findMany({
+            where: { userId, type: "HOTEL" },
+            include: {
+              hotel: { select: { id: true, name: true, city: true, imageUrl: true } },
+              room:  { select: { name: true } },
+            },
+            orderBy: { createdAt: "desc" },
+            take: 5,
+          }),
+          prisma.booking.findMany({
+            where: { userId, type: "EVENT" },
+            include: {
+              event: { select: { id: true, title: true, startDate: true, city: true, imageUrl: true } },
+            },
+            orderBy: { createdAt: "desc" },
+            take: 5,
+          }),
+          prisma.tableReservation.findMany({
+            where: { userId },
+            include: {
+              restaurant: { select: { id: true, name: true, city: true, imageUrl: true } },
+            },
+            orderBy: { createdAt: "desc" },
+            take: 5,
+          }),
+        ])
+      : [[], [], []];
+
+  // ── Partner data ───────────────────────────────────────────────────────────
+  const partnerSummary =
+    role === "PARTNER"
+      ? await prisma.partner.findUnique({
+          where: { userId },
+          include: {
+            hotels: {
+              where: { published: true },
+              select: {
+                id: true,
+                name: true,
+                _count: { select: { bookings: true } },
+              },
+            },
+            restaurants: {
+              where: { published: true },
+              select: {
+                id: true,
+                name: true,
+                _count: { select: { reservations: true, bookings: true } },
+              },
+            },
+            events: {
+              where: { published: true },
+              select: {
+                id: true,
+                title: true,
+                startDate: true,
+                _count: { select: { bookings: true } },
+              },
+            },
+          },
+        })
+      : null;
+
+  const recentPartnerBookings =
+    role === "PARTNER" && partnerSummary
+      ? await prisma.booking.findMany({
+          where: {
+            OR: [
+              partnerSummary.hotels.length
+                ? { hotelId: { in: partnerSummary.hotels.map((h) => h.id) } }
+                : undefined,
+              partnerSummary.events.length
+                ? { eventId: { in: partnerSummary.events.map((e) => e.id) } }
+                : undefined,
+              partnerSummary.restaurants.length
+                ? { restaurantId: { in: partnerSummary.restaurants.map((r) => r.id) } }
+                : undefined,
+            ].filter(Boolean) as object[],
+          },
+          include: {
+            user: { select: { name: true, email: true } },
+            hotel: { select: { name: true } },
+            event: { select: { title: true } },
+            restaurant: { select: { name: true } },
+          },
+          orderBy: { createdAt: "desc" },
+          take: 10,
+        })
+      : [];
+
+  const recentPartnerReservations =
+    role === "PARTNER" && partnerSummary && partnerSummary.restaurants.length
+      ? await prisma.tableReservation.findMany({
+          where: {
+            restaurantId: { in: partnerSummary.restaurants.map((r) => r.id) },
+          },
+          include: {
+            restaurant: { select: { name: true } },
+          },
+          orderBy: { date: "desc" },
+          take: 10,
+        })
+      : [];
+
+  // ── Admin data ─────────────────────────────────────────────────────────────
+  const adminStats =
+    role === "ADMIN"
+      ? await prisma.$transaction([
+          prisma.booking.count(),
+          prisma.booking.count({ where: { status: "CONFIRMED" } }),
+          prisma.booking.count({ where: { status: "PENDING" } }),
+          prisma.tableReservation.count(),
+          prisma.tableReservation.count({ where: { status: "CONFIRMED" } }),
+        ])
+      : null;
+
+  const recentAdminBookings =
+    role === "ADMIN"
+      ? await prisma.booking.findMany({
+          include: {
+            user: { select: { name: true, email: true } },
+            hotel: { select: { name: true } },
+            event: { select: { title: true } },
+            restaurant: { select: { name: true } },
+          },
+          orderBy: { createdAt: "desc" },
+          take: 10,
+        })
+      : [];
+
+  // ── Nav links ──────────────────────────────────────────────────────────────
+  const customerLinks = [
+    { emoji: "🎉", label: "Events",      href: "/events",      desc: "Live shows, concerts & more" },
+    { emoji: "🏨", label: "Hotels",      href: "/hotels",      desc: "Find the perfect stay" },
+    { emoji: "🍽️", label: "Restaurants", href: "/restaurants", desc: "Book a table" },
+  ];
+
+  const partnerLinks = [
+    { emoji: "📊", label: "Overview",        href: "/partner",             desc: "Your business at a glance" },
+    { emoji: "🎉", label: "My Events",       href: "/partner/events",      desc: "Manage event listings" },
+    { emoji: "🏨", label: "My Hotels",       href: "/partner/hotels",      desc: "Manage hotel listings" },
+    { emoji: "🍽️", label: "My Restaurants",  href: "/partner/restaurants", desc: "Manage restaurant listings" },
+  ];
+
+  const adminLinks = [
+    { emoji: "🛡️", label: "Admin Panel", href: "/admin",           desc: "Platform management" },
+    { emoji: "👥", label: "Users",       href: "/admin/users",     desc: "Manage all users" },
+    { emoji: "🤝", label: "Partners",    href: "/admin/partners",  desc: "Review & approve partners" },
+    { emoji: "📈", label: "Analytics",   href: "/admin/analytics", desc: "Platform statistics" },
+  ];
+
+  const links =
+    role === "ADMIN" ? adminLinks : role === "PARTNER" ? partnerLinks : customerLinks;
 
   const greeting =
     role === "ADMIN"   ? "Admin dashboard" :
@@ -129,6 +269,21 @@ export default async function DashboardPage() {
             </div>
           </div>
         )}
+
+        {/* Quick-nav cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+          {links.map(({ emoji, label, href, desc }) => (
+            <Link
+              key={label}
+              href={href}
+              className="bg-white rounded-2xl border border-gray-200 p-6 hover:border-orange-300 hover:shadow-sm transition group"
+            >
+              <span className="text-3xl mb-3 block">{emoji}</span>
+              <p className="font-semibold text-gray-900 group-hover:text-orange-600 transition">{label}</p>
+              <p className="text-xs text-gray-500 mt-1">{desc}</p>
+            </Link>
+          ))}
+        </div>
 
         {/* ── CUSTOMER — booking history ──────────────────────────── */}
         {role === "CUSTOMER" && (
@@ -253,6 +408,7 @@ export default async function DashboardPage() {
                           {` · ${new Date(r.date).toLocaleDateString("en-GB", {
                             weekday: "short", day: "numeric", month: "short", year: "numeric",
                           })}`}
+                          {` at ${fmtTime(r.date)}`}
                           {` · ${r.partySize} guest${r.partySize !== 1 ? "s" : ""}`}
                         </p>
                       </div>
@@ -267,27 +423,60 @@ export default async function DashboardPage() {
           </div>
         )}
 
-        {/* ── PARTNER ────────────────────────────────────────────────── */}
+        {/* ── PARTNER: property booking summary ───────────────────────────── */}
         {role === "PARTNER" && (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {[
-                { emoji: "📊", label: "Overview",        href: "/partner",              desc: "Your business at a glance" },
-                { emoji: "🎉", label: "My Events",       href: "/partner/events",       desc: "Manage event listings" },
-                { emoji: "🏨", label: "My Hotels",       href: "/partner/hotels",       desc: "Manage hotel listings" },
-                { emoji: "🍽️", label: "My Restaurants",  href: "/partner/restaurants",  desc: "Manage restaurant listings" },
-              ].map(({ emoji, label, href, desc }) => (
-                <Link
-                  key={label}
-                  href={href}
-                  className="bg-white rounded-2xl border border-gray-200 p-6 hover:border-orange-300 hover:shadow-sm transition group"
-                >
-                  <span className="text-3xl mb-3 block">{emoji}</span>
-                  <p className="font-semibold text-gray-900 group-hover:text-orange-600 transition">{label}</p>
-                  <p className="text-xs text-gray-500 mt-1">{desc}</p>
-                </Link>
-              ))}
-            </div>
+          <div className="space-y-10">
+
+            {/* Stats strip */}
+            {partnerSummary && (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                <StatCard
+                  emoji="🏨"
+                  label="Hotel bookings"
+                  value={partnerSummary.hotels.reduce((s, h) => s + h._count.bookings, 0)}
+                />
+                <StatCard
+                  emoji="🍽️"
+                  label="Table reservations"
+                  value={partnerSummary.restaurants.reduce(
+                    (s, r) => s + r._count.reservations,
+                    0
+                  )}
+                />
+                <StatCard
+                  emoji="🎉"
+                  label="Event bookings"
+                  value={partnerSummary.events.reduce((s, e) => s + e._count.bookings, 0)}
+                />
+              </div>
+            )}
+
+            {/* Recent bookings table */}
+            <section>
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent bookings</h2>
+              {recentPartnerBookings.length === 0 ? (
+                <EmptyCard message="No bookings yet — publish a listing to start receiving reservations." />
+              ) : (
+                <div className="bg-white rounded-2xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
+                  {recentPartnerBookings.map((b) => (
+                    <PartnerBookingRow key={b.id} booking={b} />
+                  ))}
+                </div>
+              )}
+            </section>
+
+            {/* Recent table reservations */}
+            {recentPartnerReservations.length > 0 && (
+              <section>
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent table reservations</h2>
+                <div className="bg-white rounded-2xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
+                  {recentPartnerReservations.map((r) => (
+                    <PartnerReservationRow key={r.id} reservation={r} />
+                  ))}
+                </div>
+              </section>
+            )}
+
             <Link
               href="/partner"
               className="inline-flex items-center gap-2 bg-white border border-gray-200 rounded-xl px-5 py-3 text-sm font-medium text-gray-700 hover:border-orange-300 hover:text-orange-600 transition"
@@ -297,27 +486,30 @@ export default async function DashboardPage() {
           </div>
         )}
 
-        {/* ── ADMIN ──────────────────────────────────────────────────── */}
-        {role === "ADMIN" && (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {[
-                { emoji: "🛡️", label: "Admin Panel", href: "/admin",            desc: "Platform management" },
-                { emoji: "👥", label: "Users",       href: "/admin/users",      desc: "Manage all users" },
-                { emoji: "🤝", label: "Partners",    href: "/admin/partners",   desc: "Review & approve partners" },
-                { emoji: "📈", label: "Analytics",   href: "/admin/analytics",  desc: "Platform statistics" },
-              ].map(({ emoji, label, href, desc }) => (
-                <Link
-                  key={label}
-                  href={href}
-                  className="bg-white rounded-2xl border border-gray-200 p-6 hover:border-orange-300 hover:shadow-sm transition group"
-                >
-                  <span className="text-3xl mb-3 block">{emoji}</span>
-                  <p className="font-semibold text-gray-900 group-hover:text-orange-600 transition">{label}</p>
-                  <p className="text-xs text-gray-500 mt-1">{desc}</p>
-                </Link>
-              ))}
+        {/* ── ADMIN: platform booking overview ────────────────────────────── */}
+        {role === "ADMIN" && adminStats && (
+          <div className="space-y-10">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+              <StatCard emoji="📋" label="Total bookings" value={adminStats[0]} />
+              <StatCard emoji="✅" label="Confirmed" value={adminStats[1]} />
+              <StatCard emoji="⏳" label="Pending" value={adminStats[2]} />
+              <StatCard emoji="🍽️" label="Reservations" value={adminStats[3]} />
+              <StatCard emoji="🟢" label="Res. confirmed" value={adminStats[4]} />
             </div>
+
+            <section>
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent bookings</h2>
+              {recentAdminBookings.length === 0 ? (
+                <EmptyCard message="No bookings recorded yet." />
+              ) : (
+                <div className="bg-white rounded-2xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
+                  {recentAdminBookings.map((b) => (
+                    <PartnerBookingRow key={b.id} booking={b} showUser />
+                  ))}
+                </div>
+              )}
+            </section>
+
             <Link
               href="/admin"
               className="inline-flex items-center gap-2 bg-orange-600 text-white rounded-xl px-5 py-3 text-sm font-semibold hover:bg-orange-700 transition"
@@ -328,6 +520,96 @@ export default async function DashboardPage() {
         )}
 
       </main>
+    </div>
+  );
+}
+
+// ─── Sub-components ────────────────────────────────────────────────────────────
+
+type PartnerBookingRow = Awaited<ReturnType<typeof prisma.booking.findMany<{
+  include: {
+    user: { select: { name: true; email: true } };
+    hotel: { select: { name: true } };
+    event: { select: { title: true } };
+    restaurant: { select: { name: true } };
+  };
+}>>>[number];
+
+function PartnerBookingRow({
+  booking: b,
+  showUser = false,
+}: {
+  booking: PartnerBookingRow;
+  showUser?: boolean;
+}) {
+  const isHotel = b.type === "HOTEL";
+  const isEvent = b.type === "EVENT";
+  const name = isHotel ? b.hotel?.name : isEvent ? b.event?.title : b.restaurant?.name;
+  const typeEmoji = isHotel ? "🏨" : isEvent ? "🎉" : "🍽️";
+  const dateRange = isHotel
+    ? `${fmt(b.checkIn)} – ${fmt(b.checkOut)}`
+    : fmt(b.createdAt);
+
+  return (
+    <div className="px-5 py-4 flex items-center justify-between gap-4">
+      <div className="flex items-center gap-3 min-w-0">
+        <span className="text-xl shrink-0">{typeEmoji}</span>
+        <div className="min-w-0">
+          <p className="text-sm font-medium text-gray-900 truncate">{name ?? "—"}</p>
+          <p className="text-xs text-gray-400 mt-0.5">
+            {showUser && b.user ? `${b.user.name ?? b.user.email} · ` : ""}
+            {dateRange}
+          </p>
+        </div>
+      </div>
+      <div className="flex items-center gap-3 shrink-0">
+        <StatusBadge status={b.status} />
+        <span className="text-xs text-gray-400">
+          {b.currency} {Number(b.totalAmount).toLocaleString()}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+type PartnerResRow = Awaited<ReturnType<typeof prisma.tableReservation.findMany<{
+  include: { restaurant: { select: { name: true } } };
+}>>>[number];
+
+function PartnerReservationRow({ reservation: r }: { reservation: PartnerResRow }) {
+  return (
+    <div className="px-5 py-4 flex items-center justify-between gap-4">
+      <div className="flex items-center gap-3 min-w-0">
+        <span className="text-xl shrink-0">🍽️</span>
+        <div className="min-w-0">
+          <p className="text-sm font-medium text-gray-900 truncate">
+            {r.restaurant?.name ?? "—"}
+          </p>
+          <p className="text-xs text-gray-400 mt-0.5">
+            {r.name} · {fmt(r.date)} at {fmtTime(r.date)} · {r.partySize} guest
+            {r.partySize !== 1 ? "s" : ""}
+          </p>
+        </div>
+      </div>
+      <StatusBadge status={r.status} />
+    </div>
+  );
+}
+
+function StatCard({ emoji, label, value }: { emoji: string; label: string; value: number }) {
+  return (
+    <div className="bg-white rounded-2xl border border-gray-200 p-5">
+      <span className="text-2xl">{emoji}</span>
+      <p className="text-2xl font-bold text-gray-900 mt-2">{value.toLocaleString()}</p>
+      <p className="text-xs text-gray-500 mt-0.5">{label}</p>
+    </div>
+  );
+}
+
+function EmptyCard({ message }: { message: string }) {
+  return (
+    <div className="bg-white rounded-2xl border border-dashed border-gray-200 py-10 text-center px-6">
+      <p className="text-sm text-gray-500">{message}</p>
     </div>
   );
 }
