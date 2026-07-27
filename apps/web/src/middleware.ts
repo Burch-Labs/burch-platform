@@ -24,6 +24,9 @@ export default withAuth(
     return NextResponse.next();
   },
   {
+    // Mirror the authOptions fallback so the middleware can decode JWTs
+    // even when NEXTAUTH_SECRET is absent and SESSION_SECRET is used instead.
+    secret: process.env.NEXTAUTH_SECRET ?? process.env.SESSION_SECRET,
     callbacks: {
       authorized: ({ token }) => !!token,
     },
