@@ -25,7 +25,10 @@ function resolveBaseUrl(): string {
 }
 
 const BASE_URL = resolveBaseUrl();
-const FROM = process.env.EMAIL_FROM ?? "Burch Platform <noreply@burch.africa>";
+const FROM = process.env.EMAIL_FROM ?? "Burch Platform <onboarding@resend.dev>";
+// When set, all outgoing emails are redirected to this address (useful while
+// the sending domain is not yet verified in Resend).
+const OVERRIDE_TO = process.env.EMAIL_OVERRIDE_TO ?? null;
 const HAS_RESEND = !!process.env.RESEND_API_KEY;
 
 // ─── Dev-mode fallback ────────────────────────────────────────────────────────
@@ -86,7 +89,7 @@ export async function sendVerificationEmail(email: string, token: string): Promi
 
   await resend.emails.send({
     from: FROM,
-    to: email,
+    to: OVERRIDE_TO ?? email,
     subject: "Verify your Burch account",
     html: emailWrapper(`
       <h2 style="margin:0 0 8px;font-size:20px;color:#111827;">Verify your email address</h2>
@@ -114,7 +117,7 @@ export async function sendPasswordResetEmail(email: string, token: string): Prom
 
   await resend.emails.send({
     from: FROM,
-    to: email,
+    to: OVERRIDE_TO ?? email,
     subject: "Reset your Burch password",
     html: emailWrapper(`
       <h2 style="margin:0 0 8px;font-size:20px;color:#111827;">Reset your password</h2>
@@ -170,7 +173,7 @@ export async function sendPartnerBookingNotification(
 
   await resend.emails.send({
     from: FROM,
-    to: partnerEmail,
+    to: OVERRIDE_TO ?? partnerEmail,
     subject,
     html: emailWrapper(`
       <h2 style="margin:0 0 8px;font-size:20px;color:#111827;">New ${typeLabel} request</h2>
@@ -243,7 +246,7 @@ export async function sendGuestHotelConfirmation(
 
   await resend.emails.send({
     from: FROM,
-    to: guestEmail,
+    to: OVERRIDE_TO ?? guestEmail,
     subject,
     html: emailWrapper(`
       <h2 style="margin:0 0 8px;font-size:20px;color:#111827;">Booking confirmed!</h2>
@@ -308,7 +311,7 @@ export async function sendGuestReservationConfirmation(
 
   await resend.emails.send({
     from: FROM,
-    to: guestEmail,
+    to: OVERRIDE_TO ?? guestEmail,
     subject,
     html: emailWrapper(`
       <h2 style="margin:0 0 8px;font-size:20px;color:#111827;">Reservation confirmed!</h2>
