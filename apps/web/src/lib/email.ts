@@ -3,7 +3,28 @@
  * In development without the key, links are logged to the console instead.
  */
 
-const BASE_URL = process.env.NEXTAUTH_URL ?? "http://localhost:5000";
+/**
+ * Resolve the canonical base URL for building links inside emails.
+ *
+ * Priority:
+ *   1. NEXTAUTH_URL — explicit override (set this in the Replit production
+ *      environment after the first publish if you need a stable value).
+ *   2. REPLIT_DOMAINS — Replit automatically sets this to the deployment's
+ *      public hostname(s); the first entry is the primary domain.  In
+ *      production that is the *.replit.app URL; in the workspace dev shell it
+ *      is the *.replit.dev preview URL.
+ *   3. localhost:5000 — local fallback when neither env var is present.
+ */
+function resolveBaseUrl(): string {
+  if (process.env.NEXTAUTH_URL) return process.env.NEXTAUTH_URL;
+  if (process.env.REPLIT_DOMAINS) {
+    const primary = process.env.REPLIT_DOMAINS.split(",")[0].trim();
+    return `https://${primary}`;
+  }
+  return "http://localhost:5000";
+}
+
+const BASE_URL = resolveBaseUrl();
 const FROM = process.env.EMAIL_FROM ?? "Burch Platform <noreply@burch.africa>";
 const HAS_RESEND = !!process.env.RESEND_API_KEY;
 

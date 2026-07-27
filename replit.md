@@ -44,12 +44,26 @@ npm run build        # production build
 | Key | Notes |
 |-----|-------|
 | `DATABASE_URL` | Replit-managed — do not set manually |
-| `NEXTAUTH_URL` | Set to the Replit dev domain |
+| `NEXTAUTH_URL` | Dev domain set in `.replit` `[userenv.development]`. In production the app auto-detects from `REPLIT_DOMAINS`; set this explicitly in the production environment only if you need to override it. |
 | `NEXTAUTH_SECRET` | Falls back to `SESSION_SECRET` if not set |
 | `OPENAI_API_KEY` | Needed for AI features (Sprint 2+) |
 | `STRIPE_SECRET_KEY` | Needed for Stripe payments |
 | `MPESA_*` | Needed for M-Pesa payments |
 | `RESEND_API_KEY` | Needed for transactional email |
+
+## Post-deployment checklist (do once after first publish)
+
+After the app is published and you have a `*.replit.app` URL:
+
+1. **Google OAuth redirect URI** — open [Google Cloud Console → APIs & Services → Credentials](https://console.cloud.google.com/apis/credentials), select the OAuth 2.0 client, and add:
+   ```
+   https://<your-replit-app-url>/api/auth/callback/google
+   ```
+   to the **Authorised redirect URIs** list, then save.
+
+2. **NEXTAUTH_URL (optional)** — the app auto-detects the base URL from `REPLIT_DOMAINS`, so this is only needed if you want to override it. If required, set `NEXTAUTH_URL` to `https://<your-replit-app-url>` in the Replit production environment (`.replit` → `[userenv.production]` or via Secrets).
+
+3. **Verify email flow** — register a new account on the live URL and confirm the verification email arrives with a correct link pointing to the production domain.
 
 ## Database schema (Prisma)
 
