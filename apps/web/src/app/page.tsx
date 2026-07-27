@@ -166,16 +166,43 @@ export default async function HomePage() {
       </section>
 
       {/* ── Upcoming Events ────────────────────────────────────────────────── */}
-      {upcomingEvents.length > 0 && (
-        <section className="max-w-5xl mx-auto px-6 py-14">
-          <div className="flex items-end justify-between mb-8">
-            <div>
-              <h2 className="font-display text-2xl font-semibold text-gray-900">Upcoming events</h2>
-              <p className="text-sm text-gray-400 mt-1">Don&apos;t miss what&apos;s on now across Africa</p>
+      <section className="max-w-5xl mx-auto px-6 py-14">
+        <div className="flex items-end justify-between mb-8">
+          <div>
+            <h2 className="font-display text-2xl font-semibold text-gray-900">Upcoming events</h2>
+            <p className="text-sm text-gray-400 mt-1">Don&apos;t miss what&apos;s on now across Africa</p>
+          </div>
+          <Link
+            href="/events"
+            className="text-sm font-medium text-orange-600 hover:text-orange-700 transition flex items-center gap-1"
+          >
+            Browse all events
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
+        </div>
+        {upcomingEvents.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {upcomingEvents.map((event, i) => (
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              <EventCard key={event.id} event={event as any} priority={i === 0} />
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-2xl border border-gray-200 bg-white px-8 py-12 text-center shadow-[0_1px_3px_0_rgba(30,21,16,0.05)]">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-orange-50 text-2xl">
+              🗓️
             </div>
+            <h3 className="font-display text-lg font-semibold text-gray-900 mb-2">
+              No events scheduled right now
+            </h3>
+            <p className="text-sm text-gray-500 mb-6 max-w-xs mx-auto">
+              Check back soon — new events are added regularly across Africa.
+            </p>
             <Link
               href="/events"
-              className="text-sm font-medium text-orange-600 hover:text-orange-700 transition flex items-center gap-1"
+              className="inline-flex items-center gap-1.5 bg-orange-600 text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:bg-orange-700 transition shadow-sm"
             >
               Browse all events
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -183,14 +210,8 @@ export default async function HomePage() {
               </svg>
             </Link>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {upcomingEvents.map((event, i) => (
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              <EventCard key={event.id} event={event as any} priority={i === 0} />
-            ))}
-          </div>
-        </section>
-      )}
+        )}
+      </section>
 
       {/* ── AI Concierge CTA ───────────────────────────────────────────────── */}
       <section className="max-w-5xl mx-auto px-6 py-14">
