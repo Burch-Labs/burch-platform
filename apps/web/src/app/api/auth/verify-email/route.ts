@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import {
-  validateEmailVerificationToken,
-  deleteEmailVerificationToken,
-} from "@/lib/tokens";
+import { validateEmailVerificationToken } from "@/lib/tokens";
 
 export async function GET(req: NextRequest) {
   const token = req.nextUrl.searchParams.get("token");
@@ -12,11 +9,19 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Missing token." }, { status: 400 });
   }
 
+  // validateEmailVerificationToken atomically deletes the token on first use,
+  // so a replayed link is always rejected.
   const result = await validateEmailVerificationToken(token);
+
   if (!result) {
-    return NextResponse.json(
-      { error: "Token is invalid or has expired." },
-      { status: 400 }
+    return NextResponse.redirect(
+      new URL("/auth/verify-email?error=invalid", req.url)
+    );
+  }
+
+  if (result.expired) {
+    return NextResponse.redirect(
+      new URL("/auth/verify-email?error=expired", req.url)
     );
   }
 
@@ -24,8 +29,6 @@ export async function GET(req: NextRequest) {
     where: { email: result.email },
     data: { emailVerified: new Date() },
   });
-
-  await deleteEmailVerificationToken(token);
 
   return NextResponse.redirect(
     new URL("/auth/login?verified=1", req.url)

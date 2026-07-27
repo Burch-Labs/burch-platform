@@ -14,20 +14,37 @@ export async function createEmailVerificationToken(email: string): Promise<strin
   return token;
 }
 
+export type EmailVerificationResult =
+  | { email: string; expired: false }
+  | { expired: true }
+  | null;
+
+/**
+ * Validates and atomically consumes an email verification token.
+ * The token is deleted from the database regardless of whether it is valid or
+ * expired, making it strictly single-use.
+ *
+ * Returns:
+ *  - `{ email, expired: false }` — valid token; email is ready to be verified
+ *  - `{ expired: true }`         — token existed but has passed its 24h window
+ *  - `null`                      — token not found (already used or never issued)
+ */
 export async function validateEmailVerificationToken(
   token: string
-): Promise<{ email: string } | null> {
-  const record = await prisma.emailVerificationToken.findUnique({ where: { token } });
-  if (!record) return null;
-  if (record.expires < new Date()) {
-    await prisma.emailVerificationToken.delete({ where: { token } });
-    return null;
-  }
-  return { email: record.email };
-}
+): Promise<EmailVerificationResult> {
+  // Delete the token and return it in one atomic operation so it can never be
+  // replayed, even if two requests arrive simultaneously.
+  const deleted = await prisma.emailVerificationToken
+    .delete({ where: { token } })
+    .catch(() => null); // throws P2025 when not found — treat as null
 
-export async function deleteEmailVerificationToken(token: string): Promise<void> {
-  await prisma.emailVerificationToken.deleteMany({ where: { token } });
+  if (!deleted) return null;
+
+  if (deleted.expires < new Date()) {
+    return { expired: true };
+  }
+
+  return { email: deleted.email, expired: false };
 }
 
 // ─── Password reset tokens ────────────────────────────────────────────────────
