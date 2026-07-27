@@ -1,21 +1,45 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --brand: #e85d04;
-  --brand-dark: #c44c00;
+/* ─── Warm palette ─────────────────────────────────────────────────────────────
+   Tailwind v4 @theme overrides replace the default token values.
+   Every component using gray-* or orange-* instantly picks up the warm palette.
+──────────────────────────────────────────────────────────────────────────────── */
+@theme {
+  /* Warm stone (replaces cold gray) */
+  --color-gray-50:  #FAF7F3;
+  --color-gray-100: #F2ECE4;
+  --color-gray-200: #E5DDD2;
+  --color-gray-300: #D0C3B4;
+  --color-gray-400: #A99080;
+  --color-gray-500: #8A7163;
+  --color-gray-600: #6B5748;
+  --color-gray-700: #4F3D31;
+  --color-gray-800: #352921;
+  --color-gray-900: #1E1510;
+
+  /* Amber-terracotta (replaces flat orange) */
+  --color-orange-50:  #FDF5EB;
+  --color-orange-100: #FAE6CC;
+  --color-orange-200: #F5CC99;
+  --color-orange-300: #ECA85C;
+  --color-orange-400: #E08A34;
+  --color-orange-500: #CC6F1A;
+  --color-orange-600: #B85A12;
+  --color-orange-700: #94450A;
+  --color-orange-800: #6E3006;
+  --color-orange-900: #471E03;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* ─── Base ─────────────────────────────────────────────────────────────────── */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: ui-sans-serif, system-ui, sans-serif;
+  background: #FAF7F3;
+  color: #1E1510;
+  font-family: var(--font-inter, ui-sans-serif, system-ui, sans-serif);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Display font — Playfair Display for hero & section headings ──────────── */
+.font-display {
+  font-family: var(--font-playfair, "Playfair Display", Georgia, serif);
 }
