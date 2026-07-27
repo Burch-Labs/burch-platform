@@ -54,8 +54,11 @@ export default async function AdminPage() {
 
         {/* Recent Users */}
         <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-100">
+          <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
             <h2 className="font-semibold text-gray-900">Recent Users</h2>
+            <Link href="/admin/users" className="text-xs text-orange-500 hover:text-orange-600 font-medium">
+              Manage all →
+            </Link>
           </div>
           <div className="divide-y divide-gray-50">
             {recentUsers.length === 0 ? (

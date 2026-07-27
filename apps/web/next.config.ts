@@ -1,5 +1,16 @@
 import type { NextConfig } from "next";
 
+// ─── Production environment guard ────────────────────────────────────────────
+// Fail loudly at build / startup so a misconfigured deployment is immediately
+// visible rather than silently broken for end-users.
+if (process.env.NODE_ENV === "production" && !process.env.RESEND_API_KEY) {
+  throw new Error(
+    "[config] RESEND_API_KEY is required in production. " +
+      "New users will not receive verification emails without it. " +
+      "Set the secret in your deployment environment and redeploy."
+  );
+}
+
 const nextConfig: NextConfig = {
   // Expose a public flag so client components can conditionally show Google Sign-In.
   // Evaluated at server startup — reflects whether credentials are actually present.
