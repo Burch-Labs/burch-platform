@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -7,6 +8,7 @@ import { HotelGallery } from "@/components/hotels/HotelGallery";
 import { AmenityList } from "@/components/hotels/AmenityList";
 import { ReviewsList } from "@/components/hotels/ReviewsList";
 import { BookingForm } from "@/components/hotels/BookingForm";
+import { RoomCard } from "@/components/hotels/RoomCard";
 import { HotelStars, StarRating } from "@/components/hotels/StarRating";
 import Link from "next/link";
 
@@ -21,7 +23,10 @@ export async function generateMetadata({ params }: PageProps) {
     select: { name: true, description: true },
   });
   if (!hotel) return { title: "Hotel not found" };
-  return { title: `${hotel.name} — Burch`, description: hotel.description ?? undefined };
+  return {
+    title: `${hotel.name} — Burch`,
+    description: hotel.description ?? undefined,
+  };
 }
 
 export default async function HotelDetailPage({ params }: PageProps) {
@@ -35,7 +40,10 @@ export default async function HotelDetailPage({ params }: PageProps) {
         partner: {
           include: { user: { select: { id: true, name: true, image: true } } },
         },
-        rooms: { where: { available: true }, orderBy: { price: "asc" } },
+        rooms: {
+          where: { available: true },
+          orderBy: { price: "asc" },
+        },
         reviews: {
           include: { user: { select: { id: true, name: true, image: true } } },
           orderBy: { createdAt: "desc" },
@@ -58,25 +66,38 @@ export default async function HotelDetailPage({ params }: PageProps) {
     count: ratings.filter((r) => r === star).length,
   }));
 
-  // All images: imageUrl first, then gallery images
   const allImages = [
     ...(hotel.imageUrl ? [hotel.imageUrl] : []),
     ...hotel.images.filter((img) => img !== hotel.imageUrl),
   ];
+
+  // Serialize Prisma Decimal → number so rooms can cross the RSC→client boundary
+  // (React 19 / Next.js 15 rejects non-plain objects at the serialization boundary)
+  const rooms = hotel.rooms.map((r) => ({
+    ...r,
+    price: Number(r.price) as unknown as (typeof r)["price"],
+  }));
+
+  const minPrice =
+    rooms.length > 0
+      ? Math.min(...rooms.map((r) => Number(r.price)))
+      : null;
 
   return (
     <div className="min-h-screen bg-gray-50">
       <NavBar />
 
       <main className="max-w-6xl mx-auto px-6 py-8">
-        {/* Breadcrumb */}
+        {/* ── Breadcrumb ─────────────────────────────────── */}
         <div className="flex items-center gap-2 text-sm text-gray-400 mb-5">
-          <Link href="/hotels" className="hover:text-orange-600 transition">Hotels</Link>
+          <Link href="/hotels" className="hover:text-orange-600 transition">
+            Hotels
+          </Link>
           <span>/</span>
           <span className="text-gray-600 truncate">{hotel.name}</span>
         </div>
 
-        {/* Gallery */}
+        {/* ── Gallery ────────────────────────────────────── */}
         {allImages.length > 0 && (
           <div className="mb-8">
             <HotelGallery images={allImages} name={hotel.name} />
@@ -84,8 +105,9 @@ export default async function HotelDetailPage({ params }: PageProps) {
         )}
 
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Left: hotel info */}
+          {/* ── Left: hotel information ──────────────────── */}
           <div className="flex-1 min-w-0 space-y-8">
+
             {/* Header */}
             <div>
               <div className="flex flex-wrap items-start gap-3 mb-2">
@@ -102,18 +124,22 @@ export default async function HotelDetailPage({ params }: PageProps) {
               <h1 className="text-3xl font-bold text-gray-900 mb-1">{hotel.name}</h1>
               <p className="text-gray-500 flex items-center gap-1.5">
                 <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
                 {hotel.location}{hotel.city && `, ${hotel.city}`}
               </p>
             </div>
 
-            {/* Quick info strip */}
+            {/* Quick-info strip */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {[
-                { label: "Check-in", value: hotel.checkInTime },
+                { label: "Check-in",  value: hotel.checkInTime },
                 { label: "Check-out", value: hotel.checkOutTime },
-                { label: "Rooms", value: `${hotel.rooms.length} type${hotel.rooms.length !== 1 ? "s" : ""}` },
+                {
+                  label: "Room types",
+                  value: `${rooms.length} type${rooms.length !== 1 ? "s" : ""}`,
+                },
                 { label: "Contact", value: hotel.phone ?? hotel.email ?? "At reception" },
               ].map(({ label, value }) => (
                 <div key={label} className="bg-white rounded-xl border border-gray-100 p-3">
@@ -141,7 +167,64 @@ export default async function HotelDetailPage({ params }: PageProps) {
               </div>
             )}
 
-            {/* Reviews */}
+            {/* ── Room Types ─────────────────────────────── */}
+            {rooms.length > 0 && (
+              <div>
+                <div className="flex items-baseline justify-between mb-4">
+                  <h2 className="text-lg font-semibold text-gray-900">
+                    Room types
+                    <span className="ml-2 text-sm font-normal text-gray-400">
+                      ({rooms.length})
+                    </span>
+                  </h2>
+                  {minPrice !== null && (
+                    <p className="text-sm text-gray-500">
+                      from{" "}
+                      <span className="font-semibold text-gray-900">
+                        KES {minPrice.toLocaleString()}
+                      </span>
+                      <span className="text-gray-400"> / night</span>
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-4">
+                  {rooms.map((room) => (
+                    <RoomCard
+                      key={room.id}
+                      room={room}
+                      hotelId={hotel.id}
+                      showBookButton={!!session}
+                    />
+                  ))}
+                </div>
+
+                {!session && (
+                  <p className="text-sm text-center text-gray-400 mt-4">
+                    <Link
+                      href={`/auth/login?callbackUrl=/hotels/${hotel.id}`}
+                      className="text-orange-600 font-medium hover:underline"
+                    >
+                      Sign in
+                    </Link>{" "}
+                    to check availability and reserve a room.
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Empty rooms state */}
+            {rooms.length === 0 && (
+              <div className="bg-white rounded-2xl border border-gray-100 p-8 text-center">
+                <p className="text-2xl mb-2">🛏️</p>
+                <p className="text-sm text-gray-500">No rooms listed yet. Contact the hotel directly.</p>
+                {hotel.phone && (
+                  <p className="text-sm font-medium text-orange-600 mt-2">{hotel.phone}</p>
+                )}
+              </div>
+            )}
+
+            {/* Guest reviews */}
             <div>
               <h2 className="text-lg font-semibold text-gray-900 mb-4">
                 Guest reviews
@@ -161,14 +244,20 @@ export default async function HotelDetailPage({ params }: PageProps) {
             </div>
           </div>
 
-          {/* Right: booking panel */}
+          {/* ── Right: date picker + live availability ───── */}
           <div className="lg:w-96 flex-shrink-0">
             <div className="sticky top-20">
-              <BookingForm
-                hotelId={hotel.id}
-                rooms={hotel.rooms}
-                isAuthenticated={!!session}
-              />
+              <Suspense
+                fallback={
+                  <div className="h-64 bg-white rounded-2xl border border-gray-100 animate-pulse" />
+                }
+              >
+                <BookingForm
+                  hotelId={hotel.id}
+                  rooms={rooms}
+                  isAuthenticated={!!session}
+                />
+              </Suspense>
             </div>
           </div>
         </div>

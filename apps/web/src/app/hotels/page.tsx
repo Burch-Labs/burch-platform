@@ -3,34 +3,102 @@ import Link from "next/link";
 import { NavBar } from "@/components/layout/NavBar";
 import { HotelGrid } from "@/components/hotels/HotelGrid";
 import { HotelFilterSidebar } from "@/components/hotels/HotelFilterSidebar";
+import { HotelSortBar } from "@/components/hotels/HotelSortBar";
 import { SearchBar } from "@/components/events/SearchBar";
 import { prisma } from "@/lib/prisma";
 
 const PAGE_SIZE = 12;
 
 interface PageProps {
-  searchParams: Promise<{ q?: string; city?: string; stars?: string; page?: string }>;
+  searchParams: Promise<{
+    q?: string;
+    city?: string;
+    stars?: string;
+    amenities?: string;
+    sort?: string;
+    page?: string;
+  }>;
 }
 
+// ── Active-filter chips (server-rendered) ────────────────────────────────────
+
+function ActiveFilterChips({
+  city,
+  stars,
+  amenities,
+  baseHref,
+}: {
+  city: string;
+  stars: number | null;
+  amenities: string[];
+  baseHref: (overrides: Record<string, string>) => string;
+}) {
+  const chips: { label: string; removeHref: string }[] = [];
+
+  if (city) chips.push({ label: `City: ${city}`, removeHref: baseHref({ city: "" }) });
+  if (stars) chips.push({ label: `${stars}★`, removeHref: baseHref({ stars: "" }) });
+  amenities.forEach((a) =>
+    chips.push({
+      label: a,
+      removeHref: baseHref({
+        amenities: amenities.filter((x) => x !== a).join(","),
+      }),
+    })
+  );
+
+  if (chips.length === 0) return null;
+
+  return (
+    <div className="flex flex-wrap gap-2 mb-4">
+      {chips.map(({ label, removeHref }) => (
+        <Link
+          key={label}
+          href={removeHref}
+          className="inline-flex items-center gap-1.5 bg-orange-50 text-orange-700 border border-orange-100 text-xs font-medium px-3 py-1 rounded-full hover:bg-orange-100 transition"
+        >
+          {label}
+          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </Link>
+      ))}
+    </div>
+  );
+}
+
+// ── Main content (async server component) ────────────────────────────────────
+
 async function HotelsContent({ searchParams }: PageProps) {
-  const sp = await searchParams;
-  const q = sp.q?.trim() ?? "";
-  const city = sp.city?.trim() ?? "";
-  const stars = sp.stars ? Number(sp.stars) : null;
-  const page = Math.max(1, Number(sp.page ?? "1"));
+  const sp        = await searchParams;
+  const q         = sp.q?.trim() ?? "";
+  const city      = sp.city?.trim() ?? "";
+  const stars     = sp.stars ? Number(sp.stars) : null;
+  const amenities = sp.amenities?.split(",").filter(Boolean) ?? [];
+  const sort      = sp.sort ?? "name";
+  const page      = Math.max(1, Number(sp.page ?? "1"));
+
+  const orderBy =
+    sort === "stars_desc"
+      ? [{ starRating: "desc" as const }, { name: "asc" as const }]
+      : sort === "stars_asc"
+      ? [{ starRating: "asc" as const }, { name: "asc" as const }]
+      : sort === "newest"
+      ? { createdAt: "desc" as const }
+      : { name: "asc" as const };
 
   const where = {
     published: true,
     ...(q && {
       OR: [
-        { name: { contains: q, mode: "insensitive" as const } },
+        { name:        { contains: q, mode: "insensitive" as const } },
         { description: { contains: q, mode: "insensitive" as const } },
-        { location: { contains: q, mode: "insensitive" as const } },
-        { city: { contains: q, mode: "insensitive" as const } },
+        { location:    { contains: q, mode: "insensitive" as const } },
+        { city:        { contains: q, mode: "insensitive" as const } },
       ],
     }),
-    ...(city && { city: { contains: city, mode: "insensitive" as const } }),
-    ...(stars && { starRating: stars }),
+    ...(city      && { city:       { contains: city, mode: "insensitive" as const } }),
+    ...(stars     && { starRating: stars }),
+    ...(amenities.length > 0 && { amenities: { hasEvery: amenities } }),
   };
 
   const [hotels, total, cityRows] = await Promise.all([
@@ -38,74 +106,107 @@ async function HotelsContent({ searchParams }: PageProps) {
       where,
       include: {
         partner: { select: { id: true, name: true } },
-        rooms: { select: { price: true, currency: true }, orderBy: { price: "asc" } },
-        _count: { select: { rooms: true, reviews: true, bookings: true } },
+        rooms:   { select: { price: true, currency: true }, orderBy: { price: "asc" } },
+        _count:  { select: { rooms: true, reviews: true, bookings: true } },
         reviews: { select: { rating: true } },
       },
-      orderBy: { name: "asc" },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      orderBy: orderBy as any,
       take: PAGE_SIZE,
       skip: (page - 1) * PAGE_SIZE,
     }),
     prisma.hotel.count({ where }),
     prisma.hotel.findMany({
-      where: { published: true },
-      select: { city: true },
+      where:    { published: true },
+      select:   { city: true },
       distinct: ["city"],
-      orderBy: { city: "asc" },
+      orderBy:  { city: "asc" },
     }),
   ]);
 
   const hotelsWithRating = hotels.map((h) => {
-    const ratings = h.reviews.map((r) => r.rating);
+    const ratings  = h.reviews.map((r) => r.rating);
     const avgRating =
       ratings.length > 0
         ? Math.round((ratings.reduce((a, b) => a + b, 0) / ratings.length) * 10) / 10
         : null;
-    const { reviews: _reviews, ...rest } = h;
+    const { reviews: _r, ...rest } = h;
     return { ...rest, avgRating };
   });
 
-  const cities = cityRows.map((r) => r.city).filter(Boolean);
+  const cities     = cityRows.map((r) => r.city).filter(Boolean);
   const totalPages = Math.ceil(total / PAGE_SIZE);
-  const hasFilters = q || city || stars;
+  const hasFilters = !!(q || city || stars || amenities.length > 0);
+
+  function buildHref(overrides: Record<string, string>): string {
+    const merged = {
+      ...(q         ? { q }                      : {}),
+      ...(city      ? { city }                   : {}),
+      ...(stars     ? { stars: String(stars) }   : {}),
+      ...(amenities.length > 0 ? { amenities: amenities.join(",") } : {}),
+      ...(sort !== "name" ? { sort }             : {}),
+      ...overrides,
+    };
+    // Remove empty-string overrides
+    (Object.keys(merged) as (keyof typeof merged)[]).forEach((k) => { if (!merged[k]) delete merged[k]; });
+    const qs = new URLSearchParams(merged).toString();
+    return `/hotels${qs ? `?${qs}` : ""}`;
+  }
 
   return (
-    <div className="flex gap-6 items-start">
+    <div className="flex flex-col lg:flex-row gap-6 items-start">
+      {/* Sidebar */}
       <Suspense>
         <HotelFilterSidebar cities={cities} />
       </Suspense>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-between mb-4">
-          <p className="text-sm text-gray-500">
-            {total === 0
-              ? "No hotels found"
-              : `${total} hotel${total !== 1 ? "s" : ""}${hasFilters ? " matching your filters" : ""}`}
-          </p>
-          {page > 1 && (
-            <p className="text-sm text-gray-400">Page {page} of {totalPages}</p>
-          )}
-        </div>
 
+      {/* Main column */}
+      <div className="flex-1 min-w-0">
+        {/* Active-filter chips */}
+        <ActiveFilterChips city={city} stars={stars} amenities={amenities} baseHref={buildHref} />
+
+        {/* Sort bar */}
+        <Suspense fallback={<div className="h-9 bg-gray-100 rounded-lg animate-pulse mb-4" />}>
+          <HotelSortBar total={total} hasFilters={hasFilters} />
+        </Suspense>
+
+        {/* Grid */}
         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         <HotelGrid hotels={hotelsWithRating as any} />
 
+        {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex items-center justify-center gap-2 mt-10">
             {page > 1 && (
-              <PaginationLink href={buildHref(sp, page - 1)} label="← Previous" />
+              <Link
+                href={buildHref({ page: String(page - 1) })}
+                className="px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 text-gray-600 hover:bg-gray-50 transition"
+              >
+                ← Previous
+              </Link>
             )}
             {Array.from({ length: totalPages }, (_, i) => i + 1)
               .filter((p) => Math.abs(p - page) <= 2)
               .map((p) => (
-                <PaginationLink
+                <Link
                   key={p}
-                  href={buildHref(sp, p)}
-                  label={String(p)}
-                  active={p === page}
-                />
+                  href={buildHref({ page: String(p) })}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+                    p === page
+                      ? "bg-orange-600 text-white"
+                      : "border border-gray-200 text-gray-600 hover:bg-gray-50"
+                  }`}
+                >
+                  {p}
+                </Link>
               ))}
             {page < totalPages && (
-              <PaginationLink href={buildHref(sp, page + 1)} label="Next →" />
+              <Link
+                href={buildHref({ page: String(page + 1) })}
+                className="px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 text-gray-600 hover:bg-gray-50 transition"
+              >
+                Next →
+              </Link>
             )}
           </div>
         )}
@@ -114,40 +215,18 @@ async function HotelsContent({ searchParams }: PageProps) {
   );
 }
 
-function PaginationLink({ href, label, active }: { href: string; label: string; active?: boolean }) {
-  return (
-    <Link
-      href={href}
-      className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-        active ? "bg-orange-600 text-white" : "border border-gray-200 text-gray-600 hover:bg-gray-50"
-      }`}
-    >
-      {label}
-    </Link>
-  );
-}
-
-function buildHref(sp: Record<string, string | undefined>, page: number): string {
-  const params = new URLSearchParams();
-  if (sp.q) params.set("q", sp.q);
-  if (sp.city) params.set("city", sp.city);
-  if (sp.stars) params.set("stars", sp.stars);
-  if (page > 1) params.set("page", String(page));
-  const qs = params.toString();
-  return `/hotels${qs ? `?${qs}` : ""}`;
-}
+// ── Page export ──────────────────────────────────────────────────────────────
 
 export default function HotelsPage(props: PageProps) {
   return (
     <div className="min-h-screen bg-gray-50">
       <NavBar />
 
+      {/* Hero */}
       <div className="bg-white border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-6 py-10">
           <h1 className="text-3xl font-bold text-gray-900 mb-1">Hotels</h1>
-          <p className="text-gray-500 mb-6">
-            Discover exceptional stays across Africa
-          </p>
+          <p className="text-gray-500 mb-6">Discover exceptional stays across Africa</p>
           <Suspense>
             <SearchBar />
           </Suspense>
@@ -157,9 +236,13 @@ export default function HotelsPage(props: PageProps) {
       <main className="max-w-6xl mx-auto px-6 py-8">
         <Suspense
           fallback={
-            <div className="flex gap-6">
-              <div className="w-56 h-96 bg-white rounded-2xl border border-gray-100 animate-pulse" />
-              <div className="flex-1 grid grid-cols-3 gap-5">
+            <div className="flex flex-col lg:flex-row gap-6">
+              {/* Sidebar skeleton */}
+              <div className="w-full lg:w-56 flex-shrink-0">
+                <div className="h-96 bg-white rounded-2xl border border-gray-100 animate-pulse" />
+              </div>
+              {/* Grid skeleton */}
+              <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {Array.from({ length: 6 }).map((_, i) => (
                   <div key={i} className="h-72 bg-white rounded-2xl border border-gray-100 animate-pulse" />
                 ))}
