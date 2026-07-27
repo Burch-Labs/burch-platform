@@ -10,6 +10,9 @@ interface GoogleButtonProps {
 export function GoogleButton({ callbackUrl = "/dashboard" }: GoogleButtonProps) {
   const [loading, setLoading] = useState(false);
 
+  // Hide when Google OAuth credentials are not configured on the server
+  if (process.env.NEXT_PUBLIC_HAS_GOOGLE !== "1") return null;
+
   return (
     <button
       type="button"

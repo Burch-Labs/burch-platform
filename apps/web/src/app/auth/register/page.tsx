@@ -102,19 +102,21 @@ export default function RegisterPage() {
       title="Create your account"
       subtitle="Join Africa's experience platform"
     >
-      {/* Google Sign-In */}
+      {/* Google Sign-In — only rendered when credentials are configured */}
       <GoogleButton callbackUrl="/dashboard" />
 
-      <div className="relative my-5">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-gray-100" />
+      {process.env.NEXT_PUBLIC_HAS_GOOGLE === "1" && (
+        <div className="relative my-5">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-100" />
+          </div>
+          <div className="relative flex justify-center">
+            <span className="bg-white px-3 text-xs text-gray-400">
+              or register with email
+            </span>
+          </div>
         </div>
-        <div className="relative flex justify-center">
-          <span className="bg-white px-3 text-xs text-gray-400">
-            or register with email
-          </span>
-        </div>
-      </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Role picker */}
