@@ -99,6 +99,35 @@ export default async function PartnerBookingsPage({ searchParams }: PageProps) {
 
   const noProperties = bookingOrFilter.length === 0;
 
+  // ── Fetch status counts (unfiltered by status, respects property filter) ───
+  const statusOrder: BookingStatus[] = ["PENDING", "CONFIRMED", "CANCELLED", "COMPLETED"];
+
+  const [bookingCounts, reservationCounts] = noProperties
+    ? [[], []]
+    : await Promise.all([
+        prisma.booking.groupBy({
+          by: ["status"],
+          where: { OR: bookingOrFilter },
+          _count: { id: true },
+        }),
+        selectedRestaurantIds.length
+          ? prisma.tableReservation.groupBy({
+              by: ["status"],
+              where: { restaurantId: { in: selectedRestaurantIds } },
+              _count: { id: true },
+            })
+          : Promise.resolve([]),
+      ]);
+
+  // Merge booking + reservation counts per status
+  const statusCounts: Record<string, number> = {};
+  for (const row of bookingCounts) {
+    statusCounts[row.status] = (statusCounts[row.status] ?? 0) + row._count.id;
+  }
+  for (const row of reservationCounts) {
+    statusCounts[row.status] = (statusCounts[row.status] ?? 0) + row._count.id;
+  }
+
   // ── Fetch bookings and reservations ────────────────────────────────────────
   const [bookings, reservations] = noProperties
     ? [[], []]
@@ -182,7 +211,11 @@ export default async function PartnerBookingsPage({ searchParams }: PageProps) {
 
         {/* Filters */}
         <div className="mb-6">
-          <BookingsFilter properties={properties} />
+          <BookingsFilter
+            properties={properties}
+            statusCounts={noProperties ? {} : statusCounts}
+            statusOrder={statusOrder}
+          />
         </div>
 
         {/* Summary count */}
