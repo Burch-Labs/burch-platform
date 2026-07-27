@@ -6,6 +6,7 @@ import { NavBar } from "@/components/layout/NavBar";
 import { prisma } from "@/lib/prisma";
 import { BookingStatus, ReservationStatus } from "@prisma/client";
 import { CancelButton } from "./CancelButton";
+import { PartnerActionButtons } from "./PartnerActionButtons";
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 
@@ -141,46 +142,79 @@ export default async function DashboardPage() {
         })
       : null;
 
-  const recentPartnerBookings =
+  // Build the shared OR filter once so we can reuse it
+  const partnerBookingFilter =
     role === "PARTNER" && partnerSummary
-      ? await prisma.booking.findMany({
-          where: {
-            OR: [
-              partnerSummary.hotels.length
-                ? { hotelId: { in: partnerSummary.hotels.map((h) => h.id) } }
-                : undefined,
-              partnerSummary.events.length
-                ? { eventId: { in: partnerSummary.events.map((e) => e.id) } }
-                : undefined,
-              partnerSummary.restaurants.length
-                ? { restaurantId: { in: partnerSummary.restaurants.map((r) => r.id) } }
-                : undefined,
-            ].filter(Boolean) as object[],
-          },
-          include: {
-            user: { select: { name: true, email: true } },
-            hotel: { select: { name: true } },
-            event: { select: { title: true } },
-            restaurant: { select: { name: true } },
-          },
+      ? ([
+          partnerSummary.hotels.length
+            ? { hotelId: { in: partnerSummary.hotels.map((h) => h.id) } }
+            : undefined,
+          partnerSummary.events.length
+            ? { eventId: { in: partnerSummary.events.map((e) => e.id) } }
+            : undefined,
+          partnerSummary.restaurants.length
+            ? { restaurantId: { in: partnerSummary.restaurants.map((r) => r.id) } }
+            : undefined,
+        ].filter(Boolean) as object[])
+      : null;
+
+  const partnerBookingInclude = {
+    user: { select: { name: true, email: true } },
+    hotel: { select: { name: true } },
+    event: { select: { title: true } },
+    restaurant: { select: { name: true } },
+  } as const;
+
+  const [
+    pendingPartnerBookings,
+    recentPartnerBookings,
+    pendingPartnerReservations,
+    recentPartnerReservations,
+  ] = partnerBookingFilter
+    ? await Promise.all([
+        // PENDING bookings — shown in "Needs attention"
+        prisma.booking.findMany({
+          where: { status: "PENDING", OR: partnerBookingFilter },
+          include: partnerBookingInclude,
+          orderBy: { createdAt: "asc" },
+        }),
+        // Recent non-pending bookings — shown in "Recent bookings"
+        prisma.booking.findMany({
+          where: { status: { not: "PENDING" }, OR: partnerBookingFilter },
+          include: partnerBookingInclude,
           orderBy: { createdAt: "desc" },
           take: 10,
-        })
-      : [];
-
-  const recentPartnerReservations =
-    role === "PARTNER" && partnerSummary && partnerSummary.restaurants.length
-      ? await prisma.tableReservation.findMany({
-          where: {
-            restaurantId: { in: partnerSummary.restaurants.map((r) => r.id) },
-          },
-          include: {
-            restaurant: { select: { name: true } },
-          },
-          orderBy: { date: "desc" },
-          take: 10,
-        })
-      : [];
+        }),
+        // PENDING reservations
+        partnerSummary!.restaurants.length
+          ? prisma.tableReservation.findMany({
+              where: {
+                status: "PENDING",
+                restaurantId: { in: partnerSummary!.restaurants.map((r) => r.id) },
+              },
+              include: { restaurant: { select: { name: true } } },
+              orderBy: { date: "asc" },
+            })
+          : Promise.resolve([] as Awaited<ReturnType<typeof prisma.tableReservation.findMany<{ include: { restaurant: { select: { name: true } } } }>>>),
+        // Recent non-pending reservations
+        partnerSummary!.restaurants.length
+          ? prisma.tableReservation.findMany({
+              where: {
+                status: { not: "PENDING" },
+                restaurantId: { in: partnerSummary!.restaurants.map((r) => r.id) },
+              },
+              include: { restaurant: { select: { name: true } } },
+              orderBy: { date: "desc" },
+              take: 10,
+            })
+          : Promise.resolve([] as Awaited<ReturnType<typeof prisma.tableReservation.findMany<{ include: { restaurant: { select: { name: true } } } }>>>),
+      ])
+    : ([ [], [], [], [] ] as unknown as [
+        Awaited<ReturnType<typeof prisma.booking.findMany<{ include: typeof partnerBookingInclude }>>>,
+        Awaited<ReturnType<typeof prisma.booking.findMany<{ include: typeof partnerBookingInclude }>>>,
+        Awaited<ReturnType<typeof prisma.tableReservation.findMany<{ include: { restaurant: { select: { name: true } } } }>>>,
+        Awaited<ReturnType<typeof prisma.tableReservation.findMany<{ include: { restaurant: { select: { name: true } } } }>>>,
+      ]);
 
   // ── Admin data ─────────────────────────────────────────────────────────────
   const adminStats =
@@ -438,34 +472,63 @@ export default async function DashboardPage() {
           <div className="space-y-10">
 
             {/* Stats strip */}
-            {partnerSummary && (
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                <StatCard
-                  emoji="🏨"
-                  label="Hotel bookings"
-                  value={partnerSummary.hotels.reduce((s, h) => s + h._count.bookings, 0)}
-                />
-                <StatCard
-                  emoji="🍽️"
-                  label="Table reservations"
-                  value={partnerSummary.restaurants.reduce(
-                    (s, r) => s + r._count.reservations,
-                    0
-                  )}
-                />
-                <StatCard
-                  emoji="🎉"
-                  label="Event bookings"
-                  value={partnerSummary.events.reduce((s, e) => s + e._count.bookings, 0)}
-                />
-              </div>
+            {partnerSummary && (() => {
+              const pendingCount = pendingPartnerBookings.length + pendingPartnerReservations.length;
+              return (
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  <StatCard
+                    emoji="⏳"
+                    label="Needs attention"
+                    value={pendingCount}
+                    highlight={pendingCount > 0}
+                  />
+                  <StatCard
+                    emoji="🏨"
+                    label="Hotel bookings"
+                    value={partnerSummary.hotels.reduce((s, h) => s + h._count.bookings, 0)}
+                  />
+                  <StatCard
+                    emoji="🍽️"
+                    label="Table reservations"
+                    value={partnerSummary.restaurants.reduce(
+                      (s, r) => s + r._count.reservations,
+                      0
+                    )}
+                  />
+                  <StatCard
+                    emoji="🎉"
+                    label="Event bookings"
+                    value={partnerSummary.events.reduce((s, e) => s + e._count.bookings, 0)}
+                  />
+                </div>
+              );
+            })()}
+
+            {/* Needs attention — pending items */}
+            {(pendingPartnerBookings.length > 0 || pendingPartnerReservations.length > 0) && (
+              <section>
+                <div className="flex items-center gap-2 mb-4">
+                  <h2 className="text-lg font-semibold text-gray-900">Needs attention</h2>
+                  <span className="inline-flex items-center justify-center bg-amber-500 text-white text-xs font-bold rounded-full w-5 h-5">
+                    {pendingPartnerBookings.length + pendingPartnerReservations.length}
+                  </span>
+                </div>
+                <div className="bg-amber-50 border border-amber-200 rounded-2xl divide-y divide-amber-100 overflow-hidden">
+                  {pendingPartnerBookings.map((b) => (
+                    <PartnerBookingRow key={b.id} booking={b} showActions />
+                  ))}
+                  {pendingPartnerReservations.map((r) => (
+                    <PartnerReservationRow key={r.id} reservation={r} showActions />
+                  ))}
+                </div>
+              </section>
             )}
 
-            {/* Recent bookings table */}
+            {/* Recent bookings (non-pending) */}
             <section>
               <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent bookings</h2>
               {recentPartnerBookings.length === 0 ? (
-                <EmptyCard message="No bookings yet — publish a listing to start receiving reservations." />
+                <EmptyCard message="No confirmed or completed bookings yet." />
               ) : (
                 <div className="bg-white rounded-2xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
                   {recentPartnerBookings.map((b) => (
@@ -475,7 +538,7 @@ export default async function DashboardPage() {
               )}
             </section>
 
-            {/* Recent table reservations */}
+            {/* Recent table reservations (non-pending) */}
             {recentPartnerReservations.length > 0 && (
               <section>
                 <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent table reservations</h2>
@@ -548,9 +611,11 @@ type PartnerBookingRow = Awaited<ReturnType<typeof prisma.booking.findMany<{
 function PartnerBookingRow({
   booking: b,
   showUser = false,
+  showActions = false,
 }: {
   booking: PartnerBookingRow;
   showUser?: boolean;
+  showActions?: boolean;
 }) {
   const isHotel = b.type === "HOTEL";
   const isEvent = b.type === "EVENT";
@@ -561,22 +626,26 @@ function PartnerBookingRow({
     : fmt(b.createdAt);
 
   return (
-    <div className="px-5 py-4 flex items-center justify-between gap-4">
+    <div className="px-5 py-4 flex items-center justify-between gap-4 flex-wrap sm:flex-nowrap">
       <div className="flex items-center gap-3 min-w-0">
         <span className="text-xl shrink-0">{typeEmoji}</span>
         <div className="min-w-0">
           <p className="text-sm font-medium text-gray-900 truncate">{name ?? "—"}</p>
           <p className="text-xs text-gray-400 mt-0.5">
             {showUser && b.user ? `${b.user.name ?? b.user.email} · ` : ""}
+            {!showUser && b.user ? `${b.user.name ?? b.user.email} · ` : ""}
             {dateRange}
           </p>
         </div>
       </div>
-      <div className="flex items-center gap-3 shrink-0">
+      <div className="flex items-center gap-3 shrink-0 flex-wrap justify-end">
         <StatusBadge status={b.status} />
         <span className="text-xs text-gray-400">
           {b.currency} {Number(b.totalAmount).toLocaleString()}
         </span>
+        {showActions && (
+          <PartnerActionButtons id={b.id} kind="booking" status={b.status} />
+        )}
       </div>
     </div>
   );
@@ -586,9 +655,15 @@ type PartnerResRow = Awaited<ReturnType<typeof prisma.tableReservation.findMany<
   include: { restaurant: { select: { name: true } } };
 }>>>[number];
 
-function PartnerReservationRow({ reservation: r }: { reservation: PartnerResRow }) {
+function PartnerReservationRow({
+  reservation: r,
+  showActions = false,
+}: {
+  reservation: PartnerResRow;
+  showActions?: boolean;
+}) {
   return (
-    <div className="px-5 py-4 flex items-center justify-between gap-4">
+    <div className="px-5 py-4 flex items-center justify-between gap-4 flex-wrap sm:flex-nowrap">
       <div className="flex items-center gap-3 min-w-0">
         <span className="text-xl shrink-0">🍽️</span>
         <div className="min-w-0">
@@ -601,17 +676,46 @@ function PartnerReservationRow({ reservation: r }: { reservation: PartnerResRow 
           </p>
         </div>
       </div>
-      <StatusBadge status={r.status} />
+      <div className="flex items-center gap-3 shrink-0 flex-wrap justify-end">
+        <StatusBadge status={r.status} />
+        {showActions && (
+          <PartnerActionButtons id={r.id} kind="reservation" status={r.status} />
+        )}
+      </div>
     </div>
   );
 }
 
-function StatCard({ emoji, label, value }: { emoji: string; label: string; value: number }) {
+function StatCard({
+  emoji,
+  label,
+  value,
+  highlight = false,
+}: {
+  emoji: string;
+  label: string;
+  value: number;
+  highlight?: boolean;
+}) {
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 p-5">
+    <div
+      className={`rounded-2xl border p-5 ${
+        highlight && value > 0
+          ? "bg-amber-50 border-amber-200"
+          : "bg-white border-gray-200"
+      }`}
+    >
       <span className="text-2xl">{emoji}</span>
-      <p className="text-2xl font-bold text-gray-900 mt-2">{value.toLocaleString()}</p>
-      <p className="text-xs text-gray-500 mt-0.5">{label}</p>
+      <p
+        className={`text-2xl font-bold mt-2 ${
+          highlight && value > 0 ? "text-amber-700" : "text-gray-900"
+        }`}
+      >
+        {value.toLocaleString()}
+      </p>
+      <p className={`text-xs mt-0.5 ${highlight && value > 0 ? "text-amber-600" : "text-gray-500"}`}>
+        {label}
+      </p>
     </div>
   );
 }
