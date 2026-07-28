@@ -14,6 +14,9 @@ EMAIL_FROM = "Burch Platform <onboarding@resend.dev>"
 [userenv.development]
 NEXTAUTH_URL = "https://05bb2b28-a3ef-425a-80f7-67b96180db03-00-q70kbd0d3c1c.picard.replit.dev"
 
+[userenv.production]
+NEXTAUTH_URL = "https://burch-platform.replit.app"
+
 [deployment]
 deploymentTarget = "autoscale"
 build = ["bash", "-c", "cd apps/web && npm run build"]
