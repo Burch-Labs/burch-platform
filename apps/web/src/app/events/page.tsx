@@ -7,6 +7,7 @@ import { EventGrid } from "@/components/events/EventGrid";
 import { FilterSidebar } from "@/components/events/FilterSidebar";
 import { SearchBar } from "@/components/events/SearchBar";
 import { SaveSearchButton } from "@/components/events/SaveSearchButton";
+import { ShareLinkButton } from "@/components/events/ShareLinkButton";
 import { prisma } from "@/lib/prisma";
 import { EventCategory } from "@prisma/client";
 import Link from "next/link";
@@ -138,6 +139,9 @@ async function EventsContent({ searchParams }: PageProps) {
               : `${total} event${total !== 1 ? "s" : ""}${hasFilters ? " matching your filters" : ""}`}
           </p>
           <div className="flex items-center gap-4">
+            <Suspense>
+              <ShareLinkButton />
+            </Suspense>
             <Suspense>
               <SaveSearchButton isLoggedIn={!!session} />
             </Suspense>
