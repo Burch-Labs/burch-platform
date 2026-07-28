@@ -5,6 +5,7 @@ import { NavBar } from "@/components/layout/NavBar";
 import { RestaurantGrid } from "@/components/restaurants/RestaurantGrid";
 import { RestaurantFilterSidebar } from "@/components/restaurants/RestaurantFilterSidebar";
 import { SearchBar } from "@/components/events/SearchBar";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { prisma } from "@/lib/prisma";
 
 const PAGE_SIZE = 12;
@@ -95,8 +96,24 @@ async function RestaurantsContent({ searchParams }: PageProps) {
           {totalPages > 1 && <p className="text-sm text-gray-400">Page {page} of {totalPages}</p>}
         </div>
 
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-        <RestaurantGrid restaurants={withRating as any} />
+        {total === 0 && !hasFilters ? (
+          <EmptyState
+            emoji="🍽️"
+            title="No restaurants listed yet"
+            description="We're growing our restaurant directory. If you own a dining venue, join as a partner and add your listing today."
+            action={
+              <Link
+                href="/auth/register"
+                className="inline-block px-5 py-2.5 rounded-lg bg-orange-600 text-white text-sm font-medium hover:bg-orange-700 transition"
+              >
+                List your restaurant
+              </Link>
+            }
+          />
+        ) : (
+          /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+          <RestaurantGrid restaurants={withRating as any} />
+        )}
 
         {totalPages > 1 && (
           <div className="flex items-center justify-center gap-2 mt-10">
