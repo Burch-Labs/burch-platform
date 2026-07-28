@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { hash } from "bcryptjs";
 import { prisma } from "@/lib/prisma";
-import {
-  validatePasswordResetToken,
-  deletePasswordResetToken,
-} from "@/lib/tokens";
+import { validatePasswordResetToken } from "@/lib/tokens";
 import { z } from "zod";
 
 const schema = z.object({
@@ -19,7 +16,13 @@ export async function POST(req: NextRequest) {
     const result = await validatePasswordResetToken(token);
     if (!result) {
       return NextResponse.json(
-        { error: "Reset link is invalid or has expired." },
+        { error: "Reset link is invalid or has already been used." },
+        { status: 400 }
+      );
+    }
+    if (result.expired) {
+      return NextResponse.json(
+        { error: "Reset link has expired. Please request a new one." },
         { status: 400 }
       );
     }
@@ -29,8 +32,6 @@ export async function POST(req: NextRequest) {
       where: { email: result.email },
       data: { password: hashed },
     });
-
-    await deletePasswordResetToken(token);
 
     return NextResponse.json({ message: "Password updated successfully." });
   } catch (err) {

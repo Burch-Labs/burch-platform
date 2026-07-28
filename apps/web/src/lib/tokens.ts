@@ -59,18 +59,35 @@ export async function createPasswordResetToken(email: string): Promise<string> {
   return token;
 }
 
+export type PasswordResetResult =
+  | { email: string; expired: false }
+  | { expired: true }
+  | null;
+
+/**
+ * Validates and atomically consumes a password-reset token.
+ * The token is deleted from the database regardless of whether it is valid or
+ * expired, making it strictly single-use (mirrors validateEmailVerificationToken).
+ *
+ * Returns:
+ *  - `{ email, expired: false }` — valid token; caller may update the password
+ *  - `{ expired: true }`         — token existed but has passed its 1h window
+ *  - `null`                      — token not found (already used or never issued)
+ */
 export async function validatePasswordResetToken(
   token: string
-): Promise<{ email: string } | null> {
-  const record = await prisma.passwordResetToken.findUnique({ where: { token } });
-  if (!record) return null;
-  if (record.expires < new Date()) {
-    await prisma.passwordResetToken.delete({ where: { token } });
-    return null;
-  }
-  return { email: record.email };
-}
+): Promise<PasswordResetResult> {
+  // Delete the token and return it in one atomic operation so it can never be
+  // replayed, even if two requests arrive simultaneously.
+  const deleted = await prisma.passwordResetToken
+    .delete({ where: { token } })
+    .catch(() => null); // throws P2025 when not found — treat as null
 
-export async function deletePasswordResetToken(token: string): Promise<void> {
-  await prisma.passwordResetToken.deleteMany({ where: { token } });
+  if (!deleted) return null;
+
+  if (deleted.expires < new Date()) {
+    return { expired: true };
+  }
+
+  return { email: deleted.email, expired: false };
 }
