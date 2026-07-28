@@ -5,15 +5,17 @@ import { EmptyState } from "@/components/ui/EmptyState";
 interface HotelGridProps {
   hotels: HotelCard[];
   emptyMessage?: string;
+  emptyAction?: React.ReactNode;
 }
 
-export function HotelGrid({ hotels, emptyMessage }: HotelGridProps) {
+export function HotelGrid({ hotels, emptyMessage, emptyAction }: HotelGridProps) {
   if (hotels.length === 0) {
     return (
       <EmptyState
         emoji="🏨"
         title="No hotels found"
         description={emptyMessage ?? "Try adjusting your search or filters."}
+        action={emptyAction}
       />
     );
   }

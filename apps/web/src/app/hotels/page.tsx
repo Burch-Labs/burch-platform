@@ -179,7 +179,27 @@ async function HotelsContent({ searchParams }: PageProps) {
 
         {/* Grid */}
         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-        <HotelGrid hotels={hotelsWithRating as any} />
+        <HotelGrid
+          hotels={hotelsWithRating as any}
+          emptyMessage={
+            hasFilters
+              ? "Try adjusting your search or filters."
+              : "Be the first to list your property and reach travellers across Africa."
+          }
+          emptyAction={
+            !hasFilters ? (
+              <Link
+                href="/partner"
+                className="inline-flex items-center gap-1.5 bg-orange-600 text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:bg-orange-700 transition shadow-sm"
+              >
+                List your property
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            ) : undefined
+          }
+        />
 
         {/* Pagination */}
         {totalPages > 1 && (
