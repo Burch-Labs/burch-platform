@@ -2,6 +2,8 @@
  * Email utility — uses Resend when RESEND_API_KEY is set.
  * In development without the key, links are logged to the console instead.
  */
+// Run startup config check so deployment logs surface misconfigurations early
+import "./config-check";
 
 /**
  * Resolve the canonical base URL for building links inside emails.
