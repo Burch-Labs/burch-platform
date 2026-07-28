@@ -58,6 +58,9 @@ export async function createEvent(
   if (!fields.city)          return { error: "City is required" };
   if (isNaN(fields.price))   return { error: "Price must be a number" };
   if (isNaN(fields.capacity))return { error: "Capacity must be a number" };
+  if (fields.published && fields.startDate < new Date()) {
+    return { error: "Cannot publish an event whose start date is in the past. Save it as a draft instead." };
+  }
 
   try {
     await prisma.event.create({
@@ -103,6 +106,9 @@ export async function updateEvent(
   if (!fields.city)          return { error: "City is required" };
   if (isNaN(fields.price))   return { error: "Price must be a number" };
   if (isNaN(fields.capacity))return { error: "Capacity must be a number" };
+  if (fields.published && fields.startDate < new Date()) {
+    return { error: "Cannot publish an event whose start date is in the past. Save it as a draft instead." };
+  }
 
   try {
     await prisma.event.update({

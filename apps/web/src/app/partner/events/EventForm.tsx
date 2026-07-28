@@ -40,6 +40,15 @@ interface Props {
 export function EventForm({ action, defaults = {}, submitLabel = "Save event", cancelHref = "/partner/events" }: Props) {
   const [state, formAction, isPending] = useActionState(action, null);
 
+  // Past-date warning state
+  const [startDatePast, setStartDatePast] = useState(false);
+
+  function handleStartDateChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const val = e.target.value;
+    if (!val) { setStartDatePast(false); return; }
+    setStartDatePast(new Date(val) < new Date());
+  }
+
   // Image upload state
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadedUrl, setUploadedUrl] = useState<string>("");
@@ -237,8 +246,14 @@ export function EventForm({ action, defaults = {}, submitLabel = "Save event", c
             type="datetime-local"
             required
             defaultValue={defaults.startDate ? toDatetimeLocal(defaults.startDate) : ""}
+            onChange={handleStartDateChange}
             className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent"
           />
+          {startDatePast && (
+            <p className="mt-1.5 text-xs text-amber-600">
+              ⚠ This date is in the past. You can save as a draft, but publishing will be blocked.
+            </p>
+          )}
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1.5">End date & time <span className="text-red-500">*</span></label>
