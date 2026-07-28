@@ -6,27 +6,18 @@ import { z } from "zod";
 
 const schema = z.object({ email: z.string().email() });
 
-// In-memory rate limit store: email → timestamp of last send
-// One request per email per RATE_LIMIT_MS
 const RATE_LIMIT_MS = 60_000; // 1 minute
-const lastSentAt = new Map<string, number>();
-
-// Periodically prune stale entries so the Map doesn't grow unboundedly
-setInterval(() => {
-  const cutoff = Date.now() - RATE_LIMIT_MS * 10;
-  for (const [key, ts] of lastSentAt) {
-    if (ts < cutoff) lastSentAt.delete(key);
-  }
-}, RATE_LIMIT_MS * 10);
 
 export async function POST(req: NextRequest) {
   try {
     const { email } = schema.parse(await req.json());
 
-    // Rate limit check
-    const last = lastSentAt.get(email);
-    if (last !== undefined) {
-      const elapsed = Date.now() - last;
+    // Rate limit check — persisted in DB so it survives server restarts
+    const rateLimit = await prisma.emailResendRateLimit.findUnique({
+      where: { email },
+    });
+    if (rateLimit) {
+      const elapsed = Date.now() - rateLimit.lastSentAt.getTime();
       if (elapsed < RATE_LIMIT_MS) {
         const retryAfter = Math.ceil((RATE_LIMIT_MS - elapsed) / 1000);
         return NextResponse.json(
@@ -39,7 +30,11 @@ export async function POST(req: NextRequest) {
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
       // Avoid enumeration — record rate limit and return success
-      lastSentAt.set(email, Date.now());
+      await prisma.emailResendRateLimit.upsert({
+        where: { email },
+        create: { email, lastSentAt: new Date() },
+        update: { lastSentAt: new Date() },
+      });
       return NextResponse.json({ message: "Verification email sent." });
     }
     if (user.emailVerified) {
@@ -70,7 +65,11 @@ export async function POST(req: NextRequest) {
     }
 
     // Record send time only after a successful send
-    lastSentAt.set(email, Date.now());
+    await prisma.emailResendRateLimit.upsert({
+      where: { email },
+      create: { email, lastSentAt: new Date() },
+      update: { lastSentAt: new Date() },
+    });
 
     return NextResponse.json({ message: "Verification email sent." });
   } catch (err) {

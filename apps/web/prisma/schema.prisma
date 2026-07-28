@@ -113,6 +113,13 @@ model PasswordResetToken {
   @@map("password_reset_tokens")
 }
 
+model EmailResendRateLimit {
+  email      String   @id
+  lastSentAt DateTime
+
+  @@map("email_resend_rate_limits")
+}
+
 // ─── Partner ─────────────────────────────────────────────────────────────────
 
 model Partner {
