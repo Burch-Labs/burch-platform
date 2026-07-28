@@ -124,6 +124,7 @@ export async function updateEvent(
   revalidateTag("events-listing");
   revalidatePath("/");
   revalidatePath(`/events/${eventId}`);
+  revalidatePath(`/organizer/${partner.id}`);
   revalidatePath("/partner/events");
 
   redirect("/partner/events");
@@ -154,6 +155,8 @@ export async function deleteEvent(eventId: string): Promise<{ error?: string }> 
 
   revalidateTag("events-listing");
   revalidatePath("/");
+  revalidatePath(`/events/${eventId}`);
+  revalidatePath(`/organizer/${partner.id}`);
   revalidatePath("/partner/events");
 
   return {};
