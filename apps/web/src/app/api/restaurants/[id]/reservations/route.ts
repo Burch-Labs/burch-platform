@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -63,29 +63,33 @@ export async function POST(
       },
     });
 
-    // Notify the partner — fire-and-forget so a mail failure never breaks the reservation
+    // Notify the partner — scheduled after response so mail latency never affects the guest
     const partnerUser = restaurant.partner?.user;
     if (partnerUser?.email) {
       const dateLabel = dateTime.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
       const timeLabel = dateTime.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
-      sendPartnerBookingNotification({
-        partnerEmail: partnerUser.email,
-        partnerName: partnerUser.name ?? "Partner",
-        guestName: body.name,
-        propertyName: restaurant.name,
-        propertyType: "restaurant",
-        bookingDetail: `${body.partySize} guest${body.partySize !== 1 ? "s" : ""} · ${dateLabel} at ${timeLabel}`,
-      }).catch((err) => console.error("[partner-notify] restaurant reservation email failed:", err));
+      after(() =>
+        sendPartnerBookingNotification({
+          partnerEmail: partnerUser.email,
+          partnerName: partnerUser.name ?? "Partner",
+          guestName: body.name,
+          propertyName: restaurant.name,
+          propertyType: "restaurant",
+          bookingDetail: `${body.partySize} guest${body.partySize !== 1 ? "s" : ""} · ${dateLabel} at ${timeLabel}`,
+        }).catch((err) => console.error("[partner-notify] restaurant reservation email failed:", err))
+      );
     }
 
-    // Confirm the guest — fire-and-forget so a mail failure never breaks the reservation
-    sendGuestReservationConfirmation({
-      guestEmail: body.email,
-      guestName: body.name,
-      restaurantName: restaurant.name,
-      dateTime,
-      partySize: body.partySize,
-    }).catch((err) => console.error("[guest-confirm] restaurant reservation email failed:", err));
+    // Confirm the guest — scheduled after response so mail latency never affects the guest
+    after(() =>
+      sendGuestReservationConfirmation({
+        guestEmail: body.email,
+        guestName: body.name,
+        restaurantName: restaurant.name,
+        dateTime,
+        partySize: body.partySize,
+      }).catch((err) => console.error("[guest-confirm] restaurant reservation email failed:", err))
+    );
 
     return NextResponse.json({ reservation, restaurantName: restaurant.name }, { status: 201 });
   } catch (err) {

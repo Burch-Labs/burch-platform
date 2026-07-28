@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -91,34 +91,38 @@ export async function POST(
       include: { room: true, hotel: true, user: { select: { name: true } } },
     });
 
-    // Notify the partner — fire-and-forget so a mail failure never breaks the booking
+    // Notify the partner — scheduled after response so mail latency never affects the guest
     const partnerUser = hotel.partner?.user;
     if (partnerUser?.email) {
       const checkInLabel = checkInDate.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
       const checkOutLabel = checkOutDate.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-      sendPartnerBookingNotification({
-        partnerEmail: partnerUser.email,
-        partnerName: partnerUser.name ?? "Partner",
-        guestName: session.user.name ?? session.user.email ?? "A guest",
-        propertyName: hotel.name,
-        propertyType: "hotel",
-        bookingDetail: `${nights} night${nights !== 1 ? "s" : ""} · ${checkInLabel} – ${checkOutLabel} · ${body.guests} guest${body.guests > 1 ? "s" : ""}`,
-      }).catch((err) => console.error("[partner-notify] hotel booking email failed:", err));
+      after(() =>
+        sendPartnerBookingNotification({
+          partnerEmail: partnerUser.email,
+          partnerName: partnerUser.name ?? "Partner",
+          guestName: session.user.name ?? session.user.email ?? "A guest",
+          propertyName: hotel.name,
+          propertyType: "hotel",
+          bookingDetail: `${nights} night${nights !== 1 ? "s" : ""} · ${checkInLabel} – ${checkOutLabel} · ${body.guests} guest${body.guests > 1 ? "s" : ""}`,
+        }).catch((err) => console.error("[partner-notify] hotel booking email failed:", err))
+      );
     }
 
-    // Confirm the guest — fire-and-forget so a mail failure never breaks the booking
+    // Confirm the guest — scheduled after response so mail latency never affects the guest
     const guestEmail = session.user.email;
     if (guestEmail) {
-      sendGuestHotelConfirmation({
-        guestEmail,
-        guestName: session.user.name ?? guestEmail,
-        propertyName: hotel.name,
-        checkIn: checkInDate,
-        checkOut: checkOutDate,
-        nights,
-        totalAmount,
-        currency: room.currency,
-      }).catch((err) => console.error("[guest-confirm] hotel booking email failed:", err));
+      after(() =>
+        sendGuestHotelConfirmation({
+          guestEmail,
+          guestName: session.user.name ?? guestEmail,
+          propertyName: hotel.name,
+          checkIn: checkInDate,
+          checkOut: checkOutDate,
+          nights,
+          totalAmount,
+          currency: room.currency,
+        }).catch((err) => console.error("[guest-confirm] hotel booking email failed:", err))
+      );
     }
 
     return NextResponse.json({ booking, nights }, { status: 201 });
