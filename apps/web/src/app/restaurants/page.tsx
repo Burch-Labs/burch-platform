@@ -12,7 +12,7 @@ interface PageProps {
   searchParams: Promise<{ q?: string; city?: string; cuisine?: string; page?: string }>;
 }
 
-async function RestaurantsContent({ searchParams }: PageProps) {
+export async function RestaurantsContent({ searchParams }: PageProps) {
   const sp = await searchParams;
   const q = sp.q?.trim() ?? "";
   const city = sp.city?.trim() ?? "";

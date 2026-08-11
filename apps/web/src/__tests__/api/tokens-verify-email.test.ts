@@ -1,5 +1,6 @@
 /**
- * Unit tests for validateEmailVerificationToken (apps/web/src/lib/tokens.ts)
+ * Unit tests for validateEmailVerificationToken and
+ * pruneExpiredEmailVerificationTokens (apps/web/src/lib/tokens.ts)
  *
  * These tests exercise the token-consumption logic directly — the Prisma
  * mock is configured to simulate the database's atomic DELETE behaviour,
@@ -12,13 +13,28 @@
  *  - Already-consumed token: DELETE throws P2025 immediately → null
  *  - Concurrent replay: two concurrent calls with the same token — only the
  *    first DELETE wins; the second sees P2025 (record gone) and returns null
+ *  - Prune: pruneExpiredEmailVerificationTokens issues a deleteMany with
+ *    expires.lt <= the current time
  */
+
+export {};
 
 // ── Prisma mock ───────────────────────────────────────────────────────────────
 
 const mockDelete = jest.fn();
-
 const mockDeleteMany = jest.fn();
+
+jest.mock("@/lib/prisma", () => ({
+  prisma: {
+    emailVerificationToken: {
+      delete:     (...args: unknown[]) => mockDelete(...args),
+      deleteMany: (...args: unknown[]) => mockDeleteMany(...args),
+    },
+  },
+}));
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
 /** Simulate the Prisma "Record not found" error (code P2025) */
 function p2025(): Error {
   const err = new Error("Record to delete does not exist.") as Error & {
@@ -52,7 +68,31 @@ describe("validateEmailVerificationToken", () => {
     });
 
     const { validateEmailVerificationToken } = await import("@/lib/tokens");
-    const result = await validateEmailVerificationToken("used-token");
+    const result = await validateEmailVerificationToken("good-token");
+
+    expect(result).toEqual({ email: "alice@example.com", expired: false });
+    expect(mockDelete).toHaveBeenCalledTimes(1);
+  });
+
+  it("returns { expired: true } when the token exists but has passed its window", async () => {
+    mockDelete.mockResolvedValueOnce({
+      token: "old-token",
+      email: "bob@example.com",
+      expires: pastDate(),
+    });
+
+    const { validateEmailVerificationToken } = await import("@/lib/tokens");
+    const result = await validateEmailVerificationToken("old-token");
+
+    expect(result).toEqual({ expired: true });
+    expect(mockDelete).toHaveBeenCalledTimes(1);
+  });
+
+  it("returns null when the token was already consumed (P2025)", async () => {
+    mockDelete.mockRejectedValueOnce(p2025());
+
+    const { validateEmailVerificationToken } = await import("@/lib/tokens");
+    const result = await validateEmailVerificationToken("gone-token");
 
     expect(result).toBeNull();
     expect(mockDelete).toHaveBeenCalledTimes(1);
@@ -89,20 +129,38 @@ describe("validateEmailVerificationToken", () => {
     // Exactly one call must return null (token already gone).
     const nulls = results.filter((r) => r === null);
 
-    const { pruneExpiredEmailVerificationTokens } = await import("@/lib/tokens");
+    expect(successes).toHaveLength(1);
+    expect(nulls).toHaveLength(1);
+    expect(successes[0]).toEqual({ email: "carol@example.com", expired: false });
 
-    const { pruneExpiredEmailVerificationTokens } = await import("@/lib/tokens");
-    await expect(pruneExpiredEmailVerificationTokens()).resolves.not.toThrow();
-
-    expect(consoleSpy).toHaveBeenCalled();
-    consoleSpy.mockRestore();
+    // The database DELETE was attempted exactly twice — once per concurrent caller.
+    expect(mockDelete).toHaveBeenCalledTimes(2);
+    expect(mockDelete).toHaveBeenNthCalledWith(1, {
+      where: { token: "replay-token" },
+    });
+    expect(mockDelete).toHaveBeenNthCalledWith(2, {
+      where: { token: "replay-token" },
+    });
   });
 });
 
-    const arg = mockDeleteMany.mock.calls[0][0];
+describe("pruneExpiredEmailVerificationTokens", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.resetModules();
+  });
+
+  it("calls deleteMany with expires.lt set to a time <= now", async () => {
+    mockDeleteMany.mockResolvedValueOnce({ count: 3 });
 
     const before = new Date();
+    const { pruneExpiredEmailVerificationTokens } = await import("@/lib/tokens");
+    await expect(pruneExpiredEmailVerificationTokens()).resolves.not.toThrow();
 
+    expect(mockDeleteMany).toHaveBeenCalledTimes(1);
+    const arg = mockDeleteMany.mock.calls[0][0];
     const lt = arg.where.expires.lt as Date;
-
-    const consoleSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+    expect(lt).toBeInstanceOf(Date);
+    expect(lt.getTime()).toBeLessThanOrEqual(before.getTime() + 100);
+  });
+});

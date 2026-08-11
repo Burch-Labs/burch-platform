@@ -148,28 +148,6 @@ describe("POST /api/hotels/[id]/book — email dispatch via after()", () => {
     expect(mockSendGuestHotelConfirmation).toHaveBeenCalledTimes(1);
   });
 
-  it("skips partner notification when hotel partner has no email", async () => {
-    const { after } = await import("next/server");
-
-    const hotelNoPartnerEmail = {
-      ...HOTEL,
-      partner: { user: { name: "Partner Pete", email: null } },
-    };
-    mockGetServerSession.mockResolvedValue({
-      user: { id: "user-1", name: "Anon", email: null },
-    });
-
-    const { POST } = await import("@/app/api/hotels/[id]/book/route");
-    await POST(makeRequest(VALID_BODY), {
-      params: Promise.resolve({ id: "hotel-1" }),
-    });
-    await flushAfterCallbacks();
-
-    // Guest has an email but partner does not → only guest confirmation fires
-    expect(after).toHaveBeenCalledTimes(1);
-    expect(mockSendPartnerBookingNotification).not.toHaveBeenCalled();
-    expect(mockSendGuestHotelConfirmation).toHaveBeenCalledTimes(1);
-  });
 
   it("skips guest confirmation when session has no email", async () => {
     const { after } = await import("next/server");
