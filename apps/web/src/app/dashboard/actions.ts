@@ -120,19 +120,39 @@ export async function partnerCancelReservation(reservationId: string): Promise<{
 
 // ─── Customer actions ─────────────────────────────────────────────────────────
 
+/** No cancellations within this many hours of check-in / event start. */
+const CANCELLATION_CUTOFF_HOURS = 24;
+
 export async function cancelBooking(bookingId: string): Promise<{ error?: string }> {
   const session = await getServerSession(authOptions);
   if (!session) return { error: "Not authenticated" };
 
   const booking = await prisma.booking.findUnique({
     where: { id: bookingId },
-    select: { id: true, userId: true, status: true },
+    select: {
+      id: true,
+      userId: true,
+      status: true,
+      checkIn: true,
+      event: { select: { startDate: true } },
+    },
   });
 
   if (!booking) return { error: "Booking not found" };
   if (booking.userId !== session.user.id) return { error: "Forbidden" };
   if (booking.status !== "PENDING" && booking.status !== "CONFIRMED") {
     return { error: "Only pending or confirmed bookings can be cancelled" };
+  }
+
+  // Enforce the cancellation window against check-in (hotels) or event start.
+  const referenceDate = booking.checkIn ?? booking.event?.startDate ?? null;
+  if (referenceDate) {
+    const cutoff = new Date(referenceDate.getTime() - CANCELLATION_CUTOFF_HOURS * 60 * 60 * 1000);
+    if (new Date() >= cutoff) {
+      return {
+        error: `Bookings can no longer be cancelled within ${CANCELLATION_CUTOFF_HOURS} hours of check-in. Please contact the partner directly.`,
+      };
+    }
   }
 
   await prisma.booking.update({
