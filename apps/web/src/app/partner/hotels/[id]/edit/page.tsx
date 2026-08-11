@@ -46,6 +46,20 @@ export default async function EditHotelPage({ params }: Props) {
           <h1 className="text-2xl font-bold text-gray-900 truncate">{hotel.name}</h1>
         </div>
 
+        {/* Manage rooms shortcut */}
+        <div className="mb-6 flex items-center justify-between bg-white rounded-2xl border border-gray-200 px-6 py-4">
+          <div>
+            <p className="text-sm font-semibold text-gray-900">Rooms</p>
+            <p className="text-xs text-gray-500 mt-0.5">Add, edit, or remove room types and pricing</p>
+          </div>
+          <Link
+            href={`/partner/hotels/${hotel.id}/rooms`}
+            className="text-sm text-orange-600 hover:text-orange-700 font-medium px-4 py-2 rounded-xl hover:bg-orange-50 transition"
+          >
+            Manage rooms →
+          </Link>
+        </div>
+
         <div className="bg-white rounded-2xl border border-gray-200 p-8">
           <HotelForm
             action={boundUpdate}
