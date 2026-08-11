@@ -32,6 +32,10 @@ export function EventCard({ event, priority = false }: EventCardProps) {
             alt={event.title}
             fill
             priority={priority}
+            // Proxy-served images (/api/images/…) are already optimised and
+            // cached by the route handler; skip Next.js image optimisation so
+            // the optimizer doesn't try to re-fetch them via localhost.
+            unoptimized={event.imageUrl.startsWith("/api/images/")}
             className="object-cover group-hover:scale-105 transition-transform duration-300"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />

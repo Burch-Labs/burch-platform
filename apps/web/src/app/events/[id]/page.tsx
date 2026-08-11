@@ -101,6 +101,10 @@ export default async function EventDetailPage({ params }: PageProps) {
             alt={event.title}
             fill
             priority
+            // Proxy-served images (/api/images/…) are already optimised and
+            // cached by the route handler; skip Next.js image optimisation so
+            // the optimizer doesn't try to re-fetch them via localhost.
+            unoptimized={event.imageUrl.startsWith("/api/images/")}
             className="object-cover"
           />
         ) : (
