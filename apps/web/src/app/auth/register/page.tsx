@@ -56,7 +56,7 @@ export default function RegisterPage() {
       return;
     }
 
-    if (data.autoVerified) {
+    if (data.autoVerified && !data.emailFailed) {
       router.push("/auth/login?registered=1");
     } else {
       if (data.emailFailed) setEmailFailed(true);

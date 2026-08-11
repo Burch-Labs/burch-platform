@@ -108,6 +108,25 @@ describe("RegisterPage — pending-verification screen", () => {
     expect(screen.getByRole("button", { name: /resend verification email/i })).toBeEnabled();
   });
 
+  it("shows the error banner — not a silent redirect — when autoVerified: true and emailFailed: true", async () => {
+    const push = jest.fn();
+    jest.spyOn(require("next/navigation"), "useRouter").mockReturnValue({ push });
+
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      status: 201,
+      json: async () => ({ autoVerified: true, emailFailed: true }),
+    }) as jest.Mock;
+
+    await renderAndSubmit();
+
+    // Must stay on the pending screen and show the delivery-issue banner
+    expect(screen.getByRole("heading", { name: /delivery issue/i })).toBeInTheDocument();
+    expect(screen.getByText(/verification email failed to send/i)).toBeInTheDocument();
+    // Must NOT silently redirect to login
+    expect(push).not.toHaveBeenCalled();
+  });
+
   it("shows the normal inbox screen when email was sent successfully", async () => {
     global.fetch = jest.fn().mockResolvedValue({
       ok: true,
