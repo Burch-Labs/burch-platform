@@ -80,10 +80,14 @@ export default async function RestaurantDetailPage({ params }: PageProps) {
           <span className="text-gray-600 truncate">{restaurant.name}</span>
         </div>
 
-        {/* Gallery */}
-        {allImages.length > 0 && (
+        {/* Gallery / placeholder */}
+        {allImages.length > 0 ? (
           <div className="mb-8">
             <HotelGallery images={allImages} name={restaurant.name} />
+          </div>
+        ) : (
+          <div className="mb-8 h-72 rounded-2xl overflow-hidden bg-gradient-to-br from-rose-400 to-orange-500 flex items-center justify-center">
+            <span className="text-8xl opacity-30">🍽️</span>
           </div>
         )}
 
