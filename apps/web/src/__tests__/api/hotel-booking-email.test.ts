@@ -9,8 +9,6 @@
  *  - Email failures are caught and do not surface to the guest (no 500)
  */
 
-export {};
-
 // ── Mocks ──────────────────────────────────────────────────────────────────
 
 /** Collect every callback registered with after() so tests can flush them */

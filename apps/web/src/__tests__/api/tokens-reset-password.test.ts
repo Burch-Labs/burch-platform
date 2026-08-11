@@ -14,8 +14,6 @@
  *    first DELETE wins; the second sees P2025 (record gone) and returns null
  */
 
-export {};
-
 // ── Prisma mock ───────────────────────────────────────────────────────────────
 
 const mockDelete = jest.fn();

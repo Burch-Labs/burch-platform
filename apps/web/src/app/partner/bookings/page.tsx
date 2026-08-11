@@ -184,7 +184,7 @@ export default async function PartnerBookingsPage({ searchParams }: PageProps) {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            {!noProperties && selectedRestaurantIds.length > 0 && totalCount > 0 && (
+            {!noProperties && selectedRestaurantIds.length > 0 && reservations.length > 0 && (
               <a
                 href={`/api/partner/bookings/export?${new URLSearchParams({
                   type: "reservation",

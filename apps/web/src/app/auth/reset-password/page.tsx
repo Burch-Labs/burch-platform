@@ -14,6 +14,7 @@ function ResetPasswordForm() {
   const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [linkError, setLinkError] = useState<"used" | "expired" | null>(null);
   const [done, setDone] = useState(false);
 
   if (!token) {
@@ -49,11 +50,64 @@ function ResetPasswordForm() {
     setLoading(false);
 
     if (!res.ok) {
-      setError(data.error ?? "Something went wrong.");
+      const msg: string = data.error ?? "Something went wrong.";
+      if (msg.includes("already been used")) {
+        setLinkError("used");
+      } else if (msg.includes("expired")) {
+        setLinkError("expired");
+      } else {
+        setError(msg);
+      }
     } else {
       setDone(true);
       setTimeout(() => router.push("/auth/login"), 2000);
     }
+  }
+
+  if (linkError === "used") {
+    return (
+      <AuthCard
+        title="Link already used"
+        subtitle="This password reset link has already been used."
+      >
+        <div className="rounded-xl bg-amber-50 border border-amber-200 p-5 text-center mb-5">
+          <p className="text-3xl mb-2">🔒</p>
+          <p className="text-sm text-gray-600">
+            Each reset link can only be used once. Please request a new one to
+            change your password.
+          </p>
+        </div>
+        <Link
+          href="/auth/forgot-password"
+          className="block text-center text-sm text-orange-600 font-medium hover:underline"
+        >
+          Request a new password reset
+        </Link>
+      </AuthCard>
+    );
+  }
+
+  if (linkError === "expired") {
+    return (
+      <AuthCard
+        title="Link expired"
+        subtitle="This password reset link has expired."
+      >
+        <div className="rounded-xl bg-amber-50 border border-amber-200 p-5 text-center mb-5">
+          <p className="text-3xl mb-2">⏱️</p>
+          <p className="text-sm text-gray-600">
+            Reset links expire after a short time for your security. Request a
+            new one to continue.
+          </p>
+        </div>
+        <Link
+          href="/auth/forgot-password"
+          className="block text-center text-sm text-orange-600 font-medium hover:underline"
+        >
+          Request a new reset link
+        </Link>
+      </AuthCard>
+    );
   }
 
   if (done) {

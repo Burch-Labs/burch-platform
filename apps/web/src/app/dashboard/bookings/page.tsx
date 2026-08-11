@@ -67,9 +67,24 @@ export default async function BookingHistoryPage({
 
   const userId = session.user.id;
 
+  // Count first so we can compute the safe page before fetching rows.
+  const [totalBookings, totalReservations] = await Promise.all([
+    prisma.booking.count({ where: { userId } }),
+    prisma.tableReservation.count({ where: { userId } }),
+  ]);
+
+  const total = totalBookings + totalReservations;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
+
+  // To correctly assemble page N of interleaved rows we need at most
+  // N * PAGE_SIZE records from each table — far fewer than loading everything.
+  const limit = safePage * PAGE_SIZE;
+
   const [bookings, reservations] = await Promise.all([
     prisma.booking.findMany({
       where: { userId },
+      take: limit,
       include: {
         hotel: { select: { name: true, city: true, imageUrl: true } },
         room:  { select: { name: true } },
@@ -80,6 +95,7 @@ export default async function BookingHistoryPage({
     }),
     prisma.tableReservation.findMany({
       where: { userId },
+      take: limit,
       include: {
         restaurant: { select: { name: true, city: true, imageUrl: true } },
       },
@@ -156,9 +172,6 @@ export default async function BookingHistoryPage({
     })),
   ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
-  const total = rows.length;
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-  const safePage = Math.min(page, totalPages);
   const pageRows = rows.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
   return (
