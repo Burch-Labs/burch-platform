@@ -12,11 +12,14 @@
 // ── Mocks ─────────────────────────────────────────────────────────────────────
 
 const mockValidateEmailVerificationToken = jest.fn();
+const mockPruneExpiredEmailVerificationTokens = jest.fn();
 const mockUserUpdate = jest.fn();
 
 jest.mock("@/lib/tokens", () => ({
   validateEmailVerificationToken: (...args: unknown[]) =>
     mockValidateEmailVerificationToken(...args),
+  pruneExpiredEmailVerificationTokens: (...args: unknown[]) =>
+    mockPruneExpiredEmailVerificationTokens(...args),
 }));
 
 jest.mock("@/lib/prisma", () => ({
@@ -46,6 +49,7 @@ describe("GET /api/auth/verify-email", () => {
     jest.clearAllMocks();
     jest.resetModules();
     mockUserUpdate.mockResolvedValue({});
+    mockPruneExpiredEmailVerificationTokens.mockReturnValue(Promise.resolve());
   });
 
   it("returns 400 when no token is provided in the request", async () => {
@@ -57,6 +61,53 @@ describe("GET /api/auth/verify-email", () => {
     expect(body).toEqual({ error: "Missing token." });
     expect(mockValidateEmailVerificationToken).not.toHaveBeenCalled();
     expect(mockUserUpdate).not.toHaveBeenCalled();
+    // Cleanup is not triggered for malformed requests
+    expect(mockPruneExpiredEmailVerificationTokens).not.toHaveBeenCalled();
+  });
+
+  it("prunes expired tokens without blocking token validation", async () => {
+    // Cleanup promise never resolves — validation must not wait on it.
+    mockPruneExpiredEmailVerificationTokens.mockReturnValue(new Promise(() => {}));
+    mockValidateEmailVerificationToken.mockResolvedValue({
+      email: "alice@example.com",
+      expired: false,
+    });
+
+    const { GET } = await import("@/app/api/auth/verify-email/route");
+    const res = await GET(makeRequest("valid-token"));
+
+    expect(mockPruneExpiredEmailVerificationTokens).toHaveBeenCalledTimes(1);
+    expect(res.status).toBe(307);
+    expect(res.headers.get("location")).toContain("/auth/login?verified=1");
+
+    // Pruning must run AFTER validation consumed the token, so it can never
+    // delete the submitted token out from under the validator.
+    const validateOrder =
+      mockValidateEmailVerificationToken.mock.invocationCallOrder[0];
+    const pruneOrder =
+      mockPruneExpiredEmailVerificationTokens.mock.invocationCallOrder[0];
+    expect(pruneOrder).toBeGreaterThan(validateOrder);
+  });
+
+  it("an expired submitted token is still classified as expired when cleanup runs", async () => {
+    // Validation classifies the token as expired; pruning runs afterwards and
+    // must not change the outcome to "invalid".
+    mockValidateEmailVerificationToken.mockResolvedValue({ expired: true });
+    mockPruneExpiredEmailVerificationTokens.mockReturnValue(Promise.resolve());
+
+    const { GET } = await import("@/app/api/auth/verify-email/route");
+    const res = await GET(makeRequest("expired-token"));
+
+    expect(res.status).toBe(307);
+    expect(res.headers.get("location")).toContain(
+      "/auth/verify-email?error=expired"
+    );
+    expect(mockPruneExpiredEmailVerificationTokens).toHaveBeenCalledTimes(1);
+    const validateOrder =
+      mockValidateEmailVerificationToken.mock.invocationCallOrder[0];
+    const pruneOrder =
+      mockPruneExpiredEmailVerificationTokens.mock.invocationCallOrder[0];
+    expect(pruneOrder).toBeGreaterThan(validateOrder);
   });
 
   it("redirects to login?verified=1 for a valid token", async () => {

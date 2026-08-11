@@ -3,7 +3,23 @@ import { prisma } from "./prisma";
 
 // ─── Email verification tokens ────────────────────────────────────────────────
 
+/**
+ * Prunes expired email-verification tokens so the table does not grow
+ * unboundedly. Fire-and-forget safe — failures are logged, never thrown.
+ */
+export function pruneExpiredEmailVerificationTokens(): Promise<unknown> {
+  return prisma.emailVerificationToken
+    .deleteMany({ where: { expires: { lt: new Date() } } })
+    .catch((err: unknown) =>
+      console.error("[tokens] expired email-verification token cleanup failed:", err)
+    );
+}
+
 export async function createEmailVerificationToken(email: string): Promise<string> {
+  // Opportunistically prune expired tokens (all emails) so stale rows never
+  // build up. Fire-and-forget — no need to await before continuing.
+  pruneExpiredEmailVerificationTokens();
+
   // Delete any existing tokens for this email
   await prisma.emailVerificationToken.deleteMany({ where: { email } });
 

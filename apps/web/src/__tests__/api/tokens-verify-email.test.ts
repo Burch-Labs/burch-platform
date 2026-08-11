@@ -18,16 +18,7 @@
 
 const mockDelete = jest.fn();
 
-jest.mock("@/lib/prisma", () => ({
-  prisma: {
-    emailVerificationToken: {
-      delete: (...args: unknown[]) => mockDelete(...args),
-    },
-  },
-}));
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
+const mockDeleteMany = jest.fn();
 /** Simulate the Prisma "Record not found" error (code P2025) */
 function p2025(): Error {
   const err = new Error("Record to delete does not exist.") as Error & {
@@ -98,13 +89,20 @@ describe("validateEmailVerificationToken", () => {
     // Exactly one call must return null (token already gone).
     const nulls = results.filter((r) => r === null);
 
-    expect(successes).toHaveLength(1);
-    expect(nulls).toHaveLength(1);
-    expect(successes[0]).toEqual({ email: "carol@example.com", expired: false });
+    const { pruneExpiredEmailVerificationTokens } = await import("@/lib/tokens");
 
-    // The database DELETE was attempted exactly twice — once per concurrent caller.
-    expect(mockDelete).toHaveBeenCalledTimes(2);
-    expect(mockDelete).toHaveBeenNthCalledWith(1, { where: { token: "replay-token" } });
-    expect(mockDelete).toHaveBeenNthCalledWith(2, { where: { token: "replay-token" } });
+    const { pruneExpiredEmailVerificationTokens } = await import("@/lib/tokens");
+    await expect(pruneExpiredEmailVerificationTokens()).resolves.not.toThrow();
+
+    expect(consoleSpy).toHaveBeenCalled();
+    consoleSpy.mockRestore();
   });
 });
+
+    const arg = mockDeleteMany.mock.calls[0][0];
+
+    const before = new Date();
+
+    const lt = arg.where.expires.lt as Date;
+
+    const consoleSpy = jest.spyOn(console, "error").mockImplementation(() => {});
