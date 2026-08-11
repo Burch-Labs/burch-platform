@@ -6,6 +6,7 @@ import { HotelGrid } from "@/components/hotels/HotelGrid";
 import { HotelFilterSidebar } from "@/components/hotels/HotelFilterSidebar";
 import { HotelSortBar } from "@/components/hotels/HotelSortBar";
 import { SearchBar } from "@/components/events/SearchBar";
+import { ShareLinkButton } from "@/components/events/ShareLinkButton";
 import { prisma } from "@/lib/prisma";
 
 const PAGE_SIZE = 12;
@@ -172,10 +173,15 @@ async function HotelsContent({ searchParams }: PageProps) {
         {/* Active-filter chips */}
         <ActiveFilterChips city={city} stars={stars} amenities={amenities} baseHref={buildHref} />
 
-        {/* Sort bar */}
-        <Suspense fallback={<div className="h-9 bg-gray-100 rounded-lg animate-pulse mb-4" />}>
-          <HotelSortBar total={total} hasFilters={hasFilters} />
-        </Suspense>
+        {/* Sort bar + share */}
+        <div className="flex items-center justify-between gap-4 mb-4">
+          <Suspense fallback={<div className="h-9 bg-gray-100 rounded-lg animate-pulse flex-1" />}>
+            <HotelSortBar total={total} hasFilters={hasFilters} />
+          </Suspense>
+          <Suspense>
+            <ShareLinkButton filterParams={["q", "city", "stars", "amenities"]} />
+          </Suspense>
+        </div>
 
         {/* Grid */}
         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}

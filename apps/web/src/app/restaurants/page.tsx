@@ -5,6 +5,7 @@ import { NavBar } from "@/components/layout/NavBar";
 import { RestaurantGrid } from "@/components/restaurants/RestaurantGrid";
 import { RestaurantFilterSidebar } from "@/components/restaurants/RestaurantFilterSidebar";
 import { SearchBar } from "@/components/events/SearchBar";
+import { ShareLinkButton } from "@/components/events/ShareLinkButton";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { prisma } from "@/lib/prisma";
 
@@ -93,7 +94,12 @@ async function RestaurantsContent({ searchParams }: PageProps) {
           <p className="text-sm text-gray-500">
             {total === 0 ? "No restaurants found" : `${total} restaurant${total !== 1 ? "s" : ""}${hasFilters ? " matching your filters" : ""}`}
           </p>
-          {totalPages > 1 && <p className="text-sm text-gray-400">Page {page} of {totalPages}</p>}
+          <div className="flex items-center gap-4">
+            <Suspense>
+              <ShareLinkButton filterParams={["q", "city", "cuisine"]} />
+            </Suspense>
+            {totalPages > 1 && <p className="text-sm text-gray-400">Page {page} of {totalPages}</p>}
+          </div>
         </div>
 
         {total === 0 && !hasFilters ? (

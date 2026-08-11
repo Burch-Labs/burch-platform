@@ -3,17 +3,19 @@
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 
-export function ShareLinkButton() {
+const DEFAULT_FILTER_PARAMS = ["q", "category", "city", "dateFrom", "dateTo"];
+
+interface ShareLinkButtonProps {
+  /** Names of query params that count as "active filters". Defaults to event filter params. */
+  filterParams?: string[];
+}
+
+export function ShareLinkButton({ filterParams = DEFAULT_FILTER_PARAMS }: ShareLinkButtonProps) {
   const params = useSearchParams();
   const [copied, setCopied] = useState(false);
 
   // Only show when at least one filter is active
-  const hasFilters =
-    params.get("q") ||
-    params.get("category") ||
-    params.get("city") ||
-    params.get("dateFrom") ||
-    params.get("dateTo");
+  const hasFilters = filterParams.some((key) => params.get(key));
 
   if (!hasFilters) return null;
 
