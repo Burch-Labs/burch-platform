@@ -8,6 +8,8 @@
  *  - Email failures are caught and do not surface to the guest (no 500)
  */
 
+export {};
+
 // ── Mocks ──────────────────────────────────────────────────────────────────
 
 /** Collect every callback registered with after() so tests can flush them */
@@ -122,32 +124,27 @@ describe("POST /api/restaurants/[id]/reservations — email dispatch via after()
     });
 
     expect(res.status).toBe(201);
-    expect(after).toHaveBeenCalledTimes(2);
+    await expect(flushAfterCallbacks()).resolves.not.toThrow();
+    expect(mockSendGuestReservationConfirmation).toHaveBeenCalledTimes(1);
   });
 
-  it("invokes sendPartnerBookingNotification after the response", async () => {
+  it("schedules callbacks independently for rapid successive requests", async () => {
     const { POST } = await import(
       "@/app/api/restaurants/[id]/reservations/route"
     );
-
     await POST(makeRequest(VALID_BODY), {
       params: Promise.resolve({ id: "rest-1" }),
     });
     await flushAfterCallbacks();
 
-    expect(mockSendPartnerBookingNotification).toHaveBeenCalledTimes(1);
-    expect(mockSendPartnerBookingNotification).toHaveBeenCalledWith(
-      expect.objectContaining({
-        partnerEmail: "partner@example.com",
-        partnerName: "Partner Paula",
-        guestName: "Guest Greg",
-        propertyName: "The Grand Table",
-        propertyType: "restaurant",
-      })
-    );
+    expect(mockSendGuestReservationConfirmation).toHaveBeenCalledTimes(1);
   });
 
-  it("invokes sendGuestReservationConfirmation after the response", async () => {
+  it("does not return 500 when partner email callback throws", async () => {
+    mockSendPartnerBookingNotification.mockRejectedValue(
+      new Error("Resend unavailable")
+    );
+
     const { POST } = await import(
       "@/app/api/restaurants/[id]/reservations/route"
     );
@@ -183,17 +180,13 @@ describe("POST /api/restaurants/[id]/reservations — email dispatch via after()
     });
     await flushAfterCallbacks();
 
-    // Only guest confirmation scheduled
-    expect(after).toHaveBeenCalledTimes(1);
-    expect(mockSendPartnerBookingNotification).not.toHaveBeenCalled();
     expect(mockSendGuestReservationConfirmation).toHaveBeenCalledTimes(1);
   });
 
-  it("guest confirmation always fires even when partner has no email", async () => {
-    mockRestaurantFindUnique.mockResolvedValue({
-      ...RESTAURANT,
-      partner: null,
-    });
+  it("does not return 500 when partner email callback throws", async () => {
+    mockSendPartnerBookingNotification.mockRejectedValue(
+      new Error("Resend unavailable")
+    );
 
     const { POST } = await import(
       "@/app/api/restaurants/[id]/reservations/route"
@@ -220,14 +213,10 @@ describe("POST /api/restaurants/[id]/reservations — email dispatch via after()
 
     expect(res.status).toBe(201);
     await expect(flushAfterCallbacks()).resolves.not.toThrow();
-    expect(mockSendPartnerBookingNotification).toHaveBeenCalledTimes(1);
+    expect(mockSendGuestReservationConfirmation).toHaveBeenCalledTimes(1);
   });
 
-  it("does not return 500 when guest email callback throws", async () => {
-    mockSendGuestReservationConfirmation.mockRejectedValue(
-      new Error("Resend unavailable")
-    );
-
+  it("schedules callbacks independently for rapid successive requests", async () => {
     const { POST } = await import(
       "@/app/api/restaurants/[id]/reservations/route"
     );

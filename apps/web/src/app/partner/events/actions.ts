@@ -6,6 +6,51 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { EventCategory } from "@prisma/client";
 import { redirect } from "next/navigation";
+import { Client as ObjectStorageClient } from "@replit/object-storage";
+
+// ─── storage helpers ──────────────────────────────────────────────────────────
+
+/**
+ * Deletes an event image from Replit Object Storage.
+ *
+ * Only acts on URLs produced by our own upload route (/api/images/event-images/…).
+ * The key must match the exact format the upload route generates:
+ *   event-images/<digits>-<alphanumeric>.<ext>
+ * This prevents deletion of arbitrary storage keys even if a partner somehow
+ * stored a crafted URL in their event record.
+ *
+ * A failed cleanup is logged but never throws so callers are not blocked.
+ */
+async function deleteStorageImage(imageUrl: string | null | undefined) {
+  if (!imageUrl) return;
+
+  // Must be a relative URL served by our image proxy
+  const urlPrefix = "/api/images/";
+  if (!imageUrl.startsWith(urlPrefix)) return;
+
+  const objectKey = imageUrl.slice(urlPrefix.length);
+
+  // Enforce the event-images/ namespace used by the upload route
+  if (!objectKey.startsWith("event-images/")) return;
+
+  // Validate the key matches the exact pattern the upload route generates:
+  // event-images/<unix-ms>-<random-alphanum>.<jpg|jpeg|png|webp|gif>
+  const keyPattern = /^event-images\/\d+-[a-z0-9]+\.(jpg|jpeg|png|webp|gif)$/;
+  if (!keyPattern.test(objectKey)) {
+    console.warn("[deleteStorageImage] Skipping deletion — unexpected key format:", objectKey);
+    return;
+  }
+
+  try {
+    const client = new ObjectStorageClient();
+    const result = await client.delete(objectKey);
+    if (!result.ok) {
+      console.error("[deleteStorageImage] Storage delete failed for key:", objectKey, result.error);
+    }
+  } catch (err) {
+    console.error("[deleteStorageImage] Unexpected error deleting key:", objectKey, err);
+  }
+}
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 
@@ -93,10 +138,10 @@ export async function updateEvent(
     return { error: (e as Error).message };
   }
 
-  // Verify ownership
+  // Verify ownership and capture current imageUrl so we can clean it up if replaced
   const existing = await prisma.event.findFirst({
     where: { id: eventId, partnerId: partner.id },
-    select: { id: true, published: true },
+    select: { id: true, published: true, imageUrl: true },
   });
   if (!existing) return { error: "Event not found or access denied" };
 
@@ -118,6 +163,11 @@ export async function updateEvent(
   } catch (err) {
     console.error("[updateEvent]", err);
     return { error: "Failed to update event" };
+  }
+
+  // If the photo was replaced or removed, clean up the old file from object storage
+  if (existing.imageUrl && existing.imageUrl !== fields.imageUrl) {
+    await deleteStorageImage(existing.imageUrl);
   }
 
   // Bust the events listing cache whenever a published event changes (or is published now)
@@ -142,7 +192,7 @@ export async function deleteEvent(eventId: string): Promise<{ error?: string }> 
 
   const existing = await prisma.event.findFirst({
     where: { id: eventId, partnerId: partner.id },
-    select: { id: true },
+    select: { id: true, imageUrl: true },
   });
   if (!existing) return { error: "Event not found or access denied" };
 
@@ -152,6 +202,9 @@ export async function deleteEvent(eventId: string): Promise<{ error?: string }> 
     console.error("[deleteEvent]", err);
     return { error: "Failed to delete event" };
   }
+
+  // Remove the event's photo from object storage now that the record is gone
+  await deleteStorageImage(existing.imageUrl);
 
   revalidateTag("events-listing");
   revalidatePath("/");
