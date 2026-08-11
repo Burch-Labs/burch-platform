@@ -12,6 +12,17 @@ export async function POST(req: NextRequest) {
   try {
     const { email } = schema.parse(await req.json());
 
+    // Prune stale rate-limit rows (older than the cooldown window) so the
+    // table does not grow unboundedly. Fire-and-forget — we don't need to
+    // await the result before continuing.
+    prisma.emailResendRateLimit
+      .deleteMany({
+        where: { lastSentAt: { lt: new Date(Date.now() - RATE_LIMIT_MS) } },
+      })
+      .catch((err: unknown) =>
+        console.error("[resend-verification] rate-limit cleanup failed:", err)
+      );
+
     // Rate limit check — persisted in DB so it survives server restarts
     const rateLimit = await prisma.emailResendRateLimit.findUnique({
       where: { email },
