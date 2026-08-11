@@ -17,6 +17,7 @@ const mockUserUpdate = jest.fn();
 jest.mock("@/lib/prisma", () => ({
   prisma: {
     emailResendRateLimit: {
+      deleteMany: jest.fn().mockResolvedValue({ count: 0 }),
       findUnique: (...args: unknown[]) => mockRateLimitFindUnique(...args),
       upsert: (...args: unknown[]) => mockRateLimitUpsert(...args),
       deleteMany: jest.fn().mockResolvedValue({ count: 0 }),
@@ -146,3 +147,5 @@ describe("POST /api/auth/resend-verification", () => {
     expect(body.error).toMatch(/already verified/i);
   });
 });
+
+export {};

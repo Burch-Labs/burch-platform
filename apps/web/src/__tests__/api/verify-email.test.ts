@@ -2,9 +2,11 @@
  * Unit tests for GET /api/auth/verify-email
  *
  * Covers:
- *  - Concurrent replay: two requests with the same token — only the first succeeds
- *  - Expired token: redirects to /auth/verify-email?error=expired
+ *  - Missing token: returns 400 JSON error immediately
+ *  - Valid token: verifies the user (sets emailVerified) and redirects to login?verified=1
+ *  - Expired token: redirects to /auth/verify-email?error=expired, does NOT verify account
  *  - Already-consumed token: redirects to /auth/verify-email?error=invalid
+ *  - Concurrent replay: two requests with the same token — only the first succeeds
  */
 
 // ── Mocks ─────────────────────────────────────────────────────────────────────
@@ -44,6 +46,17 @@ describe("GET /api/auth/verify-email", () => {
     jest.clearAllMocks();
     jest.resetModules();
     mockUserUpdate.mockResolvedValue({});
+  });
+
+  it("returns 400 when no token is provided in the request", async () => {
+    const { GET } = await import("@/app/api/auth/verify-email/route");
+    const res = await GET(makeRequest(null));
+
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body).toEqual({ error: "Missing token." });
+    expect(mockValidateEmailVerificationToken).not.toHaveBeenCalled();
+    expect(mockUserUpdate).not.toHaveBeenCalled();
   });
 
   it("redirects to login?verified=1 for a valid token", async () => {
@@ -122,3 +135,5 @@ describe("GET /api/auth/verify-email", () => {
     expect(mockUserUpdate).toHaveBeenCalledTimes(1);
   });
 });
+
+export {};

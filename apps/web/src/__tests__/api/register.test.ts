@@ -147,3 +147,5 @@ describe("POST /api/auth/register", () => {
     expect(body.error).toMatch(/already exists/i);
   });
 });
+
+export {};
