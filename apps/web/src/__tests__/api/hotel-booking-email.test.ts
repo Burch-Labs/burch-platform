@@ -267,3 +267,5 @@ describe("POST /api/hotels/[id]/book — email dispatch via after()", () => {
     expect(mockSendGuestHotelConfirmation).toHaveBeenCalledTimes(2);
   });
 });
+
+export {};

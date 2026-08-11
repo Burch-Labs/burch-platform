@@ -237,7 +237,7 @@ export async function sendGuestHotelConfirmation(
   const amountLabel = new Intl.NumberFormat("en-US", { style: "currency", currency }).format(totalAmount);
 
   if (!HAS_RESEND) {
-    devLog(subject, `${BASE_URL}/bookings`);
+    devLog(subject, `${BASE_URL}/dashboard/bookings`);
     console.log(
       `  Guest: ${guestName} | Property: ${propertyName} | ${checkInLabel} – ${checkOutLabel} | ${nights} night${nights !== 1 ? "s" : ""} | ${amountLabel}`
     );
@@ -278,6 +278,12 @@ export async function sendGuestHotelConfirmation(
           <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${amountLabel}</td>
         </tr>
       </table>
+      ${primaryButton(`${BASE_URL}/dashboard/bookings`, "View booking")}
+      <p style="margin:0 0 8px;font-size:13px;color:#9ca3af;">
+        Need to cancel or make changes? You can manage or cancel this booking from
+        <a href="${BASE_URL}/dashboard/bookings" style="color:#e85d04;">your bookings page</a>
+        (cancellation may not be available close to check-in).
+      </p>
       <p style="margin:0 0 8px;font-size:13px;color:#9ca3af;">We look forward to hosting you. Have a wonderful stay!</p>
     `),
   });
@@ -302,7 +308,7 @@ export async function sendGuestReservationConfirmation(
   const timeLabel = dateTime.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
 
   if (!HAS_RESEND) {
-    devLog(subject, `${BASE_URL}/bookings`);
+    devLog(subject, `${BASE_URL}/dashboard/bookings`);
     console.log(
       `  Guest: ${guestName} | Restaurant: ${restaurantName} | ${dateLabel} at ${timeLabel} | ${partySize} guest${partySize !== 1 ? "s" : ""}`
     );
@@ -339,6 +345,11 @@ export async function sendGuestReservationConfirmation(
           <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${partySize} guest${partySize !== 1 ? "s" : ""}</td>
         </tr>
       </table>
+      ${primaryButton(`${BASE_URL}/dashboard/bookings`, "View reservation")}
+      <p style="margin:0 0 8px;font-size:13px;color:#9ca3af;">
+        Need to cancel or make changes? Manage this reservation from
+        <a href="${BASE_URL}/dashboard/bookings" style="color:#e85d04;">your bookings page</a>.
+      </p>
       <p style="margin:0 0 8px;font-size:13px;color:#9ca3af;">We look forward to seeing you. Enjoy your dining experience!</p>
     `),
   });
@@ -368,7 +379,7 @@ export async function sendGuestEventConfirmation(
   const amountLabel = new Intl.NumberFormat("en-US", { style: "currency", currency }).format(totalAmount);
 
   if (!HAS_RESEND) {
-    devLog(subject, `${BASE_URL}/bookings`);
+    devLog(subject, `${BASE_URL}/dashboard/bookings`);
     console.log(
       `  Guest: ${guestName} | Event: ${eventTitle} | ${dateLabel} at ${timeLabel} | ${quantity} ticket${quantity !== 1 ? "s" : ""} | ${amountLabel}`
     );

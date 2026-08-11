@@ -20,7 +20,6 @@ jest.mock("@/lib/prisma", () => ({
       deleteMany: jest.fn().mockResolvedValue({ count: 0 }),
       findUnique: (...args: unknown[]) => mockRateLimitFindUnique(...args),
       upsert: (...args: unknown[]) => mockRateLimitUpsert(...args),
-      deleteMany: jest.fn().mockResolvedValue({ count: 0 }),
     },
     user: {
       findUnique: (...args: unknown[]) => mockUserFindUnique(...args),

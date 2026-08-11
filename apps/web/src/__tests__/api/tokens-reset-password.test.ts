@@ -143,3 +143,5 @@ describe("validatePasswordResetToken", () => {
     });
   });
 });
+
+export {};

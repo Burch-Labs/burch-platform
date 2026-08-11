@@ -257,3 +257,5 @@ describe("POST /api/restaurants/[id]/reservations — email dispatch via after()
     expect(mockSendGuestReservationConfirmation).toHaveBeenCalledTimes(2);
   });
 });
+
+export {};
