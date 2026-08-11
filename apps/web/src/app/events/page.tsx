@@ -11,7 +11,6 @@ import { EventCategory } from "@prisma/client";
 import Link from "next/link";
 import { getEventsData, PAGE_SIZE } from "@/lib/events-data";
 
-export { getEventsData };
 
 interface PageProps {
   searchParams: Promise<{

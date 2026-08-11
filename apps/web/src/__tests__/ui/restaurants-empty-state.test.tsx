@@ -77,7 +77,7 @@ jest.mock("@/components/events/ShareLinkButton", () => ({
 // Static import must come after all jest.mock() calls so the mocks are in place
 // when Next.js page module-level code (unstable_cache) executes.
 // eslint-disable-next-line import/first
-import { RestaurantsContent } from "@/app/restaurants/page";
+import { RestaurantsContent } from "@/app/restaurants/RestaurantsContent";
 // eslint-disable-next-line import/first
 import { RestaurantGrid } from "@/components/restaurants/RestaurantGrid";
 
