@@ -60,8 +60,8 @@ jest.mock("@/lib/prisma", () => ({
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
-const mockGetServerSession = getServerSession as jest.Mock;
-const mockRedirect = redirect as jest.Mock;
+const mockGetServerSession = getServerSession as unknown as jest.Mock;
+const mockRedirect = redirect as unknown as jest.Mock;
 
 /** Build a minimal FormData for updateEvent. */
 function makeFormData(overrides: Record<string, string | boolean> = {}): FormData {
