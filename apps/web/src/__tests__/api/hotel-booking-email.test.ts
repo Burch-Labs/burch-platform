@@ -129,7 +129,7 @@ describe("POST /api/hotels/[id]/book — email dispatch via after()", () => {
     mockSendGuestHotelConfirmation.mockResolvedValue(undefined);
   });
 
-  it("returns 201 and schedules two after() callbacks on a valid booking", async () => {
+  it("returns 201 and schedules both partner and guest emails on a valid booking", async () => {
     const { after } = await import("next/server");
     const { POST } = await import("@/app/api/hotels/[id]/book/route");
 
@@ -138,44 +138,18 @@ describe("POST /api/hotels/[id]/book — email dispatch via after()", () => {
     });
 
     expect(res.status).toBe(201);
-    await expect(flushAfterCallbacks()).resolves.not.toThrow();
-    expect(mockSendGuestHotelConfirmation).toHaveBeenCalledTimes(1);
-  });
+    expect(after).toHaveBeenCalledTimes(2);
 
-  it("schedules callbacks independently for rapid successive requests", async () => {
-    const { POST } = await import("@/app/api/hotels/[id]/book/route");
-    await POST(makeRequest(VALID_BODY), {
-      params: Promise.resolve({ id: "hotel-1" }),
-    });
     await flushAfterCallbacks();
-
-    // Only partner notification scheduled
-    expect(after).toHaveBeenCalledTimes(1);
-    expect(mockSendGuestHotelConfirmation).not.toHaveBeenCalled();
     expect(mockSendPartnerBookingNotification).toHaveBeenCalledTimes(1);
-  });
-
-  it("does not return 500 when partner email callback throws", async () => {
-    mockSendPartnerBookingNotification.mockRejectedValue(
-      new Error("Resend unavailable")
-    );
-
-    const { POST } = await import("@/app/api/hotels/[id]/book/route");
-    await POST(makeRequest(VALID_BODY), {
-      params: Promise.resolve({ id: "hotel-1" }),
-    });
-    await flushAfterCallbacks();
-
-    // Only guest confirmation scheduled
-    expect(after).toHaveBeenCalledTimes(1);
-    expect(mockSendPartnerBookingNotification).not.toHaveBeenCalled();
     expect(mockSendGuestHotelConfirmation).toHaveBeenCalledTimes(1);
   });
 
-  it("skips guest confirmation when session has no email", async () => {
+  it("skips the partner notification when the partner has no email", async () => {
     const { after } = await import("next/server");
-    mockGetServerSession.mockResolvedValue({
-      user: { id: "user-1", name: "Anon", email: null },
+    mockHotelFindUnique.mockResolvedValue({
+      ...HOTEL,
+      partner: { user: { name: "Partner Pete", email: null } },
     });
 
     const { POST } = await import("@/app/api/hotels/[id]/book/route");
@@ -213,17 +187,6 @@ describe("POST /api/hotels/[id]/book — email dispatch via after()", () => {
       new Error("Resend unavailable")
     );
 
-    const { POST } = await import("@/app/api/hotels/[id]/book/route");
-    const res = await POST(makeRequest(VALID_BODY), {
-      params: Promise.resolve({ id: "hotel-1" }),
-    });
-
-    expect(res.status).toBe(201);
-    await expect(flushAfterCallbacks()).resolves.not.toThrow();
-    expect(mockSendGuestHotelConfirmation).toHaveBeenCalledTimes(1);
-  });
-
-  it("schedules callbacks independently for rapid successive requests", async () => {
     const { POST } = await import("@/app/api/hotels/[id]/book/route");
     const res = await POST(makeRequest(VALID_BODY), {
       params: Promise.resolve({ id: "hotel-1" }),
@@ -250,5 +213,3 @@ describe("POST /api/hotels/[id]/book — email dispatch via after()", () => {
     expect(mockSendGuestHotelConfirmation).toHaveBeenCalledTimes(2);
   });
 });
-
-export {};

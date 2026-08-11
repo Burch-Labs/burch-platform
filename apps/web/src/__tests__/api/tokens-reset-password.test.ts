@@ -7,10 +7,11 @@
  * different mock call patterns and break the concurrent-replay assertions.
  *
  * Covers:
- *  - Concurrent replay: two concurrent calls with the same token — only the
- *    first DELETE wins; the second sees P2025 (record gone) and returns null
+ *  - Valid token: DELETE returns the record with a future expiry
  *  - Expired token: DELETE returns the record but its expires date is in the past
  *  - Already-consumed token: DELETE throws P2025 immediately → null
+ *  - Concurrent replay: two concurrent calls with the same token — only the
+ *    first DELETE wins; the second sees P2025 (record gone) and returns null
  */
 
 export {};
@@ -62,56 +63,29 @@ describe("validatePasswordResetToken", () => {
     });
 
     const { validatePasswordResetToken } = await import("@/lib/tokens");
-    const result = await validatePasswordResetToken("used-token");
+    const result = await validatePasswordResetToken("good-token");
 
-    expect(result).toBeNull();
+    expect(result).toEqual({ email: "alice@example.com", expired: false });
     expect(mockDelete).toHaveBeenCalledTimes(1);
+    expect(mockDelete).toHaveBeenCalledWith({ where: { token: "good-token" } });
   });
 
-  it("concurrent replay: only one call succeeds; the second is rejected as null", async () => {
-    /**
-     * Simulate the database's atomic DELETE guarantee:
-     *  - The first concurrent DELETE removes the row and returns it.
-     *  - The second concurrent DELETE finds no row and throws P2025.
-     *
-     * This is the only outcome possible with an atomic DB-level delete. If
-     * the implementation were to regress to a find-then-delete approach the
-     * mock call count or argument patterns would change and the test would
-     * expose the regression via unexpected mock interactions.
-     */
-    mockDelete
-      .mockResolvedValueOnce({
-        token: "replay-token",
-        email: "carol@example.com",
-        expires: futureDate(),
-      })
-      .mockRejectedValueOnce(p2025());
+  it("returns { expired: true } when the token exists but has expired", async () => {
+    mockDelete.mockResolvedValueOnce({
+      token: "stale-token",
+      email: "bob@example.com",
+      expires: pastDate(),
+    });
 
     const { validatePasswordResetToken } = await import("@/lib/tokens");
-    const result = await validatePasswordResetToken("used-token");
+    const result = await validatePasswordResetToken("stale-token");
 
-    expect(result).toBeNull();
+    expect(result).toEqual({ expired: true });
     expect(mockDelete).toHaveBeenCalledTimes(1);
   });
 
-  it("concurrent replay: only one call succeeds; the second is rejected as null", async () => {
-    /**
-     * Simulate the database's atomic DELETE guarantee:
-     *  - The first concurrent DELETE removes the row and returns it.
-     *  - The second concurrent DELETE finds no row and throws P2025.
-     *
-     * This is the only outcome possible with an atomic DB-level delete. If
-     * the implementation were to regress to a find-then-delete approach the
-     * mock call count or argument patterns would change and the test would
-     * expose the regression via unexpected mock interactions.
-     */
-    mockDelete
-      .mockResolvedValueOnce({
-        token: "replay-token",
-        email: "carol@example.com",
-        expires: futureDate(),
-      })
-      .mockRejectedValueOnce(p2025());
+  it("returns null when the token was already consumed (DELETE throws P2025)", async () => {
+    mockDelete.mockRejectedValueOnce(p2025());
 
     const { validatePasswordResetToken } = await import("@/lib/tokens");
     const result = await validatePasswordResetToken("used-token");
@@ -170,5 +144,3 @@ describe("validatePasswordResetToken", () => {
     });
   });
 });
-
-export {};
