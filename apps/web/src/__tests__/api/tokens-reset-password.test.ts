@@ -1,27 +1,34 @@
 /**
- * Unit tests for validatePasswordResetToken (apps/web/src/lib/tokens.ts)
+ * Unit tests for the password-reset token helpers (apps/web/src/lib/tokens.ts)
  *
- * These tests exercise the token-consumption logic directly — the Prisma
- * mock is configured to simulate the database's atomic DELETE behaviour,
- * so a regression from atomic delete to find-then-delete would produce
- * different mock call patterns and break the concurrent-replay assertions.
+ * These tests exercise the token logic directly — the Prisma mock is
+ * configured to simulate the database's atomic DELETE behaviour, so a
+ * regression from atomic delete to find-then-delete would produce different
+ * mock call patterns and break the concurrent-replay assertions.
  *
  * Covers:
- *  - Valid token: returns { email, expired: false } and deletes the record
+ *  - Creation prunes expired tokens (any email) alongside the requester's old tokens
+ *  - Valid token: DELETE returns the record with a future expiry
  *  - Expired token: DELETE returns the record but its expires date is in the past
  *  - Already-consumed token: DELETE throws P2025 immediately → null
  *  - Concurrent replay: two concurrent calls with the same token — only the
  *    first DELETE wins; the second sees P2025 (record gone) and returns null
  */
 
+export {};
+
 // ── Prisma mock ───────────────────────────────────────────────────────────────
 
 const mockDelete = jest.fn();
+const mockDeleteMany = jest.fn();
+const mockCreate = jest.fn();
 
 jest.mock("@/lib/prisma", () => ({
   prisma: {
     passwordResetToken: {
       delete: (...args: unknown[]) => mockDelete(...args),
+      deleteMany: (...args: unknown[]) => mockDeleteMany(...args),
+      create: (...args: unknown[]) => mockCreate(...args),
     },
   },
 }));
@@ -47,6 +54,29 @@ function pastDate(msAgo = 60_000): Date {
 
 // ── Tests ─────────────────────────────────────────────────────────────────────
 
+describe("createPasswordResetToken", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.resetModules();
+  });
+
+  it("prunes expired tokens (any email) alongside the requester's old tokens, then creates the new token", async () => {
+    mockDeleteMany.mockResolvedValueOnce({ count: 3 });
+    mockCreate.mockResolvedValueOnce({});
+
+    const { createPasswordResetToken } = await import("@/lib/tokens");
+    await createPasswordResetToken("alice@example.com");
+
+    expect(mockDeleteMany).toHaveBeenCalledTimes(1);
+    const where = mockDeleteMany.mock.calls[0][0].where;
+    expect(where.OR).toEqual([
+      { email: "alice@example.com" },
+      { expires: { lt: expect.any(Date) } },
+    ]);
+    expect(mockCreate).toHaveBeenCalledTimes(1);
+  });
+});
+
 describe("validatePasswordResetToken", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -61,7 +91,31 @@ describe("validatePasswordResetToken", () => {
     });
 
     const { validatePasswordResetToken } = await import("@/lib/tokens");
-    const result = await validatePasswordResetToken("used-token");
+    const result = await validatePasswordResetToken("good-token");
+
+    expect(result).toEqual({ email: "alice@example.com", expired: false });
+    expect(mockDelete).toHaveBeenCalledTimes(1);
+  });
+
+  it("returns { expired: true } when the token exists but has passed its window", async () => {
+    mockDelete.mockResolvedValueOnce({
+      token: "old-token",
+      email: "bob@example.com",
+      expires: pastDate(),
+    });
+
+    const { validatePasswordResetToken } = await import("@/lib/tokens");
+    const result = await validatePasswordResetToken("old-token");
+
+    expect(result).toEqual({ expired: true });
+    expect(mockDelete).toHaveBeenCalledTimes(1);
+  });
+
+  it("returns null when the token was already consumed (P2025)", async () => {
+    mockDelete.mockRejectedValueOnce(p2025());
+
+    const { validatePasswordResetToken } = await import("@/lib/tokens");
+    const result = await validatePasswordResetToken("gone-token");
 
     expect(result).toBeNull();
     expect(mockDelete).toHaveBeenCalledTimes(1);
@@ -104,7 +158,11 @@ describe("validatePasswordResetToken", () => {
 
     // The database DELETE was attempted exactly twice — once per concurrent caller.
     expect(mockDelete).toHaveBeenCalledTimes(2);
-    expect(mockDelete).toHaveBeenNthCalledWith(1, { where: { token: "replay-token" } });
-    expect(mockDelete).toHaveBeenNthCalledWith(2, { where: { token: "replay-token" } });
+    expect(mockDelete).toHaveBeenNthCalledWith(1, {
+      where: { token: "replay-token" },
+    });
+    expect(mockDelete).toHaveBeenNthCalledWith(2, {
+      where: { token: "replay-token" },
+    });
   });
 });

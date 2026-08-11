@@ -66,7 +66,12 @@ export async function validateEmailVerificationToken(
 // ─── Password reset tokens ────────────────────────────────────────────────────
 
 export async function createPasswordResetToken(email: string): Promise<string> {
-  await prisma.passwordResetToken.deleteMany({ where: { email } });
+  // Delete any existing tokens for this email, and prune expired tokens for
+  // all emails so the table does not grow unboundedly (expired rows are only
+  // otherwise removed if the user clicks the stale link).
+  await prisma.passwordResetToken.deleteMany({
+    where: { OR: [{ email }, { expires: { lt: new Date() } }] },
+  });
 
   const token = randomBytes(32).toString("hex");
   const expires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
