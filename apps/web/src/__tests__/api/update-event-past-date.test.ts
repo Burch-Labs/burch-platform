@@ -122,7 +122,7 @@ describe("updateEvent — past-start-date guard", () => {
   it("rejects a published event update when startDate is in the past", async () => {
     const { updateEvent } = await import("@/app/partner/events/actions");
 
-    // startDate defaults to yesterday inside makeFormData; published: true triggers the guard
+    // startDate defaults to yesterday inside makeFormData; published = true triggers the guard
     const fd = makeFormData({ published: true });
     const result = await updateEvent("event-1", null, fd);
 
@@ -133,7 +133,8 @@ describe("updateEvent — past-start-date guard", () => {
   it("does not persist the change when the published + past-date guard fires", async () => {
     const { updateEvent } = await import("@/app/partner/events/actions");
 
-    const fd = makeFormData({ published: true }); // startDate defaults to yesterday
+    // startDate defaults to yesterday; guard must fire before the DB write
+    const fd = makeFormData({ published: true });
     await updateEvent("event-1", null, fd);
 
     // Prisma update must never be called.
@@ -143,8 +144,8 @@ describe("updateEvent — past-start-date guard", () => {
   it("allows a draft event to be updated with a past startDate", async () => {
     const { updateEvent } = await import("@/app/partner/events/actions");
 
-    // No published field → draft; past startDate is allowed for drafts
-    const fd = makeFormData();
+    // Draft (no published flag) with a past startDate — guard must not fire
+    const fd = makeFormData({});
 
     let threwRedirect = false;
     try {

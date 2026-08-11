@@ -84,48 +84,6 @@ describe("validateEmailVerificationToken", () => {
       .mockRejectedValueOnce(p2025());
 
     const { validateEmailVerificationToken } = await import("@/lib/tokens");
-    const result = await validateEmailVerificationToken("good-token");
-
-    expect(result).toEqual({ email: "alice@example.com", expired: false });
-    expect(mockDelete).toHaveBeenCalledTimes(1);
-  });
-
-  it("concurrent replay: only one call succeeds; the second is rejected as null", async () => {
-    /**
-     * Simulate the database's atomic DELETE guarantee:
-     *  - The first concurrent DELETE removes the row and returns it.
-     *  - The second concurrent DELETE finds no row and throws P2025.
-     */
-    mockDelete
-      .mockResolvedValueOnce({
-        token: "replay-token",
-        email: "carol@example.com",
-        expires: futureDate(),
-      })
-      .mockRejectedValueOnce(p2025());
-
-    const { validateEmailVerificationToken } = await import("@/lib/tokens");
-    const result = await validateEmailVerificationToken("good-token");
-
-    expect(result).toEqual({ email: "alice@example.com", expired: false });
-    expect(mockDelete).toHaveBeenCalledTimes(1);
-  });
-
-  it("concurrent replay: only one call succeeds; the second is rejected as null", async () => {
-    /**
-     * Simulate the database's atomic DELETE guarantee:
-     *  - The first concurrent DELETE removes the row and returns it.
-     *  - The second concurrent DELETE finds no row and throws P2025.
-     */
-    mockDelete
-      .mockResolvedValueOnce({
-        token: "replay-token",
-        email: "carol@example.com",
-        expires: futureDate(),
-      })
-      .mockRejectedValueOnce(p2025());
-
-    const { validateEmailVerificationToken } = await import("@/lib/tokens");
 
     // Fire both calls concurrently, exactly as two simultaneous browser tabs would.
     const [result1, result2] = await Promise.all([

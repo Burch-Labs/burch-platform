@@ -1,5 +1,4 @@
 import { Suspense } from "react";
-import { unstable_cache } from "next/cache";
 import Link from "next/link";
 import { NavBar } from "@/components/layout/NavBar";
 import { RestaurantGrid } from "@/components/restaurants/RestaurantGrid";
@@ -7,52 +6,7 @@ import { RestaurantFilterSidebar } from "@/components/restaurants/RestaurantFilt
 import { SearchBar } from "@/components/events/SearchBar";
 import { ShareLinkButton } from "@/components/events/ShareLinkButton";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { prisma } from "@/lib/prisma";
-
-const PAGE_SIZE = 12;
-
-// Cache identical filter combinations for 60 s.
-const getRestaurantsData = unstable_cache(
-  async (q: string, city: string, cuisine: string, page: number) => {
-    const where = {
-      published: true,
-      ...(q && {
-        OR: [
-          { name:        { contains: q, mode: "insensitive" as const } },
-          { description: { contains: q, mode: "insensitive" as const } },
-          { cuisine:     { contains: q, mode: "insensitive" as const } },
-          { city:        { contains: q, mode: "insensitive" as const } },
-        ],
-      }),
-      ...(city    && { city:    { contains: city,    mode: "insensitive" as const } }),
-      ...(cuisine && { cuisine: { contains: cuisine, mode: "insensitive" as const } }),
-    };
-    const [restaurants, total, cityRows, cuisineRows] = await Promise.all([
-      prisma.restaurant.findMany({
-        where,
-        include: {
-          partner: { select: { id: true, name: true } },
-          reviews: { select: { rating: true } },
-          _count:  { select: { reviews: true, menuItems: true } },
-        },
-        orderBy: { name: "asc" },
-        take: PAGE_SIZE,
-        skip: (page - 1) * PAGE_SIZE,
-      }),
-      prisma.restaurant.count({ where }),
-      prisma.restaurant.findMany({ where: { published: true }, select: { city: true }, distinct: ["city"], orderBy: { city: "asc" } }),
-      prisma.restaurant.findMany({ where: { published: true, cuisine: { not: null } }, select: { cuisine: true }, distinct: ["cuisine"], orderBy: { cuisine: "asc" } }),
-    ]);
-    return {
-      restaurants,
-      total,
-      cities:   cityRows.map((r) => r.city).filter(Boolean),
-      cuisines: cuisineRows.map((r) => r.cuisine).filter(Boolean) as string[],
-    };
-  },
-  ["restaurants-listing"],
-  { revalidate: 60, tags: ["restaurants-listing"] }
-);
+import { getRestaurantsData, PAGE_SIZE } from "@/lib/restaurants-data";
 
 interface PageProps {
   searchParams: Promise<{ q?: string; city?: string; cuisine?: string; page?: string }>;

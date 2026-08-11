@@ -1,5 +1,5 @@
 /**
- * Tests for events-listing cache behaviour in apps/web/src/app/events/page.tsx
+ * Tests for restaurants-listing cache behaviour in apps/web/src/lib/restaurants-data.ts
  *
  * This file uses `export {}` to be treated as an ES module, preventing
  * top-level variable declarations from colliding with other test files.
@@ -7,9 +7,9 @@
  * Covers:
  *  - Two different filter combinations produce distinct cache-key arrays so they
  *    are stored as separate entries and never collide.
- *  - Every cache entry is tagged with the broad "events-listing" tag so a single
- *    revalidateTag("events-listing") call (fired after publish / cancel) wipes all
- *    filter variants at once.
+ *  - Every cache entry is tagged with the broad "restaurants-listing" tag so a
+ *    single revalidateTag("restaurants-listing") call (fired after publish /
+ *    delete) wipes all filter variants at once.
  *  - The per-filter tag also differs between filter combinations, allowing
  *    targeted revalidation of individual entries in the future.
  */
@@ -42,28 +42,29 @@ jest.mock("next/cache", () => ({
 
 // Minimal Prisma stub – returns stable fixtures so DB is not hit.
 const mockFindMany = jest.fn();
-const mockCount = jest.fn();
+const mockCount    = jest.fn();
 
 jest.mock("@/lib/prisma", () => ({
   prisma: {
-    event: {
+    restaurant: {
       findMany: (...args: unknown[]) => mockFindMany(...args),
-      count: (...args: unknown[]) => mockCount(...args),
+      count:    (...args: unknown[]) => mockCount(...args),
     },
   },
 }));
 
-// Prisma client types are imported transitively via @prisma/client; stub it out.
+// Prisma client types are imported transitively; stub it out.
 jest.mock("@prisma/client", () => ({
-  EventCategory: {},
   PrismaClient: jest.fn(),
 }));
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-/** Return the cache call that matches the given filter tag prefix. */
-function callFor(q: string, category: string, city: string): CacheCall | undefined {
-  return cacheCallLog.find((c) => c.keys[1] === q && c.keys[2] === category && c.keys[3] === city);
+/** Return the cache call that matches the given filter parameters. */
+function callFor(q: string, city: string, cuisine: string): CacheCall | undefined {
+  return cacheCallLog.find(
+    (c) => c.keys[1] === q && c.keys[2] === city && c.keys[3] === cuisine,
+  );
 }
 
 // ── Setup ─────────────────────────────────────────────────────────────────────
@@ -72,21 +73,23 @@ beforeEach(() => {
   cacheCallLog.length = 0;
   jest.resetModules();
 
+  // findMany is called four times per getRestaurantsData invocation:
+  // restaurants list, city distinct, cuisine distinct (and count separately).
   mockFindMany.mockResolvedValue([]);
   mockCount.mockResolvedValue(0);
 });
 
 // ── Tests ─────────────────────────────────────────────────────────────────────
 
-describe("events-listing cache key isolation", () => {
+describe("restaurants-listing cache key isolation", () => {
   it("uses distinct cache-key arrays for two different filter combinations", async () => {
-    const { getEventsData } = await import("@/lib/events-data");
+    const { getRestaurantsData } = await import("@/lib/restaurants-data");
 
-    await getEventsData("music", "MUSIC", "Nairobi", "", "", 1);
-    await getEventsData("food",  "FOOD",  "Lagos",   "", "", 1);
+    await getRestaurantsData("italian", "Nairobi", "Italian", 1);
+    await getRestaurantsData("burger",  "Lagos",   "American", 1);
 
-    const call1 = callFor("music", "MUSIC", "Nairobi");
-    const call2 = callFor("food",  "FOOD",  "Lagos");
+    const call1 = callFor("italian", "Nairobi", "Italian");
+    const call2 = callFor("burger",  "Lagos",   "American");
 
     expect(call1).toBeDefined();
     expect(call2).toBeDefined();
@@ -96,17 +99,17 @@ describe("events-listing cache key isolation", () => {
   });
 
   it("gives each filter combination a unique per-filter cache tag", async () => {
-    const { getEventsData } = await import("@/lib/events-data");
+    const { getRestaurantsData } = await import("@/lib/restaurants-data");
 
-    await getEventsData("jazz", "MUSIC", "Nairobi", "", "", 1);
-    await getEventsData("jazz", "MUSIC", "Lagos",   "", "", 1);
+    await getRestaurantsData("sushi", "Nairobi", "Japanese", 1);
+    await getRestaurantsData("sushi", "Accra",   "Japanese", 1);
 
-    const call1 = callFor("jazz", "MUSIC", "Nairobi");
-    const call2 = callFor("jazz", "MUSIC", "Lagos");
+    const call1 = callFor("sushi", "Nairobi", "Japanese");
+    const call2 = callFor("sushi", "Accra",   "Japanese");
 
     // The per-filter tag encodes every parameter; city difference must be visible.
-    const filterTag1 = call1!.tags.find((t) => t.startsWith("events-listing:"));
-    const filterTag2 = call2!.tags.find((t) => t.startsWith("events-listing:"));
+    const filterTag1 = call1!.tags.find((t) => t.startsWith("restaurants-listing:"));
+    const filterTag2 = call2!.tags.find((t) => t.startsWith("restaurants-listing:"));
 
     expect(filterTag1).toBeDefined();
     expect(filterTag2).toBeDefined();
@@ -114,13 +117,13 @@ describe("events-listing cache key isolation", () => {
   });
 
   it("page number is included in the cache key so page 1 and page 2 are separate entries", async () => {
-    const { getEventsData } = await import("@/lib/events-data");
+    const { getRestaurantsData } = await import("@/lib/restaurants-data");
 
-    await getEventsData("", "", "", "", "", 1);
-    await getEventsData("", "", "", "", "", 2);
+    await getRestaurantsData("", "", "", 1);
+    await getRestaurantsData("", "", "", 2);
 
-    const callP1 = cacheCallLog.find((c) => c.keys[6] === "1");
-    const callP2 = cacheCallLog.find((c) => c.keys[6] === "2");
+    const callP1 = cacheCallLog.find((c) => c.keys[4] === "1");
+    const callP2 = cacheCallLog.find((c) => c.keys[4] === "2");
 
     expect(callP1).toBeDefined();
     expect(callP2).toBeDefined();
@@ -128,56 +131,58 @@ describe("events-listing cache key isolation", () => {
   });
 });
 
-describe("events-listing broad revalidation tag", () => {
-  it('every cache entry carries the "events-listing" tag so revalidateTag wipes all variants', async () => {
-    const { getEventsData } = await import("@/lib/events-data");
+describe("restaurants-listing broad revalidation tag", () => {
+  it('every cache entry carries the "restaurants-listing" tag so revalidateTag wipes all variants', async () => {
+    const { getRestaurantsData } = await import("@/lib/restaurants-data");
 
     // Simulate several different filter combinations a visitor might request.
-    const filterSets: [string, string, string, string, string, number][] = [
-      ["",       "",       "",        "", "", 1],
-      ["music",  "MUSIC",  "Nairobi", "", "", 1],
-      ["food",   "FOOD",   "Lagos",   "", "", 2],
-      ["market", "OTHER",  "Accra",   "2026-08-01", "2026-08-31", 1],
+    const filterSets: [string, string, string, number][] = [
+      ["",        "",        "",          1],
+      ["italian", "Nairobi", "Italian",   1],
+      ["burger",  "Lagos",   "American",  2],
+      ["seafood", "Accra",   "African",   1],
     ];
 
     for (const args of filterSets) {
-      await getEventsData(...args);
+      await getRestaurantsData(...args);
     }
 
     expect(cacheCallLog).toHaveLength(filterSets.length);
 
     // Every single entry must include the broad tag so one revalidateTag call
-    // is sufficient to bust the entire listing cache after a publish or cancel.
+    // is sufficient to bust the entire listing cache after a publish or delete.
     for (const call of cacheCallLog) {
-      expect(call.tags).toContain("events-listing");
+      expect(call.tags).toContain("restaurants-listing");
     }
   });
 
-  it('each entry also carries a unique per-filter tag alongside "events-listing"', async () => {
-    const { getEventsData } = await import("@/lib/events-data");
+  it('each entry also carries a unique per-filter tag alongside "restaurants-listing"', async () => {
+    const { getRestaurantsData } = await import("@/lib/restaurants-data");
 
-    await getEventsData("art", "OTHER", "Cairo", "", "", 1);
+    await getRestaurantsData("tapas", "Cairo", "Spanish", 1);
 
     const call = cacheCallLog[0];
 
     // Must have the broad tag for bulk invalidation …
-    expect(call.tags).toContain("events-listing");
+    expect(call.tags).toContain("restaurants-listing");
 
     // … AND a second, filter-scoped tag for targeted invalidation.
+    // The scoped tag uses a hash to stay within Next.js tag length limits.
     const scopedTag = call.tags.find(
-      (t) => t.startsWith("events-listing:") && t !== "events-listing",
+      (t) => t.startsWith("restaurants-listing:") && t !== "restaurants-listing",
     );
     expect(scopedTag).toBeDefined();
-    expect(scopedTag).toMatch(/art.*OTHER.*Cairo/);
+    // The scoped tag must be a non-empty string different from the broad tag.
+    expect(scopedTag!.length).toBeGreaterThan("restaurants-listing:".length);
   });
 });
 
 describe("cache freshness after mutation (revalidateTag contract)", () => {
   it("a second call with identical filters re-uses the same cache-key array", async () => {
-    const { getEventsData } = await import("@/lib/events-data");
+    const { getRestaurantsData } = await import("@/lib/restaurants-data");
 
-    await getEventsData("sports", "SPORTS", "Kampala", "", "", 1);
-    await getEventsData("sports", "SPORTS", "Kampala", "", "", 1);
+    await getRestaurantsData("pizza", "Kampala", "Italian", 1);
+    await getRestaurantsData("pizza", "Kampala", "Italian", 1);
 
     // Both calls must register with identical keys, confirming the cache would
     // serve the same slot (and therefore a single revalidateTag clears both reads).
