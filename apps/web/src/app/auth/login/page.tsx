@@ -19,6 +19,7 @@ function LoginForm() {
 
   const verified = params.get("verified") === "1";
   const registered = params.get("registered") === "1";
+  const oauthError = params.get("error") !== null;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -70,8 +71,14 @@ function LoginForm() {
         </div>
       )}
 
+      {oauthError && (
+        <div className="mb-5 rounded-lg bg-amber-50 border border-amber-200 px-4 py-3 text-sm text-amber-800">
+          Google sign-in is unavailable right now — please use email instead.
+        </div>
+      )}
+
       {/* Google Sign-In — only rendered when credentials are configured */}
-      <GoogleButton callbackUrl="/dashboard" />
+      <GoogleButton callbackUrl="/dashboard" providerError={oauthError} />
 
       {process.env.NEXT_PUBLIC_HAS_GOOGLE === "1" && (
         <div className="relative my-5">
