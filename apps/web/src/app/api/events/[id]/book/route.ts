@@ -1,7 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { sendPartnerBookingNotification, sendGuestEventConfirmation } from "@/lib/email";
 import { z } from "zod";
 
 const schema = z.object({
@@ -23,7 +24,16 @@ export async function POST(
 
     const event = await prisma.event.findUnique({
       where: { id },
-      include: { _count: { select: { bookings: true } } },
+      select: {
+        id: true,
+        title: true,
+        price: true,
+        currency: true,
+        capacity: true,
+        published: true,
+        startDate: true,
+        partner: { select: { user: { select: { name: true, email: true } } } },
+      },
     });
 
     if (!event || !event.published) {
@@ -56,6 +66,39 @@ export async function POST(
         eventId: id,
       },
     });
+
+    // Notify the partner — scheduled after response so mail latency never affects the guest
+    const partnerUser = event.partner?.user;
+    if (partnerUser?.email) {
+      const dateLabel = event.startDate.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
+      const timeLabel = event.startDate.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+      after(() =>
+        sendPartnerBookingNotification({
+          partnerEmail: partnerUser.email,
+          partnerName: partnerUser.name ?? "Partner",
+          guestName: session.user.name ?? session.user.email ?? "A guest",
+          propertyName: event.title,
+          propertyType: "event",
+          bookingDetail: `${quantity} ticket${quantity !== 1 ? "s" : ""} · ${dateLabel} at ${timeLabel}`,
+        }).catch((err) => console.error("[partner-notify] event booking email failed:", err))
+      );
+    }
+
+    // Confirm the guest — scheduled after response so mail latency never affects the guest
+    const guestEmail = session.user.email;
+    if (guestEmail) {
+      after(() =>
+        sendGuestEventConfirmation({
+          guestEmail,
+          guestName: session.user.name ?? guestEmail,
+          eventTitle: event.title,
+          eventDate: event.startDate,
+          quantity,
+          totalAmount,
+          currency: event.currency,
+        }).catch((err) => console.error("[guest-confirm] event booking email failed:", err))
+      );
+    }
 
     return NextResponse.json({ booking }, { status: 201 });
   } catch (err) {

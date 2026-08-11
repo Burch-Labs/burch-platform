@@ -140,7 +140,7 @@ export interface PartnerBookingEmailParams {
   partnerName: string;
   guestName: string;
   propertyName: string;
-  propertyType: "hotel" | "restaurant";
+  propertyType: "hotel" | "restaurant" | "event";
   bookingDetail: string; // e.g. "Check-in: Jan 1 – Jan 3" or "2 guests on Jan 5 at 7:00 PM"
   dashboardUrl?: string;
 }
@@ -158,7 +158,8 @@ export async function sendPartnerBookingNotification(
     dashboardUrl = `${BASE_URL}/partner/bookings`,
   } = params;
 
-  const subject = `New ${propertyType === "hotel" ? "booking" : "reservation"} at ${propertyName}`;
+  const typeWord = propertyType === "hotel" ? "booking" : propertyType === "event" ? "ticket order" : "reservation";
+  const subject = `New ${typeWord} at ${propertyName}`;
 
   if (!HAS_RESEND) {
     devLog(subject, dashboardUrl);
@@ -171,7 +172,7 @@ export async function sendPartnerBookingNotification(
   const { Resend } = await import("resend");
   const resend = new Resend(process.env.RESEND_API_KEY);
 
-  const typeLabel = propertyType === "hotel" ? "booking" : "reservation";
+  const typeLabel = propertyType === "hotel" ? "booking" : propertyType === "event" ? "ticket order" : "reservation";
 
   await resend.emails.send({
     from: FROM,
@@ -339,6 +340,76 @@ export async function sendGuestReservationConfirmation(
         </tr>
       </table>
       <p style="margin:0 0 8px;font-size:13px;color:#9ca3af;">We look forward to seeing you. Enjoy your dining experience!</p>
+    `),
+  });
+}
+
+// ─── Guest event ticket confirmation ─────────────────────────────────────────
+
+export interface GuestEventConfirmationParams {
+  guestEmail: string;
+  guestName: string;
+  eventTitle: string;
+  eventDate: Date;
+  quantity: number;
+  totalAmount: number;
+  currency: string;
+}
+
+export async function sendGuestEventConfirmation(
+  params: GuestEventConfirmationParams
+): Promise<void> {
+  const { guestEmail, guestName, eventTitle, eventDate, quantity, totalAmount, currency } = params;
+
+  const subject = `Your tickets for ${eventTitle} are confirmed`;
+
+  const dateLabel = eventDate.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
+  const timeLabel = eventDate.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+  const amountLabel = new Intl.NumberFormat("en-US", { style: "currency", currency }).format(totalAmount);
+
+  if (!HAS_RESEND) {
+    devLog(subject, `${BASE_URL}/bookings`);
+    console.log(
+      `  Guest: ${guestName} | Event: ${eventTitle} | ${dateLabel} at ${timeLabel} | ${quantity} ticket${quantity !== 1 ? "s" : ""} | ${amountLabel}`
+    );
+    return;
+  }
+
+  const { Resend } = await import("resend");
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  await resend.emails.send({
+    from: FROM,
+    to: OVERRIDE_TO ?? guestEmail,
+    subject,
+    html: emailWrapper(`
+      <h2 style="margin:0 0 8px;font-size:20px;color:#111827;">Tickets confirmed!</h2>
+      <p style="margin:0 0 24px;font-size:15px;color:#6b7280;line-height:1.6;">
+        Hi ${guestName}, your ticket${quantity !== 1 ? "s" : ""} for <strong style="color:#111827;">${eventTitle}</strong> ${quantity !== 1 ? "are" : "is"} confirmed. Here are your details:
+      </p>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#9ca3af;width:40%;">Event</td>
+          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${eventTitle}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Date</td>
+          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${dateLabel}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Time</td>
+          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${timeLabel}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Tickets</td>
+          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${quantity} ticket${quantity !== 1 ? "s" : ""}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Total</td>
+          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${amountLabel}</td>
+        </tr>
+      </table>
+      <p style="margin:0 0 8px;font-size:13px;color:#9ca3af;">We look forward to seeing you there. Enjoy the event!</p>
     `),
   });
 }
