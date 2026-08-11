@@ -161,6 +161,7 @@ export async function cancelBooking(bookingId: string): Promise<{ error?: string
   });
 
   revalidatePath("/dashboard");
+  revalidatePath("/bookings");
   return {};
 }
 
@@ -185,5 +186,6 @@ export async function cancelReservation(reservationId: string): Promise<{ error?
   });
 
   revalidatePath("/dashboard");
+  revalidatePath("/bookings");
   return {};
 }
