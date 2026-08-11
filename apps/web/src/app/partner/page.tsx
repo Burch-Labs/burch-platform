@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { NavBar } from "@/components/layout/NavBar";
+import { ConfigHealthBanner } from "@/components/partner/ConfigHealthBanner";
 import Link from "next/link";
 
 export default async function PartnerPage() {
@@ -23,6 +24,7 @@ export default async function PartnerPage() {
     <div className="min-h-screen bg-gray-50">
       <NavBar />
       <main className="max-w-5xl mx-auto px-6 py-12">
+        <ConfigHealthBanner />
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Partner Portal</h1>
