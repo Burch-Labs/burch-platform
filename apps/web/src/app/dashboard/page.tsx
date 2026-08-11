@@ -329,6 +329,20 @@ export default async function DashboardPage() {
         {role === "CUSTOMER" && (
           <div className="space-y-10">
 
+            {/* Full history link */}
+            <div className="flex items-center justify-between rounded-xl bg-white border border-gray-200 px-5 py-4">
+              <div>
+                <p className="text-sm font-semibold text-gray-900">Recent activity</p>
+                <p className="text-xs text-gray-500 mt-0.5">Showing your 5 most recent bookings per category.</p>
+              </div>
+              <Link
+                href="/dashboard/bookings"
+                className="text-xs font-medium text-orange-600 hover:text-orange-700 bg-orange-50 border border-orange-100 rounded-lg px-3 py-1.5 flex-shrink-0"
+              >
+                View all bookings →
+              </Link>
+            </div>
+
             {/* Saved searches */}
             <div>
               <div className="flex items-center justify-between mb-4">
