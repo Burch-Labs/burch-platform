@@ -184,6 +184,22 @@ export default async function PartnerBookingsPage({ searchParams }: PageProps) {
             </p>
           </div>
           <div className="flex items-center gap-3">
+            {!noProperties && selectedRestaurantIds.length > 0 && totalCount > 0 && (
+              <a
+                href={`/api/partner/bookings/export?${new URLSearchParams({
+                  type: "reservation",
+                  ...(statusParam   ? { status:   statusParam   } : {}),
+                  ...(propertyParam ? { property: propertyParam } : {}),
+                }).toString()}`}
+                download="reservations-export.csv"
+                className="inline-flex items-center gap-1.5 bg-white border border-gray-200 text-gray-700 text-sm font-medium px-4 py-2 rounded-xl hover:bg-gray-50 transition"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M8 12l4 4m0 0l4-4m-4 4V4" />
+                </svg>
+                Export Reservations
+              </a>
+            )}
             {!noProperties && totalCount > 0 && (
               <a
                 href={`/api/partner/bookings/export${

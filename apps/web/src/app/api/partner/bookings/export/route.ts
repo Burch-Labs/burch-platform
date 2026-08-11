@@ -28,6 +28,7 @@ export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
   const statusParam   = searchParams.get("status")   ?? undefined;
   const propertyParam = searchParams.get("property") ?? undefined;
+  const typeParam     = searchParams.get("type")     ?? undefined;
 
   // ── Load partner ─────────────────────────────────────────────────────────────
   const partner = await prisma.partner.findUnique({
@@ -63,6 +64,52 @@ export async function GET(req: NextRequest) {
   ].filter(Boolean) as object[];
 
   const noProperties = bookingOrFilter.length === 0;
+
+  // ── Reservations-only export ──────────────────────────────────────────────────
+  if (typeParam === "reservation") {
+    const reservations = noProperties || !selectedRestaurantIds.length
+      ? []
+      : await prisma.tableReservation.findMany({
+          where: {
+            restaurantId: { in: selectedRestaurantIds },
+            ...(statusFilter ? { status: statusFilter as unknown as ReservationStatus } : {}),
+          },
+          include: {
+            user:       { select: { name: true, email: true } },
+            restaurant: { select: { name: true } },
+          },
+          orderBy: { date: "desc" },
+        });
+
+    const resHeader = ["Reservation ID", "Restaurant", "Customer Name", "Customer Email", "Date", "Time", "Party Size", "Status"];
+
+    const resRows: string[][] = reservations.map((r) => {
+      const d = new Date(r.date);
+      return [
+        r.id,
+        r.restaurant?.name  ?? "",
+        r.user?.name        ?? "",
+        r.user?.email       ?? "",
+        d.toISOString().split("T")[0],
+        d.toTimeString().slice(0, 5),
+        String(r.partySize),
+        r.status,
+      ];
+    });
+
+    const resCsv = [
+      resHeader.map(csvEscape).join(","),
+      ...resRows.map((row) => row.map(csvEscape).join(",")),
+    ].join("\r\n");
+
+    return new NextResponse(resCsv, {
+      status: 200,
+      headers: {
+        "Content-Type": "text/csv; charset=utf-8",
+        "Content-Disposition": `attachment; filename="reservations-export.csv"`,
+      },
+    });
+  }
 
   // ── Fetch data ────────────────────────────────────────────────────────────────
   const [bookings, reservations] = noProperties
