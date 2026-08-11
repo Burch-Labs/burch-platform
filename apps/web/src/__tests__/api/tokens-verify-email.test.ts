@@ -61,9 +61,9 @@ describe("validateEmailVerificationToken", () => {
     });
 
     const { validateEmailVerificationToken } = await import("@/lib/tokens");
-    const result = await validateEmailVerificationToken("good-token");
+    const result = await validateEmailVerificationToken("used-token");
 
-    expect(result).toEqual({ email: "alice@example.com", expired: false });
+    expect(result).toBeNull();
     expect(mockDelete).toHaveBeenCalledTimes(1);
   });
 

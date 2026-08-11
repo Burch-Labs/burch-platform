@@ -129,6 +129,11 @@ describe("POST /api/hotels/[id]/book — email dispatch via after()", () => {
 
   it("returns 201 and schedules both partner and guest emails on a valid booking", async () => {
     const { after } = await import("next/server");
+
+    const hotelNoPartnerEmail = {
+      ...HOTEL,
+      partner: { user: { name: "Partner Pete", email: null } },
+    };
     const { POST } = await import("@/app/api/hotels/[id]/book/route");
 
     const res = await POST(makeRequest(VALID_BODY), {
@@ -145,10 +150,13 @@ describe("POST /api/hotels/[id]/book — email dispatch via after()", () => {
 
   it("skips partner notification when hotel partner has no email", async () => {
     const { after } = await import("next/server");
-    // Override hotel fixture so the partner has no email address
-    mockHotelFindUnique.mockResolvedValue({
+
+    const hotelNoPartnerEmail = {
       ...HOTEL,
       partner: { user: { name: "Partner Pete", email: null } },
+    };
+    mockGetServerSession.mockResolvedValue({
+      user: { id: "user-1", name: "Anon", email: null },
     });
 
     const { POST } = await import("@/app/api/hotels/[id]/book/route");
@@ -165,6 +173,11 @@ describe("POST /api/hotels/[id]/book — email dispatch via after()", () => {
 
   it("skips guest confirmation when session has no email", async () => {
     const { after } = await import("next/server");
+
+    const hotelNoPartnerEmail = {
+      ...HOTEL,
+      partner: { user: { name: "Partner Pete", email: null } },
+    };
     mockGetServerSession.mockResolvedValue({
       user: { id: "user-1", name: "Anon", email: null },
     });

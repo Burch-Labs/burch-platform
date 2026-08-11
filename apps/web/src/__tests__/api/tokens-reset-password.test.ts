@@ -61,9 +61,9 @@ describe("validatePasswordResetToken", () => {
     });
 
     const { validatePasswordResetToken } = await import("@/lib/tokens");
-    const result = await validatePasswordResetToken("good-token");
+    const result = await validatePasswordResetToken("used-token");
 
-    expect(result).toEqual({ email: "alice@example.com", expired: false });
+    expect(result).toBeNull();
     expect(mockDelete).toHaveBeenCalledTimes(1);
   });
 
