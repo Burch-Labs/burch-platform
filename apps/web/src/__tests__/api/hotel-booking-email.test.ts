@@ -147,9 +147,8 @@ describe("POST /api/hotels/[id]/book — email dispatch via after()", () => {
 
   it("skips the partner notification when the partner has no email", async () => {
     const { after } = await import("next/server");
-    mockHotelFindUnique.mockResolvedValue({
-      ...HOTEL,
-      partner: { user: { name: "Partner Pete", email: null } },
+    mockGetServerSession.mockResolvedValue({
+      user: { id: "user-1", name: "Anon", email: null },
     });
 
     const { POST } = await import("@/app/api/hotels/[id]/book/route");

@@ -7,7 +7,7 @@
  * different mock call patterns and break the concurrent-replay assertions.
  *
  * Covers:
- *  - Valid token: DELETE returns the record with a future expiry
+ *  - Valid token: returns { email, expired: false } and deletes the record
  *  - Expired token: DELETE returns the record but its expires date is in the past
  *  - Already-consumed token: DELETE throws P2025 immediately → null
  *  - Concurrent replay: two concurrent calls with the same token — only the
@@ -74,11 +74,6 @@ describe("validateEmailVerificationToken", () => {
      * Simulate the database's atomic DELETE guarantee:
      *  - The first concurrent DELETE removes the row and returns it.
      *  - The second concurrent DELETE finds no row and throws P2025.
-     *
-     * This is the only outcome possible with an atomic DB-level delete. If
-     * the implementation were to regress to a find-then-delete approach the
-     * mock call count or argument patterns would change and the test would
-     * expose the regression via unexpected mock interactions.
      */
     mockDelete
       .mockResolvedValueOnce({
@@ -100,11 +95,6 @@ describe("validateEmailVerificationToken", () => {
      * Simulate the database's atomic DELETE guarantee:
      *  - The first concurrent DELETE removes the row and returns it.
      *  - The second concurrent DELETE finds no row and throws P2025.
-     *
-     * This is the only outcome possible with an atomic DB-level delete. If
-     * the implementation were to regress to a find-then-delete approach the
-     * mock call count or argument patterns would change and the test would
-     * expose the regression via unexpected mock interactions.
      */
     mockDelete
       .mockResolvedValueOnce({
@@ -126,11 +116,6 @@ describe("validateEmailVerificationToken", () => {
      * Simulate the database's atomic DELETE guarantee:
      *  - The first concurrent DELETE removes the row and returns it.
      *  - The second concurrent DELETE finds no row and throws P2025.
-     *
-     * This is the only outcome possible with an atomic DB-level delete. If
-     * the implementation were to regress to a find-then-delete approach the
-     * mock call count or argument patterns would change and the test would
-     * expose the regression via unexpected mock interactions.
      */
     mockDelete
       .mockResolvedValueOnce({
@@ -163,11 +148,7 @@ describe("validateEmailVerificationToken", () => {
 
     // The database DELETE was attempted exactly twice — once per concurrent caller.
     expect(mockDelete).toHaveBeenCalledTimes(2);
-    expect(mockDelete).toHaveBeenNthCalledWith(1, {
-      where: { token: "replay-token" },
-    });
-    expect(mockDelete).toHaveBeenNthCalledWith(2, {
-      where: { token: "replay-token" },
-    });
+    expect(mockDelete).toHaveBeenNthCalledWith(1, { where: { token: "replay-token" } });
+    expect(mockDelete).toHaveBeenNthCalledWith(2, { where: { token: "replay-token" } });
   });
 });
