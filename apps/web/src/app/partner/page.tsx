@@ -17,8 +17,35 @@ export default async function PartnerPage() {
     where: { userId: session.user.id },
     include: {
       _count: { select: { events: true, hotels: true, restaurants: true } },
+      hotels:      { select: { id: true } },
+      events:      { select: { id: true } },
+      restaurants: { select: { id: true } },
     },
   });
+
+  // Count pending bookings and table reservations for this partner
+  let pendingCount = 0;
+  if (partner) {
+    const hotelIds      = partner.hotels.map((h) => h.id);
+    const eventIds      = partner.events.map((e) => e.id);
+    const restaurantIds = partner.restaurants.map((r) => r.id);
+
+    const bookingOrFilter = [
+      hotelIds.length      ? { hotelId:      { in: hotelIds }      } : undefined,
+      eventIds.length      ? { eventId:      { in: eventIds }      } : undefined,
+      restaurantIds.length ? { restaurantId: { in: restaurantIds } } : undefined,
+    ].filter(Boolean) as object[];
+
+    if (bookingOrFilter.length > 0) {
+      const [pendingBookings, pendingReservations] = await Promise.all([
+        prisma.booking.count({ where: { status: "PENDING", OR: bookingOrFilter } }),
+        restaurantIds.length
+          ? prisma.tableReservation.count({ where: { status: "PENDING", restaurantId: { in: restaurantIds } } })
+          : Promise.resolve(0),
+      ]);
+      pendingCount = pendingBookings + pendingReservations;
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -96,11 +123,18 @@ export default async function PartnerPage() {
               <div className="flex items-center gap-3">
                 <span className="text-2xl">📋</span>
                 <div>
-                  <p className="font-semibold text-gray-900 group-hover:text-orange-600 transition">
+                  <p className="font-semibold text-gray-900 group-hover:text-orange-600 transition flex items-center gap-2">
                     Manage Bookings
+                    {pendingCount > 0 && (
+                      <span className="inline-flex items-center justify-center bg-amber-500 text-white text-xs font-bold px-2 py-0.5 rounded-full min-w-[1.25rem]">
+                        {pendingCount}
+                      </span>
+                    )}
                   </p>
                   <p className="text-xs text-gray-500 mt-0.5">
-                    View, confirm, and cancel bookings across all your properties
+                    {pendingCount > 0
+                      ? `${pendingCount} pending booking${pendingCount !== 1 ? "s" : ""} need${pendingCount === 1 ? "s" : ""} attention`
+                      : "View, confirm, and cancel bookings across all your properties"}
                   </p>
                 </div>
               </div>
