@@ -2,7 +2,7 @@ import { NextRequest, NextResponse, after } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { sendPartnerBookingNotification, sendGuestHotelConfirmation } from "@/lib/email";
+import { sendPartnerBookingNotification, sendGuestHotelEnquiryReceived } from "@/lib/email";
 import { z } from "zod";
 
 const schema = z.object({
@@ -74,11 +74,14 @@ export async function POST(
     );
     const totalAmount = Number(room.price) * nights;
 
+    // Hotels aren't charged through the platform yet — this is a request the
+    // property still has to accept, not a done deal. See dashboard/actions.ts
+    // partnerConfirmBooking for where it actually becomes CONFIRMED.
     const booking = await prisma.booking.create({
       data: {
         userId: session.user.id,
         type: "HOTEL",
-        status: "CONFIRMED",
+        status: "PENDING",
         quantity: 1,
         totalAmount,
         currency: room.currency,
@@ -108,11 +111,11 @@ export async function POST(
       );
     }
 
-    // Confirm the guest — scheduled after response so mail latency never affects the guest
+    // Let the guest know their request is in — scheduled after response so mail latency never affects them
     const guestEmail = session.user.email;
     if (guestEmail) {
       after(() =>
-        sendGuestHotelConfirmation({
+        sendGuestHotelEnquiryReceived({
           guestEmail,
           guestName: session.user.name ?? guestEmail,
           propertyName: hotel.name,

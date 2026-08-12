@@ -43,13 +43,13 @@ jest.mock("next-auth", () => ({
 jest.mock("@/lib/auth", () => ({ authOptions: {} }));
 
 const mockSendPartnerBookingNotification = jest.fn();
-const mockSendGuestReservationConfirmation = jest.fn();
+const mockSendGuestReservationEnquiryReceived = jest.fn();
 
 jest.mock("@/lib/email", () => ({
   sendPartnerBookingNotification: (...a: unknown[]) =>
     mockSendPartnerBookingNotification(...a),
-  sendGuestReservationConfirmation: (...a: unknown[]) =>
-    mockSendGuestReservationConfirmation(...a),
+  sendGuestReservationEnquiryReceived: (...a: unknown[]) =>
+    mockSendGuestReservationEnquiryReceived(...a),
 }));
 
 // ── Fixtures ───────────────────────────────────────────────────────────────
@@ -67,7 +67,7 @@ const RESERVATION_RESULT = {
   partySize: 4,
   name: "Guest Greg",
   email: "guest@example.com",
-  status: "CONFIRMED",
+  status: "PENDING",
 };
 
 const SESSION = {
@@ -110,7 +110,7 @@ describe("POST /api/restaurants/[id]/reservations — email dispatch via after()
     mockRestaurantFindUnique.mockResolvedValue(RESTAURANT);
     mockTableReservationCreate.mockResolvedValue(RESERVATION_RESULT);
     mockSendPartnerBookingNotification.mockResolvedValue(undefined);
-    mockSendGuestReservationConfirmation.mockResolvedValue(undefined);
+    mockSendGuestReservationEnquiryReceived.mockResolvedValue(undefined);
   });
 
   it("returns 201 and schedules two after() callbacks on a valid reservation", async () => {
@@ -125,7 +125,7 @@ describe("POST /api/restaurants/[id]/reservations — email dispatch via after()
 
     expect(res.status).toBe(201);
     await expect(flushAfterCallbacks()).resolves.not.toThrow();
-    expect(mockSendGuestReservationConfirmation).toHaveBeenCalledTimes(1);
+    expect(mockSendGuestReservationEnquiryReceived).toHaveBeenCalledTimes(1);
   });
 
   it("schedules callbacks independently for rapid successive requests", async () => {
@@ -137,7 +137,7 @@ describe("POST /api/restaurants/[id]/reservations — email dispatch via after()
     });
     await flushAfterCallbacks();
 
-    expect(mockSendGuestReservationConfirmation).toHaveBeenCalledTimes(1);
+    expect(mockSendGuestReservationEnquiryReceived).toHaveBeenCalledTimes(1);
   });
 
   it("does not return 500 when partner email callback throws", async () => {
@@ -154,8 +154,8 @@ describe("POST /api/restaurants/[id]/reservations — email dispatch via after()
     });
     await flushAfterCallbacks();
 
-    expect(mockSendGuestReservationConfirmation).toHaveBeenCalledTimes(1);
-    expect(mockSendGuestReservationConfirmation).toHaveBeenCalledWith(
+    expect(mockSendGuestReservationEnquiryReceived).toHaveBeenCalledTimes(1);
+    expect(mockSendGuestReservationEnquiryReceived).toHaveBeenCalledWith(
       expect.objectContaining({
         guestEmail: "guest@example.com",
         guestName: "Guest Greg",
@@ -180,7 +180,7 @@ describe("POST /api/restaurants/[id]/reservations — email dispatch via after()
     });
     await flushAfterCallbacks();
 
-    expect(mockSendGuestReservationConfirmation).toHaveBeenCalledTimes(1);
+    expect(mockSendGuestReservationEnquiryReceived).toHaveBeenCalledTimes(1);
   });
 
   it("does not return 500 when partner email callback throws", async () => {
@@ -196,7 +196,7 @@ describe("POST /api/restaurants/[id]/reservations — email dispatch via after()
     });
     await flushAfterCallbacks();
 
-    expect(mockSendGuestReservationConfirmation).toHaveBeenCalledTimes(1);
+    expect(mockSendGuestReservationEnquiryReceived).toHaveBeenCalledTimes(1);
   });
 
   it("does not return 500 when partner email callback throws", async () => {
@@ -213,7 +213,7 @@ describe("POST /api/restaurants/[id]/reservations — email dispatch via after()
 
     expect(res.status).toBe(201);
     await expect(flushAfterCallbacks()).resolves.not.toThrow();
-    expect(mockSendGuestReservationConfirmation).toHaveBeenCalledTimes(1);
+    expect(mockSendGuestReservationEnquiryReceived).toHaveBeenCalledTimes(1);
   });
 
   it("schedules callbacks independently for rapid successive requests", async () => {
@@ -226,7 +226,7 @@ describe("POST /api/restaurants/[id]/reservations — email dispatch via after()
 
     expect(res.status).toBe(201);
     await expect(flushAfterCallbacks()).resolves.not.toThrow();
-    expect(mockSendGuestReservationConfirmation).toHaveBeenCalledTimes(1);
+    expect(mockSendGuestReservationEnquiryReceived).toHaveBeenCalledTimes(1);
   });
 
   it("schedules callbacks independently for rapid successive requests", async () => {
@@ -243,7 +243,7 @@ describe("POST /api/restaurants/[id]/reservations — email dispatch via after()
     await flushAfterCallbacks();
 
     expect(mockSendPartnerBookingNotification).toHaveBeenCalledTimes(2);
-    expect(mockSendGuestReservationConfirmation).toHaveBeenCalledTimes(2);
+    expect(mockSendGuestReservationEnquiryReceived).toHaveBeenCalledTimes(2);
   });
 });
 

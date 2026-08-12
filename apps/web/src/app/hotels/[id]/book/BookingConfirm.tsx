@@ -89,22 +89,25 @@ export function BookingConfirm({ hotelId }: BookingConfirmProps) {
   if (confirmed && bookingData) {
     return (
       <div className="max-w-lg mx-auto py-16 text-center px-6">
-        <div className="bg-white rounded-3xl border border-green-100 p-10 shadow-sm">
-          <div className="text-5xl mb-4">🎉</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Booking confirmed!</h2>
+        <div className="bg-white rounded-3xl border border-amber-100 p-10 shadow-sm">
+          <div className="text-5xl mb-4">📨</div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Request sent!</h2>
           <p className="text-gray-500 mb-1">
             {bookingData.nights} night{bookingData.nights > 1 ? "s" : ""} ·{" "}
             {formatCurrency(bookingData.booking.totalAmount, bookingData.booking.currency)}
           </p>
-          <p className="text-gray-400 text-sm mb-8">
+          <p className="text-gray-400 text-sm mb-1">
             {formatDateShort(checkIn)} → {formatDateShort(checkOut)}
+          </p>
+          <p className="text-gray-400 text-sm mb-8">
+            The property will confirm shortly — we&apos;ll email you either way. No payment has been taken.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
-              href="/dashboard"
+              href="/dashboard/bookings"
               className="bg-orange-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-orange-700 transition"
             >
-              View my bookings
+              Track this request
             </Link>
             <Link
               href="/hotels"
@@ -131,7 +134,7 @@ export function BookingConfirm({ hotelId }: BookingConfirmProps) {
         Back to hotel
       </Link>
 
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Confirm your booking</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">Request your stay</h1>
 
       <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-5">
         {/* Stay summary */}
@@ -150,7 +153,9 @@ export function BookingConfirm({ hotelId }: BookingConfirmProps) {
         </div>
 
         <p className="text-xs text-gray-400 border-t border-gray-100 pt-4">
-          Free cancellation availability varies. Check the hotel&apos;s policy on the details page.
+          This sends a request to the hotel — it isn&apos;t confirmed until they accept. No payment is taken now;
+          you&apos;ll settle up directly with the property. Free cancellation availability varies; check the hotel&apos;s
+          policy on the details page.
         </p>
 
         {error && (
@@ -167,15 +172,15 @@ export function BookingConfirm({ hotelId }: BookingConfirmProps) {
           {loading ? (
             <span className="flex items-center justify-center gap-2">
               <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              Processing…
+              Sending…
             </span>
           ) : (
-            "Confirm booking"
+            "Send request"
           )}
         </button>
 
         <p className="text-xs text-center text-gray-400">
-          By confirming you agree to the hotel&apos;s terms and conditions.
+          By sending this request you agree to the hotel&apos;s terms and conditions.
         </p>
       </div>
     </div>
