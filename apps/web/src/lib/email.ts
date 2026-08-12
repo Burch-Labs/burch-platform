@@ -355,6 +355,157 @@ export async function sendGuestReservationConfirmation(
   });
 }
 
+// ─── Guest enquiry received (hotel/restaurant, pre-partner-confirmation) ──────
+//
+// Hotels and restaurants aren't paid through the platform yet, so a booking
+// request only becomes real once the property accepts it. These emails set
+// that expectation immediately; sendGuestHotelConfirmation /
+// sendGuestReservationConfirmation above are sent again, for real, once the
+// partner confirms.
+
+export async function sendGuestHotelEnquiryReceived(
+  params: GuestHotelConfirmationParams
+): Promise<void> {
+  const { guestEmail, guestName, propertyName, checkIn, checkOut, nights, totalAmount, currency } = params;
+
+  const subject = `Your request at ${propertyName} has been sent`;
+  const checkInLabel = checkIn.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
+  const checkOutLabel = checkOut.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
+  const amountLabel = new Intl.NumberFormat("en-US", { style: "currency", currency }).format(totalAmount);
+
+  if (!HAS_RESEND) {
+    devLog(subject, `${BASE_URL}/dashboard/bookings`);
+    console.log(`  Guest: ${guestName} | Property: ${propertyName} | ${checkInLabel} – ${checkOutLabel}`);
+    return;
+  }
+
+  const { Resend } = await import("resend");
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  await resend.emails.send({
+    from: FROM,
+    to: OVERRIDE_TO ?? guestEmail,
+    subject,
+    html: emailWrapper(`
+      <h2 style="margin:0 0 8px;font-size:20px;color:#111827;">Request sent!</h2>
+      <p style="margin:0 0 24px;font-size:15px;color:#6b7280;line-height:1.6;">
+        Hi ${guestName}, we've sent your stay request to <strong style="color:#111827;">${propertyName}</strong>. This isn't confirmed yet — the property will accept or decline shortly, and we'll email you the moment they respond.
+      </p>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#9ca3af;width:40%;">Property</td>
+          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${propertyName}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Check-in</td>
+          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${checkInLabel}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Check-out</td>
+          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${checkOutLabel}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Nights</td>
+          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${nights} night${nights !== 1 ? "s" : ""}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Estimated total</td>
+          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${amountLabel}</td>
+        </tr>
+      </table>
+      ${primaryButton(`${BASE_URL}/dashboard/bookings`, "Track this request")}
+      <p style="margin:0;font-size:13px;color:#9ca3af;">No payment has been taken. You'll settle up directly with the property.</p>
+    `),
+  });
+}
+
+export async function sendGuestReservationEnquiryReceived(
+  params: GuestReservationConfirmationParams
+): Promise<void> {
+  const { guestEmail, guestName, restaurantName, dateTime, partySize } = params;
+
+  const subject = `Your request at ${restaurantName} has been sent`;
+  const dateLabel = dateTime.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
+  const timeLabel = dateTime.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+
+  if (!HAS_RESEND) {
+    devLog(subject, `${BASE_URL}/dashboard/bookings`);
+    console.log(`  Guest: ${guestName} | Restaurant: ${restaurantName} | ${dateLabel} at ${timeLabel}`);
+    return;
+  }
+
+  const { Resend } = await import("resend");
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  await resend.emails.send({
+    from: FROM,
+    to: OVERRIDE_TO ?? guestEmail,
+    subject,
+    html: emailWrapper(`
+      <h2 style="margin:0 0 8px;font-size:20px;color:#111827;">Request sent!</h2>
+      <p style="margin:0 0 24px;font-size:15px;color:#6b7280;line-height:1.6;">
+        Hi ${guestName}, we've sent your table request to <strong style="color:#111827;">${restaurantName}</strong>. This isn't confirmed yet — the restaurant will accept or decline shortly, and we'll email you the moment they respond.
+      </p>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#9ca3af;width:40%;">Restaurant</td>
+          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${restaurantName}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Date</td>
+          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${dateLabel}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Time</td>
+          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${timeLabel}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Party size</td>
+          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${partySize} guest${partySize !== 1 ? "s" : ""}</td>
+        </tr>
+      </table>
+      ${primaryButton(`${BASE_URL}/dashboard/bookings`, "Track this request")}
+    `),
+  });
+}
+
+export interface GuestRequestDeclinedParams {
+  guestEmail: string;
+  guestName: string;
+  propertyName: string;
+  propertyType: "hotel" | "restaurant";
+}
+
+export async function sendGuestRequestDeclined(params: GuestRequestDeclinedParams): Promise<void> {
+  const { guestEmail, guestName, propertyName, propertyType } = params;
+  const noun = propertyType === "hotel" ? "stay" : "table";
+  const browseUrl = `${BASE_URL}/${propertyType === "hotel" ? "hotels" : "restaurants"}`;
+
+  const subject = `Update on your request at ${propertyName}`;
+
+  if (!HAS_RESEND) {
+    devLog(subject, browseUrl);
+    console.log(`  Guest: ${guestName} | Property: ${propertyName} | Declined`);
+    return;
+  }
+
+  const { Resend } = await import("resend");
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  await resend.emails.send({
+    from: FROM,
+    to: OVERRIDE_TO ?? guestEmail,
+    subject,
+    html: emailWrapper(`
+      <h2 style="margin:0 0 8px;font-size:20px;color:#111827;">Couldn't confirm this one</h2>
+      <p style="margin:0 0 24px;font-size:15px;color:#6b7280;line-height:1.6;">
+        Hi ${guestName}, unfortunately <strong style="color:#111827;">${propertyName}</strong> wasn't able to confirm your ${noun} request. No charge has been made. Here are other options that might work instead.
+      </p>
+      ${primaryButton(browseUrl, `Browse ${propertyType === "hotel" ? "hotels" : "restaurants"}`)}
+    `),
+  });
+}
+
 // ─── Guest event ticket confirmation ─────────────────────────────────────────
 
 export interface GuestEventConfirmationParams {

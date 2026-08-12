@@ -2,7 +2,7 @@ import { NextRequest, NextResponse, after } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { sendPartnerBookingNotification, sendGuestReservationConfirmation } from "@/lib/email";
+import { sendPartnerBookingNotification, sendGuestReservationEnquiryReceived } from "@/lib/email";
 import { z } from "zod";
 
 const schema = z.object({
@@ -49,6 +49,10 @@ export async function POST(
       return NextResponse.json({ error: "Reservation must be in the future." }, { status: 400 });
     }
 
+    // Restaurants aren't charged through the platform yet — this is a request
+    // the restaurant still has to accept, not a done deal. See
+    // dashboard/actions.ts partnerConfirmReservation for where it actually
+    // becomes CONFIRMED.
     const reservation = await prisma.tableReservation.create({
       data: {
         restaurantId: id,
@@ -59,7 +63,7 @@ export async function POST(
         email: body.email,
         phone: body.phone,
         notes: body.notes,
-        status: "CONFIRMED",
+        status: "PENDING",
       },
     });
 
@@ -82,7 +86,7 @@ export async function POST(
 
     // Confirm the guest — scheduled after response so mail latency never affects the guest
     after(() =>
-      sendGuestReservationConfirmation({
+      sendGuestReservationEnquiryReceived({
         guestEmail: body.email,
         guestName: body.name,
         restaurantName: restaurant.name,

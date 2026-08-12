@@ -47,9 +47,9 @@ export function ReservationForm({ restaurantId, restaurantName, isAuthenticated 
 
   if (confirmed) {
     return (
-      <div className="bg-white rounded-2xl border border-green-100 p-6 text-center">
-        <div className="text-4xl mb-3">🎉</div>
-        <h3 className="font-bold text-gray-900 mb-1">Reservation confirmed!</h3>
+      <div className="bg-white rounded-2xl border border-amber-100 p-6 text-center">
+        <div className="text-4xl mb-3">📨</div>
+        <h3 className="font-bold text-gray-900 mb-1">Request sent!</h3>
         <p className="text-sm text-gray-500 mb-1">
           {restaurantName}
         </p>
@@ -57,13 +57,13 @@ export function ReservationForm({ restaurantId, restaurantName, isAuthenticated 
           {new Date(date).toLocaleDateString("en-KE", { weekday: "long", day: "numeric", month: "long" })} at {time} · {partySize} guest{partySize > 1 ? "s" : ""}
         </p>
         <p className="text-xs text-gray-400">
-          A confirmation email will be sent to {email}.
+          The restaurant will confirm shortly — we&apos;ll email {email} either way.
         </p>
         <button
           onClick={() => setConfirmed(false)}
           className="mt-4 text-xs text-orange-600 hover:underline"
         >
-          Make another reservation
+          Make another request
         </button>
       </div>
     );
@@ -174,7 +174,7 @@ export function ReservationForm({ restaurantId, restaurantName, isAuthenticated 
           disabled={loading}
           className="w-full bg-orange-600 text-white py-3 rounded-xl text-sm font-semibold hover:bg-orange-700 transition disabled:opacity-50"
         >
-          {loading ? "Confirming…" : "Confirm reservation"}
+          {loading ? "Sending…" : "Request a table"}
         </button>
       </form>
     </div>
