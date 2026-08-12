@@ -1,12 +1,25 @@
-import { NextRequest, NextResponse, after } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { sendPartnerBookingNotification, sendGuestEventConfirmation } from "@/lib/email";
 import { z } from "zod";
+import { configBaseUrl } from "@/lib/config-check";
+import { HAS_MPESA, isValidMsisdn, stkPush } from "@/lib/payments/mpesa";
+import { HAS_FLUTTERWAVE, initializePayment } from "@/lib/payments/flutterwave";
+import {
+  CapacityError,
+  attachProviderRef,
+  bookingWithContext,
+  createPendingPayment,
+  markPaymentFailed,
+  reserveEventBooking,
+} from "@/lib/payments/ledger";
+import { notifyEventBookingConfirmed } from "@/lib/payments/notify";
 
 const schema = z.object({
   quantity: z.number().int().min(1).max(10),
+  method: z.enum(["mpesa", "flutterwave"]).optional(),
+  phone: z.string().optional(),
 });
 
 export async function POST(
@@ -20,90 +33,138 @@ export async function POST(
     }
 
     const { id } = await params;
-    const { quantity } = schema.parse(await req.json());
+    const { quantity, method, phone } = schema.parse(await req.json());
 
     const event = await prisma.event.findUnique({
       where: { id },
-      select: {
-        id: true,
-        title: true,
-        price: true,
-        currency: true,
-        capacity: true,
-        published: true,
-        startDate: true,
-        partner: { select: { user: { select: { name: true, email: true } } } },
-      },
+      select: { id: true, title: true, price: true, currency: true, capacity: true, published: true },
     });
 
     if (!event || !event.published) {
       return NextResponse.json({ error: "Event not found." }, { status: 404 });
     }
 
-    // Check capacity
-    const totalBooked = await prisma.booking.aggregate({
-      where: { eventId: id },
-      _sum: { quantity: true },
-    });
-    const booked = totalBooked._sum.quantity ?? 0;
-    if (booked + quantity > event.capacity) {
-      return NextResponse.json(
-        { error: `Only ${event.capacity - booked} tickets remaining.` },
-        { status: 409 }
-      );
-    }
+    const isFree = Number(event.price) === 0;
 
-    const totalAmount = Number(event.price) * quantity;
-
-    const booking = await prisma.booking.create({
-      data: {
+    // ── Free tickets: unchanged instant-confirm path ──────────────────────
+    if (isFree) {
+      const booking = await reserveEventBooking({
         userId: session.user.id,
-        type: "EVENT",
-        status: "CONFIRMED",
-        quantity,
-        totalAmount,
-        currency: event.currency,
         eventId: id,
-      },
+        quantity,
+        capacity: event.capacity,
+        unitPrice: 0,
+        currency: event.currency,
+        status: "CONFIRMED",
+      });
+
+      const withContext = await prisma.booking.findUniqueOrThrow({
+        where: { id: booking.id },
+        ...bookingWithContext,
+      });
+      notifyEventBookingConfirmed(withContext);
+
+      return NextResponse.json({ booking }, { status: 201 });
+    }
+
+    // ── Paid tickets: reserve capacity, create a PENDING booking + payment,
+    //    then hand off to whichever gateway the guest picked ──────────────
+    if (!method) {
+      return NextResponse.json({ error: "Choose a payment method." }, { status: 400 });
+    }
+    if (method === "mpesa" && !HAS_MPESA) {
+      return NextResponse.json({ error: "M-Pesa is not configured yet." }, { status: 503 });
+    }
+    if (method === "flutterwave" && !HAS_FLUTTERWAVE) {
+      return NextResponse.json({ error: "Card payment is not configured yet." }, { status: 503 });
+    }
+    if (method === "mpesa" && (!phone || !isValidMsisdn(phone))) {
+      return NextResponse.json({ error: "Enter a valid M-Pesa phone number." }, { status: 400 });
+    }
+
+    const booking = await reserveEventBooking({
+      userId: session.user.id,
+      eventId: id,
+      quantity,
+      capacity: event.capacity,
+      unitPrice: Number(event.price),
+      currency: event.currency,
+      status: "PENDING",
     });
 
-    // Notify the partner — scheduled after response so mail latency never affects the guest
-    const partnerUser = event.partner?.user;
-    if (partnerUser?.email) {
-      const dateLabel = event.startDate.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
-      const timeLabel = event.startDate.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
-      after(() =>
-        sendPartnerBookingNotification({
-          partnerEmail: partnerUser.email,
-          partnerName: partnerUser.name ?? "Partner",
-          guestName: session.user.name ?? session.user.email ?? "A guest",
-          propertyName: event.title,
-          propertyType: "event",
-          bookingDetail: `${quantity} ticket${quantity !== 1 ? "s" : ""} · ${dateLabel} at ${timeLabel}`,
-        }).catch((err) => console.error("[partner-notify] event booking email failed:", err))
-      );
+    const provider = method === "mpesa" ? "MPESA" : "FLUTTERWAVE";
+    const payment = await createPendingPayment({
+      bookingId: booking.id,
+      provider,
+      amount: Number(booking.totalAmount),
+      currency: event.currency,
+      phone: method === "mpesa" ? phone : undefined,
+    });
+
+    if (method === "mpesa") {
+      try {
+        const stk = await stkPush({
+          phone: phone!,
+          amount: Number(booking.totalAmount),
+          accountReference: booking.id,
+          transactionDesc: event.title,
+          callbackUrl: `${configBaseUrl}/api/payments/mpesa/callback`,
+        });
+        await attachProviderRef(payment.id, stk.checkoutRequestId);
+
+        return NextResponse.json(
+          {
+            booking: { id: booking.id, status: booking.status },
+            payment: { id: payment.id, status: payment.status },
+            checkoutRequestId: stk.checkoutRequestId,
+            message: stk.customerMessage,
+          },
+          { status: 201 }
+        );
+      } catch (err) {
+        await markPaymentFailed({ paymentId: payment.id });
+        console.error("[POST /api/events/[id]/book] M-Pesa STK push failed:", err);
+        return NextResponse.json({ error: "Could not start M-Pesa payment. Please try again." }, { status: 502 });
+      }
     }
 
-    // Confirm the guest — scheduled after response so mail latency never affects the guest
-    const guestEmail = session.user.email;
-    if (guestEmail) {
-      after(() =>
-        sendGuestEventConfirmation({
-          guestEmail,
-          guestName: session.user.name ?? guestEmail,
-          eventTitle: event.title,
-          eventDate: event.startDate,
-          quantity,
-          totalAmount,
-          currency: event.currency,
-        }).catch((err) => console.error("[guest-confirm] event booking email failed:", err))
-      );
+    // Flutterwave
+    if (!session.user.email) {
+      await markPaymentFailed({ paymentId: payment.id });
+      return NextResponse.json({ error: "Your account needs a verified email to pay by card." }, { status: 400 });
     }
+    try {
+      await attachProviderRef(payment.id, payment.id);
+      const { paymentLink } = await initializePayment({
+        txRef: payment.id,
+        amount: Number(booking.totalAmount),
+        currency: event.currency,
+        redirectUrl: `${configBaseUrl}/api/payments/flutterwave/callback`,
+        customerEmail: session.user.email,
+        customerName: session.user.name ?? undefined,
+        title: "Burch Event Ticket",
+        description: event.title,
+      });
 
-    return NextResponse.json({ booking }, { status: 201 });
+      return NextResponse.json(
+        {
+          booking: { id: booking.id, status: booking.status },
+          payment: { id: payment.id, status: payment.status },
+          paymentLink,
+        },
+        { status: 201 }
+      );
+    } catch (err) {
+      await markPaymentFailed({ paymentId: payment.id });
+      console.error("[POST /api/events/[id]/book] Flutterwave initialize failed:", err);
+      return NextResponse.json({ error: "Could not start card payment. Please try again." }, { status: 502 });
+    }
   } catch (err) {
     if (err instanceof z.ZodError) {
       return NextResponse.json({ error: err.errors[0].message }, { status: 400 });
+    }
+    if (err instanceof CapacityError) {
+      return NextResponse.json({ error: err.message }, { status: 409 });
     }
     console.error("[POST /api/events/[id]/book]", err);
     return NextResponse.json({ error: "Booking failed." }, { status: 500 });

@@ -7,6 +7,8 @@ import { EventGrid } from "@/components/events/EventGrid";
 import { OrganizerCard } from "@/components/events/OrganizerCard";
 import { TicketSelector } from "@/components/events/TicketSelector";
 import { Badge } from "@/components/ui/Badge";
+import { HAS_MPESA } from "@/lib/payments/mpesa";
+import { HAS_FLUTTERWAVE } from "@/lib/payments/flutterwave";
 import {
   CATEGORY_LABELS,
   CATEGORY_COLORS,
@@ -219,6 +221,8 @@ export default async function EventDetailPage({ params }: PageProps) {
                 remaining={remaining}
                 isAuthenticated={!!session}
                 loginUrl={loginUrl}
+                hasMpesa={HAS_MPESA}
+                hasFlutterwave={HAS_FLUTTERWAVE}
               />
 
               {/* Capacity info */}
