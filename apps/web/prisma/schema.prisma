@@ -355,8 +355,36 @@ model Booking {
   hotel      Hotel?      @relation(fields: [hotelId], references: [id])
   room       Room?       @relation(fields: [roomId], references: [id])
   restaurant Restaurant? @relation(fields: [restaurantId], references: [id])
+  payments   Payment[]
 
   @@map("bookings")
+}
+
+// ─── Payments ────────────────────────────────────────────────────────────────
+// Transaction ledger for paid bookings (currently: event tickets). One row per
+// payment attempt, so a failed/expired M-Pesa push can be retried without
+// losing the audit trail. Booking.paymentRef/paymentMethod are set from the
+// successful Payment row once one exists.
+
+model Payment {
+  id          String          @id @default(cuid())
+  bookingId   String
+  provider    PaymentProvider
+  status      PaymentStatus   @default(PENDING)
+  amount      Decimal         @db.Decimal(10, 2)
+  currency    String          @default("KES")
+  phone       String? // M-Pesa payer phone (MSISDN)
+  providerRef String? // Daraja CheckoutRequestID / Flutterwave tx_ref
+  receiptRef  String? // Daraja MpesaReceiptNumber / Flutterwave transaction_id, set on success
+  rawCallback Json?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@index([bookingId])
+  @@index([provider, providerRef])
+  @@map("payments")
 }
 
 // ─── Enums ───────────────────────────────────────────────────────────────────
@@ -404,4 +432,15 @@ enum ReservationStatus {
   CONFIRMED
   CANCELLED
   COMPLETED
+}
+
+enum PaymentProvider {
+  MPESA
+  FLUTTERWAVE
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
 }

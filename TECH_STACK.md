@@ -23,8 +23,8 @@
 
 ## Payments
 
-- M-Pesa
-- Stripe
+- M-Pesa Daraja (STK Push) — event ticket checkout
+- Flutterwave — card checkout, event ticket checkout
 
 ## AI
 
