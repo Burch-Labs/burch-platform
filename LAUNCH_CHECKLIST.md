@@ -27,7 +27,7 @@
 ## Payments
 
 - M-Pesa
-- Stripe
+- Flutterwave
 
 ## AI
 
@@ -37,6 +37,6 @@
 ## Infrastructure
 
 - PostgreSQL
-- Render
+- Replit (autoscale deployment)
 - Monitoring
 - Backups
