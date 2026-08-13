@@ -132,6 +132,43 @@ function checkConfig(): ConfigIssue[] {
     });
   }
 
+  // ── AI agents (Anthropic / OpenAI) ───────────────────────────────────────
+  if (!process.env.ANTHROPIC_API_KEY && !process.env.OPENAI_API_KEY) {
+    issues.push({
+      level: "warn",
+      key: "ANTHROPIC_API_KEY",
+      message:
+        "Neither ANTHROPIC_API_KEY nor OPENAI_API_KEY is set. " +
+        "The Concierge and /api/agents endpoints will fall back to rule-based responses instead of Claude/GPT.",
+    });
+  }
+
+  // ── M-Pesa (event ticket payments) ───────────────────────────────────────
+  const mpesaKeys = ["MPESA_CONSUMER_KEY", "MPESA_CONSUMER_SECRET", "MPESA_PASSKEY", "MPESA_SHORTCODE"] as const;
+  const mpesaPresent = mpesaKeys.filter((k) => !!process.env[k]);
+  if (mpesaPresent.length > 0 && mpesaPresent.length < mpesaKeys.length) {
+    const missing = mpesaKeys.filter((k) => !process.env[k]);
+    issues.push({
+      level: isProd ? "error" : "warn",
+      key: "MPESA_CONSUMER_KEY",
+      message:
+        `M-Pesa is partially configured — missing ${missing.join(", ")}. ` +
+        "STK Push stays disabled until all four MPESA_* variables are set, but this looks like an incomplete setup rather than an intentional one.",
+    });
+  }
+
+  // ── Flutterwave (card payments) ──────────────────────────────────────────
+  if (process.env.FLUTTERWAVE_SECRET_KEY && !process.env.FLUTTERWAVE_SECRET_HASH) {
+    issues.push({
+      level: isProd ? "error" : "warn",
+      key: "FLUTTERWAVE_SECRET_HASH",
+      message:
+        "FLUTTERWAVE_SECRET_KEY is set but FLUTTERWAVE_SECRET_HASH is missing. " +
+        "Card payments can still be initiated, but the webhook will reject every callback (no valid signature to check against), " +
+        "so confirmation relies entirely on the browser-redirect fallback. Set FLUTTERWAVE_SECRET_HASH to the value configured in your Flutterwave dashboard webhook settings.",
+    });
+  }
+
   return issues;
 }
 
