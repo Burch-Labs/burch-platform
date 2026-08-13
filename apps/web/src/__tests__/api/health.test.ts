@@ -131,6 +131,27 @@ describe("GET /api/health", () => {
     expect(body.config.errors).toHaveLength(0);
   });
 
+  it("flags malformed Google OAuth client IDs as configuration errors", async () => {
+    const { GET } = loadHealthRouteWithEnv({
+      NEXTAUTH_SECRET: "a-very-long-random-secret-string",
+      NEXTAUTH_URL: "http://localhost:5000",
+      RESEND_API_KEY: "re_test_key",
+      GOOGLE_CLIENT_ID: "cd /workspaces/burch-platform gh auth status",
+      GOOGLE_CLIENT_SECRET: "GOCSPX-test-secret-value",
+    });
+
+    const res = await GET();
+    const body = await res.json();
+
+    expect(res.status).toBe(503);
+    expect(body.status).toBe("degraded");
+
+    const errorKeys: string[] = body.config.errors.map(
+      (e: { key: string }) => e.key
+    );
+    expect(errorKeys).toContain("GOOGLE_CLIENT_ID");
+  });
+
   it("response body always contains a parseable timestamp field", async () => {
     const { GET } = loadHealthRouteWithEnv({
       NEXTAUTH_SECRET: "some-secret",

@@ -2,6 +2,7 @@ import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcryptjs";
 import { prisma } from "./prisma";
+import { isValidGoogleClientId } from "./config-check";
 // Run startup config check so deployment logs surface misconfigurations early
 import "./config-check";
 
@@ -40,13 +41,20 @@ const providers: NextAuthOptions["providers"] = [
   }),
 ];
 
-// Add Google provider only when credentials are configured
-if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+// Add Google provider only when credentials are configured and formatted like a real Google OAuth client.
+const googleClientId = process.env.GOOGLE_CLIENT_ID?.trim();
+const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET?.trim();
+const googleEnabled =
+  !!googleClientId &&
+  !!googleClientSecret &&
+  isValidGoogleClientId(googleClientId);
+
+if (googleEnabled) {
   const { default: GoogleProvider } = require("next-auth/providers/google");
   providers.push(
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientId: googleClientId,
+      clientSecret: googleClientSecret,
       allowDangerousEmailAccountLinking: true,
     })
   );

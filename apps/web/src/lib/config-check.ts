@@ -34,6 +34,13 @@ function isPlausibleUrl(value: string): boolean {
   }
 }
 
+export function isValidGoogleClientId(value: string | undefined): boolean {
+  if (!value) return false;
+  const trimmed = value.trim();
+  if (!trimmed || /\s/.test(trimmed)) return false;
+  return /^[A-Za-z0-9_-]+\.apps\.googleusercontent\.com$/i.test(trimmed);
+}
+
 function checkConfig(): ConfigIssue[] {
   const issues: ConfigIssue[] = [];
   const isProd = process.env.NODE_ENV === "production";
@@ -81,8 +88,11 @@ function checkConfig(): ConfigIssue[] {
   }
 
   // ── Google OAuth ─────────────────────────────────────────────────────────
-  const hasGoogleId = !!process.env.GOOGLE_CLIENT_ID;
-  const hasGoogleSecret = !!process.env.GOOGLE_CLIENT_SECRET;
+  const googleClientId = process.env.GOOGLE_CLIENT_ID?.trim();
+  const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET?.trim();
+  const hasGoogleId = !!googleClientId;
+  const hasGoogleSecret = !!googleClientSecret;
+  const googleClientIdLooksValid = isValidGoogleClientId(googleClientId);
 
   if (hasGoogleId && !hasGoogleSecret) {
     issues.push({
@@ -100,6 +110,16 @@ function checkConfig(): ConfigIssue[] {
       message:
         "GOOGLE_CLIENT_SECRET is set but GOOGLE_CLIENT_ID is missing. " +
         "Google sign-in will fail. Add GOOGLE_CLIENT_ID or remove both vars to disable Google auth.",
+    });
+  }
+  if (hasGoogleId && !googleClientIdLooksValid) {
+    issues.push({
+      level: "error",
+      key: "GOOGLE_CLIENT_ID",
+      message:
+        `GOOGLE_CLIENT_ID="${googleClientId}" is not a valid Google OAuth client ID. ` +
+        "Use the client ID from Google Cloud Console (for example: 1234567890-abc123.apps.googleusercontent.com). " +
+        "This app will disable Google sign-in until the value is corrected.",
     });
   }
   if (!hasGoogleId && !hasGoogleSecret) {
