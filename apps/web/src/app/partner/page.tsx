@@ -141,6 +141,27 @@ export default async function PartnerPage() {
               <span className="text-gray-400 group-hover:text-orange-500 transition">→</span>
             </Link>
 
+            {/* Check-in shortcut */}
+            {partner._count.events > 0 && (
+              <Link
+                href="/partner/checkin"
+                className="mb-4 flex items-center justify-between bg-white rounded-2xl border border-gray-200 px-6 py-4 hover:border-orange-300 hover:shadow-sm transition group"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">🎫</span>
+                  <div>
+                    <p className="font-semibold text-gray-900 group-hover:text-orange-600 transition">
+                      Ticket Check-in
+                    </p>
+                    <p className="text-xs text-gray-500 mt-0.5">
+                      Scan a guest's QR code or enter their ticket code at the door
+                    </p>
+                  </div>
+                </div>
+                <span className="text-gray-400 group-hover:text-orange-500 transition">→</span>
+              </Link>
+            )}
+
             {/* Quick actions */}
             <div className="bg-white rounded-2xl border border-gray-200 p-6">
               <h2 className="font-semibold text-gray-900 mb-4">Quick actions</h2>

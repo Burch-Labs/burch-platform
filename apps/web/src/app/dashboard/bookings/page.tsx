@@ -49,6 +49,7 @@ type Row = {
   status: BookingStatus | ReservationStatus;
   amount: string | null;
   createdAt: Date;
+  ticketId: string | null;
 };
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
@@ -124,6 +125,7 @@ export default async function BookingHistoryPage({
           status: b.status,
           amount: `${b.currency} ${Number(b.totalAmount).toLocaleString()}`,
           createdAt: b.createdAt,
+          ticketId: null,
         };
       }
       if (b.type === "EVENT") {
@@ -141,6 +143,7 @@ export default async function BookingHistoryPage({
           status: b.status,
           amount: `${b.currency} ${Number(b.totalAmount).toLocaleString()}`,
           createdAt: b.createdAt,
+          ticketId: b.status === "CONFIRMED" ? b.id : null,
         };
       }
       return {
@@ -153,6 +156,7 @@ export default async function BookingHistoryPage({
         status: b.status,
         amount: `${b.currency} ${Number(b.totalAmount).toLocaleString()}`,
         createdAt: b.createdAt,
+        ticketId: null,
       };
     }),
     ...reservations.map((r): Row => ({
@@ -169,6 +173,7 @@ export default async function BookingHistoryPage({
       status: r.status,
       amount: null,
       createdAt: r.createdAt,
+      ticketId: null,
     })),
   ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
@@ -229,6 +234,11 @@ export default async function BookingHistoryPage({
                     <StatusBadge status={row.status} />
                     {row.amount && (
                       <p className="text-xs font-medium text-gray-700">{row.amount}</p>
+                    )}
+                    {row.ticketId && (
+                      <Link href={`/tickets/${row.ticketId}`} className="text-xs font-medium text-orange-600 hover:underline">
+                        View ticket 🎫
+                      </Link>
                     )}
                     {(row.status === "PENDING" || row.status === "CONFIRMED") && (
                       <CancelButton id={row.id} kind={row.kind} />
