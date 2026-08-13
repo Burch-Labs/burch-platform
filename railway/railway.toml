@@ -1,0 +1,7 @@
+[build]
+builder = "nixpacks"
+buildCommand = "npm ci --legacy-peer-deps && cd apps/web && npm run build"
+
+[deploy]
+startCommand = "cd apps/web && npm start"
+PORT = 3000
