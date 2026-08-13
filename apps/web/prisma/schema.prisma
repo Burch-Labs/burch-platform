@@ -342,6 +342,8 @@ model Booking {
   paymentRef    String?
   paymentMethod String?
   notes         String?
+  checkInToken  String?       @unique
+  checkedInAt   DateTime?
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
 

@@ -7,6 +7,7 @@
 
 import { prisma } from "@/lib/prisma";
 import type { PaymentProvider, Prisma } from "@prisma/client";
+import { generateCheckInToken } from "@/lib/tickets";
 
 export class CapacityError extends Error {}
 
@@ -45,6 +46,9 @@ export async function reserveEventBooking(params: {
         totalAmount: unitPrice * quantity,
         currency,
         eventId,
+        // Paid bookings get their check-in token once payment actually succeeds
+        // (see markPaymentSuccess) — a PENDING ticket isn't a real ticket yet.
+        checkInToken: status === "CONFIRMED" ? generateCheckInToken() : undefined,
       },
     });
   });
@@ -102,12 +106,18 @@ export async function markPaymentSuccess(params: {
     },
   });
 
+  const existing = await prisma.booking.findUniqueOrThrow({
+    where: { id: payment.bookingId },
+    select: { checkInToken: true },
+  });
+
   return prisma.booking.update({
     where: { id: payment.bookingId },
     data: {
       status: "CONFIRMED",
       paymentRef: params.receiptRef,
       paymentMethod: payment.provider,
+      checkInToken: existing.checkInToken ?? generateCheckInToken(),
     },
     ...bookingWithContext,
   });
