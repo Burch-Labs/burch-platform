@@ -1,0 +1,59 @@
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                    RENDER DEPLOYMENT - ENVIRONMENT VARIABLES                    ║
+║                         Copy-paste into Render Settings                         ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+DATABASE_URL
+postgresql://neondb_owner:npg_KCRaZ2oTszx8@ep-curly-darkness-at7f7sr9-pooler.c-9.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+
+NEXTAUTH_SECRET
+B1AXW6CUWQHVn5eGTmiA1398Dwa0ueImzuhzRR9s2tc=
+
+NEXTAUTH_URL
+https://burch-platform.onrender.com
+
+RESEND_API_KEY
+re_Am94ybid
+
+EMAIL_FROM
+Burch Platform <onboarding@resend.dev>
+
+EMAIL_OVERRIDE_TO
+sparksnairobi@gmail.com
+
+MPESA_ENV
+sandbox
+
+MPESA_CONSUMER_KEY
+Czp2VHTLQg8NMmuiEIQSq6hdJ8qZyBHDrrM3Pe6OVV1UmNtE
+
+MPESA_CONSUMER_SECRET
+NUq6LcJS3BEouGDu2KGVs63qYs77fUttyW4fnGJOa9YmpHlouT7eJRWdAwVgU50Z
+
+MPESA_PASSKEY
+MTc0Mzc5YmZiMjc5TliZGJjZjE1OGU5N2RkNzFhNDY3Y2QyZTBjODkzMDU5YjEwZjc4ZTZiNzJhZGExZWQyYzkxOTIwMTYwMjE2MTY1NjI3
+
+MPESA_SHORTCODE
+174379
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+NEXT STEPS:
+1. Go to https://render.com
+2. Create new Web Service
+3. Connect GitHub repo: Burch-Labs/burch-platform
+4. Set Build: npm install && cd apps/web && npm run build
+5. Set Start: cd apps/web && npm start
+6. Instance: Free
+7. Add each variable above to Environment Variables section
+8. Click "Create Web Service"
+9. Wait 3-5 min for deployment
+10. Once green, go to Shell tab and run: cd apps/web && npm run db:push
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+TESTING THE DEPLOYMENT:
+- URL: https://burch-platform.onrender.com
+- Health: curl https://burch-platform.onrender.com/api/health
+- M-Pesa test phone: 254708374149
+- All emails redirect to: sparksnairobi@gmail.com
