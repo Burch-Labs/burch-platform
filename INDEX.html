@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Burch Platform - Complete Index</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section ul {
+            list-style: none;
+        }
+
+        .section li {
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .section li:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .link-item {
+            display: block;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s ease;
+            padding: 8px 0;
+        }
+
+        .link-item:hover {
+            color: #667eea;
+            padding-left: 8px;
+        }
+
+        .link-label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .link-description {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .link-url {
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            color: #999;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            margin-top: 4px;
+        }
+
+        .badge.status {
+            background: #10b981;
+        }
+
+        .badge.optional {
+            background: #f59e0b;
+        }
+
+        .status-section {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 30px;
+            border-left: 4px solid #667eea;
+        }
+
+        .status-section h3 {
+            color: #1f2937;
+            margin-bottom: 15px;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .status-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid #10b981;
+        }
+
+        .status-item.warning {
+            border-left-color: #f59e0b;
+        }
+
+        .status-item.error {
+            border-left-color: #ef4444;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .quick-start {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+        }
+
+        .quick-start h2 {
+            color: white;
+            border-bottom-color: rgba(255,255,255,0.3);
+            margin-bottom: 15px;
+        }
+
+        .quick-start ol {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        .quick-start li {
+            margin-bottom: 10px;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Burch Platform</h1>
+            <p>Complete Navigation Index - All Working Routes & Features</p>
+        </header>
+
+        <div class="quick-start">
+            <h2>⚡ Quick Start</h2>
+            <ol>
+                <li><strong>New User?</strong> Start with <a href="/auth/signup" style="color: white; text-decoration: underline;">Sign Up</a> or <a href="/auth/signin" style="color: white; text-decoration: underline;">Sign In</a></li>
+                <li><strong>Looking for Events?</strong> Browse <a href="/events" style="color: white; text-decoration: underline;">Events</a>, <a href="/hotels" style="color: white; text-decoration: underline;">Hotels</a>, or <a href="/restaurants" style="color: white; text-decoration: underline;">Restaurants</a></li>
+                <li><strong>Already booked?</strong> View your <a href="/dashboard/bookings" style="color: white; text-decoration: underline;">Bookings & Tickets</a></li>
+                <li><strong>Event organizer?</strong> Go to <a href="/partner" style="color: white; text-decoration: underline;">Partner Dashboard</a> to manage your events</li>
+                <li><strong>Check in guests?</strong> Use <a href="/partner/checkin" style="color: white; text-decoration: underline;">Ticket Check-in</a></li>
+            </ol>
+        </div>
+
+        <div class="grid">
+            <!-- Authentication Section -->
+            <div class="section">
+                <h2>🔐 Authentication</h2>
+                <ul>
+                    <li>
+                        <a href="/auth/signin" class="link-item">
+                            <span class="link-label">Sign In</span>
+                            <span class="link-description">Login with email & password</span>
+                            <span class="link-url">/auth/signin</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/auth/signup" class="link-item">
+                            <span class="link-label">Sign Up</span>
+                            <span class="link-description">Create a new account</span>
+                            <span class="link-url">/auth/signup</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/auth/forgot-password" class="link-item">
+                            <span class="link-label">Forgot Password</span>
+                            <span class="link-description">Reset your password</span>
+                            <span class="link-url">/auth/forgot-password</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Guest Dashboard Section -->
+            <div class="section">
+                <h2>👤 My Dashboard (Guest)</h2>
+                <ul>
+                    <li>
+                        <a href="/dashboard" class="link-item">
+                            <span class="link-label">Dashboard Home</span>
+                            <span class="link-description">Your bookings & overview</span>
+                            <span class="link-url">/dashboard</span>
+                            <span class="badge status">Authenticated</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/dashboard/bookings" class="link-item">
+                            <span class="link-label">My Bookings</span>
+                            <span class="link-description">All your bookings (events, hotels, restaurants)</span>
+                            <span class="link-url">/dashboard/bookings</span>
+                            <span class="badge status">Authenticated</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/dashboard/bookings/[bookingId]" class="link-item">
+                            <span class="link-label">Edit Booking</span>
+                            <span class="link-description">Modify booking details or cancel</span>
+                            <span class="link-url">/dashboard/bookings/[bookingId]</span>
+                            <span class="badge status">Authenticated</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Tickets Section -->
+            <div class="section">
+                <h2>🎫 Tickets & Check-in</h2>
+                <ul>
+                    <li>
+                        <a href="/tickets/[bookingId]" class="link-item">
+                            <span class="link-label">Digital Event Ticket</span>
+                            <span class="link-description">View QR code & check-in code for event</span>
+                            <span class="link-url">/tickets/[bookingId]</span>
+                            <span class="badge status">Authenticated</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/checkin/[token]" class="link-item">
+                            <span class="link-label">Check-in (Guest)</span>
+                            <span class="link-description">Scan QR or enter code to check in</span>
+                            <span class="link-url">/checkin/[token]</span>
+                            <span class="badge">Public</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Browse Section -->
+            <div class="section">
+                <h2>🏨 Browse & Book</h2>
+                <ul>
+                    <li>
+                        <a href="/events" class="link-item">
+                            <span class="link-label">Events</span>
+                            <span class="link-description">Browse & book events</span>
+                            <span class="link-url">/events</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/hotels" class="link-item">
+                            <span class="link-label">Hotels</span>
+                            <span class="link-description">Browse & request hotel stays</span>
+                            <span class="link-url">/hotels</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/restaurants" class="link-item">
+                            <span class="link-label">Restaurants</span>
+                            <span class="link-description">Browse & request restaurant reservations</span>
+                            <span class="link-url">/restaurants</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Partner Dashboard Section -->
+            <div class="section">
+                <h2>👨‍💼 Partner Dashboard</h2>
+                <ul>
+                    <li>
+                        <a href="/partner" class="link-item">
+                            <span class="link-label">Partner Home</span>
+                            <span class="link-description">Overview & shortcuts</span>
+                            <span class="link-url">/partner</span>
+                            <span class="badge status">Partner</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/partner/checkin" class="link-item">
+                            <span class="link-label">Ticket Check-in</span>
+                            <span class="link-description">Scan QR codes or enter codes to check guests in</span>
+                            <span class="link-url">/partner/checkin</span>
+                            <span class="badge status">Partner</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Events Management Section -->
+            <div class="section">
+                <h2>🎪 Manage Events</h2>
+                <ul>
+                    <li>
+                        <a href="/partner/events" class="link-item">
+                            <span class="link-label">My Events</span>
+                            <span class="link-description">List of all your events</span>
+                            <span class="link-url">/partner/events</span>
+                            <span class="badge status">Partner</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/partner/events/create" class="link-item">
+                            <span class="link-label">Create Event</span>
+                            <span class="link-description">Add a new event</span>
+                            <span class="link-url">/partner/events/create</span>
+                            <span class="badge status">Partner</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/partner/events/[eventId]" class="link-item">
+                            <span class="link-label">Edit Event</span>
+                            <span class="link-description">Modify event details</span>
+                            <span class="link-url">/partner/events/[eventId]</span>
+                            <span class="badge status">Partner</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/partner/events/[eventId]/bookings" class="link-item">
+                            <span class="link-label">Event Bookings</span>
+                            <span class="link-description">View & manage event tickets & attendees</span>
+                            <span class="link-url">/partner/events/[eventId]/bookings</span>
+                            <span class="badge status">Partner</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Hotels Management Section -->
+            <div class="section">
+                <h2>🏩 Manage Hotels</h2>
+                <ul>
+                    <li>
+                        <a href="/partner/hotels" class="link-item">
+                            <span class="link-label">My Hotels</span>
+                            <span class="link-description">List of all your hotels</span>
+                            <span class="link-url">/partner/hotels</span>
+                            <span class="badge status">Partner</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/partner/hotels/create" class="link-item">
+                            <span class="link-label">Create Hotel</span>
+                            <span class="link-description">Add a new hotel</span>
+                            <span class="link-url">/partner/hotels/create</span>
+                            <span class="badge status">Partner</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/partner/hotels/[hotelId]" class="link-item">
+                            <span class="link-label">Edit Hotel</span>
+                            <span class="link-description">Modify hotel details</span>
+                            <span class="link-url">/partner/hotels/[hotelId]</span>
+                            <span class="badge status">Partner</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/partner/hotels/[hotelId]/bookings" class="link-item">
+                            <span class="link-label">Hotel Requests</span>
+                            <span class="link-description">Manage booking requests & confirmations</span>
+                            <span class="link-url">/partner/hotels/[hotelId]/bookings</span>
+                            <span class="badge status">Partner</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Restaurants Management Section -->
+            <div class="section">
+                <h2>🍽️ Manage Restaurants</h2>
+                <ul>
+                    <li>
+                        <a href="/partner/restaurants" class="link-item">
+                            <span class="link-label">My Restaurants</span>
+                            <span class="link-description">List of all your restaurants</span>
+                            <span class="link-url">/partner/restaurants</span>
+                            <span class="badge status">Partner</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/partner/restaurants/create" class="link-item">
+                            <span class="link-label">Create Restaurant</span>
+                            <span class="link-description">Add a new restaurant</span>
+                            <span class="link-url">/partner/restaurants/create</span>
+                            <span class="badge status">Partner</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/partner/restaurants/[restaurantId]" class="link-item">
+                            <span class="link-label">Edit Restaurant</span>
+                            <span class="link-description">Modify restaurant details</span>
+                            <span class="link-url">/partner/restaurants/[restaurantId]</span>
+                            <span class="badge status">Partner</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/partner/restaurants/[restaurantId]/bookings" class="link-item">
+                            <span class="link-label">Restaurant Requests</span>
+                            <span class="link-description">Manage reservation requests & confirmations</span>
+                            <span class="link-url">/partner/restaurants/[restaurantId]/bookings</span>
+                            <span class="badge status">Partner</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Admin Section -->
+            <div class="section">
+                <h2>⚙️ Admin</h2>
+                <ul>
+                    <li>
+                        <a href="/admin" class="link-item">
+                            <span class="link-label">Admin Dashboard</span>
+                            <span class="link-description">System overview & management</span>
+                            <span class="link-url">/admin</span>
+                            <span class="badge status">Admin</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/users" class="link-item">
+                            <span class="link-label">Users</span>
+                            <span class="link-description">Manage all users</span>
+                            <span class="link-url">/admin/users</span>
+                            <span class="badge status">Admin</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/partners" class="link-item">
+                            <span class="link-label">Partners</span>
+                            <span class="link-description">Manage all partners</span>
+                            <span class="link-url">/admin/partners</span>
+                            <span class="badge status">Admin</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/events" class="link-item">
+                            <span class="link-label">Events</span>
+                            <span class="link-description">Manage all events</span>
+                            <span class="link-url">/admin/events</span>
+                            <span class="badge status">Admin</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/hotels" class="link-item">
+                            <span class="link-label">Hotels</span>
+                            <span class="link-description">Manage all hotels</span>
+                            <span class="link-url">/admin/hotels</span>
+                            <span class="badge status">Admin</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/restaurants" class="link-item">
+                            <span class="link-label">Restaurants</span>
+                            <span class="link-description">Manage all restaurants</span>
+                            <span class="link-url">/admin/restaurants</span>
+                            <span class="badge status">Admin</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- API Section -->
+            <div class="section">
+                <h2>🔌 API Endpoints</h2>
+                <ul>
+                    <li>
+                        <a href="/api/health" class="link-item">
+                            <span class="link-label">Health Check</span>
+                            <span class="link-description">API health status (503 if config errors)</span>
+                            <span class="link-url">GET /api/health</span>
+                            <span class="badge">Public</span>
+                        </a>
+                    </li>
+                    <li>
+                        <span class="link-item">
+                            <span class="link-label">Payment Webhooks</span>
+                            <span class="link-description">M-Pesa & Flutterwave callbacks</span>
+                            <span class="link-url">POST /api/webhooks/*</span>
+                            <span class="badge optional">Internal</span>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Documentation Section -->
+            <div class="section">
+                <h2>📚 Documentation</h2>
+                <ul>
+                    <li>
+                        <span class="link-item">
+                            <span class="link-label">Self-Hosting Guide</span>
+                            <span class="link-description">Complete deployment on your server</span>
+                            <span class="link-url">SELF_HOSTING_GUIDE.md</span>
+                        </span>
+                    </li>
+                    <li>
+                        <span class="link-item">
+                            <span class="link-label">Download Instructions</span>
+                            <span class="link-description">How to download & set up locally</span>
+                            <span class="link-url">DOWNLOAD_INSTRUCTIONS.md</span>
+                        </span>
+                    </li>
+                    <li>
+                        <span class="link-item">
+                            <span class="link-label">Deployment Guide</span>
+                            <span class="link-description">Environment variables & setup</span>
+                            <span class="link-url">DEPLOYMENT.md</span>
+                        </span>
+                    </li>
+                    <li>
+                        <span class="link-item">
+                            <span class="link-label">Quick Start</span>
+                            <span class="link-description">Quick reference for common tasks</span>
+                            <span class="link-url">QUICK_START.md</span>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Status Section -->
+        <div class="status-section">
+            <h3>✅ Feature Status</h3>
+            <div class="status-grid">
+                <div class="status-item">
+                    <strong>🎫 Event Check-in</strong>
+                    <p>QR codes + Manual codes (8-char alphanumeric)</p>
+                </div>
+                <div class="status-item">
+                    <strong>💳 Payments</strong>
+                    <p>M-Pesa (Sandbox) & Flutterwave</p>
+                </div>
+                <div class="status-item">
+                    <strong>📧 Email</strong>
+                    <p>Resend API for confirmations</p>
+                </div>
+                <div class="status-item">
+                    <strong>🔐 Auth</strong>
+                    <p>NextAuth.js with credentials & Google OAuth</p>
+                </div>
+                <div class="status-item">
+                    <strong>🏢 Bookings</strong>
+                    <p>Events, Hotels, Restaurants</p>
+                </div>
+                <div class="status-item">
+                    <strong>📱 Responsive</strong>
+                    <p>Mobile-optimized design</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Environment Info -->
+        <div class="status-section">
+            <h3>🔧 Environment</h3>
+            <div class="status-grid">
+                <div class="status-item">
+                    <strong>Framework</strong>
+                    <p>Next.js 15 (App Router)</p>
+                </div>
+                <div class="status-item">
+                    <strong>Database</strong>
+                    <p>PostgreSQL 14+ (Neon)</p>
+                </div>
+                <div class="status-item">
+                    <strong>ORM</strong>
+                    <p>Prisma 6.9.0</p>
+                </div>
+                <div class="status-item">
+                    <strong>Auth</strong>
+                    <p>NextAuth.js 4.24.15</p>
+                </div>
+                <div class="status-item">
+                    <strong>Styling</strong>
+                    <p>Tailwind CSS 4.1</p>
+                </div>
+                <div class="status-item">
+                    <strong>Node.js</strong>
+                    <p>20+ Required</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Features -->
+        <div class="status-section">
+            <h3>⭐ Key Features</h3>
+            <div style="color: #333; line-height: 1.8;">
+                <p><strong>🎫 Digital Tickets:</strong> QR codes with fallback 8-character alphanumeric codes for offline venues</p>
+                <p><strong>✅ Check-in System:</strong> Real-time guest check-in with idempotent operations</p>
+                <p><strong>💰 Payment Integration:</strong> M-Pesa sandbox + Flutterwave with webhook confirmations</p>
+                <p><strong>📧 Email Confirmations:</strong> Automatic confirmations via Resend for all bookings</p>
+                <p><strong>🏨 Multi-Service:</strong> Events, Hotels, Restaurants in one platform</p>
+                <p><strong>👨‍💼 Partner Portal:</strong> Event organizers can manage bookings and check in guests</p>
+                <p><strong>📊 Seed Data:</strong> 8 top Nairobi hotels + 10 top + 10 new restaurants + Kenyan events</p>
+            </div>
+        </div>
+
+        <footer>
+            <p>🚀 Burch Platform v1.0.0 | Complete & Ready for Deployment</p>
+            <p style="margin-top: 10px; opacity: 0.7;">For deployment instructions, see SELF_HOSTING_GUIDE.md or DOWNLOAD_INSTRUCTIONS.md</p>
+        </footer>
+    </div>
+</body>
+</html>
