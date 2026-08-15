@@ -1,0 +1,360 @@
+================================================================================
+🌐 BURCH PLATFORM - HOSTGATOR DEPLOYMENT (QUICK START)
+================================================================================
+
+⚠️ IMPORTANT: Hostgator does NOT support Node.js on shared hosting.
+
+✅ SOLUTION: Hybrid Deployment (Recommended)
+   - Frontend files on Hostgator ($2.99/month)
+   - Payment API on Vercel or Railway (free/paid)
+   - Full functionality with payment processing
+
+================================================================================
+⚡ 3-STEP DEPLOYMENT (25 minutes)
+================================================================================
+
+STEP 1: Deploy API to Vercel (10 minutes)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Go to: https://vercel.com/new
+2. Connect GitHub → Select burch-platform
+3. Set root directory: apps/web
+4. Add environment variables:
+   - DATABASE_URL = [PostgreSQL on Supabase]
+   - NEXTAUTH_SECRET = [run: openssl rand -base64 32]
+   - NEXTAUTH_URL = https://api-burch-xxxxx.vercel.app
+   - MPESA_CONSUMER_KEY = [your key]
+   - MPESA_CONSUMER_SECRET = [your secret]
+   - MPESA_PASSKEY = [your passkey]
+   - MPESA_SHORTCODE = 174379
+   - FLUTTERWAVE_SECRET_KEY = [your key]
+   - FLUTTERWAVE_SECRET_HASH = [your hash]
+   - STRIPE_SECRET_KEY = sk_test_[your key]
+
+5. Click Deploy
+6. Note your API URL: https://burch-api-xxxxx.vercel.app
+
+RESULT: ✅ API Ready at https://burch-api-xxxxx.vercel.app
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+STEP 2: Prepare Files for Hostgator (10 minutes)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Option A: Automated (Recommended)
+──────────────────────────────────
+
+1. Open terminal in project root
+2. Get Hostgator FTP credentials:
+   - Log in to cPanel: https://cpanel.hostgator.com
+   - Go to: Files → FTP Accounts
+   - Note:
+     * FTP Host: ftp.yourdomain.com
+     * Username: cpaneluser
+     * Password: cpanelpass
+
+3. Run deployment script:
+   ./scripts/deploy-hostgator.sh ftp.yourdomain.com cpaneluser cpanelpass
+
+4. Wait for upload to complete (5-10 minutes)
+5. Script automatically:
+   ✅ Builds Next.js
+   ✅ Prepares files
+   ✅ Uploads to Hostgator
+   ✅ Configures .htaccess
+   ✅ Sets environment variables
+
+Option B: Manual Upload
+───────────────────────
+
+1. Build locally:
+   cd apps/web
+   npm run build
+
+2. Download FTP client:
+   - Windows: FileZilla (https://filezilla-project.org)
+   - Mac: Cyberduck (https://cyberduck.io)
+   - Linux: FileZilla or command line (lftp)
+
+3. Connect to Hostgator FTP:
+   - Host: ftp.yourdomain.com
+   - Username: cpaneluser
+   - Password: cpanelpass
+   - Port: 21
+
+4. Upload files to public_html:
+   - Navigate to: apps/web/.next locally
+   - Drag to: public_html on Hostgator
+
+5. Upload .htaccess from repo root:
+   - File: .htaccess.hostgator
+   - Rename to: .htaccess
+   - Upload to: public_html
+
+6. Create .env.local with:
+   NEXT_PUBLIC_API_URL=https://api-burch-xxxxx.vercel.app
+   Upload to: public_html
+
+RESULT: ✅ Files Ready on Hostgator
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+STEP 3: Configure Domain & Test (5 minutes)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Enable HTTPS:
+   - cPanel → SSL/TLS → AutoSSL
+   - Click: Check and install
+   - Wait 5-10 minutes
+
+2. Test your site:
+   - Homepage: https://yourdomain.com
+   - Checkout: https://yourdomain.com/checkout
+
+3. Test payment flow:
+   - Fill guest details
+   - Select M-Pesa, Flutterwave, or Stripe
+   - Click "Complete Booking"
+   - Should redirect to Vercel API
+   - Payment should process
+
+RESULT: ✅ Live and Working!
+
+================================================================================
+🧪 TEST URLS (After Deployment)
+================================================================================
+
+Homepage:
+https://yourdomain.com
+
+Checkout Pages:
+- Event (M-Pesa): https://yourdomain.com/checkout?type=event
+- Hotel (Flutterwave): https://yourdomain.com/checkout?type=hotel
+- Restaurant (Stripe): https://yourdomain.com/checkout?type=restaurant
+
+Health Check API (Vercel):
+https://api-burch-xxxxx.vercel.app/api/health
+→ Should return: {"status":"ok"}
+
+Verify Payment (Example):
+https://api-burch-xxxxx.vercel.app/api/payments/verify?bookingId=booking-123
+
+================================================================================
+💳 TEST PAYMENT CREDENTIALS
+================================================================================
+
+M-Pesa Sandbox:
+- Phone: 0724999999
+- Amount: Any 1-100,000 KES
+- Shortcode: 174379
+
+Flutterwave Test:
+- Card: 4239 5900 0005 9010
+- Expiry: Any future date
+- OTP: 123456
+
+Stripe Sandbox:
+- Card: 4242 4242 4242 4242
+- Expiry: Any future date
+- CVC: Any 3 digits
+
+================================================================================
+📚 DETAILED DOCUMENTATION
+================================================================================
+
+For more information, see these files in the repository:
+
+HOSTGATOR_DEPLOYMENT.md
+→ Comprehensive guide for all Hostgator options
+→ Explains limitations and solutions
+→ Hybrid, VPS, and static export options
+→ Troubleshooting guide
+
+HOSTGATOR_SETUP_STEPS.md
+→ Step-by-step instructions with screenshots
+→ Automated script usage
+→ Manual FTP upload process
+→ Testing checklist
+→ Security configuration
+→ Performance optimization
+
+DEPLOYMENT_GUIDE.md
+→ General deployment guide for all platforms
+→ Environment variable setup
+→ Database configuration
+→ Payment provider integration
+
+TESTING_AND_DEPLOYMENT.md
+→ Complete testing workflow
+→ Component testing checklist
+→ API endpoint testing
+→ Troubleshooting
+
+================================================================================
+🔑 REQUIRED FOR PAYMENT PROCESSING
+================================================================================
+
+All three must be set up:
+
+1. ✅ Frontend on Hostgator
+   - Displays checkout form
+   - User fills in details
+   - Submits payment request
+
+2. ✅ API on Vercel (or Railway)
+   - Processes payment initiation
+   - Calls payment provider APIs
+   - Handles webhooks
+   - Stores payment records
+
+3. ✅ Payment Providers (Choose at least one)
+   - M-Pesa: For mobile money in Kenya
+   - Flutterwave: For cards + mobile money across Africa
+   - Stripe: For international cards
+
+Without the Vercel API, payments WILL NOT WORK on Hostgator shared hosting.
+
+================================================================================
+⚠️ LIMITATION EXPLAINED
+================================================================================
+
+Why Hostgator alone doesn't work:
+- Hostgator shared hosting runs Apache web server only
+- No Node.js runtime environment
+- Can't run Express.js API endpoints
+- Can't receive payment webhooks
+- Can only serve static HTML files
+
+Solution: Hybrid Approach
+- Hostgator serves static frontend files
+- Vercel runs the payment API backend
+- Frontend makes HTTP requests to Vercel
+- CORS allows cross-origin requests
+- Results: Full functionality at minimal cost!
+
+Alternative: Hostgator VPS
+- Upgrade to VPS ($20+/month)
+- Request Node.js installation
+- Deploy full Next.js app
+- Everything runs on Hostgator
+- Higher cost but more control
+
+================================================================================
+✅ CHECKLIST BEFORE GOING LIVE
+================================================================================
+
+Hostgator Setup:
+- [ ] Domain purchased and pointed to Hostgator
+- [ ] FTP access confirmed working
+- [ ] Files uploaded to public_html
+- [ ] .htaccess file in place
+- [ ] .env.local configured with Vercel API URL
+- [ ] SSL certificate enabled (AutoSSL)
+- [ ] cPanel File Manager can see .next folder
+- [ ] All files readable (permissions 644)
+
+Vercel Setup:
+- [ ] Account created at https://vercel.com
+- [ ] Repository connected
+- [ ] All environment variables added
+- [ ] Build successful
+- [ ] API accessible at https://api-burch-xxxxx.vercel.app
+- [ ] Database connected
+- [ ] Migrations run
+
+Testing:
+- [ ] Homepage loads: https://yourdomain.com
+- [ ] Checkout page loads: https://yourdomain.com/checkout
+- [ ] Forms display correctly
+- [ ] Payment methods visible
+- [ ] Test payment initiates
+- [ ] Payment provider receives request
+- [ ] Webhook processes correctly
+- [ ] Payment status updates
+
+Security:
+- [ ] HTTPS enabled (green lock icon)
+- [ ] API keys in Vercel env vars only
+- [ ] No secrets in Hostgator files
+- [ ] CORS configured for your domain
+- [ ] Regular backups enabled
+
+================================================================================
+📞 SUPPORT & TROUBLESHOOTING
+================================================================================
+
+Files Not Showing on Hostgator:
+→ Check .htaccess is in public_html
+→ Verify upload completed
+→ Refresh browser cache (Ctrl+Shift+Del)
+
+Payment Not Processing:
+→ Check Vercel API is running: https://api-url/api/health
+→ Verify NEXT_PUBLIC_API_URL in .env.local
+→ Check browser console (F12) for errors
+→ Verify payment provider keys in Vercel
+
+404 Errors:
+→ .htaccess missing or misconfigured
+→ .next folder not uploaded completely
+→ Wrong permissions on files
+
+SSL Certificate Issues:
+→ Wait 5-10 minutes for AutoSSL to complete
+→ Use "Check and install" in cPanel
+
+FTP Connection Failed:
+→ Verify username/password in cPanel FTP Accounts
+→ Try different FTP port (990, 2121)
+→ Check if IP whitelisted (Hostgator support)
+
+Contact Hostgator Support:
+- Phone: 1-866-96GATOR
+- Email: support@hostgator.com
+- Chat: https://www.hostgator.com/support
+
+================================================================================
+🚀 ESTIMATED TIMELINE
+================================================================================
+
+Task                              | Time    | Status
+──────────────────────────────────┼─────────┼────────────
+Deploy API to Vercel              | 10 min  | STEP 1
+Build & prepare frontend files    | 5 min   | STEP 2
+Upload to Hostgator               | 5 min   | STEP 2
+Configure domain & SSL            | 5 min   | STEP 3
+Test checkout flow                | 5 min   | STEP 3
+──────────────────────────────────┴─────────┴────────────
+TOTAL                             | 30 min  | ✅ DONE
+
+================================================================================
+🎯 NEXT STEPS
+================================================================================
+
+1. Choose deployment method:
+   ☐ Automated script (fastest): ./scripts/deploy-hostgator.sh
+   ☐ Manual FTP upload (more control): Use FileZilla
+
+2. Deploy API to Vercel first (REQUIRED for payments)
+
+3. Upload frontend files to Hostgator
+
+4. Test with sandbox payment credentials
+
+5. Go live when ready!
+
+6. Switch payment provider keys from test to production
+
+7. Monitor payments in Vercel dashboard
+
+================================================================================
+
+✨ YOU'RE READY! Follow the 3 steps above to deploy.
+
+Questions? Check HOSTGATOR_SETUP_STEPS.md for detailed instructions.
+
+Last Updated: August 15, 2026
+Branch: claude/burch-platform-q4nf5k
+Commit: 6edad2d
+
+================================================================================
