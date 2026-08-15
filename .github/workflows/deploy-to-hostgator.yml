@@ -20,7 +20,7 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./apps/web/public/
-          server-dir: /unduguhalisinetwork.com/
+          server-dir: public_html/unduguhalisinetwork.com/
           dangerous-clean-slate: false
           exclude: |
             **/.git*
