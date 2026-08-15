@@ -13,16 +13,41 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
   const { bookingId, type = 'event' } = await searchParams;
 
   // Mock booking data - in production, fetch from database using bookingId
-  const mockBooking = {
-    type: type as 'event' | 'hotel' | 'restaurant',
-    title: 'Nairobi Jazz Festival 2026',
-    imageUrl: 'https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=400&q=80',
-    quantity: 2,
-    unitPrice: 2500,
-    currency: 'KES',
-    taxes: 400,
-    fees: 0,
+  const bookingExamples = {
+    event: {
+      type: 'event' as const,
+      title: 'Nairobi Jazz Festival 2026',
+      imageUrl: 'https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=400&q=80',
+      quantity: 2,
+      unitPrice: 2500,
+      currency: 'KES',
+      taxes: 400,
+      fees: 0,
+    },
+    hotel: {
+      type: 'hotel' as const,
+      title: 'Radisson Blu Nairobi - Deluxe Room',
+      imageUrl: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&q=80',
+      quantity: 1,
+      unitPrice: 8500,
+      currency: 'KES',
+      taxes: 1275,
+      fees: 500,
+    },
+    restaurant: {
+      type: 'restaurant' as const,
+      title: 'Carnivore Restaurant - 2 People',
+      imageUrl: 'https://images.unsplash.com/photo-1504674900306-873d2c129c89?w=400&q=80',
+      quantity: 2,
+      unitPrice: 4000,
+      currency: 'KES',
+      taxes: 600,
+      fees: 200,
+    },
   };
+
+  const mockBooking = bookingExamples[type as 'event' | 'hotel' | 'restaurant'] || bookingExamples.event;
+  const totalAmount = (mockBooking.quantity * mockBooking.unitPrice) + mockBooking.taxes + mockBooking.fees;
 
   return (
     <>
@@ -48,7 +73,12 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
 
             {/* Checkout Form */}
             <div className="md:col-span-2 bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
-              <CheckoutFlow />
+              <CheckoutFlow
+                bookingId={bookingId || `booking-${Date.now()}`}
+                amount={totalAmount}
+                currency={mockBooking.currency}
+                title={mockBooking.title}
+              />
             </div>
           </div>
 

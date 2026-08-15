@@ -1,0 +1,47 @@
+{
+  "$schema": "https://railway.json.schema",
+  "build": {
+    "builder": "nixpacks",
+    "buildCommand": "npm install --legacy-peer-deps && npm run db:generate && npm run build",
+    "startCommand": "npm run start"
+  },
+  "deploy": {
+    "numReplicas": 1,
+    "restartPolicyType": "always",
+    "restartPolicyMaxRetries": 10
+  },
+  "variables": {
+    "DATABASE_URL": {
+      "description": "PostgreSQL connection string"
+    },
+    "NODE_ENV": "production",
+    "NEXTAUTH_URL": {
+      "description": "Application URL"
+    },
+    "NEXTAUTH_SECRET": {
+      "description": "NextAuth secret key"
+    },
+    "MPESA_ENV": "production",
+    "MPESA_CONSUMER_KEY": {
+      "description": "Safaricom API consumer key"
+    },
+    "MPESA_CONSUMER_SECRET": {
+      "description": "Safaricom API consumer secret"
+    },
+    "MPESA_PASSKEY": {
+      "description": "M-Pesa passkey"
+    },
+    "MPESA_SHORTCODE": {
+      "description": "M-Pesa shortcode"
+    },
+    "FLUTTERWAVE_SECRET_KEY": {
+      "description": "Flutterwave API secret key"
+    },
+    "FLUTTERWAVE_SECRET_HASH": {
+      "description": "Flutterwave webhook hash"
+    },
+    "STRIPE_SECRET_KEY": {
+      "description": "Stripe secret key"
+    }
+  }
+}

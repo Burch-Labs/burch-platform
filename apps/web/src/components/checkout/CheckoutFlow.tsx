@@ -1,16 +1,30 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { PaymentMethodCard } from './PaymentMethodCard';
 
 interface CheckoutFlowProps {
   onComplete?: (data: any) => void;
+  bookingId?: string;
+  amount?: number;
+  currency?: string;
+  title?: string;
 }
 
 type Step = 'details' | 'payment' | 'confirm';
 
-export function CheckoutFlow({ onComplete }: CheckoutFlowProps) {
+export function CheckoutFlow({
+  onComplete,
+  bookingId = 'booking-' + Date.now(),
+  amount = 5000,
+  currency = 'KES',
+  title = 'Booking'
+}: CheckoutFlowProps) {
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState<Step>('details');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -55,14 +69,72 @@ export function CheckoutFlow({ onComplete }: CheckoutFlowProps) {
   const currentStepNumber = steps.findIndex(s => s.id === currentStep) + 1;
   const progressPercent = (currentStepNumber / steps.length) * 100;
 
-  const handleNextStep = () => {
-    if (currentStep === 'details') setCurrentStep('payment');
-    else if (currentStep === 'payment') setCurrentStep('confirm');
+  const handleNextStep = async () => {
+    if (currentStep === 'details') {
+      if (!formData.firstName || !formData.lastName || !formData.email || !formData.phone) {
+        setError('Please fill in all guest details');
+        return;
+      }
+      setError(null);
+      setCurrentStep('payment');
+    } else if (currentStep === 'payment') {
+      setCurrentStep('confirm');
+    } else if (currentStep === 'confirm') {
+      await handleBookingComplete();
+    }
   };
 
   const handlePrevStep = () => {
     if (currentStep === 'confirm') setCurrentStep('payment');
     else if (currentStep === 'payment') setCurrentStep('details');
+    setError(null);
+  };
+
+  const handleBookingComplete = async () => {
+    setIsProcessing(true);
+    setError(null);
+
+    try {
+      const response = await fetch('/api/payments/initiate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          bookingId,
+          amount,
+          currency,
+          paymentMethod: selectedPayment,
+          customerName: `${formData.firstName} ${formData.lastName}`,
+          customerEmail: formData.email,
+          customerPhone: formData.phone,
+          title,
+          description: `Payment for ${title}`,
+        }),
+      });
+
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.error || 'Payment initiation failed');
+      }
+
+      const result = await response.json();
+
+      // Handle different payment methods
+      if (result.method === 'mpesa') {
+        router.push(`/checkout/complete?result=pending&booking=${bookingId}`);
+      } else if (result.method === 'flutterwave') {
+        window.location.href = result.paymentLink;
+      } else if (result.method === 'stripe') {
+        // For Stripe, redirect to payment confirmation page with clientSecret
+        router.push(
+          `/checkout/stripe-confirm?paymentIntentId=${result.paymentIntentId}&clientSecret=${result.clientSecret}&booking=${bookingId}`
+        );
+      }
+
+      onComplete?.(result);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Payment failed');
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -94,6 +166,16 @@ export function CheckoutFlow({ onComplete }: CheckoutFlowProps) {
           />
         </div>
       </div>
+
+      {/* Error message */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4 flex gap-2">
+          <span className="text-lg">⚠️</span>
+          <div>
+            <p className="text-sm font-semibold text-red-900">{error}</p>
+          </div>
+        </div>
+      )}
 
       {/* Step content */}
       <div className="min-h-80">
@@ -205,9 +287,9 @@ export function CheckoutFlow({ onComplete }: CheckoutFlowProps) {
       <div className="flex gap-3 pt-4 border-t border-gray-200">
         <button
           onClick={handlePrevStep}
-          disabled={currentStep === 'details'}
+          disabled={currentStep === 'details' || isProcessing}
           className={`flex-1 px-4 py-3 rounded-lg font-semibold transition-all ${
-            currentStep === 'details'
+            currentStep === 'details' || isProcessing
               ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
               : 'bg-white border border-gray-300 text-gray-900 hover:bg-gray-50'
           }`}
@@ -216,14 +298,14 @@ export function CheckoutFlow({ onComplete }: CheckoutFlowProps) {
         </button>
         <button
           onClick={handleNextStep}
-          disabled={currentStep === 'confirm'}
+          disabled={isProcessing}
           className={`flex-1 px-4 py-3 rounded-lg font-semibold text-white transition-all ${
-            currentStep === 'confirm'
-              ? 'bg-orange-600 hover:bg-orange-700 cursor-pointer'
+            isProcessing
+              ? 'bg-orange-400 cursor-not-allowed'
               : 'bg-orange-600 hover:bg-orange-700'
           }`}
         >
-          {currentStep === 'confirm' ? '✓ Complete Booking' : 'Continue'}
+          {isProcessing ? '⏳ Processing...' : currentStep === 'confirm' ? '✓ Complete Booking' : 'Continue'}
         </button>
       </div>
     </div>

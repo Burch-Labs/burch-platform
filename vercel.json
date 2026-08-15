@@ -1,0 +1,47 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "apps/web/.next",
+  "installCommand": "npm install --legacy-peer-deps",
+  "env": {
+    "DATABASE_URL": {
+      "description": "PostgreSQL connection string"
+    },
+    "NEXTAUTH_SECRET": {
+      "description": "NextAuth secret key"
+    },
+    "NEXTAUTH_URL": {
+      "description": "Application URL"
+    },
+    "MPESA_ENV": {
+      "description": "M-Pesa environment (production or sandbox)"
+    },
+    "MPESA_CONSUMER_KEY": {
+      "description": "Safaricom API consumer key"
+    },
+    "MPESA_CONSUMER_SECRET": {
+      "description": "Safaricom API consumer secret"
+    },
+    "MPESA_PASSKEY": {
+      "description": "M-Pesa passkey"
+    },
+    "MPESA_SHORTCODE": {
+      "description": "M-Pesa shortcode"
+    },
+    "FLUTTERWAVE_SECRET_KEY": {
+      "description": "Flutterwave API secret key"
+    },
+    "FLUTTERWAVE_SECRET_HASH": {
+      "description": "Flutterwave webhook hash"
+    },
+    "STRIPE_SECRET_KEY": {
+      "description": "Stripe secret key"
+    }
+  },
+  "regions": ["iad1"],
+  "git": {
+    "deploymentEnabled": {
+      "main": true,
+      "claude/burch-platform-q4nf5k": true
+    }
+  }
+}
