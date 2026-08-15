@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Burch Platform - Book Events, Hotels & Restaurants</title>
+    <title>Burch Platform - Premium Events, Hotels & Dining</title>
     <style>
         * {
             margin: 0;
@@ -12,15 +12,13 @@
         }
 
         :root {
-            --primary-orange: #FF8C42;
-            --light-orange: #FFB366;
-            --pale-orange: #FFC499;
-            --cream: #FFF5E6;
-            --dark: #2C3E50;
-            --text: #4A4A4A;
-            --light-text: #7A7A7A;
+            --primary: #FF8C42;
+            --secondary: #FF6B35;
+            --accent: #FFA500;
+            --dark: #1a1a1a;
+            --text: #333;
+            --light: #FAFAFA;
             --white: #FFFFFF;
-            --border-color: #F0E6D2;
         }
 
         html {
@@ -28,235 +26,345 @@
         }
 
         body {
-            font-family: 'Segoe UI', 'Trebuchet MS', sans-serif;
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
             color: var(--text);
             background: var(--white);
-            line-height: 1.8;
+            overflow-x: hidden;
         }
 
         /* ====== NAVIGATION ====== */
         nav {
-            background: var(--white);
-            padding: 1.5rem 2rem;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(10px);
+            padding: 1.2rem 3rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 8px rgba(255, 140, 66, 0.08);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(255, 107, 53, 0.1);
         }
 
         nav .logo {
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: var(--primary-orange);
-            letter-spacing: -0.5px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #FF6B35, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
         }
 
         nav .nav-links {
             display: flex;
-            gap: 2.5rem;
+            gap: 3rem;
             list-style: none;
         }
 
         nav a {
             color: var(--text);
             text-decoration: none;
-            font-weight: 500;
-            font-size: 0.95rem;
+            font-weight: 600;
+            font-size: 0.9rem;
             position: relative;
             transition: color 0.3s;
         }
 
-        nav a::after {
+        nav a::before {
             content: '';
             position: absolute;
-            bottom: -5px;
+            bottom: -8px;
             left: 0;
             width: 0;
-            height: 2px;
-            background: var(--primary-orange);
-            transition: width 0.3s;
+            height: 3px;
+            background: linear-gradient(90deg, #FF6B35, #FFA500);
+            transition: width 0.3s ease;
         }
 
         nav a:hover {
-            color: var(--primary-orange);
+            color: #FF6B35;
         }
 
-        nav a:hover::after {
+        nav a:hover::before {
             width: 100%;
+        }
+
+        .nav-cta {
+            background: linear-gradient(135deg, #FF6B35, #FFA500);
+            color: white;
+            padding: 0.7rem 1.8rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(255, 107, 53, 0.4);
         }
 
         /* ====== HERO SECTION ====== */
         .hero {
-            background: linear-gradient(135deg, var(--cream) 0%, #FFF9F0 100%);
-            padding: 5rem 2rem;
-            text-align: center;
+            margin-top: 60px;
             position: relative;
+            height: 85vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
             overflow: hidden;
         }
 
         .hero::before {
             content: '';
             position: absolute;
-            top: -50%;
-            right: -10%;
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(255, 140, 66, 0.1) 0%, transparent 70%);
-            border-radius: 50%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #FF6B35 0%, #FFA500 50%, #FF8C42 100%);
+            z-index: -1;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 165, 0, 0.2) 0%, transparent 50%);
+            z-index: -1;
         }
 
         .hero-content {
-            position: relative;
-            z-index: 1;
-            max-width: 800px;
-            margin: 0 auto;
+            max-width: 900px;
+            padding: 2rem;
+            z-index: 2;
+            animation: slideInDown 1s ease-out;
         }
 
         .hero h1 {
-            font-size: 3.2rem;
-            color: var(--dark);
+            font-size: 4.5rem;
+            font-weight: 900;
             margin-bottom: 1.5rem;
-            font-weight: 700;
-            line-height: 1.2;
-        }
-
-        .hero h1 span {
-            color: var(--primary-orange);
+            line-height: 1.1;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
 
         .hero p {
-            font-size: 1.15rem;
-            color: var(--light-text);
+            font-size: 1.3rem;
             margin-bottom: 2.5rem;
+            opacity: 0.98;
             line-height: 1.6;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
 
-        .cta-group {
+        .hero-buttons {
             display: flex;
-            gap: 1.5rem;
+            gap: 2rem;
             justify-content: center;
             flex-wrap: wrap;
+            margin-top: 3rem;
         }
 
-        .btn {
-            padding: 1rem 2.5rem;
+        .btn-large {
+            padding: 1.1rem 3.5rem;
             border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
+            border-radius: 50px;
+            font-size: 1.05rem;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s;
             text-decoration: none;
             display: inline-block;
+            letter-spacing: 0.5px;
         }
 
-        .btn-primary {
-            background: var(--primary-orange);
-            color: var(--white);
-            box-shadow: 0 4px 15px rgba(255, 140, 66, 0.3);
+        .btn-white {
+            background: white;
+            color: #FF6B35;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
         }
 
-        .btn-primary:hover {
-            background: #FF7A2E;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 140, 66, 0.4);
+        .btn-white:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
         }
 
-        .btn-secondary {
-            background: var(--white);
-            color: var(--primary-orange);
-            border: 2px solid var(--primary-orange);
+        .btn-transparent {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            backdrop-filter: blur(10px);
         }
 
-        .btn-secondary:hover {
-            background: var(--cream);
-            transform: translateY(-2px);
+        .btn-transparent:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-4px);
         }
 
-        /* ====== CONTAINER ====== */
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 0 2rem;
+        /* ====== ANIMATIONS ====== */
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        /* ====== SECTION STYLES ====== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(60px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* ====== SECTIONS ====== */
         section {
-            padding: 4rem 0;
+            padding: 5rem 2rem;
         }
 
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* ====== SECTION HEADERS ====== */
         .section-header {
             text-align: center;
-            margin-bottom: 3.5rem;
+            margin-bottom: 4rem;
+            animation: fadeInUp 0.8s ease-out;
         }
 
-        .section-title {
-            font-size: 2.5rem;
+        .section-header h2 {
+            font-size: 3rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+            font-weight: 800;
+        }
+
+        .section-header p {
+            font-size: 1.1rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .accent-line {
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #FF6B35, #FFA500);
+            margin: 1.5rem auto 0;
+            border-radius: 2px;
+        }
+
+        /* ====== SERVICE GRID ====== */
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+            border: 1px solid #f0f0f0;
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .service-card:nth-child(1) { animation-delay: 0.1s; }
+        .service-card:nth-child(2) { animation-delay: 0.2s; }
+        .service-card:nth-child(3) { animation-delay: 0.3s; }
+
+        .service-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 20px 60px rgba(255, 107, 53, 0.2);
+            border-color: #FF6B35;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #FF6B35, #FFA500);
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .card-icon {
+            font-size: 3.5rem;
+            position: relative;
+            z-index: 1;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .card-content {
+            padding: 2.5rem;
+        }
+
+        .card-content h3 {
+            font-size: 1.5rem;
             color: var(--dark);
             margin-bottom: 1rem;
             font-weight: 700;
         }
 
-        .section-subtitle {
-            font-size: 1.05rem;
-            color: var(--light-text);
-        }
-
-        .divider {
-            width: 60px;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary-orange), var(--light-orange));
-            margin: 1.5rem auto 0;
-            border-radius: 2px;
-        }
-
-        /* ====== SERVICE CARDS ====== */
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2.5rem;
-        }
-
-        .service-card {
-            background: var(--white);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s;
-            border: 1px solid var(--border-color);
-        }
-
-        .service-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 30px rgba(255, 140, 66, 0.15);
-            border-color: var(--primary-orange);
-        }
-
-        .card-icon {
-            background: linear-gradient(135deg, var(--cream) 0%, #FFF9F0 100%);
-            padding: 2.5rem;
-            text-align: center;
-            font-size: 3rem;
-        }
-
-        .card-content {
-            padding: 2rem;
-        }
-
-        .card-content h3 {
-            font-size: 1.4rem;
-            color: var(--dark);
-            margin-bottom: 0.8rem;
-        }
-
         .card-content p {
-            color: var(--light-text);
-            margin-bottom: 1.5rem;
-            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 2rem;
             line-height: 1.7;
+            font-size: 0.95rem;
         }
 
         .card-links {
@@ -266,28 +374,28 @@
         .card-links li {
             margin: 0.8rem 0;
             padding-bottom: 0.8rem;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid #f0f0f0;
         }
 
         .card-links li:last-child {
-            border-bottom: none;
+            border: none;
             margin: 0.8rem 0 0 0;
         }
 
         .card-links a {
-            color: var(--primary-orange);
+            color: #FF6B35;
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.7rem;
             transition: all 0.3s;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
 
         .card-links a:hover {
             color: var(--dark);
-            margin-left: 0.3rem;
+            margin-left: 5px;
         }
 
         .arrow {
@@ -296,101 +404,132 @@
         }
 
         .card-links a:hover .arrow {
-            transform: translateX(3px);
+            transform: translateX(5px);
         }
 
         /* ====== FEATURES SECTION ====== */
+        .features {
+            background: linear-gradient(135deg, #FFF5E6 0%, white 100%);
+            padding: 4rem 2rem !important;
+        }
+
         .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 3rem;
+            margin-top: 3rem;
         }
 
-        .feature-item {
+        .feature-card {
             text-align: center;
+            padding: 2rem;
+            animation: fadeInUp 0.8s ease-out both;
         }
+
+        .feature-card:nth-child(1) { animation-delay: 0.1s; }
+        .feature-card:nth-child(2) { animation-delay: 0.2s; }
+        .feature-card:nth-child(3) { animation-delay: 0.3s; }
 
         .feature-icon {
-            font-size: 2.5rem;
+            font-size: 3rem;
             margin-bottom: 1.5rem;
+            animation: scaleIn 0.6s ease-out both;
         }
 
-        .feature-item h4 {
-            font-size: 1.15rem;
+        .feature-card h4 {
+            font-size: 1.3rem;
             color: var(--dark);
             margin-bottom: 0.8rem;
-            font-weight: 600;
+            font-weight: 700;
         }
 
-        .feature-item p {
-            color: var(--light-text);
-            font-size: 0.95rem;
-            line-height: 1.6;
+        .feature-card p {
+            color: #666;
+            line-height: 1.7;
         }
 
         /* ====== CTA SECTION ====== */
         .cta-section {
-            background: linear-gradient(135deg, var(--primary-orange) 0%, var(--light-orange) 100%);
-            color: var(--white);
-            padding: 3.5rem 2rem;
-            border-radius: 12px;
+            background: linear-gradient(135deg, #FF6B35 0%, #FFA500 100%);
+            color: white;
+            padding: 4rem 2rem !important;
+            border-radius: 20px;
             text-align: center;
             margin: 3rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 1;
         }
 
         .cta-section h2 {
-            font-size: 2rem;
+            font-size: 2.5rem;
             margin-bottom: 1rem;
+            font-weight: 800;
         }
 
         .cta-section p {
-            font-size: 1.05rem;
-            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            margin-bottom: 2.5rem;
             opacity: 0.95;
         }
 
         .cta-buttons {
             display: flex;
-            gap: 1rem;
+            gap: 1.5rem;
             justify-content: center;
             flex-wrap: wrap;
         }
 
         .cta-buttons a {
-            background: var(--white);
-            color: var(--primary-orange);
-            padding: 0.9rem 2.2rem;
-            border-radius: 8px;
+            background: white;
+            color: #FF6B35;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 700;
             transition: all 0.3s;
-            font-size: 0.95rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         .cta-buttons a:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
         }
 
         /* ====== FOOTER ====== */
         footer {
             background: var(--dark);
-            color: var(--white);
+            color: white;
             text-align: center;
             padding: 3rem 2rem;
-            margin-top: 4rem;
         }
 
         footer p {
             opacity: 0.8;
-            font-size: 0.9rem;
             margin: 0.5rem 0;
+            font-size: 0.9rem;
         }
 
         footer a {
-            color: var(--primary-orange);
+            color: #FF6B35;
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 600;
         }
 
         footer a:hover {
@@ -399,240 +538,253 @@
 
         /* ====== RESPONSIVE ====== */
         @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2rem;
-            }
-
-            .section-title {
-                font-size: 1.8rem;
+            nav {
+                padding: 1rem 1.5rem;
             }
 
             nav .nav-links {
                 gap: 1.5rem;
-                font-size: 0.85rem;
             }
 
-            .cta-group {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .section-header h2 {
+                font-size: 2rem;
+            }
+
+            .hero-buttons {
                 flex-direction: column;
                 align-items: center;
+                gap: 1rem;
             }
 
-            .btn {
+            .btn-large {
                 width: 100%;
-                max-width: 250px;
+                max-width: 280px;
             }
         }
-
-        /* ====== ANIMATIONS ====== */
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .service-card {
-            animation: slideInUp 0.6s ease-out forwards;
-        }
-
-        .service-card:nth-child(1) { animation-delay: 0.1s; }
-        .service-card:nth-child(2) { animation-delay: 0.2s; }
-        .service-card:nth-child(3) { animation-delay: 0.3s; }
     </style>
 </head>
 <body>
     <!-- Navigation -->
     <nav>
-        <div class="logo">🎫 Burch</div>
+        <div class="logo">🎫 BURCH</div>
         <ul class="nav-links">
-            <li><a href="#tickets">Events</a></li>
+            <li><a href="#events">Events</a></li>
             <li><a href="#hotels">Hotels</a></li>
             <li><a href="#restaurants">Restaurants</a></li>
-            <li><a href="#auth">Sign In</a></li>
         </ul>
+        <a href="#signin" class="nav-cta">Sign In</a>
     </nav>
 
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
-            <h1>Book <span>Unforgettable</span> Experiences</h1>
-            <p>Discover premium events, exclusive hotels, and fine dining restaurants. All in one beautiful platform.</p>
-            <div class="cta-group">
-                <a href="#tickets" class="btn btn-primary">Explore Events</a>
-                <a href="#auth" class="btn btn-secondary">Get Started</a>
+            <h1>Unforgettable Moments Await</h1>
+            <p>Book premium events, luxury hotels, and fine dining experiences. All in one seamless platform.</p>
+            <div class="hero-buttons">
+                <a href="#events" class="btn-large btn-white">Explore Events</a>
+                <a href="#signin" class="btn-large btn-transparent">Get Started</a>
             </div>
         </div>
     </section>
 
-    <!-- Main Content -->
     <div class="container">
-        <!-- Key Features -->
-        <section>
+        <!-- Why Choose Us -->
+        <section class="features">
             <div class="section-header">
-                <h2 class="section-title">Why Choose Burch</h2>
-                <div class="divider"></div>
-                <p class="section-subtitle">Everything you need for seamless bookings</p>
+                <h2>Why Burch Platform</h2>
+                <div class="accent-line"></div>
+                <p>Experience the finest in booking convenience and premium experiences</p>
             </div>
             <div class="features-grid">
-                <div class="feature-item">
+                <div class="feature-card">
                     <div class="feature-icon">⚡</div>
                     <h4>Instant Booking</h4>
-                    <p>Secure your spot instantly with real-time confirmations and digital tickets</p>
+                    <p>Secure your reservation instantly with real-time confirmations</p>
                 </div>
-                <div class="feature-item">
+                <div class="feature-card">
                     <div class="feature-icon">🔐</div>
                     <h4>Secure Payments</h4>
-                    <p>Multiple payment options including M-Pesa and Flutterwave with full encryption</p>
+                    <p>Multiple payment options with maximum security and encryption</p>
                 </div>
-                <div class="feature-item">
-                    <div class="feature-icon">📱</div>
-                    <h4>Mobile Optimized</h4>
-                    <p>Book anywhere, anytime with our beautiful mobile-first experience</p>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h4>Premium Selection</h4>
+                    <p>Curated premium experiences handpicked for quality</p>
                 </div>
             </div>
         </section>
 
-        <!-- Events & Tickets -->
-        <section id="tickets">
+        <!-- Events Section -->
+        <section id="events">
             <div class="section-header">
-                <h2 class="section-title">🎫 Events & Tickets</h2>
-                <div class="divider"></div>
+                <h2>🎫 Premium Events</h2>
+                <div class="accent-line"></div>
+                <p>Discover and book the most exciting events in your city</p>
             </div>
-            <div class="services-grid">
+            <div class="service-grid">
                 <div class="service-card">
-                    <div class="card-icon">🎪</div>
+                    <div class="card-header">
+                        <div class="card-icon">🎪</div>
+                    </div>
                     <div class="card-content">
                         <h3>Discover Events</h3>
-                        <p>Browse concerts, conferences, sports, and entertainment events happening now.</p>
+                        <p>Browse concerts, festivals, conferences, and entertainment events happening around you.</p>
                         <ul class="card-links">
                             <li><a href="/events">All Events <span class="arrow">→</span></a></li>
                             <li><a href="/events?category=concerts">Concerts <span class="arrow">→</span></a></li>
                             <li><a href="/events?category=conferences">Conferences <span class="arrow">→</span></a></li>
+                            <li><a href="/dashboard">My Bookings <span class="arrow">→</span></a></li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="service-card">
-                    <div class="card-icon">🎟️</div>
+                    <div class="card-header">
+                        <div class="card-icon">🎟️</div>
+                    </div>
                     <div class="card-content">
-                        <h3>My Tickets</h3>
-                        <p>Manage your tickets, view QR codes, and access your bookings.</p>
+                        <h3>Your Tickets</h3>
+                        <p>Manage tickets, access QR codes, and view all your event details in one place.</p>
                         <ul class="card-links">
                             <li><a href="/dashboard">Dashboard <span class="arrow">→</span></a></li>
-                            <li><a href="/dashboard/bookings">My Bookings <span class="arrow">→</span></a></li>
+                            <li><a href="/dashboard/bookings">View Tickets <span class="arrow">→</span></a></li>
                             <li><a href="/tickets">Download Ticket <span class="arrow">→</span></a></li>
+                            <li><a href="/partner/checkin">Check-In <span class="arrow">→</span></a></li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="service-card">
-                    <div class="card-icon">✅</div>
+                    <div class="card-header">
+                        <div class="card-icon">✨</div>
+                    </div>
                     <div class="card-content">
-                        <h3>Check-In</h3>
-                        <p>Quick and easy check-in with QR codes or 8-character codes.</p>
+                        <h3>Event Partners</h3>
+                        <p>Manage events, track bookings, and grow your audience from our partner dashboard.</p>
                         <ul class="card-links">
-                            <li><a href="/checkin">Scan Ticket <span class="arrow">→</span></a></li>
-                            <li><a href="/partner/checkin">Partner Portal <span class="arrow">→</span></a></li>
-                            <li><a href="#auth">Sign In <span class="arrow">→</span></a></li>
+                            <li><a href="/partner">Partner Dashboard <span class="arrow">→</span></a></li>
+                            <li><a href="/partner/events">Create Event <span class="arrow">→</span></a></li>
+                            <li><a href="/partner/checkin">Check-In Guests <span class="arrow">→</span></a></li>
+                            <li><a href="/admin">Analytics <span class="arrow">→</span></a></li>
                         </ul>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Hotels -->
+        <!-- Hotels Section -->
         <section id="hotels">
             <div class="section-header">
-                <h2 class="section-title">🏨 Luxury Hotels</h2>
-                <div class="divider"></div>
+                <h2>🏨 Luxury Hotels</h2>
+                <div class="accent-line"></div>
+                <p>Experience world-class accommodations with exclusive rates</p>
             </div>
-            <div class="services-grid">
+            <div class="service-grid">
                 <div class="service-card">
-                    <div class="card-icon">🏩</div>
+                    <div class="card-header">
+                        <div class="card-icon">🏩</div>
+                    </div>
                     <div class="card-content">
-                        <h3>Find Hotels</h3>
-                        <p>Explore premium accommodations in Nairobi with competitive rates.</p>
+                        <h3>Find Your Stay</h3>
+                        <p>Search and book premium hotels with competitive rates and instant confirmations.</p>
                         <ul class="card-links">
                             <li><a href="/hotels">All Hotels <span class="arrow">→</span></a></li>
                             <li><a href="/hotels?sort=rating">Top Rated <span class="arrow">→</span></a></li>
                             <li><a href="/hotels?district=westlands">Westlands <span class="arrow">→</span></a></li>
+                            <li><a href="/dashboard">My Reservations <span class="arrow">→</span></a></li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="service-card">
-                    <div class="card-icon">🛏️</div>
+                    <div class="card-header">
+                        <div class="card-icon">🛏️</div>
+                    </div>
                     <div class="card-content">
-                        <h3>My Reservations</h3>
-                        <p>Manage your hotel bookings and reservation details.</p>
+                        <h3>Reservations</h3>
+                        <p>Manage all your hotel bookings, confirmations, and special requests easily.</p>
                         <ul class="card-links">
                             <li><a href="/dashboard">Dashboard <span class="arrow">→</span></a></li>
-                            <li><a href="/dashboard/bookings?type=HOTEL">Reservations <span class="arrow">→</span></a></li>
-                            <li><a href="/auth/signin">Sign In <span class="arrow">→</span></a></li>
+                            <li><a href="/dashboard/bookings?type=HOTEL">My Bookings <span class="arrow">→</span></a></li>
+                            <li><a href="/dashboard/bookings">Edit Reservation <span class="arrow">→</span></a></li>
+                            <li><a href="#signin">Sign In <span class="arrow">→</span></a></li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="service-card">
-                    <div class="card-icon">🔑</div>
+                    <div class="card-header">
+                        <div class="card-icon">🔑</div>
+                    </div>
                     <div class="card-content">
-                        <h3>Partner Portal</h3>
-                        <p>Manage hotels and bookings from your dedicated partner dashboard.</p>
+                        <h3>Hotel Partners</h3>
+                        <p>Manage rooms, rates, and reservations from your dedicated partner portal.</p>
                         <ul class="card-links">
                             <li><a href="/partner">Dashboard <span class="arrow">→</span></a></li>
                             <li><a href="/partner/hotels">My Hotels <span class="arrow">→</span></a></li>
-                            <li><a href="/partner">Manage Rooms <span class="arrow">→</span></a></li>
+                            <li><a href="/partner/hotels">Manage Rooms <span class="arrow">→</span></a></li>
+                            <li><a href="/partner">View Inquiries <span class="arrow">→</span></a></li>
                         </ul>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Restaurants -->
+        <!-- Restaurants Section -->
         <section id="restaurants">
             <div class="section-header">
-                <h2 class="section-title">🍽️ Fine Dining</h2>
-                <div class="divider"></div>
+                <h2>🍽️ Fine Dining</h2>
+                <div class="accent-line"></div>
+                <p>Reserve tables at the finest restaurants in the city</p>
             </div>
-            <div class="services-grid">
+            <div class="service-grid">
                 <div class="service-card">
-                    <div class="card-icon">🍴</div>
+                    <div class="card-header">
+                        <div class="card-icon">🍴</div>
+                    </div>
                     <div class="card-content">
                         <h3>Browse Restaurants</h3>
-                        <p>Discover top-rated restaurants and reserve your perfect table.</p>
+                        <p>Explore top-rated restaurants and secure your table with a single click.</p>
                         <ul class="card-links">
                             <li><a href="/restaurants">All Restaurants <span class="arrow">→</span></a></li>
                             <li><a href="/restaurants?sort=rating">Top Rated <span class="arrow">→</span></a></li>
                             <li><a href="/restaurants?cuisine=italian">Italian <span class="arrow">→</span></a></li>
+                            <li><a href="/dashboard">My Reservations <span class="arrow">→</span></a></li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="service-card">
-                    <div class="card-icon">🎯</div>
+                    <div class="card-header">
+                        <div class="card-icon">🎯</div>
+                    </div>
                     <div class="card-content">
-                        <h3>My Reservations</h3>
-                        <p>View and manage all your restaurant reservations.</p>
+                        <h3>Your Reservations</h3>
+                        <p>View, manage, and modify all your restaurant reservations in one place.</p>
                         <ul class="card-links">
                             <li><a href="/dashboard">Dashboard <span class="arrow">→</span></a></li>
-                            <li><a href="/dashboard/bookings?type=RESTAURANT">Reservations <span class="arrow">→</span></a></li>
-                            <li><a href="/auth/signin">Sign In <span class="arrow">→</span></a></li>
+                            <li><a href="/dashboard/bookings?type=RESTAURANT">My Reservations <span class="arrow">→</span></a></li>
+                            <li><a href="/dashboard/bookings">Edit Booking <span class="arrow">→</span></a></li>
+                            <li><a href="#signin">Sign In <span class="arrow">→</span></a></li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="service-card">
-                    <div class="card-icon">👨‍🍳</div>
+                    <div class="card-header">
+                        <div class="card-icon">👨‍🍳</div>
+                    </div>
                     <div class="card-content">
-                        <h3>Partner Portal</h3>
-                        <p>Manage your restaurant and reservations with ease.</p>
+                        <h3>Restaurant Partners</h3>
+                        <p>Manage your restaurant, menu, and reservations from the partner dashboard.</p>
                         <ul class="card-links">
                             <li><a href="/partner">Dashboard <span class="arrow">→</span></a></li>
                             <li><a href="/partner/restaurants">My Restaurants <span class="arrow">→</span></a></li>
+                            <li><a href="/partner/restaurants">Manage Menu <span class="arrow">→</span></a></li>
                             <li><a href="/partner">View Bookings <span class="arrow">→</span></a></li>
                         </ul>
                     </div>
@@ -641,57 +793,69 @@
         </section>
 
         <!-- CTA Section -->
-        <section class="cta-section" id="auth">
-            <h2>Ready to Book?</h2>
-            <p>Join thousands of users enjoying seamless bookings across Kenya</p>
-            <div class="cta-buttons">
-                <a href="/auth/signin">Sign In</a>
-                <a href="/auth/signup">Create Account</a>
+        <section class="cta-section" id="signin">
+            <div class="cta-content">
+                <h2>Ready to Start Booking?</h2>
+                <p>Join thousands of users enjoying premium experiences across Kenya</p>
+                <div class="cta-buttons">
+                    <a href="/auth/signin">Sign In</a>
+                    <a href="/auth/signup">Create Account</a>
+                </div>
             </div>
         </section>
 
         <!-- Admin Section -->
         <section>
             <div class="section-header">
-                <h2 class="section-title">Management & Admin</h2>
-                <div class="divider"></div>
+                <h2>Management Center</h2>
+                <div class="accent-line"></div>
+                <p>Advanced tools for admins and business partners</p>
             </div>
-            <div class="services-grid">
+            <div class="service-grid">
                 <div class="service-card">
-                    <div class="card-icon">⚙️</div>
+                    <div class="card-header">
+                        <div class="card-icon">⚙️</div>
+                    </div>
                     <div class="card-content">
                         <h3>Admin Panel</h3>
-                        <p>Comprehensive platform management for administrators.</p>
+                        <p>Comprehensive platform management for system administrators.</p>
                         <ul class="card-links">
                             <li><a href="/admin">Dashboard <span class="arrow">→</span></a></li>
                             <li><a href="/admin/users">Manage Users <span class="arrow">→</span></a></li>
                             <li><a href="/admin/partners">Manage Partners <span class="arrow">→</span></a></li>
+                            <li><a href="/admin/events">Manage Events <span class="arrow">→</span></a></li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="service-card">
-                    <div class="card-icon">📊</div>
+                    <div class="card-header">
+                        <div class="card-icon">📊</div>
+                    </div>
                     <div class="card-content">
-                        <h3>Partner Dashboard</h3>
-                        <p>Full control over your events, hotels, and restaurants.</p>
+                        <h3>Partner Hub</h3>
+                        <p>All-in-one platform for managing your business presence.</p>
                         <ul class="card-links">
                             <li><a href="/partner">Dashboard <span class="arrow">→</span></a></li>
                             <li><a href="/partner/events">Events <span class="arrow">→</span></a></li>
-                            <li><a href="/partner/checkin">Check-In <span class="arrow">→</span></a></li>
+                            <li><a href="/partner/hotels">Hotels <span class="arrow">→</span></a></li>
+                            <li><a href="/partner/restaurants">Restaurants <span class="arrow">→</span></a></li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="service-card">
-                    <div class="card-icon">🔗</div>
+                    <div class="card-header">
+                        <div class="card-icon">🔗</div>
+                    </div>
                     <div class="card-content">
                         <h3>API & Status</h3>
-                        <p>Developer resources and platform health monitoring.</p>
+                        <p>Developer tools and platform health monitoring.</p>
                         <ul class="card-links">
-                            <li><a href="/api/health">Health Check <span class="arrow">→</span></a></li>
-                            <li><a href="https://github.com/Burch-Labs/burch-platform">GitHub <span class="arrow">→</span></a></li>
-                            <li><a href="#tickets">Docs <span class="arrow">→</span></a></li>
+                            <li><a href="/api/health">Health Status <span class="arrow">→</span></a></li>
+                            <li><a href="https://github.com/Burch-Labs/burch-platform">GitHub Repo <span class="arrow">→</span></a></li>
+                            <li><a href="#events">Documentation <span class="arrow">→</span></a></li>
+                            <li><a href="#signin">Support <span class="arrow">→</span></a></li>
                         </ul>
                     </div>
                 </div>
@@ -701,19 +865,19 @@
 
     <!-- Footer -->
     <footer>
-        <p>&copy; 2026 <strong>Burch Platform</strong>. Premium Bookings in Kenya.</p>
-        <p>Secure Payments • Real-time Confirmations • 24/7 Support</p>
-        <p><a href="/api/health">API Status</a> • <a href="https://github.com/Burch-Labs/burch-platform">GitHub</a></p>
+        <p><strong>© 2026 Burch Platform</strong></p>
+        <p>Premium Events | Luxury Hotels | Fine Dining Reservations</p>
+        <p><a href="/api/health">API Status</a> • <a href="https://github.com/Burch-Labs/burch-platform">GitHub</a> • <a href="#signin">Support</a></p>
     </footer>
 
     <script>
-        // Smooth scroll for anchor links
+        // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
-                    target.scrollIntoView({ behavior: 'smooth' });
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             });
         });
