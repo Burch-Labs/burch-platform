@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Burch Platform - Events, Hotels & Restaurants</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #FF6B35;
+            --secondary: #004E89;
+            --accent: #F7931E;
+            --dark: #1a1a1a;
+            --light: #f8f9fa;
+            --text: #333;
+            --border: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text);
+            background: var(--light);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        nav .logo span {
+            color: var(--accent);
+        }
+
+        nav .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--accent);
+            text-shadow: 0 0 10px rgba(255,107,53,0.5);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+            color: white;
+            text-align: center;
+            padding: 4rem 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            font-weight: 800;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(247,147,30,0.3);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Services Grid */
+        .services {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .service-card-header {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            font-size: 3rem;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .service-card-content {
+            padding: 2rem;
+        }
+
+        .service-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--secondary);
+        }
+
+        .service-card p {
+            color: #666;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .links-list {
+            list-style: none;
+        }
+
+        .links-list li {
+            margin: 0.8rem 0;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.8rem;
+        }
+
+        .links-list li:last-child {
+            border-bottom: none;
+        }
+
+        .links-list a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: 0.3s;
+        }
+
+        .links-list a:hover {
+            color: var(--secondary);
+            margin-left: 0.3rem;
+        }
+
+        .arrow {
+            margin-left: auto;
+            transition: 0.3s;
+        }
+
+        .links-list a:hover .arrow {
+            margin-left: 0.5rem;
+        }
+
+        /* Auth Section */
+        .auth-section {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 15px;
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .auth-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .auth-links {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .auth-links a {
+            background: white;
+            color: var(--primary);
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .auth-links a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        /* Features Grid */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .feature {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature h4 {
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+
+        footer p {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            nav .nav-links {
+                gap: 1rem;
+                font-size: 0.9rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .service-card {
+            animation: slideIn 0.6s ease-out forwards;
+        }
+
+        .service-card:nth-child(1) { animation-delay: 0.1s; }
+        .service-card:nth-child(2) { animation-delay: 0.2s; }
+        .service-card:nth-child(3) { animation-delay: 0.3s; }
+
+        /* Section Styling */
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--secondary);
+            margin: 2rem 0 3rem 0;
+            font-weight: 700;
+        }
+
+        .divider {
+            height: 4px;
+            width: 80px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            margin: 1rem auto 2rem;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">🎫 <span>Burch</span> Platform</div>
+        <ul class="nav-links">
+            <li><a href="#tickets">Tickets</a></li>
+            <li><a href="#hotels">Hotels</a></li>
+            <li><a href="#restaurants">Restaurants</a></li>
+            <li><a href="#auth">Dashboard</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Your All-in-One Booking Platform</h1>
+        <p>Book events, hotels, and restaurants in one place. Seamless, secure, and instant confirmations.</p>
+        <div class="cta-buttons">
+            <a href="#tickets" class="btn btn-primary">Get Tickets</a>
+            <a href="#auth" class="btn btn-secondary">Sign In</a>
+        </div>
+    </section>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Features Section -->
+        <section class="features">
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <h4>Instant Booking</h4>
+                <p>Get confirmations instantly with digital tickets</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🔐</div>
+                <h4>Secure Payments</h4>
+                <p>M-Pesa, Flutterwave & multiple payment options</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📱</div>
+                <h4>Mobile Ready</h4>
+                <p>Book on the go with our mobile-friendly platform</p>
+            </div>
+        </section>
+
+        <!-- Tickets Section -->
+        <h2 class="section-title" id="tickets">🎫 Event Tickets</h2>
+        <div class="divider"></div>
+
+        <div class="services">
+            <!-- Browse Events Card -->
+            <div class="service-card">
+                <div class="service-card-header">🎪</div>
+                <div class="service-card-content">
+                    <h3>Browse Events</h3>
+                    <p>Discover exciting events happening in Nairobi and beyond. From concerts to conferences.</p>
+                    <ul class="links-list">
+                        <li><a href="/events">View All Events <span class="arrow">→</span></a></li>
+                        <li><a href="/events?category=concerts">Concerts <span class="arrow">→</span></a></li>
+                        <li><a href="/events?category=conferences">Conferences <span class="arrow">→</span></a></li>
+                        <li><a href="/events?category=sports">Sports <span class="arrow">→</span></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- My Tickets Card -->
+            <div class="service-card">
+                <div class="service-card-header">🎟️</div>
+                <div class="service-card-content">
+                    <h3>My Tickets</h3>
+                    <p>Manage your event tickets, view QR codes, and check-in details.</p>
+                    <ul class="links-list">
+                        <li><a href="/dashboard">Go to Dashboard <span class="arrow">→</span></a></li>
+                        <li><a href="/dashboard/bookings">View All Bookings <span class="arrow">→</span></a></li>
+                        <li><a href="/dashboard/bookings">Edit Booking <span class="arrow">→</span></a></li>
+                        <li><a href="/tickets">Download Tickets <span class="arrow">→</span></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Check-In Card -->
+            <div class="service-card">
+                <div class="service-card-header">✅</div>
+                <div class="service-card-content">
+                    <h3>Check-In</h3>
+                    <p>Check in to events with QR codes or 8-character codes for offline venues.</p>
+                    <ul class="links-list">
+                        <li><a href="/checkin">Scan Ticket <span class="arrow">→</span></a></li>
+                        <li><a href="/partner/checkin">Partner Check-In <span class="arrow">→</span></a></li>
+                        <li><a href="#auth">Sign in to Check-In <span class="arrow">→</span></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hotels Section -->
+        <h2 class="section-title" id="hotels">🏨 Hotel Bookings</h2>
+        <div class="divider"></div>
+
+        <div class="services">
+            <!-- Browse Hotels Card -->
+            <div class="service-card">
+                <div class="service-card-header">🏩</div>
+                <div class="service-card-content">
+                    <h3>Find Hotels</h3>
+                    <p>Explore premium hotels in Nairobi with competitive rates and instant booking.</p>
+                    <ul class="links-list">
+                        <li><a href="/hotels">All Hotels <span class="arrow">→</span></a></li>
+                        <li><a href="/hotels?district=westlands">Westlands <span class="arrow">→</span></a></li>
+                        <li><a href="/hotels?district=CBD">CBD <span class="arrow">→</span></a></li>
+                        <li><a href="/hotels?sort=rating">Top Rated <span class="arrow">→</span></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Hotel Bookings Card -->
+            <div class="service-card">
+                <div class="service-card-header">🛏️</div>
+                <div class="service-card-content">
+                    <h3>My Bookings</h3>
+                    <p>View and manage your hotel reservations, confirmations, and inquiries.</p>
+                    <ul class="links-list">
+                        <li><a href="/dashboard">Dashboard <span class="arrow">→</span></a></li>
+                        <li><a href="/dashboard/bookings?type=HOTEL">Hotel Bookings <span class="arrow">→</span></a></li>
+                        <li><a href="/dashboard/bookings">Edit Reservation <span class="arrow">→</span></a></li>
+                        <li><a href="/auth/signin">Sign in <span class="arrow">→</span></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Partner Portal Card -->
+            <div class="service-card">
+                <div class="service-card-header">🔑</div>
+                <div class="service-card-content">
+                    <h3>Hotel Partners</h3>
+                    <p>Manage your hotel, rooms, and bookings from the partner portal.</p>
+                    <ul class="links-list">
+                        <li><a href="/partner">Partner Dashboard <span class="arrow">→</span></a></li>
+                        <li><a href="/partner/hotels">My Hotels <span class="arrow">→</span></a></li>
+                        <li><a href="/partner/hotels">Manage Rooms <span class="arrow">→</span></a></li>
+                        <li><a href="/partner">View Inquiries <span class="arrow">→</span></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Restaurants Section -->
+        <h2 class="section-title" id="restaurants">🍽️ Restaurant Reservations</h2>
+        <div class="divider"></div>
+
+        <div class="services">
+            <!-- Browse Restaurants Card -->
+            <div class="service-card">
+                <div class="service-card-header">🍴</div>
+                <div class="service-card-content">
+                    <h3>Find Restaurants</h3>
+                    <p>Browse top-rated restaurants and reserve a table with one click.</p>
+                    <ul class="links-list">
+                        <li><a href="/restaurants">All Restaurants <span class="arrow">→</span></a></li>
+                        <li><a href="/restaurants?cuisine=italian">Italian <span class="arrow">→</span></a></li>
+                        <li><a href="/restaurants?cuisine=african">African <span class="arrow">→</span></a></li>
+                        <li><a href="/restaurants?sort=rating">Top Rated <span class="arrow">→</span></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Restaurant Reservations Card -->
+            <div class="service-card">
+                <div class="service-card-header">🎯</div>
+                <div class="service-card-content">
+                    <h3>My Reservations</h3>
+                    <p>Manage your restaurant reservations and confirmations.</p>
+                    <ul class="links-list">
+                        <li><a href="/dashboard">Dashboard <span class="arrow">→</span></a></li>
+                        <li><a href="/dashboard/bookings?type=RESTAURANT">Reservations <span class="arrow">→</span></a></li>
+                        <li><a href="/dashboard/bookings">Modify Booking <span class="arrow">→</span></a></li>
+                        <li><a href="/auth/signin">Sign in <span class="arrow">→</span></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Restaurant Partner Card -->
+            <div class="service-card">
+                <div class="service-card-header">👨‍🍳</div>
+                <div class="service-card-content">
+                    <h3>Restaurant Partners</h3>
+                    <p>Manage your restaurant, menu, and reservations.</p>
+                    <ul class="links-list">
+                        <li><a href="/partner">Partner Dashboard <span class="arrow">→</span></a></li>
+                        <li><a href="/partner/restaurants">My Restaurants <span class="arrow">→</span></a></li>
+                        <li><a href="/partner/restaurants">Manage Menu <span class="arrow">→</span></a></li>
+                        <li><a href="/partner">View Inquiries <span class="arrow">→</span></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Authentication Section -->
+        <section class="auth-section" id="auth">
+            <h2>Get Started Today</h2>
+            <p style="margin-bottom: 2rem; font-size: 1.1rem;">Sign in to your account or create a new one to start booking events, hotels, and restaurants.</p>
+            <div class="auth-links">
+                <a href="/auth/signin">Sign In</a>
+                <a href="/auth/signup">Create Account</a>
+                <a href="/auth/forgot-password">Forgot Password?</a>
+            </div>
+        </section>
+
+        <!-- Admin & Partner Section -->
+        <h2 class="section-title">Admin & Management</h2>
+        <div class="divider"></div>
+
+        <div class="services">
+            <div class="service-card">
+                <div class="service-card-header">⚙️</div>
+                <div class="service-card-content">
+                    <h3>Admin Panel</h3>
+                    <p>System administrators manage users, partners, and all platform content.</p>
+                    <ul class="links-list">
+                        <li><a href="/admin">Admin Dashboard <span class="arrow">→</span></a></li>
+                        <li><a href="/admin/users">Manage Users <span class="arrow">→</span></a></li>
+                        <li><a href="/admin/partners">Manage Partners <span class="arrow">→</span></a></li>
+                        <li><a href="/admin/events">Manage Events <span class="arrow">→</span></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-card-header">📊</div>
+                <div class="service-card-content">
+                    <h3>Partner Dashboard</h3>
+                    <p>Event organizers, hotels, and restaurants manage their offerings.</p>
+                    <ul class="links-list">
+                        <li><a href="/partner">Dashboard <span class="arrow">→</span></a></li>
+                        <li><a href="/partner/events">Events <span class="arrow">→</span></a></li>
+                        <li><a href="/partner/hotels">Hotels <span class="arrow">→</span></a></li>
+                        <li><a href="/partner/restaurants">Restaurants <span class="arrow">→</span></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-card-header">🔗</div>
+                <div class="service-card-content">
+                    <h3>API & Health</h3>
+                    <p>Platform health status and API information for developers.</p>
+                    <ul class="links-list">
+                        <li><a href="/api/health">Health Status <span class="arrow">→</span></a></li>
+                        <li><a href="https://github.com/Burch-Labs/burch-platform">GitHub Repository <span class="arrow">→</span></a></li>
+                        <li><a href="#tickets">Documentation <span class="arrow">→</span></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Burch Platform. Book events, hotels, and restaurants seamlessly. All rights reserved.</p>
+        <p>Secure payments via M-Pesa & Flutterwave | Built with Next.js & PostgreSQL</p>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Add hover effect to service cards
+        document.querySelectorAll('.service-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px)';
+            });
+        });
+    </script>
+</body>
+</html>
