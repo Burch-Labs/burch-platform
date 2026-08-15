@@ -12,7 +12,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
+      - name: Verify files exist locally
+        run: |
+          echo "Checking local files..."
+          ls -lh apps/web/public/
+          echo "---"
+          file apps/web/public/index.html
+
       - name: Deploy index.html to Hostgator
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
