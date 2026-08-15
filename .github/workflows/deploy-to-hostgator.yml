@@ -26,3 +26,11 @@ jobs:
             **/.git*
             **/.git*/**
             **/node_modules/**
+
+      - name: Fix file permissions via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: chmod 644 public_html/index.html
