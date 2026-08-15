@@ -1,0 +1,11 @@
+[build]
+  command = "echo 'Deploying index.html'"
+  publish = "apps/web/public"
+
+[context.production]
+  command = "echo 'Production build'"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
