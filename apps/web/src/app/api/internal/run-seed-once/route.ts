@@ -6,8 +6,15 @@ import { runSeed } from "@/lib/seed-data";
  * TEMPORARY. Exists to populate a freshly-created production database that
  * has no terminal access to run `npm run db:seed` against directly. Delete
  * this route once the target database has been seeded — it has no reason to
- * exist afterward, and every day it stays is a day an unauthenticated POST
- * can re-run seeding against production.
+ * exist afterward, and every day it stays is a day this secret-gated URL can
+ * re-run seeding against production.
+ *
+ * GET rather than POST, deliberately: this has to be triggerable by opening
+ * a link in a phone's browser, which is the only tool actually available on
+ * the deploying end this time. Ordinarily a mutating action stays POST-only
+ * exactly to stop a link click from doing something unwanted — the offsetting
+ * fact here is that the seed is idempotent (see below) and this route is
+ * deleted the moment it's served its purpose.
  *
  * The seed itself is safe to call more than once regardless: every insert is
  * guarded by a find-by-name check first, so a repeat call is a no-op rather
@@ -22,7 +29,7 @@ function isAuthorized(req: NextRequest): boolean {
   return a.length === b.length && timingSafeEqual(a, b);
 }
 
-export async function POST(req: NextRequest) {
+export async function GET(req: NextRequest) {
   if (!isAuthorized(req)) {
     return NextResponse.json({ error: "Not authorized." }, { status: 401 });
   }
