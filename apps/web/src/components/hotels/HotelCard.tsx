@@ -40,7 +40,7 @@ export function HotelCard({ hotel, priority = false }: HotelCardProps) {
         )}
 
         {/* Star classification badge */}
-        {hotel.starRating && (
+        {FEATURES.starRating && hotel.starRating && (
           <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm rounded-full px-2.5 py-1 flex items-center gap-1">
             <HotelStars stars={hotel.starRating} />
           </div>

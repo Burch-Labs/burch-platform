@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useTransition } from "react";
 import { cn } from "@/lib/utils";
+import { FEATURES } from "@/lib/features";
 
 const STAR_OPTIONS = [5, 4, 3, 2, 1];
 
@@ -79,6 +80,7 @@ export function HotelFilterSidebar({ cities }: HotelFilterSidebarProps) {
       </div>
 
       {/* ── Star rating ────────────────────────────────────── */}
+      {FEATURES.starRating && (
       <div>
         <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">
           Star Rating
@@ -112,6 +114,7 @@ export function HotelFilterSidebar({ cities }: HotelFilterSidebarProps) {
           ))}
         </div>
       </div>
+      )}
 
       {/* ── City ───────────────────────────────────────────── */}
       {/* Hidden while every listing is in one city — a filter with a single

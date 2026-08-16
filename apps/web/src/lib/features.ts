@@ -21,6 +21,18 @@ export const FEATURES = {
   ratings: false,
 
   /**
+   * A hotel's star classification — the ★★★★★ badge and the sidebar filter.
+   *
+   * Distinct from `ratings`: this is the property's official category rather
+   * than guest opinion. Off because the tiers in our seed are our own reading
+   * of each hotel, not a classification we have confirmed with the operator or
+   * the regulator, and stating one incorrectly misrepresents the business.
+   * Sorting by stars still works if a caller passes the query parameter; only
+   * the badge and the filter control are hidden.
+   */
+  starRating: false,
+
+  /**
    * Public menus on restaurant listings and detail pages.
    *
    * Off because the prices we hold are illustrative rather than confirmed by

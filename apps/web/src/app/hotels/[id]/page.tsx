@@ -118,7 +118,7 @@ export default async function HotelDetailPage({ params }: PageProps) {
             {/* Header */}
             <div>
               <div className="flex flex-wrap items-start gap-3 mb-2">
-                {hotel.starRating && <HotelStars stars={hotel.starRating} />}
+                {FEATURES.starRating && hotel.starRating && <HotelStars stars={hotel.starRating} />}
                 {FEATURES.ratings && avgRating !== null && (
                   <div className="flex items-center gap-1.5">
                     <span className="text-sm font-bold text-white bg-orange-500 rounded-md px-2 py-0.5">
