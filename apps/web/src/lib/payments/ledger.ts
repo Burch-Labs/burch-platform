@@ -6,7 +6,11 @@
  */
 
 import { prisma } from "@/lib/prisma";
-import type { PaymentProvider, Prisma } from "@prisma/client";
+import { issueTicketsForBooking } from "@/lib/tickets";
+// Prisma is a value import here, not just a type: the isolation level below
+// is a runtime enum member.
+import { Prisma } from "@prisma/client";
+import type { PaymentProvider } from "@prisma/client";
 
 export class CapacityError extends Error {}
 
@@ -26,28 +30,35 @@ export async function reserveEventBooking(params: {
 }) {
   const { userId, eventId, quantity, capacity, unitPrice, currency, status } = params;
 
-  return prisma.$transaction(async (tx) => {
-    const totalBooked = await tx.booking.aggregate({
-      where: { eventId, status: { not: "CANCELLED" } },
-      _sum: { quantity: true },
-    });
-    const booked = totalBooked._sum.quantity ?? 0;
-    if (booked + quantity > capacity) {
-      throw new CapacityError(`Only ${Math.max(0, capacity - booked)} tickets remaining.`);
-    }
+  // Counting sold tickets and then inserting is a read-modify-write, and under
+  // Postgres' default Read Committed two buyers can both read the last seat as
+  // available before either has written. Serializable makes the database detect
+  // that overlap and abort one of them, which is what stops the oversell.
+  return prisma.$transaction(
+    async (tx) => {
+      const totalBooked = await tx.booking.aggregate({
+        where: { eventId, status: { not: "CANCELLED" } },
+        _sum: { quantity: true },
+      });
+      const booked = totalBooked._sum.quantity ?? 0;
+      if (booked + quantity > capacity) {
+        throw new CapacityError(`Only ${Math.max(0, capacity - booked)} tickets remaining.`);
+      }
 
-    return tx.booking.create({
-      data: {
-        userId,
-        type: "EVENT",
-        status,
-        quantity,
-        totalAmount: unitPrice * quantity,
-        currency,
-        eventId,
-      },
-    });
-  });
+      return tx.booking.create({
+        data: {
+          userId,
+          type: "EVENT",
+          status,
+          quantity,
+          totalAmount: unitPrice * quantity,
+          currency,
+          eventId,
+        },
+      });
+    },
+    { isolationLevel: Prisma.TransactionIsolationLevel.Serializable }
+  );
 }
 
 export async function createPendingPayment(params: {
@@ -102,7 +113,7 @@ export async function markPaymentSuccess(params: {
     },
   });
 
-  return prisma.booking.update({
+  const booking = await prisma.booking.update({
     where: { id: payment.bookingId },
     data: {
       status: "CONFIRMED",
@@ -111,6 +122,15 @@ export async function markPaymentSuccess(params: {
     },
     ...bookingWithContext,
   });
+
+  // Tickets exist only once money has actually arrived. issueTicketsForBooking
+  // is idempotent, so a webhook and a browser redirect both confirming the same
+  // payment still yield one set rather than two.
+  if (booking.eventId) {
+    await issueTicketsForBooking(booking.id, booking.eventId, booking.quantity);
+  }
+
+  return booking;
 }
 
 export async function markPaymentFailed(params: {

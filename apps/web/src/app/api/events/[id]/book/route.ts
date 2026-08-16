@@ -15,6 +15,7 @@ import {
   reserveEventBooking,
 } from "@/lib/payments/ledger";
 import { notifyEventBookingConfirmed } from "@/lib/payments/notify";
+import { issueTicketsForBooking } from "@/lib/tickets";
 
 const schema = z.object({
   quantity: z.number().int().min(1).max(10),
@@ -57,6 +58,10 @@ export async function POST(
         currency: event.currency,
         status: "CONFIRMED",
       });
+
+      // Free tickets confirm immediately, so they are issued here rather than
+      // on a payment callback that will never arrive.
+      await issueTicketsForBooking(booking.id, id, quantity);
 
       const withContext = await prisma.booking.findUniqueOrThrow({
         where: { id: booking.id },

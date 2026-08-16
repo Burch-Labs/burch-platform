@@ -164,6 +164,7 @@ model Event {
 
   partner  Partner   @relation(fields: [partnerId], references: [id], onDelete: Cascade)
   bookings Booking[]
+  tickets  Ticket[]
 
   // Speeds up the common listing queries: published feed sorted by date, and city filter
   @@index([published, startDate])
@@ -357,6 +358,7 @@ model Booking {
   room       Room?       @relation(fields: [roomId], references: [id])
   restaurant Restaurant? @relation(fields: [restaurantId], references: [id])
   payments   Payment[]
+  tickets    Ticket[]
 
   @@map("bookings")
 }
@@ -419,6 +421,46 @@ enum BookingType {
   EVENT
   HOTEL
   RESTAURANT
+}
+
+// ─── Tickets ─────────────────────────────────────────────────────────────────
+// One row per admitted person, not per booking: a party of four gets four
+// tickets, each independently named and each scannable exactly once. That is
+// what makes a ticket transferable to a friend without handing over the whole
+// booking, and what stops one screenshot admitting the entire group.
+//
+// No secret is stored here. The QR carries an HMAC of the ticket id signed with
+// TICKET_SIGNING_SECRET, so forging one means forging the signature; this table
+// only answers "has it already been used".
+
+model Ticket {
+  id           String       @id @default(cuid())
+  bookingId    String
+  eventId      String
+  /** 1..n within the booking — printed as "Ticket 2 of 4". */
+  serial       Int
+  /** Who is coming. Null until the buyer names them; the ticket still admits. */
+  attendeeName String?
+  status       TicketStatus @default(VALID)
+  checkedInAt  DateTime?
+  /** User id of the organiser or gate staff who scanned it. */
+  checkedInBy  String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  event   Event   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([bookingId, serial])
+  @@index([eventId, status])
+  @@map("tickets")
+}
+
+enum TicketStatus {
+  VALID
+  CHECKED_IN
+  /** Refunded, or cancelled after issue. Never admits. */
+  VOID
 }
 
 enum BookingStatus {
