@@ -31,11 +31,12 @@ function looksLikePhone(value: string): boolean {
  * know which of their own contact details they are typing and a pair of radio
  * buttons asking them to declare it first is friction for nothing.
  *
- * The channel picker only appears for a phone, and only lists channels the
- * server says are actually configured — offering WhatsApp when it is not set
- * up would send someone to wait for a message that never arrives.
+ * `allowPhone` reflects what the server can actually deliver on. With no phone
+ * channel configured the form asks for an email and says so, rather than taking
+ * a number and failing after a round trip — the worst version of this screen is
+ * one that accepts a phone, shows a channel picker, and then dead-ends.
  */
-export function JoinForm() {
+export function JoinForm({ allowPhone = false }: { allowPhone?: boolean }) {
   const router = useRouter();
   const params = useSearchParams();
   const callbackUrl = params.get("callbackUrl") ?? "/";
@@ -56,6 +57,14 @@ export function JoinForm() {
   async function requestCode(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+
+    if (!allowPhone && isPhone) {
+      // Caught here so the correction is instant. The API refuses this too —
+      // this is a courtesy, not the enforcement.
+      setError("We can only send codes by email at the moment. Enter your email address.");
+      return;
+    }
+
     setBusy(true);
     try {
       const res = await fetch("/api/auth/request-code", {
@@ -190,13 +199,13 @@ export function JoinForm() {
 
       <div>
         <label htmlFor="identifier" className="block text-sm font-medium text-gray-700 mb-1">
-          Phone or email
+          {allowPhone ? "Phone or email" : "Email"}
         </label>
         <input
           id="identifier"
           name="identifier"
           required
-          inputMode={isPhone ? "tel" : "email"}
+          inputMode={allowPhone && isPhone ? "tel" : "email"}
           autoComplete="username"
           value={identifier}
           onChange={(e) => {
@@ -204,13 +213,13 @@ export function JoinForm() {
             setPreferred(null);
           }}
           className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
-          placeholder="0712 345 678 or you@example.com"
+          placeholder={allowPhone ? "0712 345 678 or you@example.com" : "you@example.com"}
         />
       </div>
 
       {/* Channel choice only means something for a phone — an email address has
           exactly one way to reach it. */}
-      {isPhone && (
+      {allowPhone && isPhone && (
         <div>
           <p className="block text-sm font-medium text-gray-700 mb-1.5">Send my code by</p>
           <div className="flex gap-2">
@@ -250,7 +259,7 @@ export function JoinForm() {
       </button>
 
       <p className="text-xs text-gray-400 text-center">
-        No password needed. We send a code each time you sign in.
+        No password needed. We {allowPhone ? "send" : "email"} you a code each time you sign in.
       </p>
     </form>
   );

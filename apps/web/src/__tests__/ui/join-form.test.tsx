@@ -39,14 +39,15 @@ afterAll(() => {
 });
 
 function fillIdentifier(value = "ada@example.com") {
-  fireEvent.change(screen.getByLabelText(/Phone or email/i), { target: { value } });
+  // Label is "Email" or "Phone or email" depending on configured channels.
+  fireEvent.change(screen.getByLabelText(/^(Email|Phone or email)$/i), { target: { value } });
 }
 
 describe("JoinForm", () => {
   it("takes a name and one identifier, and needs the identifier to proceed", () => {
     render(<JoinForm />);
     expect(screen.getByLabelText(/Your name/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Phone or email/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^(Email|Phone or email)$/i)).toBeInTheDocument();
 
     const submit = screen.getByRole("button", { name: /Send me a code/i });
     expect(submit).toBeDisabled();
@@ -54,8 +55,25 @@ describe("JoinForm", () => {
     expect(submit).toBeEnabled();
   });
 
-  it("offers a channel choice for a phone but not for an email", () => {
-    render(<JoinForm />);
+  it("asks only for an email when no phone channel is configured", () => {
+    render(<JoinForm allowPhone={false} />);
+    expect(screen.getByLabelText(/^Email$/i)).toBeInTheDocument();
+    expect(screen.queryByLabelText(/Phone or email/i)).not.toBeInTheDocument();
+  });
+
+  it("refuses a phone immediately rather than after a round trip", async () => {
+    render(<JoinForm allowPhone={false} />);
+    fillIdentifier("0712345678");
+    fireEvent.click(screen.getByRole("button", { name: /Send me a code/i }));
+
+    const alert = await screen.findByRole("alert");
+    expect(alert).toHaveTextContent(/only send codes by email/i);
+    // Nothing was requested, so the user is corrected instantly.
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  it("offers a channel choice for a phone once a phone channel exists", () => {
+    render(<JoinForm allowPhone />);
     fillIdentifier("ada@example.com");
     // An email address has one route; a picker would be a choice about nothing.
     expect(screen.queryByRole("button", { name: /WhatsApp/i })).not.toBeInTheDocument();
@@ -66,7 +84,7 @@ describe("JoinForm", () => {
   });
 
   it("sends the chosen channel as a preference, never a destination", async () => {
-    render(<JoinForm />);
+    render(<JoinForm allowPhone />);
     fillIdentifier("0712345678");
     fireEvent.click(screen.getByRole("button", { name: /WhatsApp/i }));
     fireEvent.click(screen.getByRole("button", { name: /Send me a code/i }));
@@ -161,7 +179,7 @@ describe("JoinForm", () => {
     await screen.findByLabelText(/Your code/i);
     fireEvent.click(screen.getByRole("button", { name: /Use something else/i }));
 
-    expect(screen.getByLabelText(/Phone or email/i)).toHaveValue("typo@example.com");
+    expect(screen.getByLabelText(/^(Email|Phone or email)$/i)).toHaveValue("typo@example.com");
     expect(screen.queryByLabelText(/Your code/i)).not.toBeInTheDocument();
   });
 });
