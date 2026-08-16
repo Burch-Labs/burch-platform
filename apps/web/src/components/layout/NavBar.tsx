@@ -57,12 +57,22 @@ export async function NavBar() {
           {session ? (
             <div className="flex items-center gap-3">
               {role === "CUSTOMER" && (
-                <Link
-                  href="/bookings"
-                  className="hidden sm:block text-sm text-gray-500 hover:text-gray-900 transition font-medium"
-                >
-                  My bookings
-                </Link>
+                <>
+                  {/* Tickets sit ahead of bookings because this is the link people
+                      open while standing at a door, often in a hurry. */}
+                  <Link
+                    href="/tickets"
+                    className="hidden sm:block text-sm text-gray-500 hover:text-gray-900 transition font-medium"
+                  >
+                    My tickets
+                  </Link>
+                  <Link
+                    href="/bookings"
+                    className="hidden sm:block text-sm text-gray-500 hover:text-gray-900 transition font-medium"
+                  >
+                    My bookings
+                  </Link>
+                </>
               )}
               <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${ROLE_BADGE[role]}`}>
                 {role.charAt(0) + role.slice(1).toLowerCase()}

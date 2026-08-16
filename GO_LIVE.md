@@ -25,6 +25,13 @@ prints a `⚙️ dontbeboring — CONFIG CHECK` block naming them.
 Generate the two secrets with `openssl rand -base64 32` and store them where the
 rest of your secrets live. Do not reuse one for both.
 
+`DATABASE_URL` and `RESEND_API_KEY` are needed **at build time**, not only at
+runtime. The home page is prerendered, so `next build` queries the database and
+`next.config.ts` refuses to start without a Resend key. On a host that separates
+build variables from runtime variables — Vercel does — set both in each scope, or
+the deploy fails during the build with a Prisma initialisation error rather than
+at boot.
+
 ## 2. Schema
 
 The branch adds `Ticket`, `SignInCode`, `PayoutAccount` and `Club`, plus columns
@@ -137,8 +144,13 @@ Confirmed working:
   error; an unknown listing id 404s rather than 500s;
 - sign-in by emailed code creates the account and the session;
 - a free ticket booking issues a Ticket row;
+- the buyer can open that ticket at `/tickets`, and the QR drawn on the page was
+  rasterised and decoded back to a token that still verifies — a QR that renders
+  but does not scan is the failure that only this check catches;
 - scanning that ticket admits once, refuses the second scan as already used, and
   rejects a forged signature — the three properties the gate depends on;
+- another signed-in account, and a signed-out visitor, cannot open someone else's
+  ticket page;
 - an unauthenticated scan is refused outright;
 - an anonymous listing claim submits and persists;
 - a partner submits payout details and an admin approves them;

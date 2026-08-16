@@ -9,7 +9,7 @@ import type { BookingWithContext } from "./ledger";
  * that defines "what happens when an event booking is confirmed."
  */
 export function notifyEventBookingConfirmed(booking: BookingWithContext): void {
-  const { event, user, quantity, totalAmount, currency } = booking;
+  const { id: bookingId, event, user, quantity, totalAmount, currency } = booking;
   if (!event) return;
 
   const partnerUser = event.partner?.user;
@@ -44,6 +44,7 @@ export function notifyEventBookingConfirmed(booking: BookingWithContext): void {
         quantity,
         totalAmount: Number(totalAmount),
         currency,
+        bookingId,
       }).catch((err) => console.error("[guest-confirm] event booking email failed:", err))
     );
   }

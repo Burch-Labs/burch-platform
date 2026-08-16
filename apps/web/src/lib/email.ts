@@ -605,21 +605,24 @@ export interface GuestEventConfirmationParams {
   quantity: number;
   totalAmount: number;
   currency: string;
+  /** Needed for the link to the tickets themselves — the point of the email. */
+  bookingId: string;
 }
 
 export async function sendGuestEventConfirmation(
   params: GuestEventConfirmationParams
 ): Promise<void> {
-  const { guestEmail, guestName, eventTitle, eventDate, quantity, totalAmount, currency } = params;
+  const { guestEmail, guestName, eventTitle, eventDate, quantity, totalAmount, currency, bookingId } = params;
 
   const subject = `Your tickets for ${eventTitle} are confirmed`;
 
   const dateLabel = eventDate.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
   const timeLabel = eventDate.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
   const amountLabel = new Intl.NumberFormat("en-US", { style: "currency", currency }).format(totalAmount);
+  const ticketsUrl = `${BASE_URL}/tickets/${bookingId}`;
 
   if (!HAS_RESEND) {
-    devLog(subject, `${BASE_URL}/dashboard/bookings`);
+    devLog(subject, ticketsUrl);
     console.log(
       `  Guest: ${guestName} | Event: ${eventTitle} | ${dateLabel} at ${timeLabel} | ${quantity} ticket${quantity !== 1 ? "s" : ""} | ${amountLabel}`
     );
@@ -660,7 +663,12 @@ export async function sendGuestEventConfirmation(
           <td style="padding:8px 0;font-size:14px;color:#131E30;font-weight:600;">${amountLabel}</td>
         </tr>
       </table>
-      <p style="margin:0 0 8px;font-size:13px;color:#5D708F;">We look forward to seeing you there. Enjoy the event!</p>
+      ${primaryButton(ticketsUrl, quantity !== 1 ? "View your tickets" : "View your ticket")}
+      <p style="margin:0 0 8px;font-size:13px;color:#5D708F;line-height:1.6;">
+        Open that link at the door and show the code on screen — a screenshot works just as
+        well. Each code admits one person, once.
+      </p>
+      <p style="margin:0;font-size:13px;color:#5D708F;">We look forward to seeing you there.</p>
     `),
   });
 }
