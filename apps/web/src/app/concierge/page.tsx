@@ -2,8 +2,8 @@ import { NavBar } from "@/components/layout/NavBar";
 import { ConciergeChat } from "@/components/concierge/ConciergeChat";
 
 export const metadata = {
-  title: "AI Concierge — Burch",
-  description: "Your personal AI guide to the best hotels, restaurants, events, and experiences across Africa.",
+  title: "AI Concierge — dontbeboring",
+  description: "Your personal AI guide to the best hotels, restaurants, events, and experiences across East Africa.",
 };
 
 export default function ConciergePage() {

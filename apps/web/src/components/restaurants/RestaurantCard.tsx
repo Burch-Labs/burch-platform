@@ -28,7 +28,7 @@ export function RestaurantCard({ restaurant, priority = false }: RestaurantCardP
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-rose-400 to-orange-500 flex items-center justify-center">
+          <div className="w-full h-full bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center">
             <span className="text-5xl opacity-40">🍽️</span>
           </div>
         )}

@@ -22,7 +22,7 @@ export function HotelCard({ hotel, priority = false }: HotelCardProps) {
       className="group flex flex-col bg-white rounded-2xl border border-gray-100 overflow-hidden hover:border-orange-200 hover:shadow-md transition-all duration-200"
     >
       {/* Cover image */}
-      <div className="relative h-48 overflow-hidden bg-gradient-to-br from-blue-400 to-indigo-600">
+      <div className="relative h-48 overflow-hidden bg-gradient-to-br from-gray-700 to-gray-900">
         {hotel.imageUrl ? (
           <Image
             src={hotel.imageUrl}
@@ -33,7 +33,7 @@ export function HotelCard({ hotel, priority = false }: HotelCardProps) {
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-amber-800 to-orange-900 flex items-center justify-center">
+          <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
             <span className="text-5xl opacity-30">🏨</span>
           </div>
         )}

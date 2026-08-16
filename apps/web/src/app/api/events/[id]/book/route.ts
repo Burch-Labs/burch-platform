@@ -142,7 +142,7 @@ export async function POST(
         redirectUrl: `${configBaseUrl}/api/payments/flutterwave/callback`,
         customerEmail: session.user.email,
         customerName: session.user.name ?? undefined,
-        title: "Burch Event Ticket",
+        title: "dontbeboring Event Ticket",
         description: event.title,
       });
 

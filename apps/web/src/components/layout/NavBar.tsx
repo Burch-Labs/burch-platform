@@ -28,7 +28,7 @@ export async function NavBar() {
             href="/"
             className="font-display text-xl font-semibold text-orange-600 flex-shrink-0 tracking-wide"
           >
-            Burch
+            dontbeboring
           </Link>
           <nav className="hidden md:flex items-center gap-0.5">
             {NAV_LINKS.map(({ href, label }) => (

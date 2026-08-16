@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: PageProps) {
   });
   if (!hotel) return { title: "Hotel not found" };
   return {
-    title: `${hotel.name} — Burch`,
+    title: `${hotel.name} — dontbeboring`,
     description: hotel.description ?? undefined,
   };
 }
@@ -103,7 +103,7 @@ export default async function HotelDetailPage({ params }: PageProps) {
             <HotelGallery images={allImages} name={hotel.name} />
           </div>
         ) : (
-          <div className="mb-8 h-64 sm:h-72 md:h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-amber-700 to-orange-900 flex items-center justify-center">
+          <div className="mb-8 h-64 sm:h-72 md:h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center">
             <span className="text-7xl opacity-60">🏨</span>
           </div>
         )}

@@ -2,10 +2,10 @@ import { callClaude, type ChatMessage } from "./claude";
 import { AgentNotFoundError, type AgentDefinition, type AgentReply } from "./types";
 
 const PLATFORM_BLURB =
-  "Burch is Africa's AI-powered platform connecting hospitality, events, and experiences — spanning hotels, restaurants, and events across the continent.";
+  "dontbeboring is a curated platform connecting hospitality, events, and experiences — spanning hotels, restaurants, and events across East Africa.";
 
 function basePrompt(role: string, mandate: string, extra?: string): string {
-  return `You are the ${role} on Burch's AI workforce. ${PLATFORM_BLURB}
+  return `You are the ${role} on dontbeboring's AI workforce. ${PLATFORM_BLURB}
 
 Your mandate: ${mandate}
 
@@ -109,7 +109,7 @@ export const AGENTS: AgentDefinition[] = [
     name: "Developer Agent",
     description: "Assists developers and platform maintenance.",
     buildSystemPrompt: () =>
-      basePrompt("Developer Agent", "assist engineers with the Burch codebase, architecture questions, and platform maintenance."),
+      basePrompt("Developer Agent", "assist engineers with the dontbeboring codebase, architecture questions, and platform maintenance."),
   },
 ];
 

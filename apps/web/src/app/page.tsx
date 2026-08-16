@@ -86,13 +86,14 @@ export default async function HomePage() {
 
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-white border-b border-gray-200">
-        {/* Warm ambient glow */}
-        <div className="pointer-events-none absolute -top-32 -right-32 w-[520px] h-[520px] rounded-full bg-orange-100 opacity-40 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-16 -left-16 w-80 h-80 rounded-full bg-orange-50 opacity-60 blur-2xl" />
+        {/* Ambient glow — gold kept low so it tints rather than washing the
+            section cream, with a cool counterweight to hold the navy cast */}
+        <div className="pointer-events-none absolute -top-32 -right-32 w-[520px] h-[520px] rounded-full bg-orange-100 opacity-25 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-16 -left-16 w-80 h-80 rounded-full bg-gray-100 opacity-80 blur-2xl" />
 
         <div className="relative max-w-5xl mx-auto px-6 py-24 text-center">
           <p className="inline-flex items-center gap-2 text-xs font-semibold text-orange-600 uppercase tracking-[0.18em] mb-6 border border-orange-200 bg-orange-50 px-4 py-1.5 rounded-full">
-            <span>✦</span> Africa&apos;s Experience Platform
+            <span>✦</span> East Africa&apos;s Experience Platform
           </p>
           <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 mb-6 leading-[1.08] tracking-tight">
             Find your next<br />
@@ -101,7 +102,7 @@ export default async function HomePage() {
           </h1>
           <p className="text-base sm:text-lg text-gray-500 mb-10 max-w-lg mx-auto leading-relaxed">
             Concerts, festivals, hotels, restaurants, and AI-powered trip
-            planning — discover and book the best of Africa in one place.
+            planning — discover and book the best of East Africa in one place.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
@@ -170,7 +171,7 @@ export default async function HomePage() {
         <div className="flex items-end justify-between mb-8">
           <div>
             <h2 className="font-display text-2xl font-semibold text-gray-900">Upcoming events</h2>
-            <p className="text-sm text-gray-400 mt-1">Don&apos;t miss what&apos;s on now across Africa</p>
+            <p className="text-sm text-gray-400 mt-1">Don&apos;t miss what&apos;s on now across East Africa</p>
           </div>
           <Link
             href="/events"
@@ -198,7 +199,7 @@ export default async function HomePage() {
               No events scheduled right now
             </h3>
             <p className="text-sm text-gray-500 mb-6 max-w-xs mx-auto">
-              Check back soon — new events are added regularly across Africa.
+              Check back soon — new events are added regularly across East Africa.
             </p>
             <Link
               href="/events"
@@ -217,27 +218,28 @@ export default async function HomePage() {
       <section className="max-w-5xl mx-auto px-6 py-14">
         <div
           className="relative overflow-hidden rounded-3xl p-10"
-          style={{ background: "linear-gradient(135deg, #1A0E07 0%, #2E1A0C 60%, #3D2410 100%)" }}
+          style={{ background: "linear-gradient(135deg, #0B1422 0%, #131E30 60%, #1F2D42 100%)" }}
         >
-          {/* Warm glow accent */}
+          {/* Gold glow accent */}
           <div className="pointer-events-none absolute -top-20 -right-20 w-72 h-72 rounded-full opacity-20 blur-3xl"
-            style={{ background: "radial-gradient(circle, #E08A34, transparent)" }} />
+            style={{ background: "radial-gradient(circle, #C9A73F, transparent)" }} />
           <div className="pointer-events-none absolute -bottom-12 left-12 w-48 h-48 rounded-full opacity-10 blur-2xl"
-            style={{ background: "radial-gradient(circle, #ECA85C, transparent)" }} />
+            style={{ background: "radial-gradient(circle, #DCC168, transparent)" }} />
 
           <div className="relative flex flex-col sm:flex-row items-start sm:items-center gap-6">
-            <div className="flex-shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg"
-              style={{ background: "linear-gradient(135deg, #E08A34, #B85A12)" }}>
+            {/* Navy glyph on bright gold — white on gold does not clear contrast */}
+            <div className="flex-shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow-lg"
+              style={{ background: "linear-gradient(135deg, #DCC168, #C9A73F)", color: "#131E30" }}>
               ✦
             </div>
             <div className="flex-1">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] mb-1.5" style={{ color: "#ECA85C" }}>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] mb-1.5" style={{ color: "#DCC168" }}>
                 AI Concierge
               </p>
               <h2 className="font-display text-2xl font-semibold text-white mb-1.5">
                 Not sure where to start?
               </h2>
-              <p className="text-sm leading-relaxed" style={{ color: "#B09880" }}>
+              <p className="text-sm leading-relaxed" style={{ color: "#A6B5CC" }}>
                 Tell our AI Concierge what you&apos;re looking for — hotels, restaurants, events,
                 or a full itinerary — and get personalised recommendations instantly.
               </p>
@@ -245,7 +247,7 @@ export default async function HomePage() {
             <Link
               href="/concierge"
               className="flex-shrink-0 text-white px-7 py-3 rounded-xl text-sm font-semibold transition shadow-sm whitespace-nowrap"
-              style={{ background: "linear-gradient(135deg, #CC6F1A, #B85A12)" }}
+              style={{ background: "linear-gradient(135deg, #8A6914, #6E5410)" }}
             >
               Ask the Concierge →
             </Link>
@@ -261,7 +263,7 @@ export default async function HomePage() {
               <h2 className="font-display text-2xl font-semibold text-gray-900">
                 Featured restaurants
               </h2>
-              <p className="text-sm text-gray-400 mt-1">Top dining experiences across Africa</p>
+              <p className="text-sm text-gray-400 mt-1">Top dining experiences across East Africa</p>
             </div>
             <Link
               href="/restaurants"
@@ -313,7 +315,7 @@ export default async function HomePage() {
               <h2 className="font-display text-2xl font-semibold text-gray-900">
                 Featured hotels
               </h2>
-              <p className="text-sm text-gray-400 mt-1">Standout stays across Africa</p>
+              <p className="text-sm text-gray-400 mt-1">Standout stays across East Africa</p>
             </div>
             <Link
               href="/hotels"
@@ -359,18 +361,19 @@ export default async function HomePage() {
 
       {/* ── Partner CTA ────────────────────────────────────────────────────── */}
       <section className="max-w-5xl mx-auto px-6 py-14">
+        {/* Gold band carries navy type — pale-on-gold washes out */}
         <div className="rounded-3xl p-10 text-center"
-          style={{ background: "linear-gradient(135deg, #CC6F1A 0%, #B85A12 100%)" }}>
-          <p className="text-orange-200 text-xs font-semibold uppercase tracking-[0.18em] mb-3">For businesses</p>
-          <h2 className="font-display text-3xl font-semibold text-white mb-3">
+          style={{ background: "linear-gradient(135deg, #DCC168 0%, #A98A22 100%)" }}>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] mb-3 text-gray-900/70">For businesses</p>
+          <h2 className="font-display text-3xl font-semibold text-gray-900 mb-3">
             Host your own event?
           </h2>
-          <p className="text-orange-100 mb-8 text-sm max-w-sm mx-auto leading-relaxed">
-            Join hundreds of organizers using Burch to sell tickets and grow their audience across Africa.
+          <p className="text-gray-900/80 mb-8 text-sm max-w-sm mx-auto leading-relaxed">
+            Join hundreds of organizers using dontbeboring to sell tickets and grow their audience across East Africa.
           </p>
           <Link
             href="/auth/register"
-            className="inline-block bg-white text-orange-700 font-semibold px-8 py-3 rounded-xl text-sm hover:bg-orange-50 transition shadow-sm"
+            className="inline-block bg-gray-900 text-white font-semibold px-8 py-3 rounded-xl text-sm hover:bg-gray-800 transition shadow-sm"
           >
             Apply as a partner
           </Link>
@@ -380,7 +383,7 @@ export default async function HomePage() {
       {/* ── Footer ─────────────────────────────────────────────────────────── */}
       <footer className="border-t border-gray-200 py-8 text-center">
         <p className="font-display text-sm text-gray-400 tracking-wide">
-          © {new Date().getFullYear()} Burch Platform &nbsp;·&nbsp; Africa&apos;s AI-Powered Experience Platform
+          © {new Date().getFullYear()} dontbeboring &nbsp;·&nbsp; Exceptional experiences across East Africa
         </p>
       </footer>
     </div>

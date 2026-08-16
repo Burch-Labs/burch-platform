@@ -22,8 +22,8 @@ const playfair = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Burch Platform",
-  description: "Africa's AI-Powered Experience Platform",
+  title: "dontbeboring",
+  description: "Exceptional hotels, restaurants and events across East Africa.",
 };
 
 export default function RootLayout({

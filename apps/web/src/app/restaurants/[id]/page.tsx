@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: PageProps) {
   const { id } = await params;
   const r = await prisma.restaurant.findUnique({ where: { id }, select: { name: true, description: true } });
   if (!r) return { title: "Restaurant not found" };
-  return { title: `${r.name} — Burch`, description: r.description ?? undefined };
+  return { title: `${r.name} — dontbeboring`, description: r.description ?? undefined };
 }
 
 export default async function RestaurantDetailPage({ params }: PageProps) {
@@ -86,7 +86,7 @@ export default async function RestaurantDetailPage({ params }: PageProps) {
             <HotelGallery images={allImages} name={restaurant.name} />
           </div>
         ) : (
-          <div className="mb-8 h-72 rounded-2xl overflow-hidden bg-gradient-to-br from-rose-400 to-orange-500 flex items-center justify-center">
+          <div className="mb-8 h-72 rounded-2xl overflow-hidden bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center">
             <span className="text-8xl opacity-30">🍽️</span>
           </div>
         )}
