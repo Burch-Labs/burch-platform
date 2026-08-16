@@ -108,5 +108,9 @@ Worth deciding about rather than discovering:
   classification, menus and direct booking. Each is built and tested. Turning
   one on is a one-line change, but read the note above it first — each is off
   for a reason that has not gone away.
-- **No admin screen for suspending a partner.** The `SUSPENDED` status works and
-  stops payouts, but setting it means a database update.
+- **Admin is queue-driven, at `/admin`.** Payouts, partners and claims, with
+  waiting counts on the tabs. There is no dashboard; the queues are the work.
+- **A confirmed claim does not transfer the listing.** Marking one APPROVED
+  records that we believe the claimant. Changing a real business's public
+  contact details is a separate, deliberate act — not a side effect of a status
+  button.

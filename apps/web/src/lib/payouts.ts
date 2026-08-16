@@ -155,3 +155,49 @@ export async function reviewPayoutAccount(params: {
   });
   return { reviewed: result.count > 0 };
 }
+
+/**
+ * Suspends a partner, or lifts a suspension.
+ *
+ * Suspension hides listings and stops payouts in one move — `payoutBlockReasonFor`
+ * already ranks it above verification, so a suspended partner cannot be paid even
+ * with an approved payout account.
+ *
+ * A reason is required and is shown to the partner. A suspension nobody explains
+ * is one nobody can put right, which turns an enforcement action into a support
+ * ticket that runs for weeks.
+ */
+export async function setPartnerSuspension(params: {
+  partnerId: string;
+  suspend: boolean;
+  actedBy: string;
+  reason?: string;
+}): Promise<{ changed: boolean }> {
+  if (params.suspend && !params.reason?.trim()) {
+    throw new Error("A suspension requires a reason");
+  }
+
+  const result = await prisma.partner.updateMany({
+    // Only move a partner that is not already in the target state, so two
+    // admins acting at once do not overwrite each other's reason and timestamp.
+    where: {
+      id: params.partnerId,
+      status: params.suspend ? { not: "SUSPENDED" } : "SUSPENDED",
+    },
+    data: params.suspend
+      ? {
+          status: "SUSPENDED",
+          suspendedAt: new Date(),
+          suspendedReason: params.reason!.trim(),
+          suspendedBy: params.actedBy,
+        }
+      : {
+          status: "APPROVED",
+          suspendedAt: null,
+          suspendedReason: null,
+          suspendedBy: null,
+        },
+  });
+
+  return { changed: result.count > 0 };
+}

@@ -56,6 +56,21 @@ export async function submitClaim(_prev: ClaimState, formData: FormData): Promis
 
   if (!venue) return { error: "That listing no longer exists." };
 
+  // Recorded first. The email is a convenience; the row is the record, and a
+  // mail failure must not lose the lead.
+  await prisma.venueClaim.create({
+    data: {
+      venueType: type.toUpperCase() as "HOTEL" | "RESTAURANT" | "CLUB",
+      venueId: id,
+      venueName: venue.name,
+      contactName: claim.contactName,
+      role: claim.role,
+      workEmail: claim.workEmail,
+      phone: claim.phone,
+      website: claim.website || null,
+    },
+  });
+
   try {
     await sendVenueClaimNotification({
       venueName: venue.name,

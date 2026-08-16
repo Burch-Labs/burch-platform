@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { NavBar } from "@/components/layout/NavBar";
 import { ReviewControls } from "./ReviewControls";
+import { AdminNav } from "../AdminNav";
+import { getQueueCounts } from "../queue-counts";
 
 export const metadata = { title: "Payout reviews — dontbeboring" };
 export const dynamic = "force-dynamic";
@@ -14,7 +16,7 @@ export const dynamic = "force-dynamic";
  * action itself.
  */
 export default async function AdminPayoutsPage() {
-  const [pending, decided] = await Promise.all([
+  const [pending, decided, counts] = await Promise.all([
     prisma.payoutAccount.findMany({
       where: { status: "SUBMITTED" },
       orderBy: { submittedAt: "asc" },
@@ -26,6 +28,7 @@ export default async function AdminPayoutsPage() {
       take: 20,
       include: { partner: { select: { name: true } } },
     }),
+    getQueueCounts(),
   ]);
 
   return (
@@ -36,6 +39,8 @@ export default async function AdminPayoutsPage() {
         <p className="text-sm text-gray-500 mb-8">
           Partners list and sell without this. Approving one lets money reach them.
         </p>
+
+        <AdminNav active="/admin/payouts" counts={counts} />
 
         <h2 className="text-sm font-semibold text-gray-900 mb-3">
           Awaiting review {pending.length > 0 && <span className="text-gray-400">({pending.length})</span>}

@@ -160,6 +160,11 @@ model Partner {
    * the lever for abuse after the fact.
    */
   status      PartnerStatus @default(APPROVED)
+  /** Set together with status SUSPENDED. The reason is shown to the partner,
+      because a suspension they cannot understand is one they cannot fix. */
+  suspendedAt     DateTime?
+  suspendedReason String?
+  suspendedBy     String?
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
@@ -298,6 +303,58 @@ enum ClubAccess {
   BY_ARRANGEMENT
   /** Green fee at the desk, no introduction needed. */
   VISITORS_WELCOME
+}
+
+// ─── Venue claims ────────────────────────────────────────────────────────────
+// Someone saying they work at a venue we listed from public information.
+//
+// Stored rather than only emailed. A claim that exists solely as a message in
+// an inbox is one nobody can hand over, search, or count — and these are the
+// only inbound partner leads the platform generates, so losing them to an
+// unread inbox loses the one mechanism that closes the unverified-listing gap.
+
+model VenueClaim {
+  id        String      @id @default(cuid())
+  venueType VenueType
+  venueId   String
+  /** Denormalised so a claim stays readable if the listing is later removed. */
+  venueName String
+
+  contactName String
+  role        String
+  workEmail   String
+  phone       String
+  /** The booking page they say is theirs, if they gave one. */
+  website     String?
+
+  status      ClaimStatus @default(NEW)
+  reviewedAt  DateTime?
+  reviewedBy  String?
+  reviewNote  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, createdAt])
+  @@index([venueType, venueId])
+  @@map("venue_claims")
+}
+
+enum VenueType {
+  HOTEL
+  RESTAURANT
+  CLUB
+}
+
+enum ClaimStatus {
+  /** Nobody has looked at it. */
+  NEW
+  /** Someone is working it. */
+  CONTACTED
+  /** Confirmed — the listing has been handed over. */
+  APPROVED
+  /** Not who they said they were, or no longer relevant. */
+  REJECTED
 }
 
 // ─── Events ──────────────────────────────────────────────────────────────────
