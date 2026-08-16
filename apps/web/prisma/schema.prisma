@@ -164,6 +164,7 @@ model Partner {
   events      Event[]
   hotels      Hotel[]
   restaurants Restaurant[]
+  clubs       Club[]
   payoutAccount PayoutAccount?
 
   @@map("partners")
@@ -220,6 +221,70 @@ enum PayoutStatus {
   VERIFIED
   /** Checked and refused. Partner can correct and resubmit. */
   REJECTED
+}
+
+// ─── Clubs & leisure ─────────────────────────────────────────────────────────
+// Golf and country clubs do not fit either existing type. A hotel sells nights
+// and a restaurant sells covers; a club sells a round, and mostly to its own
+// members. Forcing one into the hotel model would print an empty rate table
+// under a "Book a room" button that means nothing here.
+//
+// The field that actually decides whether a listing is useful is `access`: a
+// reader wants to know whether they can play at all before they care about the
+// fee. Short-term rentals deliberately do not live here — they sell nights with
+// a calendar and guest limits, which is the hotel shape, not this one.
+
+model Club {
+  id          String       @id @default(cuid())
+  partnerId   String
+  name        String
+  description String?
+  city        String
+  location    String
+  category    ClubCategory @default(GOLF)
+  access      ClubAccess   @default(BY_ARRANGEMENT)
+
+  /** Golf specifics. Null on clubs without a course. */
+  holes       Int?
+  par         Int?
+
+  /** Indicative weekday visitor green fee, for orientation not for booking. */
+  visitorFee  Decimal?     @db.Decimal(10, 2)
+  currency    String       @default("KES")
+  /** Free text for the caveats a fee cannot carry — competition days, dress. */
+  visitorNotes String?
+
+  phone     String?
+  email     String?
+  website   String?
+  imageUrl  String?
+  images    String[] @default([])
+  amenities String[] @default([])
+  published Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  partner Partner @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+
+  @@index([city, published])
+  @@map("clubs")
+}
+
+enum ClubCategory {
+  GOLF
+  COUNTRY
+  SPORTS
+  POLO
+  YACHT
+}
+
+enum ClubAccess {
+  /** Members and their guests only. A visitor cannot simply turn up. */
+  MEMBERS_ONLY
+  /** Visitors can play, but must call ahead. The common case in Kenya. */
+  BY_ARRANGEMENT
+  /** Green fee at the desk, no introduction needed. */
+  VISITORS_WELCOME
 }
 
 // ─── Events ──────────────────────────────────────────────────────────────────

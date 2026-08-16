@@ -939,6 +939,105 @@ const RESTAURANTS = [
   },
 ];
 
+// ─── Clubs & leisure ─────────────────────────────────────────────────────────
+// Green fees are indicative weekday visitor rates and do move — they orient a
+// reader rather than quote them. Access tiers follow what each club publishes;
+// where a club closes particular days to visitors that sits in visitorNotes
+// rather than being flattened into the tier.
+
+const CLUBS = [
+  {
+    name: "Muthaiga Golf Club", city: "Nairobi", location: "Muthaiga Road, Muthaiga, Nairobi",
+    category: "GOLF" as const, access: "BY_ARRANGEMENT" as const,
+    description: "Kenya's best-known championship course and long-time host of the Kenya Open, laid out among the mature trees of Muthaiga. Visitors can play, but the tee sheet belongs to members first.",
+    holes: 18, par: 71, visitorFee: 6000, currency: "KES",
+    visitorNotes: "Call ahead. Wednesday and Saturday are competition days and generally closed to visitors.",
+    phone: "+254 20 000 0000", email: "info@muthaigagolfclub.example", website: "https://www.muthaigagolfclub.com",
+    amenities: ["Championship Course","Clubhouse","Pro Shop","Driving Range","Caddies","Restaurant","Bar","Tennis","Swimming Pool","Parking"],
+  },
+  {
+    name: "Karen Country Club", city: "Nairobi", location: "Karen Road, Karen, Nairobi",
+    category: "COUNTRY" as const, access: "BY_ARRANGEMENT" as const,
+    description: "A parkland course on part of Karen Blixen's original estate, with the Ngong Hills on the skyline. As much a country club as a golf club — tennis, squash and a busy social calendar alongside the course.",
+    holes: 18, par: 72, visitorFee: 7000, currency: "KES",
+    visitorNotes: "Visitors play by prior arrangement, usually introduced by a member.",
+    phone: "+254 20 000 0000", email: "info@karencountryclub.example", website: null,
+    amenities: ["Championship Course","Clubhouse","Pro Shop","Driving Range","Caddies","Tennis","Squash","Swimming Pool","Restaurant","Bar","Parking"],
+  },
+  {
+    name: "Royal Nairobi Golf Club", city: "Nairobi", location: "Ngong Road, Nairobi",
+    category: "GOLF" as const, access: "BY_ARRANGEMENT" as const,
+    description: "Founded in 1906 and the oldest golf club in East Africa, a short drive from the city centre on Ngong Road. Compact, tree-lined and more central than its rivals.",
+    holes: 18, par: 71, visitorFee: 5000, currency: "KES",
+    visitorNotes: "Weekday visitor tee times are the easiest to get.",
+    phone: "+254 20 000 0000", email: "info@royalnairobigc.example", website: null,
+    amenities: ["Clubhouse","Pro Shop","Driving Range","Caddies","Restaurant","Bar","Parking"],
+  },
+  {
+    name: "Windsor Golf Hotel & Country Club", city: "Nairobi", location: "Kigwa Road, Ridgeways, Nairobi",
+    category: "COUNTRY" as const, access: "VISITORS_WELCOME" as const,
+    description: "The one Nairobi club built around a hotel, so a visitor can book a room and a tee time in the same call. An undulating course through indigenous forest on the northern edge of the city.",
+    holes: 18, par: 72, visitorFee: 8000, currency: "KES",
+    visitorNotes: "Open to visiting golfers and hotel guests without an introduction.",
+    phone: "+254 20 000 0000", email: "reservations@windsorgolfresort.example", website: null,
+    amenities: ["Championship Course","Hotel","Clubhouse","Pro Shop","Driving Range","Caddies","Spa","Swimming Pool","Tennis","Restaurant","Bar","Conference Rooms","Parking"],
+  },
+  {
+    name: "Sigona Golf Club", city: "Nairobi", location: "Kikuyu, Kiambu — off the Nairobi–Nakuru highway",
+    category: "GOLF" as const, access: "BY_ARRANGEMENT" as const,
+    description: "A hilly, well-regarded course outside the city at Kikuyu, rated by many Kenyan golfers alongside Muthaiga for the quality of the layout if not for convenience.",
+    holes: 18, par: 71, visitorFee: 7500, currency: "KES",
+    visitorNotes: "Weekday green fee around 7,500; weekends nearer 10,000. Book ahead.",
+    phone: "+254 20 000 0000", email: "info@sigonagolfclub.example", website: null,
+    amenities: ["Championship Course","Clubhouse","Pro Shop","Driving Range","Caddies","Restaurant","Bar","Parking"],
+  },
+  {
+    name: "Limuru Country Club", city: "Nairobi", location: "Limuru, Kiambu",
+    category: "COUNTRY" as const, access: "BY_ARRANGEMENT" as const,
+    description: "High above Nairobi in the tea country at Limuru, cool enough to want a sweater and quiet enough to hear the birds. A different game from the city courses.",
+    holes: 18, par: 71, visitorFee: 6000, currency: "KES",
+    visitorNotes: "Visitors welcome by arrangement; the drive from Nairobi takes about an hour.",
+    phone: "+254 20 000 0000", email: "info@limurucountryclub.example", website: null,
+    amenities: ["Clubhouse","Pro Shop","Caddies","Tennis","Restaurant","Bar","Parking"],
+  },
+  {
+    name: "Vet Lab Sports Club", city: "Nairobi", location: "Ngong Road, Kabete, Nairobi",
+    category: "SPORTS" as const, access: "BY_ARRANGEMENT" as const,
+    description: "A relaxed members' sports club off Ngong Road with a nine-hole course alongside cricket and hockey. Less formal than the championship clubs and correspondingly easier to get on.",
+    holes: 9, par: 35, visitorFee: 3000, currency: "KES",
+    visitorNotes: "Nine holes played twice for a full round. Cricket and hockey share the grounds.",
+    phone: "+254 20 000 0000", email: "info@vetlabsportsclub.example", website: null,
+    amenities: ["Clubhouse","Cricket","Hockey","Caddies","Restaurant","Bar","Parking"],
+  },
+  {
+    name: "Nyali Golf & Country Club", city: "Mombasa", location: "Links Road, Nyali, Mombasa",
+    category: "COUNTRY" as const, access: "VISITORS_WELCOME" as const,
+    description: "The coast's championship course, a short drive from the Nyali beach hotels. Warm, flat, and played early before the heat builds.",
+    holes: 18, par: 71, visitorFee: 5500, currency: "KES",
+    visitorNotes: "Popular with hotel guests; the early morning tee times are the pleasant ones.",
+    phone: "+254 41 000 0000", email: "info@nyaligolf.example", website: null,
+    amenities: ["Championship Course","Clubhouse","Pro Shop","Driving Range","Caddies","Swimming Pool","Restaurant","Bar","Parking"],
+  },
+  {
+    name: "Great Rift Valley Golf Course", city: "Naivasha", location: "Great Rift Valley Lodge, Naivasha, Nakuru County",
+    category: "GOLF" as const, access: "VISITORS_WELCOME" as const,
+    description: "Cut into an escarpment above Lake Naivasha with the Rift floor spread out below — the most dramatic setting of any course in Kenya, and zebra on the fairways often enough to be unremarkable.",
+    holes: 18, par: 72, visitorFee: 7000, currency: "KES",
+    visitorNotes: "Open to lodge guests and visiting golfers. The altitude adds noticeable distance off the tee.",
+    phone: "+254 50 000 0000", email: "golf@greatriftvalleylodge.example", website: null,
+    amenities: ["Championship Course","Hotel","Clubhouse","Pro Shop","Caddies","Swimming Pool","Restaurant","Bar","Game Viewing","Parking"],
+  },
+  {
+    name: "Nanyuki Sports Club", city: "Nanyuki", location: "Nanyuki Town, Laikipia",
+    category: "SPORTS" as const, access: "VISITORS_WELCOME" as const,
+    description: "A nine-hole course on the equator with Mount Kenya filling the skyline on a clear morning. Unfussy, welcoming, and the social centre of Nanyuki.",
+    holes: 9, par: 35, visitorFee: 2500, currency: "KES",
+    visitorNotes: "Visitors pay a green fee at the clubhouse. Mountain views are best before the cloud comes in.",
+    phone: "+254 62 000 0000", email: "info@nanyukisportsclub.example", website: null,
+    amenities: ["Clubhouse","Caddies","Tennis","Squash","Restaurant","Bar","Parking"],
+  },
+];
+
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 async function main() {
@@ -1009,7 +1108,28 @@ async function main() {
 
   console.log(`✅  ${eventsCreated} events seeded (${EVENTS.length - eventsCreated} already existed)`);
   console.log(`✅  ${hotelsCreated} hotels seeded   (${HOTELS.length - hotelsCreated} already existed)`);
+  // ── Clubs ──────────────────────────────────────────────────────────────────
+  let clubsCreated = 0;
+  for (const c of CLUBS) {
+    const existing = await prisma.club.findFirst({ where: { name: c.name } });
+    if (!existing) {
+      await prisma.club.create({
+        data: {
+          partnerId: hotelPartner.id,
+          name: c.name, description: c.description, city: c.city, location: c.location,
+          category: c.category, access: c.access,
+          holes: c.holes, par: c.par, visitorFee: c.visitorFee, currency: c.currency,
+          visitorNotes: c.visitorNotes,
+          phone: c.phone, email: c.email, website: c.website,
+          imageUrl: HOTEL_IMG.pool, images: [HOTEL_IMG.pool, HOTEL_IMG.classic],
+          amenities: c.amenities, published: true,
+        },
+      });
+      clubsCreated++;
+    }
+  }
   console.log(`✅  ${restaurantsCreated} restaurants seeded (${RESTAURANTS.length - restaurantsCreated} already existed)`);
+  console.log(`✅  ${clubsCreated} clubs seeded    (${CLUBS.length - clubsCreated} already existed)`);
   console.log("\n📋 Demo accounts (all password: Password123!)");
   console.log("   admin@dontbeboring.example     → Admin");
   console.log("   events@dontbeboring.example    → Events Partner");

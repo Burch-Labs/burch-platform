@@ -13,6 +13,7 @@ const NAV_LINKS = [
   { href: "/events",      label: "Events" },
   { href: "/hotels",      label: "Hotels" },
   { href: "/restaurants", label: "Restaurants" },
+  { href: "/clubs",       label: "Golf & Clubs" },
 ];
 
 export async function NavBar() {
