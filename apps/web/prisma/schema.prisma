@@ -151,7 +151,12 @@ model Partner {
   description String?
   logoUrl     String?
   website     String?
-  status      PartnerStatus @default(PENDING)
+  /**
+   * Whether the partner may list publicly. APPROVED on creation — signing up
+   * should not block anyone from getting their venue on the site. SUSPENDED is
+   * the lever for abuse after the fact.
+   */
+  status      PartnerStatus @default(APPROVED)
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
@@ -159,8 +164,62 @@ model Partner {
   events      Event[]
   hotels      Hotel[]
   restaurants Restaurant[]
+  payoutAccount PayoutAccount?
 
   @@map("partners")
+}
+
+// ─── Payouts ─────────────────────────────────────────────────────────────────
+// Deliberately separate from Partner.status, because listing and getting paid
+// are different risks. Listing a venue you do not own wastes a guest's time;
+// collecting their money for it is fraud. So a partner lists the moment they
+// sign up, and money only moves once a human has checked who they are.
+//
+// Kept in its own table rather than as columns on Partner so the identity
+// documents are not loaded by every query that happens to touch a partner.
+
+model PayoutAccount {
+  id        String       @id @default(cuid())
+  partnerId String       @unique
+  status    PayoutStatus @default(UNVERIFIED)
+
+  /** Registered business or individual name, as it appears on the ID or cert. */
+  legalName    String?
+  /** KRA PIN — the Kenyan tax identifier. */
+  taxId        String?
+  /** National ID or business registration number. */
+  idNumber     String?
+
+  /** Where money would go. One of the two is required to submit. */
+  mpesaNumber  String?
+  bankName     String?
+  bankAccount  String?
+
+  submittedAt  DateTime?
+  reviewedAt   DateTime?
+  /** Admin user id who approved or rejected. */
+  reviewedBy   String?
+  /** Shown to the partner so a rejection is actionable rather than a dead end. */
+  rejectionReason String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  partner Partner @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@map("payout_accounts")
+}
+
+enum PayoutStatus {
+  /** Nothing submitted. Can list, cannot be paid. */
+  UNVERIFIED
+  /** Details in, awaiting a human. Still cannot be paid. */
+  SUBMITTED
+  /** Checked. The only state money may move in. */
+  VERIFIED
+  /** Checked and refused. Partner can correct and resubmit. */
+  REJECTED
 }
 
 // ─── Events ──────────────────────────────────────────────────────────────────
