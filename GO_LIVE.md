@@ -20,6 +20,7 @@ prints a `⚙️ dontbeboring — CONFIG CHECK` block naming them.
 | `NEXTAUTH_SECRET` | Sessions. |
 | `NEXTAUTH_URL` | Sign-in code emails and payment callbacks are built from this. Wrong value means codes link to localhost and M-Pesa calls back into nowhere. |
 | `RESEND_API_KEY` | Sign-in codes are the only way into an account. No mail, no sign-ins. |
+| `EMAIL_FROM` | Must be an address on a domain verified in Resend. Unset, mail is sent from `onboarding@resend.dev`, which delivers **only to your own Resend account** — every send returns success and every customer's sign-in code is silently dropped. The site then works for whoever is testing it and for nobody else. |
 | `TICKET_SIGNING_SECRET` | Falls back to `NEXTAUTH_SECRET`. Set it separately, otherwise rotating the session secret silently voids every ticket already in a customer's inbox. |
 
 Generate the two secrets with `openssl rand -base64 32` and store them where the

@@ -132,6 +132,51 @@ function checkConfig(): ConfigIssue[] {
     });
   }
 
+  // ── EMAIL_FROM ───────────────────────────────────────────────────────────
+  // The trap this catches: with a valid API key but no EMAIL_FROM, mail goes out
+  // as onboarding@resend.dev — Resend's shared sandbox sender, which only ever
+  // delivers to the account owner's own address. Every send returns 200. Nothing
+  // logs an error. Sign-in codes simply never arrive for anybody else, and since
+  // codes are the only way into an account, the site looks broken to every real
+  // customer while working perfectly for whoever is testing it.
+  const emailFrom = process.env.EMAIL_FROM;
+  if (!emailFrom) {
+    if (process.env.RESEND_API_KEY) {
+      issues.push({
+        level: isProd ? "error" : "warn",
+        key: "EMAIL_FROM",
+        message:
+          "EMAIL_FROM is not set, so mail is sent from onboarding@resend.dev. " +
+          "That sandbox sender only delivers to your own Resend account address — " +
+          "every other recipient is silently dropped, sign-in codes included. " +
+          "Set EMAIL_FROM to an address on a domain you have verified in Resend, " +
+          'e.g. EMAIL_FROM="dontbeboring <hello@yourdomain.com>".',
+      });
+    }
+  } else {
+    // Accept either "addr@domain" or "Display Name <addr@domain>".
+    const address = emailFrom.match(/<([^>]+)>/)?.[1] ?? emailFrom;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(address.trim())) {
+      issues.push({
+        level: "error",
+        key: "EMAIL_FROM",
+        message:
+          `EMAIL_FROM="${emailFrom}" is not a usable sender. ` +
+          'Use "addr@domain" or "Display Name <addr@domain>". Resend rejects anything else, ' +
+          "which means no mail at all rather than mail from the wrong place.",
+      });
+    } else if (address.trim().endsWith("@resend.dev")) {
+      issues.push({
+        level: isProd ? "error" : "warn",
+        key: "EMAIL_FROM",
+        message:
+          "EMAIL_FROM points at resend.dev, Resend's sandbox domain. It only delivers " +
+          "to your own account address, so real customers never receive their sign-in codes. " +
+          "Point it at a domain verified in your Resend dashboard.",
+      });
+    }
+  }
+
   // ── AI agents (Anthropic / OpenAI) ───────────────────────────────────────
   if (!process.env.ANTHROPIC_API_KEY && !process.env.OPENAI_API_KEY) {
     issues.push({
