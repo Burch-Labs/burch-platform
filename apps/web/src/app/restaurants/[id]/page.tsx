@@ -1,3 +1,4 @@
+import { formatVenueAddress } from "@/lib/utils";
 import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -9,6 +10,8 @@ import { StarRating } from "@/components/hotels/StarRating";
 import { ReviewsList } from "@/components/hotels/ReviewsList";
 import { MenuSection } from "@/components/restaurants/MenuSection";
 import { ReservationForm } from "@/components/restaurants/ReservationForm";
+import { BookExternally } from "@/components/venues/BookExternally";
+import { FEATURES } from "@/lib/features";
 import { OpeningHours } from "@/components/restaurants/OpeningHours";
 import { PriceRangeBadge } from "@/components/restaurants/PriceRangeBadge";
 import type { OpeningHours as OpeningHoursType } from "@/types/restaurants";
@@ -103,7 +106,7 @@ export default async function RestaurantDetailPage({ params }: PageProps) {
                   </span>
                 )}
                 {restaurant.priceRange && <PriceRangeBadge priceRange={restaurant.priceRange} />}
-                {avgRating !== null && (
+                {FEATURES.ratings && avgRating !== null && (
                   <div className="flex items-center gap-1.5">
                     <span className="text-sm font-bold text-white bg-orange-500 rounded-md px-2 py-0.5">
                       {avgRating.toFixed(1)}
@@ -117,7 +120,7 @@ export default async function RestaurantDetailPage({ params }: PageProps) {
                 <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                {restaurant.location}{restaurant.city && `, ${restaurant.city}`}
+                {formatVenueAddress(restaurant.location, restaurant.city)}
               </p>
             </div>
 
@@ -127,7 +130,9 @@ export default async function RestaurantDetailPage({ params }: PageProps) {
                 { label: "Phone", value: restaurant.phone ?? "—" },
                 { label: "Email", value: restaurant.email ?? "—" },
                 { label: "Cuisine", value: restaurant.cuisine ?? "Various" },
-                { label: "Menu items", value: `${restaurant.menuItems.length}` },
+                ...(FEATURES.menus
+                  ? [{ label: "Menu items", value: `${restaurant.menuItems.length}` }]
+                  : []),
               ].map(({ label, value }) => (
                 <div key={label} className="bg-white rounded-xl border border-gray-100 p-3">
                   <p className="text-xs text-gray-400 mb-0.5">{label}</p>
@@ -153,20 +158,22 @@ export default async function RestaurantDetailPage({ params }: PageProps) {
             )}
 
             {/* Menu */}
-            <div className="bg-white rounded-2xl border border-gray-100 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                Menu
-                {restaurant.menuItems.length > 0 && (
-                  <span className="ml-2 text-sm font-normal text-gray-400">({restaurant.menuItems.length} items)</span>
-                )}
-              </h2>
-              <MenuSection items={restaurant.menuItems} />
-            </div>
+            {FEATURES.menus && (
+              <div className="bg-white rounded-2xl border border-gray-100 p-6">
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                  Menu
+                  {restaurant.menuItems.length > 0 && (
+                    <span className="ml-2 text-sm font-normal text-gray-400">({restaurant.menuItems.length} items)</span>
+                  )}
+                </h2>
+                <MenuSection items={restaurant.menuItems} />
+              </div>
+            )}
 
             {/* Location placeholder */}
             <div className="bg-white rounded-2xl border border-gray-100 p-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-3">Location</h2>
-              <p className="text-sm text-gray-600 mb-4">{restaurant.location}{restaurant.city && `, ${restaurant.city}`}</p>
+              <p className="text-sm text-gray-600 mb-4">{formatVenueAddress(restaurant.location, restaurant.city)}</p>
               <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl flex items-center justify-center">
                 <div className="text-center">
                   <div className="text-4xl mb-2">📍</div>
@@ -177,6 +184,7 @@ export default async function RestaurantDetailPage({ params }: PageProps) {
             </div>
 
             {/* Reviews */}
+            {FEATURES.ratings && (
             <div>
               <h2 className="text-lg font-semibold text-gray-900 mb-4">
                 Guest reviews
@@ -193,16 +201,26 @@ export default async function RestaurantDetailPage({ params }: PageProps) {
                 isAuthenticated={!!session}
               />
             </div>
+            )}
           </div>
 
-          {/* Right: reservation + hours */}
+          {/* Right: booking + hours */}
           <div className="lg:w-80 flex-shrink-0 space-y-5">
             <div className="sticky top-20 space-y-5">
-              <ReservationForm
-                restaurantId={restaurant.id}
-                restaurantName={restaurant.name}
-                isAuthenticated={!!session}
-              />
+              {FEATURES.directBooking ? (
+                <ReservationForm
+                  restaurantId={restaurant.id}
+                  restaurantName={restaurant.name}
+                  isAuthenticated={!!session}
+                />
+              ) : (
+                <BookExternally
+                  website={restaurant.website}
+                  venueName={restaurant.name}
+                  phone={restaurant.phone}
+                  email={restaurant.email}
+                />
+              )}
               {openingHours && <OpeningHours hours={openingHours} />}
             </div>
           </div>

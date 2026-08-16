@@ -1,3 +1,4 @@
+import { formatVenueAddress } from "@/lib/utils";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth";
@@ -8,6 +9,8 @@ import { HotelGallery } from "@/components/hotels/HotelGallery";
 import { AmenityList } from "@/components/hotels/AmenityList";
 import { ReviewsList } from "@/components/hotels/ReviewsList";
 import { BookingForm } from "@/components/hotels/BookingForm";
+import { BookExternally } from "@/components/venues/BookExternally";
+import { FEATURES } from "@/lib/features";
 import { RoomCard } from "@/components/hotels/RoomCard";
 import { HotelStars, StarRating } from "@/components/hotels/StarRating";
 import Link from "next/link";
@@ -116,7 +119,7 @@ export default async function HotelDetailPage({ params }: PageProps) {
             <div>
               <div className="flex flex-wrap items-start gap-3 mb-2">
                 {hotel.starRating && <HotelStars stars={hotel.starRating} />}
-                {avgRating !== null && (
+                {FEATURES.ratings && avgRating !== null && (
                   <div className="flex items-center gap-1.5">
                     <span className="text-sm font-bold text-white bg-orange-500 rounded-md px-2 py-0.5">
                       {avgRating.toFixed(1)}
@@ -131,7 +134,7 @@ export default async function HotelDetailPage({ params }: PageProps) {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                     d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                {hotel.location}{hotel.city && `, ${hotel.city}`}
+                {formatVenueAddress(hotel.location, hotel.city)}
               </p>
             </div>
 
@@ -198,7 +201,7 @@ export default async function HotelDetailPage({ params }: PageProps) {
                       key={room.id}
                       room={room}
                       hotelId={hotel.id}
-                      showBookButton={!!session}
+                      showBookButton={FEATURES.directBooking && !!session}
                     />
                   ))}
                 </div>
@@ -238,30 +241,41 @@ export default async function HotelDetailPage({ params }: PageProps) {
                   </span>
                 )}
               </h2>
-              <ReviewsList
-                hotelId={hotel.id}
-                initialReviews={hotel.reviews}
-                avgRating={avgRating}
-                distribution={distribution}
-                isAuthenticated={!!session}
-              />
+              {FEATURES.ratings && (
+                <ReviewsList
+                  hotelId={hotel.id}
+                  initialReviews={hotel.reviews}
+                  avgRating={avgRating}
+                  distribution={distribution}
+                  isAuthenticated={!!session}
+                />
+              )}
             </div>
           </div>
 
           {/* ── Right: date picker + live availability ───── */}
           <div className="lg:w-96 flex-shrink-0">
             <div className="sticky top-20">
-              <Suspense
-                fallback={
-                  <div className="h-64 bg-white rounded-2xl border border-gray-100 animate-pulse" />
-                }
-              >
-                <BookingForm
-                  hotelId={hotel.id}
-                  rooms={rooms}
-                  isAuthenticated={!!session}
+              {FEATURES.directBooking ? (
+                <Suspense
+                  fallback={
+                    <div className="h-64 bg-white rounded-2xl border border-gray-100 animate-pulse" />
+                  }
+                >
+                  <BookingForm
+                    hotelId={hotel.id}
+                    rooms={rooms}
+                    isAuthenticated={!!session}
+                  />
+                </Suspense>
+              ) : (
+                <BookExternally
+                  website={hotel.website}
+                  venueName={hotel.name}
+                  phone={hotel.phone}
+                  email={hotel.email}
                 />
-              </Suspense>
+              )}
             </div>
           </div>
         </div>

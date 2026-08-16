@@ -186,6 +186,7 @@ model Hotel {
   amenities    String[] @default([])
   phone        String?
   email        String?
+  website      String?
   checkInTime  String   @default("14:00")
   checkOutTime String   @default("11:00")
   published    Boolean  @default(false)

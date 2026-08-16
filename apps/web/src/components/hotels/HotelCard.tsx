@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { HotelStars, StarRating } from "./StarRating";
 import { AmenityList } from "./AmenityList";
+import { FEATURES } from "@/lib/features";
 import { formatCurrency } from "@/lib/format";
 import type { HotelCard as HotelCardType } from "@/types/hotels";
 
@@ -53,7 +54,7 @@ export function HotelCard({ hotel, priority = false }: HotelCardProps) {
           <h3 className="font-semibold text-gray-900 leading-snug line-clamp-2 group-hover:text-orange-600 transition-colors flex-1">
             {hotel.name}
           </h3>
-          {hotel.avgRating && (
+          {FEATURES.ratings && hotel.avgRating && (
             <div className="flex items-center gap-1 flex-shrink-0">
               <span className="text-xs font-bold text-white bg-orange-500 rounded-md px-1.5 py-0.5">
                 {hotel.avgRating.toFixed(1)}
@@ -92,7 +93,7 @@ export function HotelCard({ hotel, priority = false }: HotelCardProps) {
               <span className="text-xs text-gray-400">Contact for pricing</span>
             )}
           </div>
-          {hotel._count.reviews > 0 && hotel.avgRating && (
+          {FEATURES.ratings && hotel._count.reviews > 0 && hotel.avgRating && (
             <StarRating
               rating={hotel.avgRating}
               size="sm"

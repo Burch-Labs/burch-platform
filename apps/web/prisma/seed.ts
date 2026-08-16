@@ -73,6 +73,7 @@ const HOTELS = [
     name: "Fairmont The Norfolk Nairobi", city: "Nairobi", location: "Harry Thuku Road, Nairobi", starRating: 5,
     description: "Nairobi's most iconic hotel since 1904. Colonial charm meets modern luxury, set in beautifully landscaped gardens in the heart of the city.",
     phone: "+254 20 000 0000", email: "reservations@fairmontnorfolk.example", checkInTime: "14:00", checkOutTime: "11:00",
+    website: "https://www.fairmont.com/en/hotels/nairobi/fairmont-the-norfolk.html",
     imageUrl: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&q=80",
     images: ["https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&q=80","https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800&q=80","https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80","https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80","https://images.unsplash.com/photo-1455587734955-081b22074882?w=800&q=80"],
     amenities: ["WiFi","Swimming Pool","Gym","Restaurant","Bar","Spa","Parking","24h Front Desk","Room Service","Concierge"],
@@ -148,6 +149,7 @@ const HOTELS = [
     name: "Tribe Hotel", city: "Nairobi", location: "Limuru Road, Gigiri, Nairobi", starRating: 5,
     description: "An art-filled design hotel in diplomatic Gigiri, close to the UN offices and Village Market. A favourite for its infinity pool, rooftop bar, and rotating contemporary African art collection.",
     phone: "+254 703 032 000", email: "reservations@tribe-hotel.com", checkInTime: "14:00", checkOutTime: "12:00",
+    website: "https://www.tribe-hotel.com/",
     imageUrl: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80",
     images: ["https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80","https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&q=80","https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80"],
     amenities: ["WiFi","Swimming Pool","Gym","Restaurant","Bar","Spa","Parking","24h Front Desk","Business Center","Room Service","Art Gallery"],
@@ -190,6 +192,7 @@ const HOTELS = [
     name: "Nairobi Serena Hotel", city: "Nairobi", location: "Processional Way, Central Business District, Nairobi", starRating: 5,
     description: "A city-centre landmark overlooking Central Park, known for its tranquil gardens, Maisha Spa and a long-standing reputation for polished service. A short walk from the KICC and the government quarter.",
     phone: "+254 20 282 2000", email: "nairobi@serenahotels.com", checkInTime: "14:00", checkOutTime: "11:00",
+    website: "https://www.serenahotels.com/nairobi",
     imageUrl: HOTEL_IMG.classic, images: [HOTEL_IMG.classic, HOTEL_IMG.suite, HOTEL_IMG.lobby, HOTEL_IMG.pool],
     amenities: ["WiFi","Swimming Pool","Gym","Restaurant","Bar","Spa","Parking","24h Front Desk","Business Center","Conference Rooms","Room Service","Concierge"],
     rooms: [
@@ -533,18 +536,6 @@ const RESTAURANTS = [
     images: ["https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80","https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&q=80","https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=800&q=80"],
     amenities: ["Outdoor Seating","Private Dining","Bar","Parking","Reservations Required","Vegan Options"],
     openingHours: defaultHours("12:00", "22:00", "11:00", "22:30"),
-    menuItems: [
-      { category: "Starters", name: "Nyama Choma Salad", description: "Char-grilled beef, fresh greens, mango, and a tamarind dressing", price: 850, sortOrder: 1 },
-      { category: "Starters", name: "Crab Samosas", description: "East African crab meat, fresh coriander, coconut chutney", price: 1100, sortOrder: 2 },
-      { category: "Mains", name: "Tilapia on the Rocks", description: "Lake Victoria tilapia, sweet potato mash, sukuma wiki chimichurri", price: 2200, sortOrder: 1 },
-      { category: "Mains", name: "Lamb Rack with Berbere", description: "French-trimmed Kenyan lamb, Ethiopian spice crust, roasted vegetables", price: 3800, sortOrder: 2 },
-      { category: "Mains", name: "Garden Mezze", description: "A seasonal spread of African-inspired vegetarian delights", price: 1800, sortOrder: 3 },
-      { category: "Desserts", name: "Passion Fruit Crème Brûlée", description: "Classic brûlée with East African passion fruit", price: 750, sortOrder: 1 },
-      { category: "Desserts", name: "Chocolate Lava Cake", description: "Dark Ugandan chocolate, vanilla bean ice cream", price: 850, sortOrder: 2 },
-      { category: "Cocktails", name: "African Sunset", description: "Gin, hibiscus, lime, ginger beer", price: 900, sortOrder: 1 },
-      { category: "Cocktails", name: "Dawa Cocktail", description: "Vodka, honey, lime — Kenya's classic cocktail", price: 850, sortOrder: 2 },
-      { category: "Wines", name: "Kleine Zalze Chenin Blanc", description: "South Africa · Stellenbosch · Glass", price: 950, sortOrder: 1 },
-    ],
   },
   {
     name: "Kiza Lounge & Restaurant", city: "Nairobi", location: "Galana Plaza, Galana Road, Kilimani, Nairobi", cuisine: "Pan-African",
@@ -554,16 +545,6 @@ const RESTAURANTS = [
     images: ["https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80","https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&q=80"],
     amenities: ["Live Music","Bar","Rooftop","Outdoor Seating","Vegan Options","Reservations Required"],
     openingHours: { ...defaultHours("18:00", "02:00", "18:00", "03:00"), monday: { open: "18:00", close: "02:00", closed: false }, tuesday: { open: "18:00", close: "02:00", closed: false } },
-    menuItems: [
-      { category: "Starters", name: "Prawns Peri-Peri", description: "Tiger prawns, Mozambican peri-peri sauce, grilled flatbread", price: 1800, sortOrder: 1 },
-      { category: "Starters", name: "African Platter", description: "Samosas, chicken lollipops, spring rolls, mango chutney", price: 1400, sortOrder: 2 },
-      { category: "Grills", name: "Kiza Mixed Grill", description: "Beef ribeye, lamb chops, chicken tikka, sides", price: 5500, sortOrder: 1 },
-      { category: "Grills", name: "Nyama Choma", description: "Kenyan char-grilled goat, kachumbari, ugali", price: 2800, sortOrder: 2 },
-      { category: "Mains", name: "Swahili Coconut Fish Curry", description: "Fresh sea bass, coconut milk, tomato, spiced rice", price: 2400, sortOrder: 1 },
-      { category: "Cocktails", name: "Kiza Mojito", description: "White rum, fresh mint, lime, cane sugar", price: 1000, sortOrder: 1 },
-      { category: "Cocktails", name: "Passion Martini", description: "Vodka, passion fruit, vanilla, prosecco float", price: 1100, sortOrder: 2 },
-      { category: "Drinks", name: "Tusker Lager", description: "Kenya's iconic beer · 500ml", price: 450, sortOrder: 1 },
-    ],
   },
   {
     name: "Carnivore Restaurant", city: "Nairobi", location: "Langata Road, Nairobi", cuisine: "Nyama Choma / African Grill",
@@ -573,15 +554,6 @@ const RESTAURANTS = [
     images: ["https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=800&q=80","https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80","https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80"],
     amenities: ["Outdoor Seating","Live Music","Bar","Parking","Reservations Required","Private Dining"],
     openingHours: defaultHours("12:00", "22:30", "12:00", "23:00"),
-    menuItems: [
-      { category: "Carvery", name: "The Beast — Full Carvery Experience", description: "Unlimited tableside-carved meats: beef, lamb, pork, chicken, and seasonal game", price: 4200, sortOrder: 1 },
-      { category: "Carvery", name: "Vegetarian Carvery", description: "Unlimited grilled vegetables, halloumi, and plant-based sides for non-meat eaters", price: 2600, sortOrder: 2 },
-      { category: "Sides", name: "Sukuma Wiki & Ugali", description: "Sautéed kale, maize meal — the classic accompaniment", price: 0, sortOrder: 1 },
-      { category: "Starters", name: "Soup of the Day", description: "Chef's daily selection, served with fresh bread", price: 650, sortOrder: 1 },
-      { category: "Desserts", name: "Tropical Fruit Platter", description: "Mango, pineapple, passion fruit, papaya", price: 700, sortOrder: 1 },
-      { category: "Cocktails", name: "Dawa Cocktail", description: "Vodka, honey, lime — Kenya's classic cocktail", price: 850, sortOrder: 1 },
-      { category: "Drinks", name: "Tusker Lager", description: "Kenya's iconic beer · 500ml", price: 450, sortOrder: 2 },
-    ],
   },
   {
     name: "About Thyme", city: "Nairobi", location: "Woodvale Grove, Westlands, Nairobi", cuisine: "International",
@@ -591,14 +563,6 @@ const RESTAURANTS = [
     images: ["https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&q=80","https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80"],
     amenities: ["Outdoor Seating","WiFi","Vegetarian Options","Parking","Reservations Required"],
     openingHours: defaultHours("08:00", "22:00", "08:00", "22:30"),
-    menuItems: [
-      { category: "Breakfast", name: "Eggs Benedict", description: "Poached eggs, hollandaise, smoked salmon or bacon, English muffin", price: 1350, sortOrder: 1 },
-      { category: "Starters", name: "Grilled Halloumi Salad", description: "Watermelon, mint, rocket, balsamic glaze", price: 900, sortOrder: 1 },
-      { category: "Mains", name: "Beer-Battered Fish & Chips", description: "Fresh tilapia, hand-cut fries, tartare sauce", price: 1600, sortOrder: 1 },
-      { category: "Mains", name: "Chicken Tikka Wrap", description: "Grilled chicken, mint yoghurt, pickled onion, fries", price: 1400, sortOrder: 2 },
-      { category: "Mains", name: "Vegetable Lasagne", description: "Layered seasonal vegetables, béchamel, parmesan crust", price: 1500, sortOrder: 3 },
-      { category: "Desserts", name: "Sticky Toffee Pudding", description: "Warm toffee sauce, vanilla ice cream", price: 750, sortOrder: 1 },
-    ],
   },
   {
     name: "Cultiva Farm to Table", city: "Nairobi", location: "Karen, Nairobi", cuisine: "Farm-to-Table",
@@ -608,14 +572,6 @@ const RESTAURANTS = [
     images: ["https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80","https://images.unsplash.com/photo-1445116572660-236099ec97a0?w=800&q=80"],
     amenities: ["Outdoor Seating","Vegan Options","Vegetarian Options","Kid Friendly","Parking","Farm Tours"],
     openingHours: defaultHours("08:00", "21:00", "08:00", "21:30"),
-    menuItems: [
-      { category: "Starters", name: "Garden Salad", description: "Same-day harvested greens, seed mix, citrus vinaigrette", price: 800, sortOrder: 1 },
-      { category: "Mains", name: "Wood-Fired Vegetable Pizza", description: "Farm vegetables, mozzarella, basil, chilli oil", price: 1500, sortOrder: 1 },
-      { category: "Mains", name: "Free-Range Roast Chicken", description: "Half chicken, farm potatoes, seasonal greens", price: 1900, sortOrder: 2 },
-      { category: "Mains", name: "Grilled Trout", description: "Sagana farmed trout, lemon butter, herb rice", price: 2100, sortOrder: 3 },
-      { category: "Desserts", name: "Farm Berry Crumble", description: "Seasonal berries, oat crumble, vanilla custard", price: 700, sortOrder: 1 },
-      { category: "Drinks", name: "Fresh Pressed Juice", description: "Rotating seasonal blend from the farm", price: 500, sortOrder: 1 },
-    ],
   },
   {
     name: "Seven Seafood & Grill", city: "Nairobi", location: "The Alchemist, Westlands, Nairobi", cuisine: "Seafood & Grill",
@@ -625,14 +581,6 @@ const RESTAURANTS = [
     images: ["https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80","https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=800&q=80"],
     amenities: ["Rooftop","Live Music","Bar","Outdoor Seating","Reservations Required","Valet Parking"],
     openingHours: { ...defaultHours("17:00", "23:30", "12:00", "01:00"), sunday: { open: "12:00", close: "22:00", closed: false } },
-    menuItems: [
-      { category: "Starters", name: "Tuna Tataki", description: "Seared yellowfin tuna, sesame, ponzu, wasabi mayo", price: 1600, sortOrder: 1 },
-      { category: "Starters", name: "Coconut Prawns", description: "Tempura prawns, coconut crumb, sweet chilli dip", price: 1500, sortOrder: 2 },
-      { category: "Mains", name: "Whole Grilled Coastal Snapper", description: "Charcoal-grilled, coconut rice, kachumbari", price: 3200, sortOrder: 1 },
-      { category: "Mains", name: "Seven Surf & Turf", description: "Grilled prawns, sirloin steak, garlic butter, fries", price: 3800, sortOrder: 2 },
-      { category: "Sushi", name: "Rainbow Roll", description: "Assorted sashimi, avocado, cream cheese", price: 1900, sortOrder: 1 },
-      { category: "Cocktails", name: "Passion Fruit Mojito", description: "White rum, passion fruit, mint, lime", price: 1000, sortOrder: 1 },
-    ],
   },
   {
     name: "Mediterraneo Restaurant", city: "Nairobi", location: "Lenana Road, Kilimani, Nairobi", cuisine: "Italian",
@@ -642,14 +590,6 @@ const RESTAURANTS = [
     images: ["https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80","https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&q=80"],
     amenities: ["Outdoor Seating","Vegetarian Options","Parking","Kid Friendly","Takeaway"],
     openingHours: defaultHours("11:30", "22:00", "11:30", "22:30"),
-    menuItems: [
-      { category: "Pizza", name: "Margherita", description: "San Marzano tomato, fior di latte, fresh basil", price: 1100, sortOrder: 1 },
-      { category: "Pizza", name: "Quattro Formaggi", description: "Mozzarella, gorgonzola, parmesan, taleggio", price: 1400, sortOrder: 2 },
-      { category: "Pasta", name: "Spaghetti Carbonara", description: "Guanciale, egg yolk, pecorino, black pepper", price: 1350, sortOrder: 1 },
-      { category: "Pasta", name: "Pappardelle al Ragù", description: "Slow-cooked beef ragù, wide ribbon pasta, parmesan", price: 1550, sortOrder: 2 },
-      { category: "Desserts", name: "Tiramisu", description: "Classic espresso-soaked sponge, mascarpone", price: 650, sortOrder: 1 },
-      { category: "Wines", name: "Chianti Classico", description: "Tuscany · Glass", price: 900, sortOrder: 1 },
-    ],
   },
   {
     name: "Nyama Mama", city: "Nairobi", location: "The Prism, Westlands, Nairobi", cuisine: "Modern Kenyan",
@@ -659,14 +599,6 @@ const RESTAURANTS = [
     images: ["https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&q=80","https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80"],
     amenities: ["Outdoor Seating","WiFi","Vegetarian Options","Delivery","Kid Friendly"],
     openingHours: defaultHours("07:30", "22:00", "07:30", "22:30"),
-    menuItems: [
-      { category: "Breakfast", name: "Mandazi & Mursik French Toast", description: "Kenyan-style french toast, fermented milk cream, honey", price: 900, sortOrder: 1 },
-      { category: "Starters", name: "Mishkaki Skewers", description: "Marinated beef skewers, tamarind glaze", price: 850, sortOrder: 1 },
-      { category: "Mains", name: "Nyama Choma Platter", description: "Mixed grilled meats, ugali, kachumbari, sukuma wiki", price: 2400, sortOrder: 1 },
-      { category: "Mains", name: "Coastal Coconut Beans", description: "Kunde greens, coconut, chapati", price: 1200, sortOrder: 2 },
-      { category: "Desserts", name: "Mango Cheesecake", description: "Kenyan mango, biscuit base, passion fruit coulis", price: 700, sortOrder: 1 },
-      { category: "Drinks", name: "Dawa Mocktail", description: "Honey, lime, ginger, crushed ice", price: 550, sortOrder: 1 },
-    ],
   },
   {
     name: "Onami Restaurant", city: "Nairobi", location: "General Mathenge Drive, Westlands, Nairobi", cuisine: "Japanese",
@@ -676,14 +608,6 @@ const RESTAURANTS = [
     images: ["https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80","https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80"],
     amenities: ["Private Dining","Bar","Parking","Reservations Required","Vegetarian Options"],
     openingHours: { ...defaultHours("12:00", "22:30", "12:00", "23:00"), monday: { open: "18:00", close: "22:30", closed: false } },
-    menuItems: [
-      { category: "Sushi", name: "Onami Signature Roll", description: "Tempura shrimp, avocado, spicy mayo, tobiko", price: 1700, sortOrder: 1 },
-      { category: "Sushi", name: "Sashimi Moriawase", description: "Chef's selection of the day's freshest fish", price: 2400, sortOrder: 2 },
-      { category: "Teppanyaki", name: "Wagyu Beef Teppanyaki", description: "Grilled tableside, garlic rice, seasonal vegetables", price: 4500, sortOrder: 1 },
-      { category: "Robata", name: "Chicken Yakitori Skewers", description: "Charcoal-grilled, tare glaze", price: 1200, sortOrder: 1 },
-      { category: "Mains", name: "Miso Black Cod", description: "48-hour marinated cod, sweet miso glaze", price: 3600, sortOrder: 1 },
-      { category: "Drinks", name: "Hot Sake", description: "House selection · Carafe", price: 1400, sortOrder: 1 },
-    ],
   },
   {
     name: "K'Osewe Ranalo Foods", city: "Nairobi", location: "Koinange Street, CBD, Nairobi", cuisine: "Kenyan / Luo",
@@ -693,14 +617,6 @@ const RESTAURANTS = [
     images: ["https://images.unsplash.com/photo-1445116572660-236099ec97a0?w=800&q=80","https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&q=80"],
     amenities: ["Takeaway","WiFi","Halal Options","Vegetarian Options"],
     openingHours: defaultHours("07:00", "21:00", "07:00", "21:00"),
-    menuItems: [
-      { category: "Fish", name: "Whole Fried Tilapia", description: "Lake Victoria tilapia, ugali, kachumbari, greens", price: 1200, sortOrder: 1 },
-      { category: "Fish", name: "Fish Stew", description: "Tilapia in tomato and onion sauce, served with rice or ugali", price: 950, sortOrder: 2 },
-      { category: "Traditional", name: "Omena with Sukuma", description: "Silver cyprinid, sautéed kale, tomato", price: 550, sortOrder: 1 },
-      { category: "Traditional", name: "Managu & Ugali", description: "African nightshade greens, maize meal", price: 400, sortOrder: 2 },
-      { category: "Sides", name: "Ugali", description: "Kenyan staple maize meal", price: 100, sortOrder: 1 },
-      { category: "Drinks", name: "Fresh Passion Juice", description: "Pressed to order", price: 300, sortOrder: 1 },
-    ],
   },
   {
     name: "Java House", city: "Nairobi", location: "Junction Mall, Ngong Road, Nairobi", cuisine: "Café / American",
@@ -710,13 +626,6 @@ const RESTAURANTS = [
     images: ["https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80","https://images.unsplash.com/photo-1445116572660-236099ec97a0?w=800&q=80"],
     amenities: ["WiFi","Outdoor Seating","Takeaway","Delivery","Kid Friendly","Vegetarian Options"],
     openingHours: defaultHours("06:30", "22:00", "06:30", "22:30"),
-    menuItems: [
-      { category: "Breakfast", name: "Java Breakfast", description: "Eggs any style, bacon, sausage, toast, hash browns", price: 950, sortOrder: 1 },
-      { category: "Coffee", name: "Cappuccino", description: "Java's signature blend, steamed milk", price: 380, sortOrder: 1 },
-      { category: "Mains", name: "Chicken Caesar Salad", description: "Grilled chicken, cos lettuce, parmesan, croutons", price: 1100, sortOrder: 1 },
-      { category: "Mains", name: "Java Beef Burger", description: "Beef patty, cheddar, fries", price: 1250, sortOrder: 2 },
-      { category: "Desserts", name: "Chocolate Brownie", description: "Warm, served with vanilla ice cream", price: 550, sortOrder: 1 },
-    ],
   },
   {
     name: "Artcaffe", city: "Nairobi", location: "The Oval, Westlands, Nairobi", cuisine: "Café / Bakery",
@@ -726,13 +635,6 @@ const RESTAURANTS = [
     images: ["https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&q=80","https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80"],
     amenities: ["WiFi","Outdoor Seating","Takeaway","Delivery","Vegetarian Options","Vegan Options"],
     openingHours: defaultHours("06:30", "21:30", "06:30", "22:00"),
-    menuItems: [
-      { category: "Bakery", name: "Butter Croissant", description: "Freshly baked in-house daily", price: 350, sortOrder: 1 },
-      { category: "Breakfast", name: "Avocado Toast", description: "Sourdough, smashed avocado, feta, chilli flakes", price: 850, sortOrder: 1 },
-      { category: "Mains", name: "Grilled Salmon Salad", description: "Pan-seared salmon, mixed greens, citrus dressing", price: 1600, sortOrder: 1 },
-      { category: "Mains", name: "Margherita Flatbread", description: "Tomato, mozzarella, basil", price: 1050, sortOrder: 2 },
-      { category: "Desserts", name: "Red Velvet Cake", description: "Cream cheese frosting", price: 600, sortOrder: 1 },
-    ],
   },
   {
     name: "Mama Rocks Burgers", city: "Nairobi", location: "Delta Corner, Westlands, Nairobi", cuisine: "American / Burgers",
@@ -742,13 +644,6 @@ const RESTAURANTS = [
     images: ["https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80","https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80"],
     amenities: ["Outdoor Seating","Takeaway","Delivery","Kid Friendly","Vegetarian Options"],
     openingHours: defaultHours("11:00", "22:00", "11:00", "22:30"),
-    menuItems: [
-      { category: "Burgers", name: "The OG Rocks Burger", description: "Beef patty, cheddar, bacon, secret sauce, brioche bun", price: 1100, sortOrder: 1 },
-      { category: "Burgers", name: "Spicy Chicken Burger", description: "Buttermilk fried chicken, jalapeños, chipotle mayo", price: 1050, sortOrder: 2 },
-      { category: "Burgers", name: "Beyond Veggie Burger", description: "Plant-based patty, lettuce, tomato, vegan mayo", price: 1150, sortOrder: 3 },
-      { category: "Sides", name: "Loaded Fries", description: "Cheese sauce, bacon bits, spring onion", price: 700, sortOrder: 1 },
-      { category: "Shakes", name: "Oreo Milkshake", description: "Vanilla ice cream, crushed Oreo", price: 650, sortOrder: 1 },
-    ],
   },
   {
     name: "Habesha Restaurant", city: "Nairobi", location: "Woodvale Grove, Westlands, Nairobi", cuisine: "Ethiopian",
@@ -758,13 +653,6 @@ const RESTAURANTS = [
     images: ["https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80","https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&q=80"],
     amenities: ["Live Music","Vegan Options","Vegetarian Options","Outdoor Seating","Private Dining"],
     openingHours: defaultHours("11:00", "22:30", "11:00", "23:00"),
-    menuItems: [
-      { category: "Platters", name: "Habesha Mixed Platter", description: "Doro wat, tibs, misir wat, gomen — served on injera", price: 2200, sortOrder: 1 },
-      { category: "Vegan", name: "Vegetarian Combo", description: "Five vegan stews on injera — lentils, split peas, cabbage, beets, greens", price: 1600, sortOrder: 1 },
-      { category: "Mains", name: "Doro Wat", description: "Spiced chicken stew, boiled egg, berbere sauce", price: 1500, sortOrder: 1 },
-      { category: "Mains", name: "Kitfo", description: "Ethiopian-style minced beef, mitmita spice, injera", price: 1800, sortOrder: 2 },
-      { category: "Drinks", name: "Ethiopian Coffee Ceremony", description: "Traditionally roasted and brewed, serves two", price: 900, sortOrder: 1 },
-    ],
   },
   {
     name: "Osteria del Chianti", city: "Nairobi", location: "General Mathenge Drive, Westlands, Nairobi", cuisine: "Italian",
@@ -774,14 +662,6 @@ const RESTAURANTS = [
     images: ["https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80","https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80"],
     amenities: ["Reservations Required","Bar","Outdoor Seating","Vegetarian Options","Private Dining"],
     openingHours: { ...defaultHours("12:00", "22:00", "12:00", "22:30"), monday: { open: "12:00", close: "22:00", closed: true } },
-    menuItems: [
-      { category: "Antipasti", name: "Burrata e Prosciutto", description: "Creamy burrata, San Daniele prosciutto, rocket", price: 1500, sortOrder: 1 },
-      { category: "Pasta", name: "Tagliatelle al Tartufo", description: "Handmade tagliatelle, black truffle cream", price: 2400, sortOrder: 1 },
-      { category: "Pasta", name: "Risotto ai Funghi", description: "Porcini mushroom risotto, parmesan crisp", price: 1900, sortOrder: 2 },
-      { category: "Mains", name: "Osso Buco", description: "Braised veal shank, saffron risotto milanese", price: 3200, sortOrder: 1 },
-      { category: "Desserts", name: "Panna Cotta", description: "Vanilla bean, berry coulis", price: 700, sortOrder: 1 },
-      { category: "Wines", name: "Chianti Riserva", description: "Tuscany · Bottle", price: 4500, sortOrder: 1 },
-    ],
   },
   {
     name: "Le Grenier à Pain", city: "Nairobi", location: "Riverside Drive, Nairobi", cuisine: "French Bakery & Bistro",
@@ -791,14 +671,6 @@ const RESTAURANTS = [
     images: ["https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80","https://images.unsplash.com/photo-1445116572660-236099ec97a0?w=800&q=80"],
     amenities: ["Outdoor Seating","WiFi","Takeaway","Vegetarian Options","Parking"],
     openingHours: defaultHours("06:30", "21:00", "07:00", "21:00"),
-    menuItems: [
-      { category: "Bakery", name: "Butter Croissant", description: "Laminated 36 hours, baked fresh each morning", price: 380, sortOrder: 1 },
-      { category: "Bakery", name: "Baguette Tradition", description: "Classic French baguette", price: 300, sortOrder: 2 },
-      { category: "Mains", name: "Croque Monsieur", description: "Ham, gruyère, béchamel, toasted brioche", price: 1200, sortOrder: 1 },
-      { category: "Mains", name: "Steak Frites", description: "Grilled sirloin, herb butter, hand-cut fries", price: 2600, sortOrder: 2 },
-      { category: "Desserts", name: "Crème Brûlée", description: "Classic vanilla bean, caramelised sugar crust", price: 750, sortOrder: 1 },
-      { category: "Drinks", name: "Café au Lait", description: "Double espresso, steamed milk", price: 400, sortOrder: 1 },
-    ],
   },
   {
     name: "Charcoal Grill Woodvale", city: "Nairobi", location: "Woodvale Grove, Westlands, Nairobi", cuisine: "Grill / Nyama Choma",
@@ -808,13 +680,6 @@ const RESTAURANTS = [
     images: ["https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=800&q=80","https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80"],
     amenities: ["Outdoor Seating","Live Music","Bar","Parking","Takeaway"],
     openingHours: defaultHours("12:00", "23:00", "12:00", "01:00"),
-    menuItems: [
-      { category: "Grill", name: "Mixed Nyama Choma Platter", description: "Beef, goat, chicken, ugali, kachumbari", price: 2000, sortOrder: 1 },
-      { category: "Grill", name: "Grilled Tilapia", description: "Whole fish, ugali, greens", price: 1400, sortOrder: 2 },
-      { category: "Starters", name: "Chicken Wings", description: "Peri-peri or BBQ glaze", price: 900, sortOrder: 1 },
-      { category: "Sides", name: "Sukuma Wiki", description: "Sautéed kale, tomato, onion", price: 350, sortOrder: 1 },
-      { category: "Drinks", name: "Tusker Lager", description: "500ml", price: 400, sortOrder: 1 },
-    ],
   },
   {
     name: "Fogo Gaucho Brazilian Steakhouse", city: "Nairobi", location: "Rosslyn Riviera, Nairobi", cuisine: "Brazilian Steakhouse",
@@ -824,13 +689,6 @@ const RESTAURANTS = [
     images: ["https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=800&q=80","https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80"],
     amenities: ["Private Dining","Bar","Parking","Reservations Required","Outdoor Seating"],
     openingHours: defaultHours("12:00", "22:30", "12:00", "23:00"),
-    menuItems: [
-      { category: "Rodizio", name: "Full Rodizio Experience", description: "Unlimited tableside-carved picanha, lamb, chicken, sausage, plus hot & salad bar", price: 4500, sortOrder: 1 },
-      { category: "Rodizio", name: "Salad & Hot Bar Only", description: "Full buffet access without the meat carvery", price: 2200, sortOrder: 2 },
-      { category: "Starters", name: "Pão de Queijo", description: "Brazilian cheese bread, served warm", price: 600, sortOrder: 1 },
-      { category: "Desserts", name: "Brigadeiro", description: "Brazilian chocolate truffles", price: 500, sortOrder: 1 },
-      { category: "Cocktails", name: "Caipirinha", description: "Cachaça, lime, sugar", price: 1000, sortOrder: 1 },
-    ],
   },
   {
     name: "Symphony Restaurant & Lounge", city: "Nairobi", location: "Yaya Centre, Kilimani, Nairobi", cuisine: "International Fusion",
@@ -840,13 +698,6 @@ const RESTAURANTS = [
     images: ["https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80","https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80"],
     amenities: ["Rooftop","Live Music","Bar","Outdoor Seating","Vegetarian Options","Reservations Required"],
     openingHours: { ...defaultHours("12:00", "23:00", "12:00", "01:00"), sunday: { open: "12:00", close: "22:00", closed: false } },
-    menuItems: [
-      { category: "Starters", name: "Crispy Calamari", description: "Lightly fried squid, chilli aioli", price: 1300, sortOrder: 1 },
-      { category: "Sushi", name: "Dragon Roll", description: "Tempura prawn, eel, avocado, unagi sauce", price: 1800, sortOrder: 1 },
-      { category: "Mains", name: "Grilled Ribeye", description: "300g ribeye, garlic butter, truffle fries", price: 3400, sortOrder: 1 },
-      { category: "Mains", name: "Thai Green Curry", description: "Chicken or vegetable, jasmine rice", price: 1700, sortOrder: 2 },
-      { category: "Cocktails", name: "Symphony Signature", description: "Gin, elderflower, cucumber, prosecco", price: 1100, sortOrder: 1 },
-    ],
   },
   {
     name: "Ocean Basket", city: "Nairobi", location: "The Junction Mall, Ngong Road, Nairobi", cuisine: "Seafood",
@@ -856,13 +707,6 @@ const RESTAURANTS = [
     images: ["https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80","https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80"],
     amenities: ["Kid Friendly","Takeaway","Delivery","WiFi","Vegetarian Options"],
     openingHours: defaultHours("11:00", "22:00", "11:00", "22:30"),
-    menuItems: [
-      { category: "Starters", name: "Calamari Heads", description: "Lightly floured and fried, lemon butter sauce", price: 950, sortOrder: 1 },
-      { category: "Platters", name: "Ocean Basket Platter for Two", description: "Prawns, calamari, fish, mussels — serves two", price: 3600, sortOrder: 1 },
-      { category: "Mains", name: "Grilled Kingklip", description: "Lemon butter, rice, seasonal vegetables", price: 1900, sortOrder: 1 },
-      { category: "Mains", name: "Prawn Linguine", description: "Garlic, chilli, white wine, parsley", price: 1800, sortOrder: 2 },
-      { category: "Desserts", name: "Malva Pudding", description: "Warm sponge pudding, custard", price: 550, sortOrder: 1 },
-    ],
   },
 
   // ── Nairobi expansion: current openings ────────────────────────────────────
@@ -875,15 +719,6 @@ const RESTAURANTS = [
     imageUrl: DINING_IMG.fine, images: [DINING_IMG.fine, DINING_IMG.bar, DINING_IMG.casual],
     amenities: ["Rooftop","Bar","Reservations Required","Private Dining","Valet Parking","Vegetarian Options"],
     openingHours: defaultHours("12:00", "23:00", "12:00", "00:00"),
-    menuItems: [
-      { category: "Ceviche & Tiradito", name: "Ceviche Clásico", description: "Line-caught white fish, leche de tigre, sweet potato, choclo", price: 1950, sortOrder: 1 },
-      { category: "Ceviche & Tiradito", name: "Tiradito Nikkei", description: "Thin-sliced tuna, yuzu ponzu, rocoto, micro shiso", price: 2200, sortOrder: 2 },
-      { category: "Robata", name: "Miso Black Cod", description: "Saikyo-marinated cod, hoba leaf, pickled ginger", price: 4200, sortOrder: 1 },
-      { category: "Robata", name: "Anticucho Beef Skewers", description: "Peruvian-spiced fillet, aji panca glaze", price: 2800, sortOrder: 2 },
-      { category: "Sushi", name: "Nikkei Signature Roll", description: "Soft-shell crab, avocado, aji amarillo aioli", price: 2400, sortOrder: 1 },
-      { category: "Desserts", name: "Lucuma Cheesecake", description: "Peruvian lucuma, torched meringue", price: 950, sortOrder: 1 },
-      { category: "Cocktails", name: "Pisco Sour", description: "Quebranta pisco, lime, egg white, angostura", price: 1200, sortOrder: 1 },
-    ],
   },
   {
     name: "Ankole Grill", city: "Nairobi", location: "Kitisuru, Nairobi", cuisine: "African Steakhouse",
@@ -892,14 +727,6 @@ const RESTAURANTS = [
     imageUrl: DINING_IMG.grill, images: [DINING_IMG.grill, DINING_IMG.casual, DINING_IMG.bar],
     amenities: ["Outdoor Seating","Bar","Parking","Live Music","Private Dining","Family Friendly"],
     openingHours: defaultHours("12:00", "22:30", "11:00", "23:00"),
-    menuItems: [
-      { category: "From the Grill", name: "Ankole Ribeye", description: "Dry-aged local ribeye, bone marrow butter, 400g", price: 3800, sortOrder: 1 },
-      { category: "From the Grill", name: "Ankole Tomahawk", description: "Sharing cut for two, chimichurri, grilled onion", price: 7500, sortOrder: 2 },
-      { category: "From the Grill", name: "Nyama Choma Platter", description: "Goat, beef and chicken, kachumbari, ugali", price: 3200, sortOrder: 3 },
-      { category: "Starters", name: "Grilled Bone Marrow", description: "Roasted marrow, parsley salad, sourdough toast", price: 1250, sortOrder: 1 },
-      { category: "Sides", name: "Charred Sukuma", description: "Collard greens, garlic, smoked chilli", price: 550, sortOrder: 1 },
-      { category: "Desserts", name: "Grilled Pineapple", description: "Fire-roasted pineapple, vanilla ice cream, honey", price: 700, sortOrder: 1 },
-    ],
   },
   {
     name: "Shamba Café", city: "Nairobi", location: "Karen, Nairobi", cuisine: "Health & Brunch",
@@ -908,13 +735,6 @@ const RESTAURANTS = [
     imageUrl: DINING_IMG.casual, images: [DINING_IMG.casual, DINING_IMG.fine],
     amenities: ["Outdoor Seating","Takeaway","Parking","Vegan Options","Vegetarian Options","Gluten-Free Options","Family Friendly"],
     openingHours: defaultHours("07:30", "18:00", "08:00", "18:00"),
-    menuItems: [
-      { category: "Breakfast", name: "Farm Eggs & Sourdough", description: "Two farm eggs, avocado, house sourdough, dukkah", price: 1100, sortOrder: 1 },
-      { category: "Breakfast", name: "Shamba Granola Bowl", description: "House granola, farm yoghurt, seasonal fruit, hive honey", price: 850, sortOrder: 2 },
-      { category: "Bowls", name: "Harvest Grain Bowl", description: "Ancient grains, roast vegetables, tahini, seeds", price: 1250, sortOrder: 1 },
-      { category: "Juices", name: "Cold-Press Green", description: "Kale, cucumber, apple, ginger, lime", price: 600, sortOrder: 1 },
-      { category: "Coffee", name: "Kenyan Single Origin", description: "Rotating single-estate Kenyan AA", price: 400, sortOrder: 1 },
-    ],
   },
 
   // ── Cuisine specialists ────────────────────────────────────────────────────
@@ -925,14 +745,6 @@ const RESTAURANTS = [
     imageUrl: DINING_IMG.fine, images: [DINING_IMG.fine, DINING_IMG.casual],
     amenities: ["Bar","Parking","Takeaway","Private Dining","Vegetarian Options","Vegan Options","Halal"],
     openingHours: defaultHours("12:00", "22:30", "12:00", "23:00"),
-    menuItems: [
-      { category: "Tandoor", name: "Murgh Malai Tikka", description: "Cream and cheese marinated chicken, green chilli", price: 1650, sortOrder: 1 },
-      { category: "Tandoor", name: "Seekh Kebab", description: "Minced lamb, ginger, coriander, char-grilled", price: 1750, sortOrder: 2 },
-      { category: "Curries", name: "Butter Chicken", description: "Tandoori chicken, tomato and fenugreek gravy", price: 1850, sortOrder: 1 },
-      { category: "Curries", name: "Dal Haandi", description: "Black lentils simmered overnight, cream, butter", price: 1200, sortOrder: 2 },
-      { category: "Curries", name: "Karahi Gosht", description: "Mutton, tomato, green chilli, finished in the karahi", price: 2100, sortOrder: 3 },
-      { category: "Breads", name: "Garlic Naan", description: "Tandoor-baked, garlic and coriander butter", price: 400, sortOrder: 1 },
-    ],
   },
   {
     name: "Misono", city: "Nairobi", location: "Lavington, Nairobi", cuisine: "Japanese",
@@ -941,13 +753,6 @@ const RESTAURANTS = [
     imageUrl: DINING_IMG.fine, images: [DINING_IMG.fine, DINING_IMG.casual],
     amenities: ["Bar","Parking","Private Dining","Reservations Required","Vegetarian Options","Takeaway"],
     openingHours: defaultHours("12:00", "22:00", "12:00", "22:30"),
-    menuItems: [
-      { category: "Sushi", name: "Chef's Nigiri Selection", description: "Eight pieces, whatever came in best that morning", price: 2800, sortOrder: 1 },
-      { category: "Sushi", name: "Salmon Avocado Roll", description: "Eight pieces, sesame, house soy", price: 1400, sortOrder: 2 },
-      { category: "Teppanyaki", name: "Teppanyaki Beef Set", description: "Fillet cooked at the table, rice, miso, vegetables", price: 3600, sortOrder: 1 },
-      { category: "Ramen", name: "Tonkotsu Ramen", description: "Twelve-hour pork bone broth, chashu, ajitama", price: 1650, sortOrder: 1 },
-      { category: "Starters", name: "Agedashi Tofu", description: "Crisp silken tofu, dashi broth, spring onion", price: 850, sortOrder: 1 },
-    ],
   },
 
   // ── Hotel signature restaurants ────────────────────────────────────────────
@@ -958,45 +763,24 @@ const RESTAURANTS = [
     imageUrl: DINING_IMG.bar, images: [DINING_IMG.bar, DINING_IMG.grill, DINING_IMG.fine],
     amenities: ["Rooftop","Bar","Outdoor Seating","Live Music","Valet Parking","Reservations Required","Pool Access"],
     openingHours: defaultHours("11:00", "23:00", "11:00", "00:00"),
-    menuItems: [
-      { category: "Grill", name: "Sarabi Nyama Choma", description: "Goat ribs, kachumbari, ugali — the house order", price: 2900, sortOrder: 1 },
-      { category: "Grill", name: "Peri-Peri Chicken", description: "Half chicken, Mozambican peri-peri, charred lemon", price: 2200, sortOrder: 2 },
-      { category: "Small Plates", name: "Coast Prawns", description: "Tiger prawns, coconut, tamarind, coriander", price: 2400, sortOrder: 1 },
-      { category: "Cocktails", name: "Dawa", description: "Vodka, honey, lime — the Kenyan classic, done well", price: 1100, sortOrder: 1 },
-      { category: "Cocktails", name: "Sarabi Sundowner", description: "Gin, hibiscus, passion fruit, tonic", price: 1250, sortOrder: 2 },
-    ],
   },
   {
     name: "Jiko — Tribe Hotel", city: "Nairobi", location: "Tribe Hotel, Limuru Road, Gigiri, Nairobi", cuisine: "Contemporary African",
     description: "Tribe's signature dining room, built as a tribute to Kenyan growers — organic produce, a playful hand with presentation, and one of the more thoughtful African menus in the city.",
     priceRange: 4, phone: "+254 20 000 0000", email: "jiko@tribe-hotel.example",
+    website: "https://www.tribe-hotel.com/nairobi/jiko-restaurant-nairobi/",
     imageUrl: DINING_IMG.fine, images: [DINING_IMG.fine, DINING_IMG.casual],
     amenities: ["Bar","Outdoor Seating","Private Dining","Valet Parking","Reservations Required","Vegetarian Options","Vegan Options"],
     openingHours: defaultHours("06:30", "22:30", "07:00", "23:00"),
-    menuItems: [
-      { category: "Starters", name: "Smoked Lake Fish Rillette", description: "Lake Victoria fish, farm herbs, sourdough crisp", price: 1500, sortOrder: 1 },
-      { category: "Starters", name: "Roast Beet & Goat Cheese", description: "Limuru beets, goat cheese, honey, dukkah", price: 1300, sortOrder: 2 },
-      { category: "Mains", name: "Braised Short Rib", description: "Kenyan beef, sweet potato, wild greens jus", price: 3400, sortOrder: 1 },
-      { category: "Mains", name: "Coconut Fish Curry", description: "Coastal curry, coconut rice, green mango salad", price: 2800, sortOrder: 2 },
-      { category: "Mains", name: "Farm Vegetable Plate", description: "Whatever the growers sent, cooked three ways", price: 2100, sortOrder: 3 },
-      { category: "Desserts", name: "Dark Chocolate & Baobab", description: "Ganache, baobab sorbet, cacao nib", price: 950, sortOrder: 1 },
-    ],
   },
   {
     name: "Lucca — Villa Rosa Kempinski", city: "Nairobi", location: "Villa Rosa Kempinski, Chiromo Road, Westlands, Nairobi", cuisine: "Italian",
     description: "Kempinski's Italian dining room, and the most formal of the hotel's eight venues — house-made pasta, a serious cellar, and service pitched at the old-school end.",
     priceRange: 4, phone: "+254 20 000 0000", email: "lucca@kempinski.example",
+    website: "https://www.kempinski.com/en/hotel-villa-rosa/restaurants-bars",
     imageUrl: DINING_IMG.fine, images: [DINING_IMG.fine, DINING_IMG.bar],
     amenities: ["Bar","Private Dining","Valet Parking","Reservations Required","Wine List","Vegetarian Options"],
     openingHours: defaultHours("12:00", "22:30", "12:00", "23:00"),
-    menuItems: [
-      { category: "Antipasti", name: "Vitello Tonnato", description: "Rose veal, tuna emulsion, capers", price: 1900, sortOrder: 1 },
-      { category: "Primi", name: "Tagliolini al Tartufo", description: "Fresh tagliolini, black truffle, parmesan", price: 3200, sortOrder: 1 },
-      { category: "Primi", name: "Risotto ai Funghi", description: "Carnaroli, wild mushroom, aged grana", price: 2400, sortOrder: 2 },
-      { category: "Secondi", name: "Branzino in Crosta", description: "Salt-baked sea bass, lemon, olive oil", price: 3800, sortOrder: 1 },
-      { category: "Desserts", name: "Panna Cotta", description: "Vanilla panna cotta, macerated berries", price: 900, sortOrder: 1 },
-      { category: "Wines", name: "Chianti Classico Riserva", description: "Tuscany · Glass", price: 1400, sortOrder: 1 },
-    ],
   },
   {
     name: "Harvest — Trademark Hotel", city: "Nairobi", location: "Trademark Hotel, Church Road, Museum Hill, Nairobi", cuisine: "International",
@@ -1005,28 +789,15 @@ const RESTAURANTS = [
     imageUrl: DINING_IMG.casual, images: [DINING_IMG.casual, DINING_IMG.fine],
     amenities: ["Outdoor Seating","Bar","Valet Parking","Buffet","Family Friendly","Vegetarian Options"],
     openingHours: defaultHours("06:30", "22:30", "07:00", "23:00"),
-    menuItems: [
-      { category: "Breakfast", name: "Full Breakfast Buffet", description: "Hot and cold stations, eggs to order, Kenyan coffee", price: 2400, sortOrder: 1 },
-      { category: "Lunch", name: "Business Lunch Set", description: "Two courses and a soft drink, served inside forty minutes", price: 2200, sortOrder: 1 },
-      { category: "Mains", name: "Grilled Tilapia", description: "Lake fish, coconut rice, kachumbari", price: 2300, sortOrder: 1 },
-      { category: "Mains", name: "Beef Burger", description: "Kenyan beef, aged cheddar, hand-cut chips", price: 1800, sortOrder: 2 },
-      { category: "Desserts", name: "Passion Fruit Tart", description: "Shortcrust, passion curd, torched meringue", price: 750, sortOrder: 1 },
-    ],
   },
   {
     name: "Osteria Romana Terrazo — Sankara Nairobi", city: "Nairobi", location: "Sankara Nairobi, Woodvale Grove, Westlands, Nairobi", cuisine: "Italian",
     description: "The terrace-level Italian at Sankara — Roman classics served from lunch through dinner, spilling onto a covered terrace over Woodvale Grove.",
     priceRange: 3, phone: "+254 20 000 0000", email: "osteriaromana@sankara.example",
+    website: "https://sankara.com/dining/osteria-romana-terrazo/",
     imageUrl: DINING_IMG.casual, images: [DINING_IMG.casual, DINING_IMG.bar],
     amenities: ["Outdoor Seating","Bar","Valet Parking","Reservations Required","Vegetarian Options","Wine List"],
     openingHours: defaultHours("12:00", "22:30", "12:00", "23:00"),
-    menuItems: [
-      { category: "Antipasti", name: "Carciofi alla Romana", description: "Braised artichokes, mint, garlic", price: 1250, sortOrder: 1 },
-      { category: "Pasta", name: "Cacio e Pepe", description: "Tonnarelli, pecorino romano, cracked pepper", price: 1750, sortOrder: 1 },
-      { category: "Pasta", name: "Amatriciana", description: "Guanciale, tomato, pecorino", price: 1850, sortOrder: 2 },
-      { category: "Secondi", name: "Saltimbocca alla Romana", description: "Veal, prosciutto, sage, white wine", price: 3200, sortOrder: 1 },
-      { category: "Desserts", name: "Maritozzo", description: "Roman sweet bun, whipped cream", price: 700, sortOrder: 1 },
-    ],
   },
 
   // ── Hotel dining ───────────────────────────────────────────────────────────
@@ -1037,14 +808,6 @@ const RESTAURANTS = [
     imageUrl: DINING_IMG.grill, images: [DINING_IMG.grill, DINING_IMG.casual, DINING_IMG.bar],
     amenities: ["Outdoor Seating","Bar","Parking","Live Music","Family Friendly","Group Dining","Buffet"],
     openingHours: defaultHours("12:00", "23:00", "12:00", "23:30"),
-    menuItems: [
-      { category: "From the Grill", name: "Ranch Mixed Grill", description: "Goat, beef, lamb and chicken carved at the table", price: 3400, sortOrder: 1 },
-      { category: "From the Grill", name: "Goat Ribs", description: "Slow-grilled over charcoal, kachumbari, ugali", price: 2400, sortOrder: 2 },
-      { category: "From the Grill", name: "Whole Roast Chicken", description: "Marinated overnight, charcoal-roasted", price: 2100, sortOrder: 3 },
-      { category: "Sides", name: "Ugali & Sukuma", description: "Stone-ground maize, collard greens", price: 500, sortOrder: 1 },
-      { category: "Show Package", name: "Safari Cats Dinner & Show", description: "Buffet dinner with the evening acrobatic and dance performance", price: 5200, sortOrder: 1 },
-      { category: "Cocktails", name: "Dawa", description: "Vodka, honey, lime", price: 950, sortOrder: 1 },
-    ],
   },
 
   // ── Mall dining ────────────────────────────────────────────────────────────
@@ -1055,13 +818,6 @@ const RESTAURANTS = [
     imageUrl: DINING_IMG.casual, images: [DINING_IMG.casual, DINING_IMG.bar],
     amenities: ["Bar","Outdoor Seating","Parking","Family Friendly","Wine List","Takeaway","Vegetarian Options"],
     openingHours: defaultHours("11:00", "22:30", "10:00", "23:00"),
-    menuItems: [
-      { category: "Starters", name: "Chef Chops Platter", description: "Wings, sliders, calamari, dips — the house sharer", price: 1850, sortOrder: 1 },
-      { category: "Mains", name: "Hero Ribeye", description: "300g ribeye, peppercorn sauce, hand-cut chips", price: 3200, sortOrder: 1 },
-      { category: "Mains", name: "Spyce Chicken Curry", description: "Coconut curry, basmati, warm naan", price: 1750, sortOrder: 2 },
-      { category: "Mains", name: "Big Mama Burger", description: "Double Kenyan beef patty, aged cheddar, bacon jam", price: 1650, sortOrder: 3 },
-      { category: "Desserts", name: "Honeytooth Sundae", description: "Salted caramel, brownie, vanilla ice cream", price: 800, sortOrder: 1 },
-    ],
   },
   {
     name: "Golden Stool", city: "Nairobi", location: "Village Market, Limuru Road, Gigiri, Nairobi", cuisine: "West African",
@@ -1070,14 +826,6 @@ const RESTAURANTS = [
     imageUrl: DINING_IMG.casual, images: [DINING_IMG.casual, DINING_IMG.grill],
     amenities: ["Outdoor Seating","Bar","Parking","Takeaway","Private Dining","Family Friendly","Halal"],
     openingHours: defaultHours("11:00", "22:00", "11:00", "22:30"),
-    menuItems: [
-      { category: "Starters", name: "Suya Skewers", description: "Beef, groundnut and chilli spice, raw onion", price: 1200, sortOrder: 1 },
-      { category: "Starters", name: "Grilled Shrimp", description: "West African spice rub, charred lime", price: 1650, sortOrder: 2 },
-      { category: "Mains", name: "Jollof Rice & Chicken", description: "Smoky party jollof, grilled chicken, fried plantain", price: 1450, sortOrder: 1 },
-      { category: "Mains", name: "Egusi & Pounded Yam", description: "Melon-seed stew, spinach, goat meat", price: 1600, sortOrder: 2 },
-      { category: "Mains", name: "Waakye", description: "Rice and beans, shito, boiled egg, gari", price: 1250, sortOrder: 3 },
-      { category: "Desserts", name: "Puff Puff", description: "Fried dough, cinnamon sugar", price: 550, sortOrder: 1 },
-    ],
   },
   {
     name: "Sierra Lounge Yaya", city: "Nairobi", location: "Yaya Centre, Argwings Kodhek Road, Kilimani, Nairobi", cuisine: "Grill / Brewery",
@@ -1086,13 +834,6 @@ const RESTAURANTS = [
     imageUrl: DINING_IMG.bar, images: [DINING_IMG.bar, DINING_IMG.grill, DINING_IMG.casual],
     amenities: ["Bar","Outdoor Seating","Parking","Live Music","Sports Screens","Takeaway","Brewery"],
     openingHours: defaultHours("11:00", "23:00", "11:00", "00:00"),
-    menuItems: [
-      { category: "Grill", name: "Sierra Pork Ribs", description: "Half rack, house ale glaze, slaw, fries", price: 2400, sortOrder: 1 },
-      { category: "Grill", name: "Mixed Grill Platter", description: "Beef, chicken, sausage, wings — serves two", price: 3600, sortOrder: 2 },
-      { category: "Small Plates", name: "Buffalo Wings", description: "Eight wings, blue cheese dip", price: 1250, sortOrder: 1 },
-      { category: "Brews", name: "Sierra Blonde Ale", description: "Brewed on site · 500ml", price: 600, sortOrder: 1 },
-      { category: "Brews", name: "Sierra Dark Lager", description: "Brewed on site · 500ml", price: 650, sortOrder: 2 },
-    ],
   },
   {
     name: "Café Deli The Hub", city: "Nairobi", location: "The Hub Karen, Dagoretti Road, Karen, Nairobi", cuisine: "Café / Kenyan",
@@ -1101,13 +842,6 @@ const RESTAURANTS = [
     imageUrl: DINING_IMG.casual, images: [DINING_IMG.casual, DINING_IMG.fine],
     amenities: ["Outdoor Seating","Parking","Takeaway","Family Friendly","Vegetarian Options","Breakfast"],
     openingHours: defaultHours("07:00", "22:00", "07:30", "22:00"),
-    menuItems: [
-      { category: "Breakfast", name: "Kenyan Breakfast", description: "Eggs, beef sausage, baked beans, toast, chai", price: 950, sortOrder: 1 },
-      { category: "Breakfast", name: "Mandazi & Chai", description: "Four mandazi, spiced Kenyan tea", price: 450, sortOrder: 2 },
-      { category: "Mains", name: "Nyama Choma & Ugali", description: "Grilled goat, ugali, kachumbari", price: 1350, sortOrder: 1 },
-      { category: "Mains", name: "Chicken Alfredo", description: "Grilled chicken, cream sauce, fettuccine", price: 1250, sortOrder: 2 },
-      { category: "Pastry", name: "Passion Fruit Cheesecake", description: "From the counter, made daily", price: 600, sortOrder: 1 },
-    ],
   },
   {
     name: "Chowpaty", city: "Nairobi", location: "Diamond Plaza, Masari Road, Parklands, Nairobi", cuisine: "Indian Vegetarian",
@@ -1116,13 +850,6 @@ const RESTAURANTS = [
     imageUrl: DINING_IMG.casual, images: [DINING_IMG.casual, DINING_IMG.fine],
     amenities: ["Takeaway","Parking","Family Friendly","Vegetarian Options","Vegan Options","Group Dining"],
     openingHours: defaultHours("11:00", "22:00", "11:00", "22:30"),
-    menuItems: [
-      { category: "Chaat", name: "Pani Puri", description: "Six puris, spiced water, tamarind chutney", price: 450, sortOrder: 1 },
-      { category: "Chaat", name: "Bhel Puri", description: "Puffed rice, chutneys, sev, coriander", price: 400, sortOrder: 2 },
-      { category: "Dosa", name: "Masala Dosa", description: "Crisp rice crepe, spiced potato, sambar, chutneys", price: 700, sortOrder: 1 },
-      { category: "Thali", name: "Gujarati Thali", description: "Unlimited — dal, kadhi, two sabzis, rotli, rice, sweet", price: 1200, sortOrder: 1 },
-      { category: "Drinks", name: "Masala Chai", description: "Brewed with cardamom and ginger", price: 200, sortOrder: 1 },
-    ],
   },
 
   // ── Nightlife ──────────────────────────────────────────────────────────────
@@ -1135,13 +862,6 @@ const RESTAURANTS = [
     imageUrl: DINING_IMG.bar, images: [DINING_IMG.bar, DINING_IMG.casual],
     amenities: ["Bar","VIP Tables","Bottle Service","Valet Parking","Live DJ","Reservations Required","Dress Code","Late Night"],
     openingHours: defaultHours("21:00", "04:00", "21:00", "05:00"),
-    menuItems: [
-      { category: "Tables", name: "VIP Table — Main Floor", description: "Seats six, minimum spend applies", price: 60000, sortOrder: 1 },
-      { category: "Tables", name: "Standard Table", description: "Seats four, minimum spend applies", price: 35000, sortOrder: 2 },
-      { category: "Bottles", name: "Champagne — Brut NV", description: "Presented to table", price: 28000, sortOrder: 1 },
-      { category: "Bottles", name: "Premium Whisky", description: "Bottle with mixers and ice", price: 22000, sortOrder: 2 },
-      { category: "Cocktails", name: "Signature Cocktail", description: "From the house list", price: 1400, sortOrder: 1 },
-    ],
   },
   {
     name: "Mercury Lounge Village Market", city: "Nairobi", location: "Village Market, Limuru Road, Gigiri, Nairobi", cuisine: "Club & Lounge",
@@ -1150,13 +870,6 @@ const RESTAURANTS = [
     imageUrl: DINING_IMG.bar, images: [DINING_IMG.bar, DINING_IMG.casual, DINING_IMG.fine],
     amenities: ["Bar","Outdoor Seating","Live Music","Parking","Late Night","Reservations Required","Vegetarian Options"],
     openingHours: defaultHours("12:00", "01:00", "12:00", "02:00"),
-    menuItems: [
-      { category: "Small Plates", name: "Salt & Pepper Squid", description: "Crisp squid, chilli, lime aioli", price: 1450, sortOrder: 1 },
-      { category: "Small Plates", name: "Beef Sliders", description: "Three sliders, aged cheddar, house pickle", price: 1350, sortOrder: 2 },
-      { category: "Mains", name: "Grilled Sea Bass", description: "Whole fish, herb butter, seasonal greens", price: 2900, sortOrder: 1 },
-      { category: "Cocktails", name: "Old Fashioned", description: "Bourbon, demerara, bitters, orange oil", price: 1300, sortOrder: 1 },
-      { category: "Cocktails", name: "Espresso Martini", description: "Vodka, Kenyan espresso, coffee liqueur", price: 1250, sortOrder: 2 },
-    ],
   },
   {
     name: "The Alchemist Bar", city: "Nairobi", location: "Parklands Road, Westlands, Nairobi", cuisine: "Club & Lounge",
@@ -1165,13 +878,6 @@ const RESTAURANTS = [
     imageUrl: DINING_IMG.bar, images: [DINING_IMG.bar, DINING_IMG.casual, DINING_IMG.grill],
     amenities: ["Bar","Outdoor Seating","Live Music","Live DJ","Food Trucks","Parking","Late Night","Family Friendly"],
     openingHours: defaultHours("12:00", "23:00", "12:00", "03:00"),
-    menuItems: [
-      { category: "Food Trucks", name: "Street Tacos", description: "Three tacos from the rotating truck line-up", price: 900, sortOrder: 1 },
-      { category: "Food Trucks", name: "Loaded Fries", description: "Beef, cheese sauce, jalapeño", price: 750, sortOrder: 2 },
-      { category: "Drinks", name: "Draught Beer", description: "500ml, rotating local tap", price: 450, sortOrder: 1 },
-      { category: "Drinks", name: "Gin & Tonic", description: "Kenyan gin, tonic, grapefruit", price: 850, sortOrder: 2 },
-      { category: "Entry", name: "Event Entry", description: "Cover varies by act — free on most weeknights", price: 1500, sortOrder: 1 },
-    ],
   },
 
   // ── Beyond Nairobi ─────────────────────────────────────────────────────────
@@ -1182,13 +888,6 @@ const RESTAURANTS = [
     imageUrl: DINING_IMG.fine, images: [DINING_IMG.fine, DINING_IMG.bar],
     amenities: ["Outdoor Seating","Bar","Parking","Reservations Required","Private Dining","Sea View","Wine List"],
     openingHours: defaultHours("12:00", "22:30", "12:00", "23:00"),
-    menuItems: [
-      { category: "Starters", name: "Chilli Crab", description: "Whole mud crab, Swahili chilli, warm bread", price: 2400, sortOrder: 1 },
-      { category: "Starters", name: "Oysters", description: "Half dozen, mignonette, lime", price: 1900, sortOrder: 2 },
-      { category: "Mains", name: "Grilled Lobster", description: "Split and grilled, garlic butter, coconut rice", price: 5800, sortOrder: 1 },
-      { category: "Mains", name: "Swahili Fish Curry", description: "Line-caught fish, coconut, tamarind, spiced rice", price: 2600, sortOrder: 2 },
-      { category: "Experience", name: "Dhow Dinner Cruise", description: "Sunset sail on Tudor Creek with four courses aboard", price: 8500, sortOrder: 1 },
-    ],
   },
   {
     name: "Ali Barbour's Cave Restaurant", city: "Diani", location: "Diani Beach Road, Diani, Kwale", cuisine: "Seafood",
@@ -1197,12 +896,6 @@ const RESTAURANTS = [
     imageUrl: DINING_IMG.fine, images: [DINING_IMG.fine, DINING_IMG.casual],
     amenities: ["Reservations Required","Bar","Parking","Private Dining","Romantic","Wine List"],
     openingHours: defaultHours("18:30", "23:00", "18:30", "23:30"),
-    menuItems: [
-      { category: "Starters", name: "Crab Claws", description: "Grilled claws, chilli and lime butter", price: 2100, sortOrder: 1 },
-      { category: "Mains", name: "Seafood Platter", description: "Lobster, prawns, calamari and catch of the day", price: 6200, sortOrder: 1 },
-      { category: "Mains", name: "Grilled Red Snapper", description: "Whole snapper, coconut rice, kachumbari", price: 2900, sortOrder: 2 },
-      { category: "Desserts", name: "Coconut Crème Brûlée", description: "Coast coconut, torched sugar", price: 950, sortOrder: 1 },
-    ],
   },
   {
     name: "The Old Man and the Sea", city: "Malindi", location: "Vasco Da Gama Road, Malindi, Kilifi", cuisine: "Italian Seafood",
@@ -1211,12 +904,6 @@ const RESTAURANTS = [
     imageUrl: DINING_IMG.fine, images: [DINING_IMG.fine, DINING_IMG.casual],
     amenities: ["Outdoor Seating","Bar","Reservations Required","Wine List","Sea View"],
     openingHours: defaultHours("12:00", "22:30", "12:00", "23:00"),
-    menuItems: [
-      { category: "Antipasti", name: "Tuna Carpaccio", description: "Line-caught tuna, capers, lemon oil", price: 1500, sortOrder: 1 },
-      { category: "Pasta", name: "Spaghetti allo Scoglio", description: "Prawns, calamari, clams, cherry tomato", price: 2400, sortOrder: 1 },
-      { category: "Mains", name: "Grilled Catch of the Day", description: "Whole fish, herb oil, roasted vegetables", price: 2600, sortOrder: 1 },
-      { category: "Desserts", name: "Tiramisù", description: "The house version, made daily", price: 800, sortOrder: 1 },
-    ],
   },
   {
     name: "Ranch House Bistro", city: "Naivasha", location: "Moi South Lake Road, Naivasha, Nakuru County", cuisine: "Farm-to-Table",
@@ -1225,12 +912,6 @@ const RESTAURANTS = [
     imageUrl: DINING_IMG.casual, images: [DINING_IMG.casual, DINING_IMG.grill],
     amenities: ["Outdoor Seating","Garden","Parking","Family Friendly","Vegetarian Options","Takeaway"],
     openingHours: defaultHours("08:00", "20:00", "08:00", "21:00"),
-    menuItems: [
-      { category: "Breakfast", name: "Farm Breakfast", description: "Eggs, farm sausage, roast tomato, sourdough", price: 900, sortOrder: 1 },
-      { category: "Mains", name: "Naivasha Trout", description: "Locally farmed trout, lemon butter, greens", price: 1800, sortOrder: 1 },
-      { category: "Mains", name: "Slow Lamb Shank", description: "Braised shank, mash, rosemary jus", price: 2200, sortOrder: 2 },
-      { category: "Desserts", name: "Farm Berry Crumble", description: "Seasonal berries, oat crumble, cream", price: 700, sortOrder: 1 },
-    ],
   },
   {
     name: "Trout Tree Restaurant", city: "Nanyuki", location: "Nanyuki–Naro Moru Road, Nanyuki, Laikipia", cuisine: "Trout / Farm-to-Table",
@@ -1239,12 +920,6 @@ const RESTAURANTS = [
     imageUrl: DINING_IMG.casual, images: [DINING_IMG.casual, DINING_IMG.grill],
     amenities: ["Outdoor Seating","Parking","Family Friendly","Vegetarian Options","Takeaway","Garden"],
     openingHours: defaultHours("10:00", "18:00", "10:00", "18:00"),
-    menuItems: [
-      { category: "Starters", name: "Smoked Trout Pâté", description: "Farm-smoked trout, toast, pickled cucumber", price: 900, sortOrder: 1 },
-      { category: "Mains", name: "Whole Grilled Trout", description: "Chosen from the ponds, grilled with herb butter", price: 1900, sortOrder: 1 },
-      { category: "Mains", name: "Trout Fillet Meunière", description: "Pan-fried fillet, brown butter, capers, lemon", price: 2100, sortOrder: 2 },
-      { category: "Desserts", name: "Mount Kenya Honey Cake", description: "Local honey, whipped cream", price: 650, sortOrder: 1 },
-    ],
   },
   {
     name: "Kiboko Bay Lakeside Restaurant", city: "Kisumu", location: "Dunga Beach, Kisumu", cuisine: "Lake Fish",
@@ -1253,12 +928,6 @@ const RESTAURANTS = [
     imageUrl: DINING_IMG.casual, images: [DINING_IMG.casual, DINING_IMG.grill],
     amenities: ["Outdoor Seating","Bar","Parking","Family Friendly","Lake View","Boat Trips"],
     openingHours: defaultHours("08:00", "22:00", "08:00", "22:30"),
-    menuItems: [
-      { category: "Starters", name: "Fish Samosas", description: "Spiced lake fish, coriander, tamarind dip", price: 550, sortOrder: 1 },
-      { category: "Mains", name: "Whole Fried Tilapia", description: "Same-day catch, ugali, kachumbari", price: 1400, sortOrder: 1 },
-      { category: "Mains", name: "Grilled Nile Perch", description: "Fillet, garlic butter, seasonal greens", price: 1700, sortOrder: 2 },
-      { category: "Drinks", name: "Dawa", description: "Vodka, honey, lime — on the deck at sunset", price: 850, sortOrder: 1 },
-    ],
   },
   {
     name: "Courtyard Restaurant Nakuru", city: "Nakuru", location: "Kenyatta Avenue, Nakuru Town", cuisine: "Grill / Nyama Choma",
@@ -1267,12 +936,6 @@ const RESTAURANTS = [
     imageUrl: DINING_IMG.grill, images: [DINING_IMG.grill, DINING_IMG.casual],
     amenities: ["Outdoor Seating","Bar","Parking","Takeaway","Family Friendly","Group Dining","Halal"],
     openingHours: defaultHours("10:00", "22:30", "10:00", "23:00"),
-    menuItems: [
-      { category: "Grill", name: "Nyama Choma — Goat", description: "Per kilo, charcoal grilled, kachumbari and ugali", price: 1300, sortOrder: 1 },
-      { category: "Grill", name: "Grilled Chicken", description: "Half chicken, chilli marinade", price: 900, sortOrder: 2 },
-      { category: "Sides", name: "Ugali & Sukuma", description: "Stone-ground maize, collard greens", price: 250, sortOrder: 1 },
-      { category: "Drinks", name: "Cold Tusker", description: "500ml", price: 350, sortOrder: 1 },
-    ],
   },
 ];
 
@@ -1321,7 +984,7 @@ async function main() {
   for (const h of HOTELS) {
     const existing = await prisma.hotel.findFirst({ where: { name: h.name } });
     if (!existing) {
-      const hotel = await prisma.hotel.create({ data: { partnerId: hotelPartner.id, name: h.name, description: h.description, city: h.city, location: h.location, starRating: h.starRating, phone: h.phone, email: h.email, checkInTime: h.checkInTime, checkOutTime: h.checkOutTime, imageUrl: h.imageUrl, images: h.images, amenities: h.amenities, published: true } });
+      const hotel = await prisma.hotel.create({ data: { partnerId: hotelPartner.id, name: h.name, description: h.description, city: h.city, location: h.location, starRating: h.starRating, phone: h.phone, email: h.email, website: "website" in h ? h.website : null, checkInTime: h.checkInTime, checkOutTime: h.checkOutTime, imageUrl: h.imageUrl, images: h.images, amenities: h.amenities, published: true } });
       for (const r of h.rooms) await prisma.room.create({ data: { hotelId: hotel.id, ...r, available: true } });
       // No seeded reviews. Ratings belong to real guests after a real stay;
       // inventing them for a named hotel is both misleading and unlawful in
@@ -1335,11 +998,10 @@ async function main() {
   for (const r of RESTAURANTS) {
     const existing = await prisma.restaurant.findFirst({ where: { name: r.name } });
     if (!existing) {
-      const restaurant = await prisma.restaurant.create({ data: { partnerId: restaurantPartner.id, name: r.name, description: r.description, city: r.city, location: r.location, cuisine: r.cuisine, priceRange: r.priceRange, phone: r.phone, email: r.email, imageUrl: r.imageUrl, images: r.images, amenities: r.amenities, openingHours: r.openingHours, published: true } });
-      for (let i = 0; i < r.menuItems.length; i++) {
-        const m = r.menuItems[i];
-        await prisma.menuItem.create({ data: { restaurantId: restaurant.id, name: m.name, description: m.description, price: m.price, currency: "KES", category: m.category, sortOrder: m.sortOrder ?? i, available: true } });
-      }
+      const restaurant = await prisma.restaurant.create({ data: { partnerId: restaurantPartner.id, name: r.name, description: r.description, city: r.city, location: r.location, cuisine: r.cuisine, priceRange: r.priceRange, phone: r.phone, email: r.email, website: "website" in r ? r.website : null, imageUrl: r.imageUrl, images: r.images, amenities: r.amenities, openingHours: r.openingHours, published: true } });
+      // No seeded menu items — prices are the venue's to confirm, and guests
+      // are sent to the venue's own site to book. Partners add their real menu
+      // from the dashboard during onboarding.
       // No seeded reviews — see the note in the hotel loop above.
       restaurantsCreated++;
     }
