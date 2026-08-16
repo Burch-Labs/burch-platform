@@ -61,7 +61,7 @@ function emailWrapper(content: string): string {
         <tr>
           <td style="padding:24px 32px;background:#F6F8FB;border-top:1px solid #D8E0EC;">
             <p style="margin:0;font-size:12px;color:#5D708F;">
-              Exceptional experiences in Nairobi
+              Exceptional experiences across Kenya
             </p>
           </td>
         </tr>

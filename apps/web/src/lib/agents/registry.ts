@@ -2,7 +2,7 @@ import { callClaude, type ChatMessage } from "./claude";
 import { AgentNotFoundError, type AgentDefinition, type AgentReply } from "./types";
 
 const PLATFORM_BLURB =
-  "dontbeboring is a curated platform connecting hospitality, events, and experiences — spanning hotels, restaurants, and events in Nairobi.";
+  "dontbeboring is a curated platform connecting hospitality, events, and experiences — spanning hotels, restaurants, and events across Kenya.";
 
 function basePrompt(role: string, mandate: string, extra?: string): string {
   return `You are the ${role} on dontbeboring's AI workforce. ${PLATFORM_BLURB}

@@ -102,7 +102,7 @@ function buildSystemPrompt(ctx: Ctx) {
     `- [RESTAURANT:${r.id}] "${r.name}" | ${r.city} | ${r.cuisine ?? "Various"} | ${"KES".repeat(r.priceRange ?? 2)}`
   ).join("\n");
 
-  return `You are dontbeboring AI Concierge — a warm, expert travel and lifestyle assistant for Nairobi.
+  return `You are dontbeboring AI Concierge — a warm, expert travel and lifestyle assistant for Kenya.
 Help users discover events, hotels, restaurants, and plan trips across the continent.
 
 LIVE INVENTORY (use EXACT IDs in your recommendations):

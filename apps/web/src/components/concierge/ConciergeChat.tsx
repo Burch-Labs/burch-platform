@@ -47,7 +47,7 @@ export function ConciergeChat() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Hello! I'm your dontbeboring AI Concierge. I can help you discover the best hotels, restaurants, and events in Nairobi — or plan a full travel itinerary. What are you looking for today?",
+      content: "Hello! I'm your dontbeboring AI Concierge. I can help you discover the best hotels, restaurants, and events across Kenya — or plan a full travel itinerary. What are you looking for today?",
     },
   ]);
   const [input, setInput] = useState("");

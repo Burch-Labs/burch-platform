@@ -152,7 +152,7 @@ export default function EventsPage(props: PageProps) {
         <div className="max-w-6xl mx-auto px-6 py-10">
           <h1 className="text-3xl font-bold text-gray-900 mb-1">Discover Events</h1>
           <p className="text-gray-500 mb-6">
-            Find the best events happening in Nairobi
+            Find the best events happening across Kenya
           </p>
           <Suspense>
             <SearchBar />

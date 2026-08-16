@@ -331,6 +331,185 @@ const HOTELS = [
       { name: "Deluxe Suite", description: "Upper-floor suite with a larger lounge and dining table.", price: 26000, currency: "KES", bedType: "King", maxGuests: 3, quantity: 30, imageUrl: ROOM_IMG.deluxe, amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Bathtub","City View","Work Desk"] },
     ],
   },
+
+  // ── Coast: Mombasa ─────────────────────────────────────────────────────────
+  {
+    name: "Serena Beach Resort & Spa", city: "Mombasa", location: "Shanzu Beach, North Coast, Mombasa", starRating: 5,
+    description: "Built as a replica of a fourteenth-century Swahili town, with carved doors, coral-rag walls and winding lanes opening onto Shanzu Beach. The North Coast benchmark for its gardens and its spa.",
+    phone: "+254 41 000 0000", email: "beach@serenahotels.example", checkInTime: "14:00", checkOutTime: "10:00",
+    imageUrl: HOTEL_IMG.pool, images: [HOTEL_IMG.pool, HOTEL_IMG.classic, HOTEL_IMG.suite],
+    amenities: ["WiFi","Swimming Pool","Beach Access","Gym","Restaurant","Bar","Spa","Parking","24h Front Desk","Room Service","Water Sports","Family Friendly"],
+    rooms: [
+      { name: "Superior Garden Room", description: "Swahili-styled room among the coastal gardens.", price: 18000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 60, imageUrl: ROOM_IMG.standard, amenities: ["Air Conditioning","Flat-screen TV","Safe","Coffee Maker","Garden View","Balcony"] },
+      { name: "Ocean View Room", description: "Direct Indian Ocean outlook, steps from the sand.", price: 27000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 30, imageUrl: ROOM_IMG.deluxe, amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Ocean View","Balcony"] },
+    ],
+  },
+  {
+    name: "Sarova Whitesands Beach Resort & Spa", city: "Mombasa", location: "Bamburi Beach, North Coast, Mombasa", starRating: 5,
+    description: "A long stretch of Bamburi beachfront with five pools, a full water-sports centre and a reputation as the family choice on the North Coast.",
+    phone: "+254 41 000 0000", email: "whitesands@sarovahotels.example", checkInTime: "14:00", checkOutTime: "10:00",
+    imageUrl: HOTEL_IMG.modern, images: [HOTEL_IMG.modern, HOTEL_IMG.pool],
+    amenities: ["WiFi","Swimming Pool","Beach Access","Gym","Restaurant","Bar","Spa","Parking","24h Front Desk","Water Sports","Kids Club","Family Friendly"],
+    rooms: [
+      { name: "Standard Room", description: "Garden-facing room a short walk from the pools.", price: 13000, currency: "KES", bedType: "Queen", maxGuests: 3, quantity: 90, imageUrl: ROOM_IMG.standard, amenities: ["Air Conditioning","Flat-screen TV","Safe","Coffee Maker","Garden View"] },
+      { name: "Sea Facing Room", description: "Balcony over the beach, upgraded furnishings.", price: 21000, currency: "KES", bedType: "King", maxGuests: 3, quantity: 45, imageUrl: ROOM_IMG.deluxe, amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Ocean View","Balcony"] },
+    ],
+  },
+  {
+    name: "Voyager Beach Resort", city: "Mombasa", location: "Nyali Beach, Mombasa", starRating: 4,
+    description: "Nautically themed all-inclusive on Nyali Beach, laid out like a ship's deck. Popular for its dive centre and its evening entertainment programme.",
+    phone: "+254 41 000 0000", email: "voyager@heritagehotels.example", checkInTime: "14:00", checkOutTime: "10:00",
+    imageUrl: HOTEL_IMG.classic, images: [HOTEL_IMG.classic, HOTEL_IMG.pool],
+    amenities: ["WiFi","Swimming Pool","Beach Access","Restaurant","Bar","Parking","24h Front Desk","Water Sports","Kids Club","All Inclusive","Family Friendly"],
+    rooms: [
+      { name: "Standard Room", description: "Compact cabin-style room, garden or pool aspect.", price: 11500, currency: "KES", bedType: "Queen", maxGuests: 3, quantity: 70, imageUrl: ROOM_IMG.standard, amenities: ["Air Conditioning","Flat-screen TV","Safe","Garden View"] },
+      { name: "Sea View Room", description: "Upper-deck room facing the Indian Ocean.", price: 17500, currency: "KES", bedType: "King", maxGuests: 3, quantity: 35, imageUrl: ROOM_IMG.deluxe, amenities: ["Air Conditioning","Flat-screen TV","Safe","Ocean View","Balcony"] },
+    ],
+  },
+
+  // ── Coast: Diani ───────────────────────────────────────────────────────────
+  {
+    name: "Swahili Beach Resort", city: "Diani", location: "Diani Beach Road, Diani, Kwale", starRating: 5,
+    description: "Monumental Swahili and Omani architecture set behind one of the best stretches of Diani sand — vaulted lobbies, layered pools and a spa built into the coral.",
+    phone: "+254 40 000 0000", email: "reservations@swahilibeach.example", checkInTime: "14:00", checkOutTime: "10:00",
+    imageUrl: HOTEL_IMG.pool, images: [HOTEL_IMG.pool, HOTEL_IMG.lobby, HOTEL_IMG.suite],
+    amenities: ["WiFi","Swimming Pool","Beach Access","Gym","Restaurant","Bar","Spa","Parking","24h Front Desk","Room Service","Water Sports","Concierge"],
+    rooms: [
+      { name: "Deluxe Room", description: "Carved timber, garden or pool views, deep verandah.", price: 22000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 50, imageUrl: ROOM_IMG.standard, amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Garden View","Balcony"] },
+      { name: "Ocean Suite", description: "Sea-facing suite with private plunge pool.", price: 52000, currency: "KES", bedType: "King", maxGuests: 3, quantity: 12, imageUrl: ROOM_IMG.suite, amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Bathtub","Ocean View","Balcony","Private Pool"] },
+    ],
+  },
+  {
+    name: "Leopard Beach Resort & Spa", city: "Diani", location: "Diani Beach Road, Diani, Kwale", starRating: 4,
+    description: "Long-established Diani resort on a cliff above the beach, with terraced gardens running down to the sand and one of the coast's better-known spas.",
+    phone: "+254 40 000 0000", email: "reservations@leopardbeach.example", checkInTime: "14:00", checkOutTime: "10:00",
+    imageUrl: HOTEL_IMG.modern, images: [HOTEL_IMG.modern, HOTEL_IMG.pool],
+    amenities: ["WiFi","Swimming Pool","Beach Access","Gym","Restaurant","Bar","Spa","Parking","24h Front Desk","Water Sports","Family Friendly"],
+    rooms: [
+      { name: "Superior Room", description: "Garden-facing room in the terraced blocks.", price: 14000, currency: "KES", bedType: "Queen", maxGuests: 3, quantity: 60, imageUrl: ROOM_IMG.standard, amenities: ["Air Conditioning","Flat-screen TV","Safe","Coffee Maker","Garden View"] },
+      { name: "Ocean Front Cottage", description: "Standalone cottage on the seaward edge of the gardens.", price: 29000, currency: "KES", bedType: "King", maxGuests: 4, quantity: 15, imageUrl: ROOM_IMG.suite, amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Ocean View","Balcony","Sofa Bed"] },
+    ],
+  },
+
+  // ── Coast: Malindi ─────────────────────────────────────────────────────────
+  {
+    name: "Diamonds Dream of Africa", city: "Malindi", location: "Casuarina Road, Malindi, Kilifi", starRating: 5,
+    description: "Adults-only boutique resort on Malindi's beachfront, with a strong Italian influence in both the kitchen and the clientele.",
+    phone: "+254 42 000 0000", email: "dreamofafrica@diamonds.example", checkInTime: "14:00", checkOutTime: "10:00",
+    imageUrl: HOTEL_IMG.suite, images: [HOTEL_IMG.suite, HOTEL_IMG.pool],
+    amenities: ["WiFi","Swimming Pool","Beach Access","Restaurant","Bar","Spa","Parking","24h Front Desk","Room Service","Adults Only","All Inclusive"],
+    rooms: [
+      { name: "Junior Suite", description: "Garden suite with four-poster bed and outdoor shower.", price: 24000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 30, imageUrl: ROOM_IMG.deluxe, amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Garden View","Balcony"] },
+      { name: "Beachfront Suite", description: "Direct sea frontage, private terrace and daybed.", price: 42000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 10, imageUrl: ROOM_IMG.suite, amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Bathtub","Ocean View","Balcony"] },
+    ],
+  },
+  {
+    name: "Ocean Beach Resort & Spa Malindi", city: "Malindi", location: "Mama Ngina Road, Malindi, Kilifi", starRating: 4,
+    description: "Wide gardens and a long pool running toward the Malindi shoreline, with a dive school and easy access to the marine park.",
+    phone: "+254 42 000 0000", email: "reservations@oceanbeachmalindi.example", checkInTime: "14:00", checkOutTime: "10:00",
+    imageUrl: HOTEL_IMG.pool, images: [HOTEL_IMG.pool, HOTEL_IMG.classic],
+    amenities: ["WiFi","Swimming Pool","Beach Access","Restaurant","Bar","Spa","Parking","24h Front Desk","Water Sports","Family Friendly"],
+    rooms: [
+      { name: "Garden Room", description: "Set among palms, a short walk to the beach.", price: 10500, currency: "KES", bedType: "Queen", maxGuests: 3, quantity: 45, imageUrl: ROOM_IMG.standard, amenities: ["Air Conditioning","Flat-screen TV","Safe","Garden View"] },
+      { name: "Sea View Room", description: "Upper-floor room with an ocean-facing balcony.", price: 16000, currency: "KES", bedType: "King", maxGuests: 3, quantity: 20, imageUrl: ROOM_IMG.deluxe, amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Ocean View","Balcony"] },
+    ],
+  },
+
+  // ── Rift Valley: Naivasha ──────────────────────────────────────────────────
+  {
+    name: "Enashipai Resort & Spa", city: "Naivasha", location: "Moi South Lake Road, Naivasha, Nakuru County", starRating: 5,
+    description: "The benchmark Naivasha resort — extensive grounds off South Lake Road, a large spa and conference capacity that makes it the default for corporate retreats out of Nairobi.",
+    phone: "+254 50 000 0000", email: "reservations@enashipai.example", checkInTime: "14:00", checkOutTime: "10:00",
+    imageUrl: HOTEL_IMG.modern, images: [HOTEL_IMG.modern, HOTEL_IMG.pool, HOTEL_IMG.suite],
+    amenities: ["WiFi","Swimming Pool","Gym","Restaurant","Bar","Spa","Parking","24h Front Desk","Conference Rooms","Room Service","Lake Access","Family Friendly"],
+    rooms: [
+      { name: "Deluxe Room", description: "Generous room opening onto the lawns.", price: 19000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 70, imageUrl: ROOM_IMG.standard, amenities: ["Air Conditioning","Flat-screen TV","Safe","Coffee Maker","Garden View","Balcony"] },
+      { name: "Executive Suite", description: "Separate lounge and a terrace toward the lake.", price: 36000, currency: "KES", bedType: "King", maxGuests: 3, quantity: 14, imageUrl: ROOM_IMG.suite, amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Bathtub","Garden View","Balcony"] },
+    ],
+  },
+  {
+    name: "Lake Naivasha Sopa Resort", city: "Naivasha", location: "Moi South Lake Road, Naivasha, Nakuru County", starRating: 4,
+    description: "Cottages spread across wide lakeside grounds where waterbuck and zebra graze freely between the blocks. A short boat ride from Crescent Island.",
+    phone: "+254 50 000 0000", email: "naivasha@sopalodges.example", checkInTime: "12:00", checkOutTime: "10:00",
+    imageUrl: HOTEL_IMG.classic, images: [HOTEL_IMG.classic, HOTEL_IMG.pool],
+    amenities: ["WiFi","Swimming Pool","Restaurant","Bar","Parking","24h Front Desk","Conference Rooms","Lake Access","Game Viewing","Family Friendly"],
+    rooms: [
+      { name: "Standard Cottage", description: "Twin or double cottage among the lakeside lawns.", price: 13500, currency: "KES", bedType: "Double", maxGuests: 3, quantity: 80, imageUrl: ROOM_IMG.standard, amenities: ["Flat-screen TV","Safe","Coffee Maker","Garden View","Balcony"] },
+      { name: "Family Cottage", description: "Two connected rooms sharing a verandah.", price: 22000, currency: "KES", bedType: "Double", maxGuests: 5, quantity: 20, imageUrl: ROOM_IMG.deluxe, amenities: ["Flat-screen TV","Safe","Coffee Maker","Garden View","Sofa Bed"] },
+    ],
+  },
+
+  // ── Central: Nanyuki ───────────────────────────────────────────────────────
+  {
+    name: "Fairmont Mount Kenya Safari Club", city: "Nanyuki", location: "Mount Kenya, Nanyuki, Laikipia", starRating: 5,
+    description: "Founded by William Holden on the equator at the foot of Mount Kenya, with manicured lawns framing the peak, an animal orphanage and a nine-hole course. A Kenyan institution.",
+    phone: "+254 62 000 0000", email: "mountkenya@fairmont.example", checkInTime: "15:00", checkOutTime: "11:00",
+    imageUrl: HOTEL_IMG.classic, images: [HOTEL_IMG.classic, HOTEL_IMG.lobby, HOTEL_IMG.suite],
+    amenities: ["WiFi","Swimming Pool","Restaurant","Bar","Spa","Parking","24h Front Desk","Golf Course","Horse Riding","Game Viewing","Concierge","Room Service"],
+    rooms: [
+      { name: "Superior Room", description: "Fireplace, garden aspect, mountain beyond.", price: 28000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 40, imageUrl: ROOM_IMG.standard, amenities: ["Flat-screen TV","Safe","Coffee Maker","Fireplace","Garden View","Mountain View"] },
+      { name: "Garden Suite", description: "Two rooms and a private lawn facing the peak.", price: 58000, currency: "KES", bedType: "King", maxGuests: 4, quantity: 10, imageUrl: ROOM_IMG.suite, amenities: ["Flat-screen TV","Mini Bar","Safe","Bathtub","Fireplace","Mountain View","Balcony"] },
+    ],
+  },
+  {
+    name: "Sportsman's Arms Hotel", city: "Nanyuki", location: "Nanyuki Town, Laikipia", starRating: 3,
+    description: "The practical Nanyuki base — a long-running town hotel used by climbers heading for Mount Kenya and by anyone staging a Laikipia safari.",
+    phone: "+254 62 000 0000", email: "reservations@sportsmansarms.example", checkInTime: "12:00", checkOutTime: "10:00",
+    imageUrl: HOTEL_IMG.classic, images: [HOTEL_IMG.classic],
+    amenities: ["WiFi","Swimming Pool","Restaurant","Bar","Parking","24h Front Desk","Conference Rooms","Laundry","Family Friendly"],
+    rooms: [
+      { name: "Standard Room", description: "Simple, warm and clean — the essentials before a climb.", price: 6500, currency: "KES", bedType: "Double", maxGuests: 2, quantity: 50, imageUrl: ROOM_IMG.standard, amenities: ["Flat-screen TV","Safe","Coffee Maker"] },
+      { name: "Cottage", description: "Self-contained cottage with a sitting room and fireplace.", price: 12000, currency: "KES", bedType: "King", maxGuests: 4, quantity: 15, imageUrl: ROOM_IMG.deluxe, amenities: ["Flat-screen TV","Safe","Fireplace","Sofa Bed","Garden View"] },
+    ],
+  },
+
+  // ── Rift Valley: Nakuru ────────────────────────────────────────────────────
+  {
+    name: "Sarova Lion Hill Game Lodge", city: "Nakuru", location: "Lake Nakuru National Park, Nakuru", starRating: 4,
+    description: "Inside the park on a ridge above Lake Nakuru, with flamingo flats below and rhino on the game drives. The only full-service lodge within the gates.",
+    phone: "+254 51 000 0000", email: "lionhill@sarovahotels.example", checkInTime: "12:00", checkOutTime: "10:00",
+    imageUrl: HOTEL_IMG.pool, images: [HOTEL_IMG.pool, HOTEL_IMG.classic],
+    amenities: ["WiFi","Swimming Pool","Restaurant","Bar","Spa","Parking","24h Front Desk","Game Viewing","Conference Rooms","Family Friendly"],
+    rooms: [
+      { name: "Standard Chalet", description: "Hillside chalet looking over the lake and the park.", price: 17000, currency: "KES", bedType: "Double", maxGuests: 3, quantity: 60, imageUrl: ROOM_IMG.standard, amenities: ["Flat-screen TV","Safe","Coffee Maker","Balcony","Lake View"] },
+      { name: "Executive Chalet", description: "Larger chalet with a sitting area and wide verandah.", price: 26000, currency: "KES", bedType: "King", maxGuests: 3, quantity: 20, imageUrl: ROOM_IMG.deluxe, amenities: ["Flat-screen TV","Mini Bar","Safe","Bathtub","Balcony","Lake View"] },
+    ],
+  },
+  {
+    name: "Merica Hotel Nakuru", city: "Nakuru", location: "Kenyatta Avenue, Nakuru Town", starRating: 4,
+    description: "Nakuru town's main business address, on Kenyatta Avenue — conference floors, a rooftop pool and a short drive to the park gate.",
+    phone: "+254 51 000 0000", email: "reservations@mericahotel.example", checkInTime: "12:00", checkOutTime: "10:00",
+    imageUrl: HOTEL_IMG.modern, images: [HOTEL_IMG.modern],
+    amenities: ["WiFi","Swimming Pool","Gym","Restaurant","Bar","Parking","24h Front Desk","Conference Rooms","Business Center","Room Service"],
+    rooms: [
+      { name: "Standard Room", description: "Town-facing room with a proper desk.", price: 7500, currency: "KES", bedType: "Queen", maxGuests: 2, quantity: 60, imageUrl: ROOM_IMG.standard, amenities: ["Flat-screen TV","Safe","Coffee Maker","Work Desk","City View"] },
+      { name: "Executive Room", description: "Upper floor, larger bathroom, lounge access.", price: 12500, currency: "KES", bedType: "King", maxGuests: 2, quantity: 25, imageUrl: ROOM_IMG.deluxe, amenities: ["Flat-screen TV","Mini Bar","Safe","Bathtub","City View","Lounge Access"] },
+    ],
+  },
+
+  // ── Nyanza: Kisumu ─────────────────────────────────────────────────────────
+  {
+    name: "Acacia Premier Hotel", city: "Kisumu", location: "Achieng Oneko Road, Kisumu", starRating: 5,
+    description: "Kisumu's tallest hotel, with a rooftop pool looking over the town toward Lake Victoria, and the city's most-used conference floors.",
+    phone: "+254 57 000 0000", email: "reservations@acaciapremier.example", checkInTime: "14:00", checkOutTime: "11:00",
+    imageUrl: HOTEL_IMG.modern, images: [HOTEL_IMG.modern, HOTEL_IMG.pool],
+    amenities: ["WiFi","Swimming Pool","Gym","Restaurant","Bar","Spa","Parking","24h Front Desk","Conference Rooms","Business Center","Room Service","Airport Shuttle"],
+    rooms: [
+      { name: "Deluxe Room", description: "Bright room with lake or town views.", price: 12000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 70, imageUrl: ROOM_IMG.standard, amenities: ["Air Conditioning","Flat-screen TV","Safe","Coffee Maker","Work Desk","Lake View"] },
+      { name: "Executive Suite", description: "Separate lounge on an upper floor, wide lake outlook.", price: 24000, currency: "KES", bedType: "King", maxGuests: 3, quantity: 12, imageUrl: ROOM_IMG.suite, amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Bathtub","Lake View","Lounge Access"] },
+    ],
+  },
+  {
+    name: "Kiboko Bay Resort", city: "Kisumu", location: "Dunga Beach, Kisumu", starRating: 3,
+    description: "Luxury tented rooms on the Lake Victoria shore at Dunga, where hippo surface off the terrace at dusk and the fish comes in the same morning it is served.",
+    phone: "+254 57 000 0000", email: "info@kibokobay.example", checkInTime: "12:00", checkOutTime: "10:00",
+    imageUrl: HOTEL_IMG.classic, images: [HOTEL_IMG.classic, HOTEL_IMG.pool],
+    amenities: ["WiFi","Swimming Pool","Restaurant","Bar","Parking","Lake Access","Boat Trips","Family Friendly"],
+    rooms: [
+      { name: "Luxury Tent", description: "Canvas walls, solid floor and en-suite, facing the water.", price: 9500, currency: "KES", bedType: "Double", maxGuests: 2, quantity: 20, imageUrl: ROOM_IMG.standard, amenities: ["Safe","Coffee Maker","Lake View","Balcony"] },
+      { name: "Family Tent", description: "Two-bedroom tent sharing a lakeside deck.", price: 16000, currency: "KES", bedType: "Double", maxGuests: 4, quantity: 8, imageUrl: ROOM_IMG.deluxe, amenities: ["Safe","Coffee Maker","Lake View","Balcony","Sofa Bed"] },
+    ],
+  },
 ];
 
 // ─── Restaurants ─────────────────────────────────────────────────────────────
@@ -992,6 +1171,107 @@ const RESTAURANTS = [
       { category: "Drinks", name: "Draught Beer", description: "500ml, rotating local tap", price: 450, sortOrder: 1 },
       { category: "Drinks", name: "Gin & Tonic", description: "Kenyan gin, tonic, grapefruit", price: 850, sortOrder: 2 },
       { category: "Entry", name: "Event Entry", description: "Cover varies by act — free on most weeknights", price: 1500, sortOrder: 1 },
+    ],
+  },
+
+  // ── Beyond Nairobi ─────────────────────────────────────────────────────────
+  {
+    name: "Tamarind Mombasa", city: "Mombasa", location: "Silo Road, Nyali, Mombasa", cuisine: "Seafood",
+    description: "The white Moorish landmark above Tudor Creek, and the coast's best-known seafood room for four decades. The dhow dinner cruise leaves from the jetty below.",
+    priceRange: 4, phone: "+254 41 000 0000", email: "mombasa@tamarind.example",
+    imageUrl: DINING_IMG.fine, images: [DINING_IMG.fine, DINING_IMG.bar],
+    amenities: ["Outdoor Seating","Bar","Parking","Reservations Required","Private Dining","Sea View","Wine List"],
+    openingHours: defaultHours("12:00", "22:30", "12:00", "23:00"),
+    menuItems: [
+      { category: "Starters", name: "Chilli Crab", description: "Whole mud crab, Swahili chilli, warm bread", price: 2400, sortOrder: 1 },
+      { category: "Starters", name: "Oysters", description: "Half dozen, mignonette, lime", price: 1900, sortOrder: 2 },
+      { category: "Mains", name: "Grilled Lobster", description: "Split and grilled, garlic butter, coconut rice", price: 5800, sortOrder: 1 },
+      { category: "Mains", name: "Swahili Fish Curry", description: "Line-caught fish, coconut, tamarind, spiced rice", price: 2600, sortOrder: 2 },
+      { category: "Experience", name: "Dhow Dinner Cruise", description: "Sunset sail on Tudor Creek with four courses aboard", price: 8500, sortOrder: 1 },
+    ],
+  },
+  {
+    name: "Ali Barbour's Cave Restaurant", city: "Diani", location: "Diani Beach Road, Diani, Kwale", cuisine: "Seafood",
+    description: "Dinner served in a coral cave several hundred thousand years old, open to the stars through gaps in the roof. Candlelit, seafood-led, and unlike anywhere else in Kenya.",
+    priceRange: 4, phone: "+254 40 000 0000", email: "reservations@alibarbours.example",
+    imageUrl: DINING_IMG.fine, images: [DINING_IMG.fine, DINING_IMG.casual],
+    amenities: ["Reservations Required","Bar","Parking","Private Dining","Romantic","Wine List"],
+    openingHours: defaultHours("18:30", "23:00", "18:30", "23:30"),
+    menuItems: [
+      { category: "Starters", name: "Crab Claws", description: "Grilled claws, chilli and lime butter", price: 2100, sortOrder: 1 },
+      { category: "Mains", name: "Seafood Platter", description: "Lobster, prawns, calamari and catch of the day", price: 6200, sortOrder: 1 },
+      { category: "Mains", name: "Grilled Red Snapper", description: "Whole snapper, coconut rice, kachumbari", price: 2900, sortOrder: 2 },
+      { category: "Desserts", name: "Coconut Crème Brûlée", description: "Coast coconut, torched sugar", price: 950, sortOrder: 1 },
+    ],
+  },
+  {
+    name: "The Old Man and the Sea", city: "Malindi", location: "Vasco Da Gama Road, Malindi, Kilifi", cuisine: "Italian Seafood",
+    description: "Malindi's Italian-Swahili seafood room in an old Portuguese-era building near the jetty — pasta with the morning's catch, and a wine list unusual for a coastal town.",
+    priceRange: 3, phone: "+254 42 000 0000", email: "info@oldmanandthesea.example",
+    imageUrl: DINING_IMG.fine, images: [DINING_IMG.fine, DINING_IMG.casual],
+    amenities: ["Outdoor Seating","Bar","Reservations Required","Wine List","Sea View"],
+    openingHours: defaultHours("12:00", "22:30", "12:00", "23:00"),
+    menuItems: [
+      { category: "Antipasti", name: "Tuna Carpaccio", description: "Line-caught tuna, capers, lemon oil", price: 1500, sortOrder: 1 },
+      { category: "Pasta", name: "Spaghetti allo Scoglio", description: "Prawns, calamari, clams, cherry tomato", price: 2400, sortOrder: 1 },
+      { category: "Mains", name: "Grilled Catch of the Day", description: "Whole fish, herb oil, roasted vegetables", price: 2600, sortOrder: 1 },
+      { category: "Desserts", name: "Tiramisù", description: "The house version, made daily", price: 800, sortOrder: 1 },
+    ],
+  },
+  {
+    name: "Ranch House Bistro", city: "Naivasha", location: "Moi South Lake Road, Naivasha, Nakuru County", cuisine: "Farm-to-Table",
+    description: "A working-farm bistro on South Lake Road serving what the surrounding smallholdings produce — the standard stop between Nairobi and the Mara.",
+    priceRange: 2, phone: "+254 50 000 0000", email: "hello@ranchhousebistro.example",
+    imageUrl: DINING_IMG.casual, images: [DINING_IMG.casual, DINING_IMG.grill],
+    amenities: ["Outdoor Seating","Garden","Parking","Family Friendly","Vegetarian Options","Takeaway"],
+    openingHours: defaultHours("08:00", "20:00", "08:00", "21:00"),
+    menuItems: [
+      { category: "Breakfast", name: "Farm Breakfast", description: "Eggs, farm sausage, roast tomato, sourdough", price: 900, sortOrder: 1 },
+      { category: "Mains", name: "Naivasha Trout", description: "Locally farmed trout, lemon butter, greens", price: 1800, sortOrder: 1 },
+      { category: "Mains", name: "Slow Lamb Shank", description: "Braised shank, mash, rosemary jus", price: 2200, sortOrder: 2 },
+      { category: "Desserts", name: "Farm Berry Crumble", description: "Seasonal berries, oat crumble, cream", price: 700, sortOrder: 1 },
+    ],
+  },
+  {
+    name: "Trout Tree Restaurant", city: "Nanyuki", location: "Nanyuki–Naro Moru Road, Nanyuki, Laikipia", cuisine: "Trout / Farm-to-Table",
+    description: "Tables built into the branches of a giant mugumo fig above a working trout farm, with colobus monkeys in the canopy. You choose the fish from the ponds below.",
+    priceRange: 2, phone: "+254 62 000 0000", email: "info@trouttree.example",
+    imageUrl: DINING_IMG.casual, images: [DINING_IMG.casual, DINING_IMG.grill],
+    amenities: ["Outdoor Seating","Parking","Family Friendly","Vegetarian Options","Takeaway","Garden"],
+    openingHours: defaultHours("10:00", "18:00", "10:00", "18:00"),
+    menuItems: [
+      { category: "Starters", name: "Smoked Trout Pâté", description: "Farm-smoked trout, toast, pickled cucumber", price: 900, sortOrder: 1 },
+      { category: "Mains", name: "Whole Grilled Trout", description: "Chosen from the ponds, grilled with herb butter", price: 1900, sortOrder: 1 },
+      { category: "Mains", name: "Trout Fillet Meunière", description: "Pan-fried fillet, brown butter, capers, lemon", price: 2100, sortOrder: 2 },
+      { category: "Desserts", name: "Mount Kenya Honey Cake", description: "Local honey, whipped cream", price: 650, sortOrder: 1 },
+    ],
+  },
+  {
+    name: "Kiboko Bay Lakeside Restaurant", city: "Kisumu", location: "Dunga Beach, Kisumu", cuisine: "Lake Fish",
+    description: "An open deck on the Lake Victoria shore where the tilapia comes out of the water the same morning. Hippo surface off the terrace at dusk.",
+    priceRange: 2, phone: "+254 57 000 0000", email: "restaurant@kibokobay.example",
+    imageUrl: DINING_IMG.casual, images: [DINING_IMG.casual, DINING_IMG.grill],
+    amenities: ["Outdoor Seating","Bar","Parking","Family Friendly","Lake View","Boat Trips"],
+    openingHours: defaultHours("08:00", "22:00", "08:00", "22:30"),
+    menuItems: [
+      { category: "Starters", name: "Fish Samosas", description: "Spiced lake fish, coriander, tamarind dip", price: 550, sortOrder: 1 },
+      { category: "Mains", name: "Whole Fried Tilapia", description: "Same-day catch, ugali, kachumbari", price: 1400, sortOrder: 1 },
+      { category: "Mains", name: "Grilled Nile Perch", description: "Fillet, garlic butter, seasonal greens", price: 1700, sortOrder: 2 },
+      { category: "Drinks", name: "Dawa", description: "Vodka, honey, lime — on the deck at sunset", price: 850, sortOrder: 1 },
+    ],
+  },
+  {
+    name: "Courtyard Restaurant Nakuru", city: "Nakuru", location: "Kenyatta Avenue, Nakuru Town", cuisine: "Grill / Nyama Choma",
+    description: "Nakuru town's reliable grill — charcoal nyama choma in a walled courtyard, busy from lunch through the evening.",
+    priceRange: 1, phone: "+254 51 000 0000", email: "info@courtyardnakuru.example",
+    imageUrl: DINING_IMG.grill, images: [DINING_IMG.grill, DINING_IMG.casual],
+    amenities: ["Outdoor Seating","Bar","Parking","Takeaway","Family Friendly","Group Dining","Halal"],
+    openingHours: defaultHours("10:00", "22:30", "10:00", "23:00"),
+    menuItems: [
+      { category: "Grill", name: "Nyama Choma — Goat", description: "Per kilo, charcoal grilled, kachumbari and ugali", price: 1300, sortOrder: 1 },
+      { category: "Grill", name: "Grilled Chicken", description: "Half chicken, chilli marinade", price: 900, sortOrder: 2 },
+      { category: "Sides", name: "Ugali & Sukuma", description: "Stone-ground maize, collard greens", price: 250, sortOrder: 1 },
+      { category: "Drinks", name: "Cold Tusker", description: "500ml", price: 350, sortOrder: 1 },
     ],
   },
 ];
