@@ -70,7 +70,7 @@ const HOTELS = [
   {
     // Operated by Fairmont, not Serena — the previous seed had it on a
     // serena.co.ke address, conflating two separate groups.
-    name: "Fairmont The Norfolk", city: "Nairobi", location: "Harry Thuku Road, Nairobi", starRating: 5,
+    name: "Fairmont The Norfolk Nairobi", city: "Nairobi", location: "Harry Thuku Road, Nairobi", starRating: 5,
     description: "Nairobi's most iconic hotel since 1904. Colonial charm meets modern luxury, set in beautifully landscaped gardens in the heart of the city.",
     phone: "+254 20 000 0000", email: "reservations@fairmontnorfolk.example", checkInTime: "14:00", checkOutTime: "11:00",
     imageUrl: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&q=80",
@@ -80,11 +80,6 @@ const HOTELS = [
       { name: "Superior Room", description: "Garden or pool view, king or twin beds.", price: 18500, currency: "KES", bedType: "King", maxGuests: 2, quantity: 20, imageUrl: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80", amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Coffee Maker","Work Desk"] },
       { name: "Deluxe Room", description: "Premium furnishings, garden view, executive lounge access.", price: 28000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 15, imageUrl: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800&q=80", amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Bathtub","Balcony"] },
       { name: "Garden Suite", description: "Private garden terrace, separate living area, butler service.", price: 58000, currency: "KES", bedType: "King", maxGuests: 3, quantity: 5, imageUrl: "https://images.unsplash.com/photo-1631049552057-403cdb8f0658?w=800&q=80", amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Bathtub","Walk-in Shower","Balcony","Sofa Bed"] },
-    ],
-    reviews: [
-      { rating: 5, title: "Absolutely magnificent", comment: "The Norfolk is simply stunning. The gardens are impeccably maintained and the staff go above and beyond." },
-      { rating: 4, title: "Classic luxury", comment: "Beautiful historic property with great service. Room was large and comfortable." },
-      { rating: 5, title: "Best hotel in Nairobi", comment: "Stayed for a work trip and was blown away. The pool area is gorgeous, food excellent." },
     ],
   },
   {
@@ -99,10 +94,6 @@ const HOTELS = [
       { name: "Deluxe Room", description: "Upgraded room with premium bedding and city views.", price: 19000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 20, imageUrl: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800&q=80", amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Coffee Maker","City View"] },
       { name: "Stanley Suite", description: "Historic suite spanning two floors with private dining and panoramic views.", price: 42000, currency: "KES", bedType: "King", maxGuests: 4, quantity: 3, imageUrl: "https://images.unsplash.com/photo-1631049552057-403cdb8f0658?w=800&q=80", amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Bathtub","City View","Sofa Bed","Kitchenette"] },
     ],
-    reviews: [
-      { rating: 4, title: "Historic charm, modern comfort", comment: "Such a wonderful piece of Nairobi history. The Thorn Tree café is iconic." },
-      { rating: 5, title: "My favourite Nairobi hotel", comment: "I've stayed here on every Nairobi visit for years. The pool is a great escape." },
-    ],
   },
   {
     name: "Villa Rosa Kempinski Nairobi", city: "Nairobi", location: "Chiromo Road, Westlands, Nairobi", starRating: 5,
@@ -116,10 +107,6 @@ const HOTELS = [
       { name: "Executive Room", description: "Executive lounge access, upgraded views, and turndown service.", price: 36000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 20, imageUrl: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800&q=80", amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Bathtub","City View","Lounge Access"] },
       { name: "Kempinski Suite", description: "Panoramic corner suite with separate living room and dining area.", price: 70000, currency: "KES", bedType: "King", maxGuests: 3, quantity: 4, imageUrl: "https://images.unsplash.com/photo-1631049552057-403cdb8f0658?w=800&q=80", amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Bathtub","Walk-in Shower","City View","Balcony"] },
     ],
-    reviews: [
-      { rating: 5, title: "Best rooftop pool in Nairobi", comment: "The infinity pool with the city skyline is unbeatable. Rooms are enormous and immaculately kept." },
-      { rating: 5, title: "Flawless stay", comment: "Every detail was considered. Breakfast spread is one of the best in the city." },
-    ],
   },
   {
     name: "Sankara Nairobi", city: "Nairobi", location: "Woodvale Grove, Westlands, Nairobi", starRating: 5,
@@ -131,10 +118,6 @@ const HOTELS = [
     rooms: [
       { name: "Studio Suite", description: "All-suite living, floor-to-ceiling windows, kitchenette.", price: 24000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 35, imageUrl: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80", amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Kitchenette","City View"] },
       { name: "Executive Suite", description: "Larger living area, rooftop pool access, premium finishes.", price: 34000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 15, imageUrl: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800&q=80", amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Bathtub","City View","Balcony"] },
-    ],
-    reviews: [
-      { rating: 5, title: "Westlands' best kept secret", comment: "The rooftop pool bar at sunset is unreal. Suites are spacious and the location puts you steps from everything." },
-      { rating: 4, title: "Stylish and central", comment: "Loved the design and the staff were fantastic. Brunch on Sunday is worth the trip alone." },
     ],
   },
   {
@@ -148,10 +131,6 @@ const HOTELS = [
       { name: "Classic Room", description: "Contemporary design, garden or pool views.", price: 20000, currency: "KES", bedType: "Queen", maxGuests: 2, quantity: 30, imageUrl: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80", amenities: ["Air Conditioning","Flat-screen TV","Safe","Coffee Maker","Work Desk"] },
       { name: "Premier Room", description: "Upgraded furnishings, pool view, rainfall shower.", price: 29000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 18, imageUrl: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800&q=80", amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Walk-in Shower","Pool View"] },
     ],
-    reviews: [
-      { rating: 5, title: "Modern, quiet, superbly run", comment: "One of the best-designed hotels I've stayed at in East Africa. Gym and pool are excellent." },
-      { rating: 4, title: "Great for business trips", comment: "Efficient check-in, strong WiFi, and the rooftop restaurant is a nice bonus." },
-    ],
   },
   {
     name: "Hemingways Nairobi", city: "Nairobi", location: "Mbagathi Ridge, Karen, Nairobi", starRating: 5,
@@ -163,10 +142,6 @@ const HOTELS = [
     rooms: [
       { name: "Junior Suite", description: "Garden views, private balcony, butler service on request.", price: 42000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 12, imageUrl: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80", amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Balcony","Garden View"] },
       { name: "Hemingways Suite", description: "Ngong Hills views, spacious living area, deep soaking tub.", price: 68000, currency: "KES", bedType: "King", maxGuests: 3, quantity: 4, imageUrl: "https://images.unsplash.com/photo-1631049552057-403cdb8f0658?w=800&q=80", amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Bathtub","Balcony","Hill View"] },
-    ],
-    reviews: [
-      { rating: 5, title: "Impeccable service", comment: "Every member of staff greeted us by name from day two. The Karen setting feels a world away from the city." },
-      { rating: 5, title: "Worth every shilling", comment: "The suite was enormous, the spa is excellent, and the Ngong Hills view from breakfast is unforgettable." },
     ],
   },
   {
@@ -180,10 +155,6 @@ const HOTELS = [
       { name: "Tribe Room", description: "Contemporary African art, garden or pool views.", price: 23000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 30, imageUrl: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80", amenities: ["Air Conditioning","Flat-screen TV","Safe","Coffee Maker","Pool View"] },
       { name: "Tribe Suite", description: "Expansive layout, private terrace, curated art pieces.", price: 45000, currency: "KES", bedType: "King", maxGuests: 3, quantity: 6, imageUrl: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800&q=80", amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Bathtub","Balcony","Garden View"] },
     ],
-    reviews: [
-      { rating: 5, title: "A gallery you can sleep in", comment: "The art collection alone makes this worth a visit. Pool area and rooftop bar are stunning at night." },
-      { rating: 4, title: "Chic and comfortable", comment: "Great location near Village Market. Rooms are stylish and the restaurant is excellent." },
-    ],
   },
   {
     name: "Radisson Blu Hotel, Nairobi Upper Hill", city: "Nairobi", location: "Elgon Road, Upper Hill, Nairobi", starRating: 5,
@@ -196,10 +167,6 @@ const HOTELS = [
       { name: "Business Class Room", description: "Ergonomic workspace, city views, fast WiFi.", price: 21000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 45, imageUrl: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80", amenities: ["Air Conditioning","Flat-screen TV","Safe","Coffee Maker","Work Desk","City View"] },
       { name: "Executive Suite", description: "Separate lounge, executive floor access, Ngong Hills view.", price: 38000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 10, imageUrl: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800&q=80", amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Bathtub","City View","Lounge Access"] },
     ],
-    reviews: [
-      { rating: 4, title: "Excellent for business travel", comment: "Great conference facilities and the rooftop pool is a wonderful way to unwind after meetings." },
-      { rating: 5, title: "Views for days", comment: "Room overlooked the whole city. Staff were sharp and professional throughout our stay." },
-    ],
   },
   {
     name: "Mövenpick Hotel & Residences Nairobi", city: "Nairobi", location: "Westlands Road, Nairobi", starRating: 5,
@@ -211,10 +178,6 @@ const HOTELS = [
     rooms: [
       { name: "Classic Room", description: "Bright modern room, city views, Mövenpick signature bedding.", price: 19500, currency: "KES", bedType: "Queen", maxGuests: 2, quantity: 50, imageUrl: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80", amenities: ["Air Conditioning","Flat-screen TV","Safe","Coffee Maker","City View"] },
       { name: "Junior Suite", description: "Extra living space, rooftop pool access, premium bath amenities.", price: 32000, currency: "KES", bedType: "King", maxGuests: 3, quantity: 12, imageUrl: "https://images.unsplash.com/photo-1631049552057-403cdb8f0658?w=800&q=80", amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Bathtub","City View","Balcony"] },
-    ],
-    reviews: [
-      { rating: 5, title: "Reliable five-star quality", comment: "Consistently excellent — great breakfast, rooftop pool with a view, and very central for Westlands." },
-      { rating: 4, title: "Comfortable and convenient", comment: "Easy airport transfer, spacious rooms, and the staff were extremely helpful with dinner recommendations." },
     ],
   },
 
@@ -234,10 +197,6 @@ const HOTELS = [
       { name: "Executive Room", description: "Executive lounge access, upgraded bedding, park views.", price: 27000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 24, imageUrl: ROOM_IMG.deluxe, amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Bathtub","Lounge Access"] },
       { name: "Serena Suite", description: "Separate living and dining areas overlooking Central Park.", price: 62000, currency: "KES", bedType: "King", maxGuests: 3, quantity: 6, imageUrl: ROOM_IMG.suite, amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Bathtub","Walk-in Shower","City View"] },
     ],
-    reviews: [
-      { rating: 5, title: "Calm in the middle of the city", comment: "The gardens make you forget you are in the CBD. Breakfast spread is excellent." },
-      { rating: 4, title: "Dependable and central", comment: "Well run, easy walk to meetings in town. Rooms are comfortable if a little traditional." },
-    ],
   },
   {
     name: "JW Marriott Hotel Nairobi", city: "Nairobi", location: "Global Trade Centre, Chiromo Road, Westlands, Nairobi", starRating: 5,
@@ -248,10 +207,6 @@ const HOTELS = [
     rooms: [
       { name: "Deluxe City View Room", description: "Floor-to-ceiling windows, marble bathroom, Marriott signature bedding.", price: 32000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 50, imageUrl: ROOM_IMG.standard, amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Coffee Maker","City View","Work Desk"] },
       { name: "Executive Suite", description: "Corner suite with separate lounge and executive floor privileges.", price: 68000, currency: "KES", bedType: "King", maxGuests: 3, quantity: 12, imageUrl: ROOM_IMG.suite, amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Bathtub","Walk-in Shower","City View","Lounge Access"] },
-    ],
-    reviews: [
-      { rating: 5, title: "The views are the draw", comment: "Being that high above Westlands is something else, especially at sunset from the pool." },
-      { rating: 5, title: "Polished throughout", comment: "Service standards you would expect from the brand. The grill downstairs is very good." },
     ],
   },
   {
@@ -264,10 +219,6 @@ const HOTELS = [
       { name: "Pacific Room", description: "Warm contemporary interiors with city or garden aspect.", price: 24000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 45, imageUrl: ROOM_IMG.standard, amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Coffee Maker","Work Desk"] },
       { name: "One-Bedroom Residence", description: "Full kitchen and living room — built for longer stays.", price: 41000, currency: "KES", bedType: "King", maxGuests: 3, quantity: 20, imageUrl: ROOM_IMG.suite, amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Kitchenette","Bathtub","City View"] },
     ],
-    reviews: [
-      { rating: 4, title: "Great for a longer stay", comment: "The residence layout made a two-week trip feel civilised. Mall downstairs is convenient." },
-      { rating: 5, title: "Quietly excellent", comment: "Less showy than its neighbours but the service was faultless." },
-    ],
   },
   {
     name: "Hyatt Regency Nairobi Westlands", city: "Nairobi", location: "Mpaka Road, Westlands, Nairobi", starRating: 5,
@@ -278,10 +229,6 @@ const HOTELS = [
     rooms: [
       { name: "Regency King Room", description: "Contemporary room with generous desk and city outlook.", price: 26000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 55, imageUrl: ROOM_IMG.standard, amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Coffee Maker","Work Desk","City View"] },
       { name: "Regency Club Suite", description: "Club lounge access, separate sitting room, skyline views.", price: 55000, currency: "KES", bedType: "King", maxGuests: 3, quantity: 10, imageUrl: ROOM_IMG.suite, amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Bathtub","City View","Lounge Access"] },
-    ],
-    reviews: [
-      { rating: 5, title: "Best conference facilities in Westlands", comment: "Ran a two-day summit here without a single hitch. AV team were on it." },
-      { rating: 4, title: "Solid business hotel", comment: "Rooms are quiet and the gym is properly equipped. Breakfast gets busy." },
     ],
   },
   {
@@ -294,10 +241,6 @@ const HOTELS = [
       { name: "Studio King", description: "Open-plan studio with full kitchen and sofa seating.", price: 15000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 40, imageUrl: ROOM_IMG.standard, amenities: ["Air Conditioning","Flat-screen TV","Kitchenette","Safe","Work Desk","Coffee Maker"] },
       { name: "One-Bedroom Suite", description: "Separate bedroom, living area and full kitchen.", price: 23000, currency: "KES", bedType: "King", maxGuests: 4, quantity: 18, imageUrl: ROOM_IMG.suite, amenities: ["Air Conditioning","Flat-screen TV","Kitchenette","Safe","Sofa Bed","Bathtub"] },
     ],
-    reviews: [
-      { rating: 4, title: "Ideal for a long assignment", comment: "Having a real kitchen changed the whole trip. Weekly housekeeping was thorough." },
-      { rating: 4, title: "Good value in Westlands", comment: "Not luxurious but genuinely practical, and the pool is a nice bonus." },
-    ],
   },
   {
     name: "Radisson Blu Hotel & Residence, Nairobi Arboretum", city: "Nairobi", location: "Arboretum Drive, Kilimani, Nairobi", starRating: 5,
@@ -308,10 +251,6 @@ const HOTELS = [
     rooms: [
       { name: "Superior Room", description: "Arboretum or city views, Radisson signature bedding.", price: 20000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 50, imageUrl: ROOM_IMG.standard, amenities: ["Air Conditioning","Flat-screen TV","Safe","Coffee Maker","Work Desk","Garden View"] },
       { name: "Two-Bedroom Residence", description: "Family-sized apartment with kitchen, laundry and forest outlook.", price: 46000, currency: "KES", bedType: "King", maxGuests: 5, quantity: 14, imageUrl: ROOM_IMG.suite, amenities: ["Air Conditioning","Flat-screen TV","Kitchenette","Safe","Bathtub","Sofa Bed","Garden View"] },
-    ],
-    reviews: [
-      { rating: 5, title: "The arboretum outlook is lovely", comment: "Waking up to trees rather than traffic in Nairobi is rare. Very peaceful." },
-      { rating: 4, title: "Comfortable and well located", comment: "Handy for Upper Hill meetings without being in the thick of it." },
     ],
   },
   {
@@ -324,10 +263,6 @@ const HOTELS = [
       { name: "Standard Room", description: "Bright, uncomplicated room with fast WiFi and a proper desk.", price: 11000, currency: "KES", bedType: "Queen", maxGuests: 2, quantity: 70, imageUrl: ROOM_IMG.standard, amenities: ["Air Conditioning","Flat-screen TV","Safe","Work Desk","Coffee Maker"] },
       { name: "Superior Room", description: "Larger footprint with city views and a seating area.", price: 15500, currency: "KES", bedType: "King", maxGuests: 2, quantity: 30, imageUrl: ROOM_IMG.deluxe, amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","City View","Work Desk"] },
     ],
-    reviews: [
-      { rating: 4, title: "Does exactly what you need", comment: "Clean, central, good WiFi. The rooftop bar is a nice way to end the day." },
-      { rating: 4, title: "Good value for Westlands", comment: "Nothing fancy but well run and the location saves you hours in traffic." },
-    ],
   },
   {
     name: "Novotel Nairobi Westlands", city: "Nairobi", location: "Muthithi Road, Westlands, Nairobi", starRating: 4,
@@ -338,10 +273,6 @@ const HOTELS = [
     rooms: [
       { name: "Superior Room", description: "Novotel's flexible layout with sofa bed and modular desk.", price: 13500, currency: "KES", bedType: "Queen", maxGuests: 3, quantity: 60, imageUrl: ROOM_IMG.standard, amenities: ["Air Conditioning","Flat-screen TV","Safe","Sofa Bed","Work Desk","Coffee Maker"] },
       { name: "Executive Room", description: "Upgraded floor with lounge access and city views.", price: 21000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 22, imageUrl: ROOM_IMG.deluxe, amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","City View","Lounge Access"] },
-    ],
-    reviews: [
-      { rating: 4, title: "Easy with kids", comment: "The sofa bed setup meant we did not need two rooms. Pool kept everyone happy." },
-      { rating: 4, title: "Reliable Accor standard", comment: "Exactly what you expect from the brand, which is a compliment." },
     ],
   },
   {
@@ -354,10 +285,6 @@ const HOTELS = [
       { name: "Kwetu King Room", description: "Kenyan textiles and timber, walk-in rain shower, city outlook.", price: 22000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 40, imageUrl: ROOM_IMG.standard, amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Walk-in Shower","City View"] },
       { name: "Curio Suite", description: "Corner suite with a private terrace and commissioned Kenyan art.", price: 48000, currency: "KES", bedType: "King", maxGuests: 3, quantity: 8, imageUrl: ROOM_IMG.suite, amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Bathtub","Balcony","City View"] },
     ],
-    reviews: [
-      { rating: 5, title: "Feels like Nairobi, not anywhere", comment: "So many hotels could be in any city. This one is unmistakably Kenyan and it is lovely." },
-      { rating: 5, title: "The rooftop is the spot", comment: "Sunset drinks up there, then dinner downstairs. Did not leave the building." },
-    ],
   },
   {
     name: "Jacaranda Hotel Nairobi", city: "Nairobi", location: "Chiromo Road, Westlands, Nairobi", starRating: 4,
@@ -369,10 +296,6 @@ const HOTELS = [
       { name: "Standard Room", description: "Garden-facing room with the essentials done properly.", price: 9500, currency: "KES", bedType: "Queen", maxGuests: 2, quantity: 60, imageUrl: ROOM_IMG.standard, amenities: ["Flat-screen TV","Safe","Coffee Maker","Garden View"] },
       { name: "Family Room", description: "Two double beds and space for children to spread out.", price: 16000, currency: "KES", bedType: "Double", maxGuests: 4, quantity: 20, imageUrl: ROOM_IMG.deluxe, amenities: ["Flat-screen TV","Safe","Coffee Maker","Garden View","Sofa Bed"] },
     ],
-    reviews: [
-      { rating: 4, title: "Gardens make it", comment: "Brought the family for a weekend and the kids barely came inside." },
-      { rating: 4, title: "Good conference venue", comment: "Ran a workshop here. Rooms were fine and the catering was better than expected." },
-    ],
   },
   {
     name: "Gem Forest Hotel Nairobi", city: "Nairobi", location: "Gigiri, Nairobi", starRating: 4,
@@ -383,10 +306,6 @@ const HOTELS = [
     rooms: [
       { name: "Deluxe Room", description: "Spacious room with forest or garden aspect.", price: 14000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 45, imageUrl: ROOM_IMG.standard, amenities: ["Air Conditioning","Flat-screen TV","Safe","Coffee Maker","Work Desk","Garden View"] },
       { name: "Executive Suite", description: "Separate lounge, ideal for delegations and long stays.", price: 27000, currency: "KES", bedType: "King", maxGuests: 3, quantity: 10, imageUrl: ROOM_IMG.suite, amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Bathtub","Garden View","Work Desk"] },
-    ],
-    reviews: [
-      { rating: 4, title: "Perfect for UN business", comment: "Ten minutes from the complex and far calmer than staying in town." },
-      { rating: 4, title: "Spacious and quiet", comment: "Rooms are bigger than most at this price. Staff were attentive." },
     ],
   },
   {
@@ -400,9 +319,16 @@ const HOTELS = [
       { name: "Executive Room", description: "Larger room closer to the pool deck, upgraded bathroom.", price: 24000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 40, imageUrl: ROOM_IMG.deluxe, amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Bathtub","Garden View"] },
       { name: "Presidential Suite", description: "Multi-room suite with private garden and dedicated service.", price: 85000, currency: "KES", bedType: "King", maxGuests: 4, quantity: 2, imageUrl: ROOM_IMG.suite, amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Bathtub","Walk-in Shower","Garden View","Balcony","Kitchenette"] },
     ],
-    reviews: [
-      { rating: 5, title: "The gardens are enormous", comment: "You forget you are on Thika Road. Kids spent two days between the pool and the grounds." },
-      { rating: 4, title: "Go for the Safari Cats show", comment: "Dated in places but the setting and the entertainment make up for it." },
+  },
+  {
+    name: "Nairobi Safari Club", city: "Nairobi", location: "Lillian Towers, University Way, Central Business District, Nairobi", starRating: 5,
+    description: "An all-suite tower on University Way at the edge of the CBD, a short walk from the university and the National Museum. Every room is a suite, which makes it a long-standing choice for extended business stays.",
+    phone: "+254 20 000 0000", email: "reservations@nairobisafariclub.example", checkInTime: "14:00", checkOutTime: "11:00",
+    imageUrl: HOTEL_IMG.suite, images: [HOTEL_IMG.suite, HOTEL_IMG.lobby, HOTEL_IMG.classic],
+    amenities: ["WiFi","Swimming Pool","Gym","Restaurant","Bar","Spa","Parking","24h Front Desk","Business Center","Conference Rooms","Room Service","Laundry"],
+    rooms: [
+      { name: "Executive Suite", description: "Separate sitting room and bedroom, city views over University Way.", price: 17000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 100, imageUrl: ROOM_IMG.standard, amenities: ["Air Conditioning","Flat-screen TV","Safe","Coffee Maker","Work Desk","City View"] },
+      { name: "Deluxe Suite", description: "Upper-floor suite with a larger lounge and dining table.", price: 26000, currency: "KES", bedType: "King", maxGuests: 3, quantity: 30, imageUrl: ROOM_IMG.deluxe, amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Bathtub","City View","Work Desk"] },
     ],
   },
 ];
@@ -440,11 +366,6 @@ const RESTAURANTS = [
       { category: "Cocktails", name: "Dawa Cocktail", description: "Vodka, honey, lime — Kenya's classic cocktail", price: 850, sortOrder: 2 },
       { category: "Wines", name: "Kleine Zalze Chenin Blanc", description: "South Africa · Stellenbosch · Glass", price: 950, sortOrder: 1 },
     ],
-    reviews: [
-      { rating: 5, title: "Best meal in Nairobi", comment: "The tilapia was incredible. The garden setting at sunset is magical. Service was impeccable throughout." },
-      { rating: 5, title: "A must for any Nairobi visit", comment: "Extraordinary food, breathtaking setting. The lamb rack is a masterpiece. Book well in advance." },
-      { rating: 4, title: "Wonderful experience", comment: "Beautiful atmosphere and creative menu. The cocktails were excellent. Slightly pricey but worth it for a special occasion." },
-    ],
   },
   {
     name: "Kiza Lounge & Restaurant", city: "Nairobi", location: "Galana Plaza, Galana Road, Kilimani, Nairobi", cuisine: "Pan-African",
@@ -464,10 +385,6 @@ const RESTAURANTS = [
       { category: "Cocktails", name: "Passion Martini", description: "Vodka, passion fruit, vanilla, prosecco float", price: 1100, sortOrder: 2 },
       { category: "Drinks", name: "Tusker Lager", description: "Kenya's iconic beer · 500ml", price: 450, sortOrder: 1 },
     ],
-    reviews: [
-      { rating: 5, title: "Best night out in Nairobi", comment: "The food is amazing and the live music is unbeatable. The peri-peri prawns are a must. We danced till closing!" },
-      { rating: 4, title: "Great vibe and food", comment: "Excellent atmosphere for both dinner and a night out. The African platter was great for sharing." },
-    ],
   },
   {
     name: "Carnivore Restaurant", city: "Nairobi", location: "Langata Road, Nairobi", cuisine: "Nyama Choma / African Grill",
@@ -486,10 +403,6 @@ const RESTAURANTS = [
       { category: "Cocktails", name: "Dawa Cocktail", description: "Vodka, honey, lime — Kenya's classic cocktail", price: 850, sortOrder: 1 },
       { category: "Drinks", name: "Tusker Lager", description: "Kenya's iconic beer · 500ml", price: 450, sortOrder: 2 },
     ],
-    reviews: [
-      { rating: 5, title: "A Nairobi institution", comment: "Every visitor to Nairobi needs to experience this at least once. The carving is theatrical and the meat never stops coming." },
-      { rating: 4, title: "Meat lover's paradise", comment: "Come hungry. The variety is incredible and the live band adds great atmosphere." },
-    ],
   },
   {
     name: "About Thyme", city: "Nairobi", location: "Woodvale Grove, Westlands, Nairobi", cuisine: "International",
@@ -507,13 +420,9 @@ const RESTAURANTS = [
       { category: "Mains", name: "Vegetable Lasagne", description: "Layered seasonal vegetables, béchamel, parmesan crust", price: 1500, sortOrder: 3 },
       { category: "Desserts", name: "Sticky Toffee Pudding", description: "Warm toffee sauce, vanilla ice cream", price: 750, sortOrder: 1 },
     ],
-    reviews: [
-      { rating: 5, title: "Best brunch in Westlands", comment: "Consistently good food in a relaxed garden setting. The eggs benedict is a weekend ritual for us." },
-      { rating: 4, title: "Reliable and comfortable", comment: "Great for a business lunch or catching up with friends. Service is friendly and unhurried." },
-    ],
   },
   {
-    name: "Cultiva Farm to Table", city: "Nairobi", location: "Rosslyn, Nairobi", cuisine: "Farm-to-Table",
+    name: "Cultiva Farm to Table", city: "Nairobi", location: "Karen, Nairobi", cuisine: "Farm-to-Table",
     description: "A garden restaurant built around its own working farm — herbs, vegetables, and eggs harvested steps from the kitchen, with a menu that changes with the season.",
     priceRange: 3, phone: "+254 20 800 1122", email: "hello@cultiva.co.ke",
     imageUrl: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80",
@@ -527,10 +436,6 @@ const RESTAURANTS = [
       { category: "Mains", name: "Grilled Trout", description: "Sagana farmed trout, lemon butter, herb rice", price: 2100, sortOrder: 3 },
       { category: "Desserts", name: "Farm Berry Crumble", description: "Seasonal berries, oat crumble, vanilla custard", price: 700, sortOrder: 1 },
       { category: "Drinks", name: "Fresh Pressed Juice", description: "Rotating seasonal blend from the farm", price: 500, sortOrder: 1 },
-    ],
-    reviews: [
-      { rating: 5, title: "You can taste the difference", comment: "Everything feels genuinely fresh. Lovely spot to bring kids — they loved seeing the farm." },
-      { rating: 5, title: "A Nairobi favourite for a reason", comment: "The seasonal menu keeps it interesting every visit. Peaceful garden setting." },
     ],
   },
   {
@@ -549,10 +454,6 @@ const RESTAURANTS = [
       { category: "Sushi", name: "Rainbow Roll", description: "Assorted sashimi, avocado, cream cheese", price: 1900, sortOrder: 1 },
       { category: "Cocktails", name: "Passion Fruit Mojito", description: "White rum, passion fruit, mint, lime", price: 1000, sortOrder: 1 },
     ],
-    reviews: [
-      { rating: 5, title: "Best seafood in the city", comment: "The snapper was outstanding and the rooftop vibe at night is unmatched in Nairobi." },
-      { rating: 4, title: "Great for a special night out", comment: "Pricey but worth it. Cocktails are excellent and the DJ sets the mood perfectly." },
-    ],
   },
   {
     name: "Mediterraneo Restaurant", city: "Nairobi", location: "Lenana Road, Kilimani, Nairobi", cuisine: "Italian",
@@ -569,10 +470,6 @@ const RESTAURANTS = [
       { category: "Pasta", name: "Pappardelle al Ragù", description: "Slow-cooked beef ragù, wide ribbon pasta, parmesan", price: 1550, sortOrder: 2 },
       { category: "Desserts", name: "Tiramisu", description: "Classic espresso-soaked sponge, mascarpone", price: 650, sortOrder: 1 },
       { category: "Wines", name: "Chianti Classico", description: "Tuscany · Glass", price: 900, sortOrder: 1 },
-    ],
-    reviews: [
-      { rating: 4, title: "Reliable Italian comfort food", comment: "Great pizza and generous pasta portions. Lovely courtyard for a relaxed dinner." },
-      { rating: 5, title: "A Kilimani classic", comment: "Been coming here for years, never disappoints. Carbonara is the real deal." },
     ],
   },
   {
@@ -591,10 +488,6 @@ const RESTAURANTS = [
       { category: "Desserts", name: "Mango Cheesecake", description: "Kenyan mango, biscuit base, passion fruit coulis", price: 700, sortOrder: 1 },
       { category: "Drinks", name: "Dawa Mocktail", description: "Honey, lime, ginger, crushed ice", price: 550, sortOrder: 1 },
     ],
-    reviews: [
-      { rating: 5, title: "Kenyan food, elevated", comment: "Fun, colourful spot with genuinely great food. The nyama choma platter is a must-order." },
-      { rating: 4, title: "Great brunch spot", comment: "Loved the mandazi french toast. Buzzy atmosphere, good for groups." },
-    ],
   },
   {
     name: "Onami Restaurant", city: "Nairobi", location: "General Mathenge Drive, Westlands, Nairobi", cuisine: "Japanese",
@@ -611,10 +504,6 @@ const RESTAURANTS = [
       { category: "Robata", name: "Chicken Yakitori Skewers", description: "Charcoal-grilled, tare glaze", price: 1200, sortOrder: 1 },
       { category: "Mains", name: "Miso Black Cod", description: "48-hour marinated cod, sweet miso glaze", price: 3600, sortOrder: 1 },
       { category: "Drinks", name: "Hot Sake", description: "House selection · Carafe", price: 1400, sortOrder: 1 },
-    ],
-    reviews: [
-      { rating: 5, title: "Best Japanese food in Nairobi", comment: "The sashimi is remarkably fresh for a landlocked city. Elegant, quiet setting for a special dinner." },
-      { rating: 5, title: "Consistently outstanding", comment: "Never had a bad meal here. The teppanyaki is theatrical and delicious." },
     ],
   },
   {
@@ -633,10 +522,6 @@ const RESTAURANTS = [
       { category: "Sides", name: "Ugali", description: "Kenyan staple maize meal", price: 100, sortOrder: 1 },
       { category: "Drinks", name: "Fresh Passion Juice", description: "Pressed to order", price: 300, sortOrder: 1 },
     ],
-    reviews: [
-      { rating: 5, title: "Real, authentic Luo food", comment: "This is exactly how tilapia should taste. No frills, just excellent home-style cooking." },
-      { rating: 5, title: "A Nairobi CBD gem", comment: "Great value, fast service, and genuinely delicious traditional food." },
-    ],
   },
   {
     name: "Java House", city: "Nairobi", location: "Junction Mall, Ngong Road, Nairobi", cuisine: "Café / American",
@@ -652,10 +537,6 @@ const RESTAURANTS = [
       { category: "Mains", name: "Chicken Caesar Salad", description: "Grilled chicken, cos lettuce, parmesan, croutons", price: 1100, sortOrder: 1 },
       { category: "Mains", name: "Java Beef Burger", description: "Beef patty, cheddar, fries", price: 1250, sortOrder: 2 },
       { category: "Desserts", name: "Chocolate Brownie", description: "Warm, served with vanilla ice cream", price: 550, sortOrder: 1 },
-    ],
-    reviews: [
-      { rating: 4, title: "Consistent every time", comment: "You know exactly what you're getting — reliable coffee and comfort food across the city." },
-      { rating: 4, title: "Great for working lunches", comment: "Fast WiFi, good coffee, easy to get a table." },
     ],
   },
   {
@@ -673,10 +554,6 @@ const RESTAURANTS = [
       { category: "Mains", name: "Margherita Flatbread", description: "Tomato, mozzarella, basil", price: 1050, sortOrder: 2 },
       { category: "Desserts", name: "Red Velvet Cake", description: "Cream cheese frosting", price: 600, sortOrder: 1 },
     ],
-    reviews: [
-      { rating: 5, title: "Best croissants in Nairobi", comment: "The bakery counter alone is worth the visit. Great spot for meetings over coffee." },
-      { rating: 4, title: "Dependable and delicious", comment: "Never disappoints. The avocado toast is a regular order for me." },
-    ],
   },
   {
     name: "Mama Rocks Burgers", city: "Nairobi", location: "Delta Corner, Westlands, Nairobi", cuisine: "American / Burgers",
@@ -693,10 +570,6 @@ const RESTAURANTS = [
       { category: "Sides", name: "Loaded Fries", description: "Cheese sauce, bacon bits, spring onion", price: 700, sortOrder: 1 },
       { category: "Shakes", name: "Oreo Milkshake", description: "Vanilla ice cream, crushed Oreo", price: 650, sortOrder: 1 },
     ],
-    reviews: [
-      { rating: 5, title: "Best burger in the city", comment: "Juicy, generously topped, and the fries are perfectly crispy. Always my go-to." },
-      { rating: 4, title: "Great casual spot", comment: "Fast, tasty, good value. The loaded fries are dangerous." },
-    ],
   },
   {
     name: "Habesha Restaurant", city: "Nairobi", location: "Woodvale Grove, Westlands, Nairobi", cuisine: "Ethiopian",
@@ -712,10 +585,6 @@ const RESTAURANTS = [
       { category: "Mains", name: "Doro Wat", description: "Spiced chicken stew, boiled egg, berbere sauce", price: 1500, sortOrder: 1 },
       { category: "Mains", name: "Kitfo", description: "Ethiopian-style minced beef, mitmita spice, injera", price: 1800, sortOrder: 2 },
       { category: "Drinks", name: "Ethiopian Coffee Ceremony", description: "Traditionally roasted and brewed, serves two", price: 900, sortOrder: 1 },
-    ],
-    reviews: [
-      { rating: 5, title: "Transportive experience", comment: "Feels like dining in Addis. The mixed platter is generous and full of flavour. Coffee ceremony is a treat." },
-      { rating: 5, title: "Nairobi's best Ethiopian food", comment: "Warm hospitality, great vegan options, and the weekend music makes it a real event." },
     ],
   },
   {
@@ -734,10 +603,6 @@ const RESTAURANTS = [
       { category: "Desserts", name: "Panna Cotta", description: "Vanilla bean, berry coulis", price: 700, sortOrder: 1 },
       { category: "Wines", name: "Chianti Riserva", description: "Tuscany · Bottle", price: 4500, sortOrder: 1 },
     ],
-    reviews: [
-      { rating: 5, title: "Genuine Italian craftsmanship", comment: "The pasta is handmade and it shows. Wine list is one of the best in Nairobi." },
-      { rating: 5, title: "Special occasion perfection", comment: "Intimate, elegant, and the osso buco was faultless. Book ahead, it fills up fast." },
-    ],
   },
   {
     name: "Le Grenier à Pain", city: "Nairobi", location: "Riverside Drive, Nairobi", cuisine: "French Bakery & Bistro",
@@ -755,10 +620,6 @@ const RESTAURANTS = [
       { category: "Desserts", name: "Crème Brûlée", description: "Classic vanilla bean, caramelised sugar crust", price: 750, sortOrder: 1 },
       { category: "Drinks", name: "Café au Lait", description: "Double espresso, steamed milk", price: 400, sortOrder: 1 },
     ],
-    reviews: [
-      { rating: 5, title: "Real French bakery, finally", comment: "The croissants rival anything I've had in Paris. Baguette is spot on too." },
-      { rating: 4, title: "Charming bistro lunch", comment: "Steak frites was excellent. Lovely quiet spot for a proper lunch." },
-    ],
   },
   {
     name: "Charcoal Grill Woodvale", city: "Nairobi", location: "Woodvale Grove, Westlands, Nairobi", cuisine: "Grill / Nyama Choma",
@@ -774,10 +635,6 @@ const RESTAURANTS = [
       { category: "Starters", name: "Chicken Wings", description: "Peri-peri or BBQ glaze", price: 900, sortOrder: 1 },
       { category: "Sides", name: "Sukuma Wiki", description: "Sautéed kale, tomato, onion", price: 350, sortOrder: 1 },
       { category: "Drinks", name: "Tusker Lager", description: "500ml", price: 400, sortOrder: 1 },
-    ],
-    reviews: [
-      { rating: 4, title: "Solid casual nyama choma", comment: "Great for a laid-back night with friends. Meat is well grilled and generously portioned." },
-      { rating: 4, title: "Popular for a reason", comment: "Always busy but service keeps up. Good value grill spot." },
     ],
   },
   {
@@ -795,10 +652,6 @@ const RESTAURANTS = [
       { category: "Desserts", name: "Brigadeiro", description: "Brazilian chocolate truffles", price: 500, sortOrder: 1 },
       { category: "Cocktails", name: "Caipirinha", description: "Cachaça, lime, sugar", price: 1000, sortOrder: 1 },
     ],
-    reviews: [
-      { rating: 5, title: "Meat lover's dream", comment: "Non-stop carving, every cut cooked perfectly. Great for celebrations." },
-      { rating: 4, title: "Impressive spread", comment: "Salad bar alone is worth the visit, and the picanha is exceptional." },
-    ],
   },
   {
     name: "Symphony Restaurant & Lounge", city: "Nairobi", location: "Yaya Centre, Kilimani, Nairobi", cuisine: "International Fusion",
@@ -815,10 +668,6 @@ const RESTAURANTS = [
       { category: "Mains", name: "Thai Green Curry", description: "Chicken or vegetable, jasmine rice", price: 1700, sortOrder: 2 },
       { category: "Cocktails", name: "Symphony Signature", description: "Gin, elderflower, cucumber, prosecco", price: 1100, sortOrder: 1 },
     ],
-    reviews: [
-      { rating: 5, title: "Great atmosphere and food", comment: "The rooftop terrace at night is fantastic. Sushi and the ribeye were both excellent." },
-      { rating: 4, title: "Lively Kilimani spot", comment: "Good mix of dining and nightlife. Cocktails are strong and creative." },
-    ],
   },
   {
     name: "Ocean Basket", city: "Nairobi", location: "The Junction Mall, Ngong Road, Nairobi", cuisine: "Seafood",
@@ -834,10 +683,6 @@ const RESTAURANTS = [
       { category: "Mains", name: "Grilled Kingklip", description: "Lemon butter, rice, seasonal vegetables", price: 1900, sortOrder: 1 },
       { category: "Mains", name: "Prawn Linguine", description: "Garlic, chilli, white wine, parsley", price: 1800, sortOrder: 2 },
       { category: "Desserts", name: "Malva Pudding", description: "Warm sponge pudding, custard", price: 550, sortOrder: 1 },
-    ],
-    reviews: [
-      { rating: 4, title: "Good value seafood", comment: "Reliable and affordable for seafood in a landlocked city. Kids loved the calamari." },
-      { rating: 4, title: "Family friendly favourite", comment: "Casual, quick, and the platter for two is generous." },
     ],
   },
 
@@ -860,11 +705,6 @@ const RESTAURANTS = [
       { category: "Desserts", name: "Lucuma Cheesecake", description: "Peruvian lucuma, torched meringue", price: 950, sortOrder: 1 },
       { category: "Cocktails", name: "Pisco Sour", description: "Quebranta pisco, lime, egg white, angostura", price: 1200, sortOrder: 1 },
     ],
-    reviews: [
-      { rating: 5, title: "The best cooking in Nairobi right now", comment: "The tiradito was genuinely world class. Get a window table before sunset." },
-      { rating: 5, title: "Worth the hype", comment: "Skeptical going in, converted by the second course. The black cod is the order." },
-      { rating: 4, title: "Stunning but book ahead", comment: "Food and views both excellent. Impossible to get a table on short notice." },
-    ],
   },
   {
     name: "Ankole Grill", city: "Nairobi", location: "Kitisuru, Nairobi", cuisine: "African Steakhouse",
@@ -881,10 +721,6 @@ const RESTAURANTS = [
       { category: "Sides", name: "Charred Sukuma", description: "Collard greens, garlic, smoked chilli", price: 550, sortOrder: 1 },
       { category: "Desserts", name: "Grilled Pineapple", description: "Fire-roasted pineapple, vanilla ice cream, honey", price: 700, sortOrder: 1 },
     ],
-    reviews: [
-      { rating: 4, title: "Best steak in Nairobi", comment: "The dry-aged ribeye is a serious piece of meat. Garden setting is relaxed." },
-      { rating: 4, title: "Great for a group", comment: "The tomahawk fed three of us comfortably. Service was slow but friendly." },
-    ],
   },
   {
     name: "Shamba Café", city: "Nairobi", location: "Karen, Nairobi", cuisine: "Health & Brunch",
@@ -899,10 +735,6 @@ const RESTAURANTS = [
       { category: "Bowls", name: "Harvest Grain Bowl", description: "Ancient grains, roast vegetables, tahini, seeds", price: 1250, sortOrder: 1 },
       { category: "Juices", name: "Cold-Press Green", description: "Kale, cucumber, apple, ginger, lime", price: 600, sortOrder: 1 },
       { category: "Coffee", name: "Kenyan Single Origin", description: "Rotating single-estate Kenyan AA", price: 400, sortOrder: 1 },
-    ],
-    reviews: [
-      { rating: 5, title: "Best breakfast in Karen", comment: "Everything tastes fresh because it genuinely is. The shop is dangerous for the wallet." },
-      { rating: 4, title: "Lovely spot to work from", comment: "Good coffee, decent WiFi, quiet on weekday mornings." },
     ],
   },
 
@@ -922,10 +754,6 @@ const RESTAURANTS = [
       { category: "Curries", name: "Karahi Gosht", description: "Mutton, tomato, green chilli, finished in the karahi", price: 2100, sortOrder: 3 },
       { category: "Breads", name: "Garlic Naan", description: "Tandoor-baked, garlic and coriander butter", price: 400, sortOrder: 1 },
     ],
-    reviews: [
-      { rating: 5, title: "Consistently excellent for years", comment: "The overnight dal is the reason to come. Nothing else in town matches it." },
-      { rating: 4, title: "Reliable and generous", comment: "Portions are big, spicing is confident. Book for weekend dinner." },
-    ],
   },
   {
     name: "Misono", city: "Nairobi", location: "Lavington, Nairobi", cuisine: "Japanese",
@@ -940,10 +768,6 @@ const RESTAURANTS = [
       { category: "Teppanyaki", name: "Teppanyaki Beef Set", description: "Fillet cooked at the table, rice, miso, vegetables", price: 3600, sortOrder: 1 },
       { category: "Ramen", name: "Tonkotsu Ramen", description: "Twelve-hour pork bone broth, chashu, ajitama", price: 1650, sortOrder: 1 },
       { category: "Starters", name: "Agedashi Tofu", description: "Crisp silken tofu, dashi broth, spring onion", price: 850, sortOrder: 1 },
-    ],
-    reviews: [
-      { rating: 4, title: "Best sushi in Nairobi", comment: "Fish quality is genuinely good given how far we are from the sea." },
-      { rating: 5, title: "The ramen surprised me", comment: "Came for sushi, will return for the tonkotsu. Broth is the real thing." },
     ],
   },
 
@@ -962,10 +786,6 @@ const RESTAURANTS = [
       { category: "Cocktails", name: "Dawa", description: "Vodka, honey, lime — the Kenyan classic, done well", price: 1100, sortOrder: 1 },
       { category: "Cocktails", name: "Sarabi Sundowner", description: "Gin, hibiscus, passion fruit, tonic", price: 1250, sortOrder: 2 },
     ],
-    reviews: [
-      { rating: 5, title: "Sunset here is the Nairobi move", comment: "Get there by six, take a poolside table, order the dawa. Perfect." },
-      { rating: 4, title: "Great atmosphere", comment: "Buzzy on weekends. Food is good rather than remarkable, but you come for the setting." },
-    ],
   },
   {
     name: "Jiko — Tribe Hotel", city: "Nairobi", location: "Tribe Hotel, Limuru Road, Gigiri, Nairobi", cuisine: "Contemporary African",
@@ -981,10 +801,6 @@ const RESTAURANTS = [
       { category: "Mains", name: "Coconut Fish Curry", description: "Coastal curry, coconut rice, green mango salad", price: 2800, sortOrder: 2 },
       { category: "Mains", name: "Farm Vegetable Plate", description: "Whatever the growers sent, cooked three ways", price: 2100, sortOrder: 3 },
       { category: "Desserts", name: "Dark Chocolate & Baobab", description: "Ganache, baobab sorbet, cacao nib", price: 950, sortOrder: 1 },
-    ],
-    reviews: [
-      { rating: 5, title: "Thoughtful, not gimmicky", comment: "African fine dining that respects the ingredients rather than dressing them up. Short rib was superb." },
-      { rating: 4, title: "Lovely breakfast too", comment: "Stayed at Tribe and ate here every morning. The à la carte menu is worth ordering from." },
     ],
   },
   {
@@ -1002,10 +818,6 @@ const RESTAURANTS = [
       { category: "Desserts", name: "Panna Cotta", description: "Vanilla panna cotta, macerated berries", price: 900, sortOrder: 1 },
       { category: "Wines", name: "Chianti Classico Riserva", description: "Tuscany · Glass", price: 1400, sortOrder: 1 },
     ],
-    reviews: [
-      { rating: 5, title: "The truffle tagliolini is worth it", comment: "Expensive but genuinely excellent. Wine list is the best in Nairobi." },
-      { rating: 4, title: "Formal in a good way", comment: "Proper service, quiet room, ideal for a business dinner." },
-    ],
   },
   {
     name: "Harvest — Trademark Hotel", city: "Nairobi", location: "Trademark Hotel, Church Road, Museum Hill, Nairobi", cuisine: "International",
@@ -1021,10 +833,6 @@ const RESTAURANTS = [
       { category: "Mains", name: "Beef Burger", description: "Kenyan beef, aged cheddar, hand-cut chips", price: 1800, sortOrder: 2 },
       { category: "Desserts", name: "Passion Fruit Tart", description: "Shortcrust, passion curd, torched meringue", price: 750, sortOrder: 1 },
     ],
-    reviews: [
-      { rating: 4, title: "The business lunch actually is quick", comment: "In and out in under an hour with a decent meal. Rare in Nairobi." },
-      { rating: 4, title: "Good buffet breakfast", comment: "Wide spread, eggs cooked properly, coffee kept coming." },
-    ],
   },
   {
     name: "Osteria Romana Terrazo — Sankara Nairobi", city: "Nairobi", location: "Sankara Nairobi, Woodvale Grove, Westlands, Nairobi", cuisine: "Italian",
@@ -1039,10 +847,6 @@ const RESTAURANTS = [
       { category: "Pasta", name: "Amatriciana", description: "Guanciale, tomato, pecorino", price: 1850, sortOrder: 2 },
       { category: "Secondi", name: "Saltimbocca alla Romana", description: "Veal, prosciutto, sage, white wine", price: 3200, sortOrder: 1 },
       { category: "Desserts", name: "Maritozzo", description: "Roman sweet bun, whipped cream", price: 700, sortOrder: 1 },
-    ],
-    reviews: [
-      { rating: 4, title: "Cacio e pepe done right", comment: "Emulsified properly, no clumps. That alone puts it ahead of most." },
-      { rating: 4, title: "Nice terrace for lunch", comment: "Quiet at midday, good for a long conversation." },
     ],
   },
 
@@ -1062,10 +866,6 @@ const RESTAURANTS = [
       { category: "Show Package", name: "Safari Cats Dinner & Show", description: "Buffet dinner with the evening acrobatic and dance performance", price: 5200, sortOrder: 1 },
       { category: "Cocktails", name: "Dawa", description: "Vodka, honey, lime", price: 950, sortOrder: 1 },
     ],
-    reviews: [
-      { rating: 5, title: "The dinner show is worth it", comment: "Took visiting family. Meat kept coming and the performance was genuinely good." },
-      { rating: 4, title: "Solid nyama choma", comment: "Not the cheapest in town but the setting under the trees is lovely." },
-    ],
   },
 
   // ── Mall dining ────────────────────────────────────────────────────────────
@@ -1083,10 +883,6 @@ const RESTAURANTS = [
       { category: "Mains", name: "Big Mama Burger", description: "Double Kenyan beef patty, aged cheddar, bacon jam", price: 1650, sortOrder: 3 },
       { category: "Desserts", name: "Honeytooth Sundae", description: "Salted caramel, brownie, vanilla ice cream", price: 800, sortOrder: 1 },
     ],
-    reviews: [
-      { rating: 4, title: "Fun without being a gimmick", comment: "Kids loved the theme, the steak was genuinely well cooked. Easy parking at Village Market." },
-      { rating: 4, title: "Good all-rounder", comment: "Menu is broad enough that a group of eight all found something." },
-    ],
   },
   {
     name: "Golden Stool", city: "Nairobi", location: "Village Market, Limuru Road, Gigiri, Nairobi", cuisine: "West African",
@@ -1103,10 +899,6 @@ const RESTAURANTS = [
       { category: "Mains", name: "Waakye", description: "Rice and beans, shito, boiled egg, gari", price: 1250, sortOrder: 3 },
       { category: "Desserts", name: "Puff Puff", description: "Fried dough, cinnamon sugar", price: 550, sortOrder: 1 },
     ],
-    reviews: [
-      { rating: 5, title: "Real jollof in Nairobi", comment: "Smoky, properly seasoned, not a compromise version. The suya is excellent too." },
-      { rating: 4, title: "Homesick cure", comment: "As a Ghanaian in Nairobi this is the closest I have found. Waakye done right." },
-    ],
   },
   {
     name: "Sierra Lounge Yaya", city: "Nairobi", location: "Yaya Centre, Argwings Kodhek Road, Kilimani, Nairobi", cuisine: "Grill / Brewery",
@@ -1121,10 +913,6 @@ const RESTAURANTS = [
       { category: "Small Plates", name: "Buffalo Wings", description: "Eight wings, blue cheese dip", price: 1250, sortOrder: 1 },
       { category: "Brews", name: "Sierra Blonde Ale", description: "Brewed on site · 500ml", price: 600, sortOrder: 1 },
       { category: "Brews", name: "Sierra Dark Lager", description: "Brewed on site · 500ml", price: 650, sortOrder: 2 },
-    ],
-    reviews: [
-      { rating: 4, title: "The blonde ale is very drinkable", comment: "Nice to have something brewed on site. Ribs are generous." },
-      { rating: 4, title: "Good for watching a match", comment: "Screens are well placed and it does not get unbearably loud." },
     ],
   },
   {
@@ -1141,10 +929,6 @@ const RESTAURANTS = [
       { category: "Mains", name: "Chicken Alfredo", description: "Grilled chicken, cream sauce, fettuccine", price: 1250, sortOrder: 2 },
       { category: "Pastry", name: "Passion Fruit Cheesecake", description: "From the counter, made daily", price: 600, sortOrder: 1 },
     ],
-    reviews: [
-      { rating: 4, title: "Dependable and good value", comment: "Big portions, quick service, and the mandazi are properly done." },
-      { rating: 4, title: "Easy family stop at The Hub", comment: "Parking is simple and there is something on the menu for everyone." },
-    ],
   },
   {
     name: "Chowpaty", city: "Nairobi", location: "Diamond Plaza, Masari Road, Parklands, Nairobi", cuisine: "Indian Vegetarian",
@@ -1159,10 +943,6 @@ const RESTAURANTS = [
       { category: "Dosa", name: "Masala Dosa", description: "Crisp rice crepe, spiced potato, sambar, chutneys", price: 700, sortOrder: 1 },
       { category: "Thali", name: "Gujarati Thali", description: "Unlimited — dal, kadhi, two sabzis, rotli, rice, sweet", price: 1200, sortOrder: 1 },
       { category: "Drinks", name: "Masala Chai", description: "Brewed with cardamom and ginger", price: 200, sortOrder: 1 },
-    ],
-    reviews: [
-      { rating: 5, title: "Best chaat in Nairobi", comment: "Pani puri exactly as it should be. Queue at the weekend is a good sign." },
-      { rating: 4, title: "The thali is unbeatable value", comment: "They keep refilling until you surrender. Bring an appetite." },
     ],
   },
 
@@ -1183,10 +963,6 @@ const RESTAURANTS = [
       { category: "Bottles", name: "Premium Whisky", description: "Bottle with mixers and ice", price: 22000, sortOrder: 2 },
       { category: "Cocktails", name: "Signature Cocktail", description: "From the house list", price: 1400, sortOrder: 1 },
     ],
-    reviews: [
-      { rating: 4, title: "The place to be seen", comment: "Expensive, but the production and sound are a level above anywhere else in town." },
-      { rating: 4, title: "Book a table or do not bother", comment: "Queue on a Saturday was over an hour. With a table it is a different night entirely." },
-    ],
   },
   {
     name: "Mercury Lounge Village Market", city: "Nairobi", location: "Village Market, Limuru Road, Gigiri, Nairobi", cuisine: "Club & Lounge",
@@ -1202,10 +978,6 @@ const RESTAURANTS = [
       { category: "Cocktails", name: "Old Fashioned", description: "Bourbon, demerara, bitters, orange oil", price: 1300, sortOrder: 1 },
       { category: "Cocktails", name: "Espresso Martini", description: "Vodka, Kenyan espresso, coffee liqueur", price: 1250, sortOrder: 2 },
     ],
-    reviews: [
-      { rating: 5, title: "Actual live jazz on a Thursday", comment: "Piano, double bass, the lot. Rare in this city and worth the drive to Gigiri." },
-      { rating: 4, title: "Grown-up night out", comment: "Cocktails are properly made and you can still hold a conversation." },
-    ],
   },
   {
     name: "The Alchemist Bar", city: "Nairobi", location: "Parklands Road, Westlands, Nairobi", cuisine: "Club & Lounge",
@@ -1220,10 +992,6 @@ const RESTAURANTS = [
       { category: "Drinks", name: "Draught Beer", description: "500ml, rotating local tap", price: 450, sortOrder: 1 },
       { category: "Drinks", name: "Gin & Tonic", description: "Kenyan gin, tonic, grapefruit", price: 850, sortOrder: 2 },
       { category: "Entry", name: "Event Entry", description: "Cover varies by act — free on most weeknights", price: 1500, sortOrder: 1 },
-    ],
-    reviews: [
-      { rating: 5, title: "Nairobi's best atmosphere", comment: "Open air, good music, mixed crowd, no pretension. Go early for a spot near the stage." },
-      { rating: 4, title: "Great on a Sunday afternoon", comment: "Completely different vibe in daylight — families, food trucks, live acoustic sets." },
     ],
   },
 ];
@@ -1275,7 +1043,9 @@ async function main() {
     if (!existing) {
       const hotel = await prisma.hotel.create({ data: { partnerId: hotelPartner.id, name: h.name, description: h.description, city: h.city, location: h.location, starRating: h.starRating, phone: h.phone, email: h.email, checkInTime: h.checkInTime, checkOutTime: h.checkOutTime, imageUrl: h.imageUrl, images: h.images, amenities: h.amenities, published: true } });
       for (const r of h.rooms) await prisma.room.create({ data: { hotelId: hotel.id, ...r, available: true } });
-      for (const rv of h.reviews) await prisma.hotelReview.create({ data: { hotelId: hotel.id, userId: customerUser.id, ...rv } });
+      // No seeded reviews. Ratings belong to real guests after a real stay;
+      // inventing them for a named hotel is both misleading and unlawful in
+      // many markets. The review tables and UI stay live for post-launch use.
       hotelsCreated++;
     }
   }
@@ -1290,7 +1060,7 @@ async function main() {
         const m = r.menuItems[i];
         await prisma.menuItem.create({ data: { restaurantId: restaurant.id, name: m.name, description: m.description, price: m.price, currency: "KES", category: m.category, sortOrder: m.sortOrder ?? i, available: true } });
       }
-      for (const rv of r.reviews) await prisma.restaurantReview.create({ data: { restaurantId: restaurant.id, userId: customerUser.id, ...rv } });
+      // No seeded reviews — see the note in the hotel loop above.
       restaurantsCreated++;
     }
   }
@@ -1303,7 +1073,7 @@ async function main() {
   console.log("   events@dontbeboring.example    → Events Partner");
   console.log("   hotels@dontbeboring.example    → Hotels Partner");
   console.log("   dining@dontbeboring.example    → Dining Partner");
-  console.log("   customer@dontbeboring.example  → Customer (used for seeded reviews)");
+  console.log("   customer@dontbeboring.example  → Customer");
 }
 
 main().catch((e) => { console.error(e); process.exit(1); }).finally(() => prisma.$disconnect());
