@@ -27,6 +27,7 @@ export function JoinForm() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [expiresInMinutes, setExpiresInMinutes] = useState(10);
+  const [channels, setChannels] = useState<string[]>(["email"]);
 
   async function requestCode(e: React.FormEvent) {
     e.preventDefault();
@@ -36,7 +37,7 @@ export function JoinForm() {
       const res = await fetch("/api/auth/request-code", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, phone }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -44,6 +45,7 @@ export function JoinForm() {
         return;
       }
       setExpiresInMinutes(data.expiresInMinutes ?? 10);
+      setChannels(data.channels ?? ["email"]);
       setStep("code");
     } catch {
       setError("Could not reach the server. Check your connection.");
@@ -85,7 +87,16 @@ export function JoinForm() {
       <form onSubmit={submitCode} className="space-y-4">
         <div>
           <p className="text-sm text-gray-600">
-            We sent a {6}-digit code to <span className="font-medium text-gray-900">{email}</span>.
+            We sent a 6-digit code to{" "}
+            {channels.includes("sms") ? (
+              <>
+                <span className="font-medium text-gray-900">{phone}</span> and{" "}
+                <span className="font-medium text-gray-900">{email}</span>
+              </>
+            ) : (
+              <span className="font-medium text-gray-900">{email}</span>
+            )}
+            .
           </p>
           <p className="text-xs text-gray-400 mt-1">
             It expires in {expiresInMinutes} minutes and works once.

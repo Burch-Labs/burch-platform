@@ -169,6 +169,52 @@ function checkConfig(): ConfigIssue[] {
     });
   }
 
+
+  // ── Ticket signing ─────────────────────────────────────────────────────────
+  // Tickets fall back to NEXTAUTH_SECRET so development works unconfigured, but
+  // sharing them in production means rotating a session secret silently voids
+  // every ticket already sitting in a customer's inbox.
+  if (isProd && !process.env.TICKET_SIGNING_SECRET) {
+    issues.push({
+      key: "TICKET_SIGNING_SECRET",
+      level: process.env.NEXTAUTH_SECRET || process.env.SESSION_SECRET ? "warn" : "error",
+      message:
+        "Not set. Ticket QR codes are being signed with the session secret, so rotating that " +
+        "secret would invalidate every ticket already issued. Set a separate value.",
+    });
+  }
+
+  // ── SMS ────────────────────────────────────────────────────────────────────
+  const atKey = process.env.AFRICASTALKING_API_KEY;
+  const atUser = process.env.AFRICASTALKING_USERNAME;
+  if (Boolean(atKey) !== Boolean(atUser)) {
+    issues.push({
+      key: "AFRICASTALKING",
+      level: "error",
+      message:
+        "Half configured. AFRICASTALKING_API_KEY and AFRICASTALKING_USERNAME are both required, " +
+        "or neither — one alone silently disables SMS while looking configured.",
+    });
+  } else if (isProd && !atKey) {
+    issues.push({
+      key: "AFRICASTALKING",
+      level: "warn",
+      message:
+        "Not configured. Sign-in codes go by email only, which is the weaker channel in this market.",
+    });
+  }
+
+  // ── Listing claims ─────────────────────────────────────────────────────────
+  if (isProd && !process.env.CLAIMS_INBOX) {
+    issues.push({
+      key: "CLAIMS_INBOX",
+      level: "warn",
+      message:
+        "Not set. Venue listing claims will go to the default sender address; point this at an " +
+        "inbox somebody actually reads.",
+    });
+  }
+
   return issues;
 }
 
@@ -182,7 +228,7 @@ const warnCount = configIssues.filter((i) => i.level === "warn").length;
 if (configIssues.length > 0) {
   const border = "═".repeat(60);
   console.log(`\n${border}`);
-  console.log("⚙️   BURCH — CONFIG CHECK");
+  console.log("⚙️   dontbeboring — CONFIG CHECK");
   console.log(border);
 
   for (const issue of configIssues) {
