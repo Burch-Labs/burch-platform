@@ -76,6 +76,39 @@ function primaryButton(href: string, label: string): string {
   return `<a href="${href}" style="display:inline-block;background:#8A6914;color:#ffffff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;margin-bottom:24px;">${label}</a>`;
 }
 
+// ─── Passwordless sign-in code ───────────────────────────────────────────────
+
+export async function sendSignInCodeEmail(
+  email: string,
+  code: string,
+  ttlMinutes: number
+): Promise<void> {
+  if (!HAS_RESEND) {
+    devLog(`Your dontbeboring sign-in code: ${code}`, "(no link — enter the code)");
+    return;
+  }
+
+  const { Resend } = await import("resend");
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  await resend.emails.send({
+    from: FROM,
+    to: OVERRIDE_TO ?? email,
+    // The code stays out of the subject line: subjects show in notification
+    // previews on a locked screen, where a shoulder is all it takes.
+    subject: "Your dontbeboring sign-in code",
+    html: emailWrapper(`
+      <h2 style="margin:0 0 8px;font-size:20px;color:#131E30;">Your sign-in code</h2>
+      <p style="margin:0 0 24px;font-size:15px;color:#435671;line-height:1.6;">
+        Enter this code to finish signing in.
+      </p>
+      <p style="margin:0 0 24px;font-size:34px;font-weight:700;letter-spacing:8px;color:#8A6914;">${code}</p>
+      <p style="margin:0 0 8px;font-size:13px;color:#5D708F;">The code expires in ${ttlMinutes} minutes and can be used once.</p>
+      <p style="margin:0;font-size:13px;color:#5D708F;">If you did not ask to sign in, you can ignore this email — nobody can use the code without it.</p>
+    `),
+  });
+}
+
 // ─── Email verification ───────────────────────────────────────────────────────
 
 export async function sendVerificationEmail(email: string, token: string): Promise<void> {

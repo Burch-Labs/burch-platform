@@ -15,6 +15,7 @@ model User {
   id            String    @id @default(cuid())
   email         String    @unique
   name          String?
+  phone         String?
   image         String?
   emailVerified DateTime?
   password      String?
@@ -118,6 +119,27 @@ model EmailResendRateLimit {
   lastSentAt DateTime
 
   @@map("email_resend_rate_limits")
+}
+
+// ─── Passwordless sign-in ────────────────────────────────────────────────────
+
+model SignInCode {
+  id         String    @id @default(cuid())
+  /** Email address, or phone in 2547XXXXXXXX form. Lower-cased for email. */
+  identifier String
+  /** bcrypt hash. The code itself is never stored, so a database read cannot
+      be turned into someone else's session. */
+  codeHash   String
+  expiresAt  DateTime
+  /** Wrong guesses so far. A code is burned after ATTEMPT_LIMIT of them, which
+      is what keeps six digits out of reach of a brute force. */
+  attempts   Int       @default(0)
+  consumedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([identifier, createdAt])
+  @@index([expiresAt])
+  @@map("sign_in_codes")
 }
 
 // ─── Partner ─────────────────────────────────────────────────────────────────

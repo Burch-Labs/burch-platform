@@ -83,7 +83,7 @@ export async function NavBar() {
                 Sign in
               </Link>
               <Link
-                href="/auth/register"
+                href="/auth/join"
                 className="text-sm bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition font-semibold shadow-sm"
               >
                 Get started

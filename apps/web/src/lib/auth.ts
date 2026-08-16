@@ -2,6 +2,7 @@ import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcryptjs";
 import { prisma } from "./prisma";
+import { normalizeIdentifier, verifySignInCode } from "./signin-codes";
 // Run startup config check so deployment logs surface misconfigurations early
 import "./config-check";
 
@@ -27,6 +28,64 @@ const providers: NextAuthOptions["providers"] = [
       if (!user.emailVerified) {
         throw new Error("EMAIL_NOT_VERIFIED");
       }
+
+      return {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        image: user.image,
+        role: user.role,
+        emailVerified: user.emailVerified,
+      };
+    },
+  }),
+  /**
+   * Passwordless sign-in. The account is created on first successful code,
+   * so there is no separate registration step to complete — a name and phone
+   * supplied here are stored, and an omitted one simply leaves the field as it
+   * was rather than blanking a returning user's details.
+   *
+   * The email is treated as verified because the code was delivered to it and
+   * came back; that round trip is the proof a verification link would give us.
+   */
+  CredentialsProvider({
+    id: "signin-code",
+    name: "Sign-in code",
+    credentials: {
+      email: { label: "Email", type: "email" },
+      code:  { label: "Code",  type: "text"  },
+      name:  { label: "Name",  type: "text"  },
+      phone: { label: "Phone", type: "text"  },
+    },
+    async authorize(credentials) {
+      if (!credentials?.email || !credentials.code) return null;
+
+      const email = normalizeIdentifier(credentials.email);
+      const verdict = await verifySignInCode(email, credentials.code);
+      if (!verdict.ok) return null;
+
+      const existing = await prisma.user.findUnique({ where: { email } });
+
+      const user = existing
+        ? await prisma.user.update({
+            where: { id: existing.id },
+            data: {
+              // Only fill blanks. A returning guest who leaves the optional
+              // fields empty must not have their saved details erased.
+              name:  existing.name  ?? credentials.name?.trim()  ?? null,
+              phone: existing.phone ?? credentials.phone?.trim() ?? null,
+              emailVerified: existing.emailVerified ?? new Date(),
+            },
+          })
+        : await prisma.user.create({
+            data: {
+              email,
+              name:  credentials.name?.trim()  || null,
+              phone: credentials.phone?.trim() || null,
+              emailVerified: new Date(),
+              role: "CUSTOMER",
+            },
+          });
 
       return {
         id: user.id,

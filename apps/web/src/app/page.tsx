@@ -115,7 +115,7 @@ export default async function HomePage() {
               Browse events
             </Link>
             <Link
-              href="/auth/register"
+              href="/auth/join"
               className="border border-gray-200 text-gray-700 bg-white px-8 py-3.5 rounded-xl text-sm font-medium hover:bg-gray-50 transition"
             >
               Create account
@@ -375,7 +375,7 @@ export default async function HomePage() {
             Join hundreds of organizers using dontbeboring to sell tickets and grow their audience across Kenya.
           </p>
           <Link
-            href="/auth/register"
+            href="/auth/join"
             className="inline-block bg-gray-900 text-white font-semibold px-8 py-3 rounded-xl text-sm hover:bg-gray-800 transition shadow-sm"
           >
             Apply as a partner
