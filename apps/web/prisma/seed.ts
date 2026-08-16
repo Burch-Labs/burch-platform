@@ -55,21 +55,12 @@ const DINING_IMG = {
 
 const EVENTS = [
   { title: "Nairobi Jazz Festival 2026", description: "The premier jazz festival in East Africa returns. Three stages, world-class artists, local cuisine, and Nairobi nights.", category: EventCategory.MUSIC, city: "Nairobi", location: "Ngong Racecourse, Ngong Road", price: 2500, capacity: 5000, daysFromNow: 14, durationHours: 8, tags: ["jazz", "festival", "outdoor"], imageUrl: "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=800&q=80" },
-  { title: "Lagos Tech Summit 2026", description: "Africa's largest tech conference. Theme: AI for Africa. Two days of keynotes, workshops, and networking.", category: EventCategory.TECH, city: "Lagos", location: "Eko Convention Centre, Victoria Island", price: 15000, capacity: 2000, daysFromNow: 21, durationHours: 9, tags: ["technology", "ai", "startup"], imageUrl: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80" },
-  { title: "Accra Food & Wine Festival", description: "West African cuisine, craft beers, and fine wines. 50+ restaurants, live highlife music.", category: EventCategory.FOOD_DRINK, city: "Accra", location: "Labadi Beach Hotel Grounds", price: 1800, capacity: 3000, daysFromNow: 7, durationHours: 7, tags: ["food", "wine", "culture"], imageUrl: "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&q=80" },
-  { title: "Cape Town Comedy Night", description: "The hottest stand-up comedians from across South Africa. Full bar, 18+.", category: EventCategory.COMEDY, city: "Cape Town", location: "The Baxter Theatre, Rondebosch", price: 350, capacity: 400, daysFromNow: 5, durationHours: 3, tags: ["comedy", "stand-up"], imageUrl: "https://images.unsplash.com/photo-1527224857830-43a7acc85260?w=800&q=80" },
-  { title: "Kampala Marathon 2026", description: "Uganda's biggest running event. Full, half, and fun run distances. All fitness levels welcome.", category: EventCategory.SPORTS, city: "Kampala", location: "Kololo Airstrip", price: 500, capacity: 8000, daysFromNow: 30, durationHours: 6, tags: ["marathon", "running"], imageUrl: "https://images.unsplash.com/photo-1452626038306-9aae5e071dd3?w=800&q=80" },
-  { title: "Johannesburg Art Week", description: "A week-long celebration of contemporary African art. Gallery openings, artist talks, live painting.", category: EventCategory.ARTS, city: "Johannesburg", location: "Maboneng Precinct, Arts on Main", price: 0, capacity: 1000, daysFromNow: 10, durationHours: 8, tags: ["art", "gallery", "free"], imageUrl: "https://images.unsplash.com/photo-1531913223931-b0d3198229ee?w=800&q=80" },
-  { title: "Kigali Business Summit", description: "Rwanda's flagship business event connecting entrepreneurs, investors, and policy makers.", category: EventCategory.BUSINESS, city: "Kigali", location: "Kigali Convention Centre", price: 25000, capacity: 800, daysFromNow: 45, durationHours: 8, tags: ["business", "investment"], imageUrl: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=800&q=80" },
-  { title: "Dar es Salaam Film Festival", description: "East Africa's premier film festival. Feature films, documentaries, and short films from 20+ countries.", category: EventCategory.FILM, city: "Dar es Salaam", location: "Diamond Jubilee Hall", price: 800, capacity: 600, daysFromNow: 18, durationHours: 5, tags: ["film", "cinema"], imageUrl: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=800&q=80" },
   { title: "Nairobi AfroBeats Night", description: "The hottest Afrobeats night featuring live performances and DJ sets at the iconic Carnivore.", category: EventCategory.MUSIC, city: "Nairobi", location: "Carnivore Restaurant, Langata", price: 1200, capacity: 1500, daysFromNow: 9, durationHours: 6, tags: ["afrobeats", "nightlife"], imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80" },
-  { title: "Cairo Design Week", description: "Egyptian and pan-African design talent — fashion, architecture, product design, and digital art.", category: EventCategory.ARTS, city: "Cairo", location: "GrEEK Campus, Downtown Cairo", price: 300, capacity: 2000, daysFromNow: 25, durationHours: 8, tags: ["design", "fashion"], imageUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80" },
   { title: "Nairobi Street Food Festival", description: "Fifty of Nairobi's best food trucks and pop-up kitchens in one place — nyama choma, mutura, mandazi, and modern fusion, all under one roof.", category: EventCategory.FOOD_DRINK, city: "Nairobi", location: "Uhuru Gardens, Langata Road", price: 500, capacity: 6000, daysFromNow: 12, durationHours: 9, tags: ["food", "street food", "family friendly"], imageUrl: "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&q=80" },
   { title: "Nairobi Beats & Culture Festival", description: "A day-long celebration of Kenyan sound — Genge, Gengetone, Benga, and Afro-fusion acts across two stages, plus local fashion and art vendors.", category: EventCategory.MUSIC, city: "Nairobi", location: "Kasarani Indoor Arena", price: 2000, capacity: 10000, daysFromNow: 20, durationHours: 8, tags: ["music", "culture", "live"], imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80" },
   { title: "Nairobi Comedy Live", description: "Kenya's sharpest stand-up comedians for one night of nonstop laughs. Full bar, 18+.", category: EventCategory.COMEDY, city: "Nairobi", location: "Alliance Française, Loita Street", price: 800, capacity: 500, daysFromNow: 6, durationHours: 3, tags: ["comedy", "stand-up", "nightlife"], imageUrl: "https://images.unsplash.com/photo-1527224857830-43a7acc85260?w=800&q=80" },
   { title: "Nairobi Startup & Innovation Summit", description: "East Africa's founders, investors, and policymakers under one roof — pitch competitions, panels on fintech and AgriTech, and investor speed-networking.", category: EventCategory.BUSINESS, city: "Nairobi", location: "KICC, City Square", price: 6000, capacity: 1500, daysFromNow: 35, durationHours: 8, tags: ["startup", "investment", "tech"], imageUrl: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=800&q=80" },
   { title: "Nairobi Half Marathon", description: "A scenic road race through the city's leafy suburbs finishing at Nyayo Stadium. Full, half, and 10K distances for every fitness level.", category: EventCategory.SPORTS, city: "Nairobi", location: "Nyayo National Stadium", price: 1500, capacity: 12000, daysFromNow: 40, durationHours: 5, tags: ["marathon", "running", "outdoor"], imageUrl: "https://images.unsplash.com/photo-1452626038306-9aae5e071dd3?w=800&q=80" },
-  { title: "Mombasa Beach Music Festival", description: "Sunset sets on the white sands of the coast — Afrobeats, dancehall, and Swahili taarab from Kenya's best coastal DJs and live bands.", category: EventCategory.MUSIC, city: "Mombasa", location: "Nyali Beach", price: 1800, capacity: 4000, daysFromNow: 28, durationHours: 7, tags: ["music", "beach", "festival"], imageUrl: "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=800&q=80" },
   { title: "Kenya Coffee & Culture Expo", description: "Meet the growers behind Kenya's world-famous AA beans — cupping sessions, barista competitions, and farm-to-cup talks from Nyeri and Kiambu estates.", category: EventCategory.FOOD_DRINK, city: "Nairobi", location: "Sarit Expo Centre, Westlands", price: 700, capacity: 2500, daysFromNow: 16, durationHours: 6, tags: ["coffee", "expo", "culture"], imageUrl: "https://images.unsplash.com/photo-1445116572660-236099ec97a0?w=800&q=80" },
 ];
 
@@ -94,71 +85,6 @@ const HOTELS = [
       { rating: 5, title: "Absolutely magnificent", comment: "The Norfolk is simply stunning. The gardens are impeccably maintained and the staff go above and beyond." },
       { rating: 4, title: "Classic luxury", comment: "Beautiful historic property with great service. Room was large and comfortable." },
       { rating: 5, title: "Best hotel in Nairobi", comment: "Stayed for a work trip and was blown away. The pool area is gorgeous, food excellent." },
-    ],
-  },
-  {
-    name: "Eko Hotel & Suites", city: "Lagos", location: "Victoria Island, Lagos", starRating: 5,
-    description: "Lagos' premier five-star destination overlooking the Atlantic Ocean. Multiple pools, world-class restaurants, and a full-service spa.",
-    phone: "+234 1 277 9000", email: "reservations@ekohotels.com", checkInTime: "15:00", checkOutTime: "12:00",
-    imageUrl: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80",
-    images: ["https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80","https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&q=80","https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80","https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80"],
-    amenities: ["WiFi","Swimming Pool","Gym","Restaurant","Bar","Spa","Parking","Airport Shuttle","24h Front Desk","Business Center","Conference Rooms","Room Service"],
-    rooms: [
-      { name: "Classic Room", description: "Contemporary room with city or ocean views.", price: 22000, currency: "KES", bedType: "Queen", maxGuests: 2, quantity: 40, imageUrl: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80", amenities: ["Air Conditioning","Flat-screen TV","Safe","Coffee Maker","Work Desk"] },
-      { name: "Ocean View Suite", description: "Panoramic Atlantic views, separate lounge, premium amenities.", price: 48000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 12, imageUrl: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800&q=80", amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Bathtub","Ocean View","Balcony"] },
-    ],
-    reviews: [
-      { rating: 5, title: "World-class in Lagos", comment: "Exceeded every expectation. Ocean view was breathtaking. The pool bar is a highlight." },
-      { rating: 4, title: "Great business hotel", comment: "Excellent facilities. Meeting rooms are well-equipped, food quality is high." },
-    ],
-  },
-  {
-    name: "Labadi Beach Hotel", city: "Accra", location: "La Beach Road, Accra", starRating: 4,
-    description: "Accra's iconic beachfront hotel. Traditional Ghanaian hospitality with international standards and direct beach access.",
-    phone: "+233 30 277 2501", email: "info@labadibeachhotel.com", checkInTime: "14:00", checkOutTime: "12:00",
-    imageUrl: "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=800&q=80",
-    images: ["https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=800&q=80","https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80","https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80"],
-    amenities: ["WiFi","Swimming Pool","Beach Access","Restaurant","Bar","Gym","Parking","24h Front Desk","Room Service"],
-    rooms: [
-      { name: "Superior Beach Room", description: "Beach or pool views, vibrant Ghanaian style.", price: 14000, currency: "KES", bedType: "Queen", maxGuests: 2, quantity: 30, imageUrl: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80", amenities: ["Air Conditioning","Flat-screen TV","Safe","Coffee Maker","Ocean View"] },
-      { name: "Beachfront Suite", description: "Private terrace steps from the beach, king bed and lounge area.", price: 26000, currency: "KES", bedType: "King", maxGuests: 3, quantity: 8, imageUrl: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800&q=80", amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Bathtub","Ocean View","Balcony"] },
-    ],
-    reviews: [
-      { rating: 4, title: "Beach paradise in Accra", comment: "Unbeatable location. Pool area is beautiful." },
-      { rating: 5, title: "Wonderful hospitality", comment: "Staff are exceptional. Beach access is fantastic." },
-    ],
-  },
-  {
-    name: "Kigali Serena Hotel", city: "Kigali", location: "KN 3 Ave, Kiyovu, Kigali", starRating: 5,
-    description: "A landmark of elegance in Rwanda's capital, set in beautiful tropical gardens with stunning views of Kigali's famous hills.",
-    phone: "+250 252 597 100", email: "kigali@serena.co.rw", checkInTime: "14:00", checkOutTime: "11:00",
-    imageUrl: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80",
-    images: ["https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80","https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&q=80","https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800&q=80"],
-    amenities: ["WiFi","Swimming Pool","Gym","Restaurant","Bar","Spa","Parking","24h Front Desk","Business Center","Concierge"],
-    rooms: [
-      { name: "Garden Room", description: "Tropical garden views, modern amenities, African-inspired décor.", price: 16000, currency: "KES", bedType: "Queen", maxGuests: 2, quantity: 25, imageUrl: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80", amenities: ["Air Conditioning","Flat-screen TV","Safe","Coffee Maker","Work Desk"] },
-      { name: "Deluxe Hill View Room", description: "Panoramic views of the Kigali hills, upgraded furnishings.", price: 24000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 15, imageUrl: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800&q=80", amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Bathtub","City View"] },
-      { name: "Presidential Suite", description: "Three rooms, private dining, dedicated butler, panoramic city views.", price: 75000, currency: "KES", bedType: "King", maxGuests: 4, quantity: 2, imageUrl: "https://images.unsplash.com/photo-1631049552057-403cdb8f0658?w=800&q=80", amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Bathtub","Walk-in Shower","City View","Balcony"] },
-    ],
-    reviews: [
-      { rating: 5, title: "Serene and spectacular", comment: "The gardens are so peaceful. Food quality is top notch." },
-      { rating: 5, title: "Best hotel in Kigali", comment: "Impeccable service, beautiful rooms, and the pool is lovely." },
-    ],
-  },
-  {
-    name: "The Westin Cape Town", city: "Cape Town", location: "Convention Square, Lower Long Street, Cape Town", starRating: 5,
-    description: "Prime position in Convention Square with stunning Table Mountain views. Westin's Heavenly Bed and world-class wellness facilities.",
-    phone: "+27 21 412 9999", email: "capetown.westin@westin.com", checkInTime: "15:00", checkOutTime: "12:00",
-    imageUrl: "https://images.unsplash.com/photo-1455587734955-081b22074882?w=800&q=80",
-    images: ["https://images.unsplash.com/photo-1455587734955-081b22074882?w=800&q=80","https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&q=80","https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80","https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800&q=80","https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800&q=80"],
-    amenities: ["WiFi","Swimming Pool","Gym","Spa","Restaurant","Bar","Parking","Airport Shuttle","24h Front Desk","Business Center","Conference Rooms","Room Service","Concierge"],
-    rooms: [
-      { name: "Westin Superior Room", description: "Signature Heavenly Bed, mountain or harbour views.", price: 32000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 50, imageUrl: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80", amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Work Desk"] },
-      { name: "Mountain View Suite", description: "Floor-to-ceiling windows framing Table Mountain, separate lounge.", price: 62000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 10, imageUrl: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800&q=80", amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Bathtub","Walk-in Shower","City View","Balcony","Sofa Bed"] },
-    ],
-    reviews: [
-      { rating: 5, title: "Table Mountain views are breathtaking", comment: "Woke up to that incredible view every morning. The Heavenly Bed lives up to its name." },
-      { rating: 5, title: "Luxury at its finest", comment: "The staff knew my name from day one. Will definitely be back." },
     ],
   },
   {
@@ -463,6 +389,22 @@ const HOTELS = [
       { rating: 4, title: "Spacious and quiet", comment: "Rooms are bigger than most at this price. Staff were attentive." },
     ],
   },
+  {
+    name: "Safari Park Hotel & Casino", city: "Nairobi", location: "Thika Road, Kasarani, Nairobi", starRating: 5,
+    description: "Sixty acres of tropical gardens on Thika Road, built as a village of thatched makuti roofs. Best known for the Nyama Choma Ranch and the long-running Safari Cats dinner show, and one of the largest conference capacities in the city.",
+    phone: "+254 20 000 0000", email: "reservations@safariparkhotel.example", checkInTime: "14:00", checkOutTime: "11:00",
+    imageUrl: HOTEL_IMG.pool, images: [HOTEL_IMG.pool, HOTEL_IMG.classic, HOTEL_IMG.lobby, HOTEL_IMG.suite],
+    amenities: ["WiFi","Swimming Pool","Gym","Restaurant","Bar","Spa","Parking","24h Front Desk","Conference Rooms","Business Center","Room Service","Casino","Airport Shuttle","Family Friendly"],
+    rooms: [
+      { name: "Superior Garden Room", description: "Makuti-roofed block set among the gardens, private verandah.", price: 16000, currency: "KES", bedType: "Queen", maxGuests: 2, quantity: 80, imageUrl: ROOM_IMG.standard, amenities: ["Air Conditioning","Flat-screen TV","Safe","Coffee Maker","Garden View","Balcony"] },
+      { name: "Executive Room", description: "Larger room closer to the pool deck, upgraded bathroom.", price: 24000, currency: "KES", bedType: "King", maxGuests: 2, quantity: 40, imageUrl: ROOM_IMG.deluxe, amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Bathtub","Garden View"] },
+      { name: "Presidential Suite", description: "Multi-room suite with private garden and dedicated service.", price: 85000, currency: "KES", bedType: "King", maxGuests: 4, quantity: 2, imageUrl: ROOM_IMG.suite, amenities: ["Air Conditioning","Flat-screen TV","Mini Bar","Safe","Bathtub","Walk-in Shower","Garden View","Balcony","Kitchenette"] },
+    ],
+    reviews: [
+      { rating: 5, title: "The gardens are enormous", comment: "You forget you are on Thika Road. Kids spent two days between the pool and the grounds." },
+      { rating: 4, title: "Go for the Safari Cats show", comment: "Dated in places but the setting and the entertainment make up for it." },
+    ],
+  },
 ];
 
 // ─── Restaurants ─────────────────────────────────────────────────────────────
@@ -525,100 +467,6 @@ const RESTAURANTS = [
     reviews: [
       { rating: 5, title: "Best night out in Nairobi", comment: "The food is amazing and the live music is unbeatable. The peri-peri prawns are a must. We danced till closing!" },
       { rating: 4, title: "Great vibe and food", comment: "Excellent atmosphere for both dinner and a night out. The African platter was great for sharing." },
-    ],
-  },
-  {
-    name: "Buka Restaurant", city: "Lagos", location: "1 Ozumba Mbadiwe Avenue, Victoria Island, Lagos", cuisine: "Nigerian",
-    description: "Buka brings the warmth and authenticity of a traditional Nigerian kitchen to Victoria Island. From slow-cooked ofe onugbu to jollof rice that has won awards, every dish is made with genuine care.",
-    priceRange: 2, phone: "+234 803 456 7890", email: "hello@bukarest.com",
-    imageUrl: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80",
-    images: ["https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80","https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&q=80"],
-    amenities: ["Takeaway","Outdoor Seating","Halal","Parking","WiFi"],
-    openingHours: defaultHours("10:00", "22:00", "10:00", "22:00"),
-    menuItems: [
-      { category: "Soups & Salads", name: "Egusi Soup", description: "Ground melon seeds, assorted fish, stockfish, palm oil — with pounded yam or eba", price: 3500, sortOrder: 1 },
-      { category: "Soups & Salads", name: "Banga Soup", description: "Palm nut extract, catfish, crayfish, periwinkle", price: 3800, sortOrder: 2 },
-      { category: "Mains", name: "Jollof Rice (Party Style)", description: "Award-winning smoky Nigerian jollof, coleslaw, fried plantain", price: 2800, sortOrder: 1 },
-      { category: "Mains", name: "Pepper Soup", description: "Goat meat, uziza leaves, Cameroonian peppers, hot pot", price: 4200, sortOrder: 2 },
-      { category: "Mains", name: "Suya Platter", description: "Spiced beef skewers, onion, tomato, Zanzibari spice mix", price: 3200, sortOrder: 3 },
-      { category: "Sides", name: "Pounded Yam", description: "Hand-pounded, served alongside any soup", price: 800, sortOrder: 1 },
-      { category: "Sides", name: "Fried Plantain (Dodo)", description: "Sweet, ripe plantain, deep-fried", price: 600, sortOrder: 2 },
-      { category: "Drinks", name: "Chapman", description: "Classic Nigerian cocktail — Fanta, Sprite, Grenadine, cucumber", price: 800, sortOrder: 1 },
-      { category: "Drinks", name: "Zobo", description: "Chilled hibiscus drink, cloves, ginger", price: 500, sortOrder: 2 },
-    ],
-    reviews: [
-      { rating: 5, title: "The real deal", comment: "If you want authentic Nigerian food in Lagos, Buka is it. The egusi soup is exactly like my grandmother's. The atmosphere is warm and welcoming." },
-      { rating: 5, title: "Best jollof in Lagos", comment: "I've tried everywhere. Buka wins. The smoke on the jollof is perfect. Come hungry." },
-      { rating: 4, title: "Excellent traditional food", comment: "Suya platter was outstanding. Service was friendly and fast. Great value for money." },
-    ],
-  },
-  {
-    name: "Gold Coast Restaurant", city: "Accra", location: "Liberation Road, Accra", cuisine: "Ghanaian",
-    description: "Named after the country's former colonial identity, Gold Coast Restaurant celebrates modern Ghanaian cuisine. Using locally sourced ingredients, the kitchen transforms everyday West African staples into extraordinary dishes.",
-    priceRange: 2, phone: "+233 20 123 4567", email: "eat@goldcoastaccra.com",
-    imageUrl: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80",
-    images: ["https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80","https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&q=80"],
-    amenities: ["Outdoor Seating","Halal","Takeaway","Parking","WiFi","Delivery"],
-    openingHours: defaultHours("11:00", "21:30", "10:00", "22:00"),
-    menuItems: [
-      { category: "Starters", name: "Kelewele", description: "Spiced fried plantain, ginger, cayenne — served with groundnut dip", price: 350, sortOrder: 1 },
-      { category: "Starters", name: "Chickpea Fritters", description: "Accra beancakes, chilli sauce, pickled cabbage", price: 300, sortOrder: 2 },
-      { category: "Mains", name: "Jollof Rice & Grilled Tilapia", description: "Smoky Ghanaian jollof, whole grilled tilapia, fried plantain, salad", price: 1800, sortOrder: 1 },
-      { category: "Mains", name: "Fufu & Light Soup", description: "Hand-pounded yam and cassava, goat light soup, garden egg stew", price: 1600, sortOrder: 2 },
-      { category: "Mains", name: "Kontomire Stew", description: "Cocoyam leaves, smoked fish, boiled yam", price: 1400, sortOrder: 3 },
-      { category: "Desserts", name: "Coconut Ice Cream", description: "Fresh Ghanaian coconut, mango coulis", price: 400, sortOrder: 1 },
-      { category: "Juices", name: "Fresh Sobolo", description: "Hibiscus, cloves, ginger, natural sweetener", price: 300, sortOrder: 1 },
-      { category: "Juices", name: "Tamarind Lemonade", description: "Tamarind, fresh lemon, mint", price: 350, sortOrder: 2 },
-    ],
-    reviews: [
-      { rating: 5, title: "Authentic Ghanaian flavours", comment: "The fufu and light soup is exactly how my mother makes it. So comforting and delicious. Great outdoor seating." },
-      { rating: 4, title: "Lovely local experience", comment: "Perfect for visitors wanting to experience real Ghanaian food. The kelewele is addictive. Good prices." },
-    ],
-  },
-  {
-    name: "De Waterkant Kitchen", city: "Cape Town", location: "9 Loader Street, De Waterkant, Cape Town", cuisine: "Contemporary",
-    description: "Tucked in Cape Town's historic De Waterkant village, this modern brasserie celebrates South African produce with European technique. The ever-changing seasonal menu showcases the best from the Cape's farm-to-table bounty.",
-    priceRange: 3, phone: "+27 21 419 2501", email: "bookings@dewaterkant.co.za",
-    imageUrl: "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&q=80",
-    images: ["https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&q=80","https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80","https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80"],
-    amenities: ["Outdoor Seating","Bar","Vegan Options","Vegetarian Options","Wheelchair Accessible","Reservations Required"],
-    openingHours: { ...defaultHours("12:00", "22:00", "10:00", "23:00"), monday: { open: "12:00", close: "22:00", closed: false }, sunday: { open: "10:00", close: "16:00", closed: false } },
-    menuItems: [
-      { category: "Starters", name: "Biltong & Blue Cheese Arancini", description: "South African biltong, gorgonzola, tomato jam", price: 120, sortOrder: 1 },
-      { category: "Starters", name: "Cape Malay Salad", description: "Cape Malay pickled fish, gem lettuce, apricot dressing", price: 95, sortOrder: 2 },
-      { category: "Mains", name: "Braai-spiced Springbok", description: "Free-range springbok loin, roast beetroot, Cape gooseberry jus", price: 380, sortOrder: 1 },
-      { category: "Mains", name: "Bokaap Lamb Shoulder", description: "Slow-roasted Cape Malay-spiced lamb, jewelled couscous", price: 320, sortOrder: 2 },
-      { category: "Mains", name: "Garden Cape Mezze", description: "Seasonal vegetarian board, hummus, breads, Cape pickles", price: 185, sortOrder: 3 },
-      { category: "Desserts", name: "Malva Pudding", description: "Traditional Cape pudding, amarula custard, vanilla ice cream", price: 90, sortOrder: 1 },
-      { category: "Wines", name: "Boekenhoutskloof Syrah", description: "Franschhoek · Glass", price: 110, sortOrder: 1 },
-      { category: "Wines", name: "Waterford Sauvignon Blanc", description: "Stellenbosch · Glass", price: 95, sortOrder: 2 },
-    ],
-    reviews: [
-      { rating: 5, title: "Cape Town dining at its best", comment: "The springbok was cooked to perfection and the wine list is exceptional. Beautiful outdoor terrace." },
-      { rating: 4, title: "Seasonal and delicious", comment: "Loved the Cape Malay salad and the malva pudding. The biltong arancini is a genius idea." },
-      { rating: 5, title: "A Cape Town gem", comment: "Perfect neighbourhood bistro. The food is creative, the service warm, and the Waterkant vibe is unbeatable." },
-    ],
-  },
-  {
-    name: "Serena Coffee House", city: "Kigali", location: "KN 3 Ave, Kiyovu, Kigali", cuisine: "International",
-    description: "The coffee house and all-day dining venue at Kigali Serena Hotel, serving exceptional Rwandan single-origin coffees alongside an international menu that draws on flavours from across Africa and beyond.",
-    priceRange: 2, phone: "+250 252 597 100", email: "kigali@serena.co.rw",
-    imageUrl: "https://images.unsplash.com/photo-1445116572660-236099ec97a0?w=800&q=80",
-    images: ["https://images.unsplash.com/photo-1445116572660-236099ec97a0?w=800&q=80","https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80"],
-    amenities: ["WiFi","Outdoor Seating","Vegan Options","Vegetarian Options","Takeaway","Wheelchair Accessible"],
-    openingHours: defaultHours("06:30", "22:00", "07:00", "22:00"),
-    menuItems: [
-      { category: "Starters", name: "Avocado Toast", description: "Rwandan avocado, sourdough, cherry tomatoes, dukkah", price: 950, sortOrder: 1 },
-      { category: "Mains", name: "Club Sandwich", description: "Grilled chicken, bacon, egg, lettuce, tomato, fries", price: 1600, sortOrder: 1 },
-      { category: "Mains", name: "Rwandan Brochettes", description: "Marinated beef skewers, grilled vegetables, pilau rice", price: 2200, sortOrder: 2 },
-      { category: "Mains", name: "Garden Salad Bowl", description: "Seasonal greens, chickpeas, roasted butternut, tahini dressing", price: 1200, sortOrder: 3 },
-      { category: "Desserts", name: "Passion Fruit Cheesecake", description: "Kigali-style cheesecake with fresh passion fruit", price: 650, sortOrder: 1 },
-      { category: "Drinks", name: "Rwanda Single Origin Coffee", description: "Bourbon arabica, Huye Mountain — black, flat white, or cappuccino", price: 500, sortOrder: 1 },
-      { category: "Juices", name: "Fresh Tropical Juice", description: "Mango, passion fruit, pineapple — pressed to order", price: 700, sortOrder: 1 },
-    ],
-    reviews: [
-      { rating: 4, title: "Great coffee and food", comment: "The Rwandan coffee is some of the best I've had anywhere. Brochettes were excellent. Perfect for breakfast meetings." },
-      { rating: 5, title: "Peaceful and delicious", comment: "The garden seating is so tranquil. Food is well-executed and the service is genuinely warm. A daily ritual during my Kigali stay." },
     ],
   },
   {
@@ -1019,27 +867,6 @@ const RESTAURANTS = [
     ],
   },
   {
-    name: "Osteria del Chianti", city: "Nairobi", location: "Lenana Road, Kilimani, Nairobi", cuisine: "Italian",
-    description: "The Lenana Road original of Nairobi's best-known Italian family — wood-fired pizza, hand-rolled pasta and a Tuscan wine list, in a courtyard that fills every Friday.",
-    priceRange: 3, phone: "+254 20 000 0000", email: "lenana@osteria.example",
-    imageUrl: DINING_IMG.casual, images: [DINING_IMG.casual, DINING_IMG.fine, DINING_IMG.bar],
-    amenities: ["Outdoor Seating","Bar","Parking","Takeaway","Vegetarian Options","Family Friendly"],
-    openingHours: defaultHours("11:30", "22:30", "11:00", "23:00"),
-    menuItems: [
-      { category: "Antipasti", name: "Burrata e Pomodorini", description: "Imported burrata, confit cherry tomatoes, basil", price: 1450, sortOrder: 1 },
-      { category: "Antipasti", name: "Carpaccio di Manzo", description: "Kenyan beef fillet, rocket, parmesan, lemon", price: 1350, sortOrder: 2 },
-      { category: "Pasta", name: "Tagliatelle al Ragù", description: "Slow-cooked beef ragù, hand-cut tagliatelle", price: 1700, sortOrder: 1 },
-      { category: "Pasta", name: "Ravioli di Ricotta e Spinaci", description: "Ricotta and spinach ravioli, sage butter", price: 1600, sortOrder: 2 },
-      { category: "Pizza", name: "Pizza Diavola", description: "Spicy salami, mozzarella, chilli oil", price: 1450, sortOrder: 1 },
-      { category: "Pizza", name: "Pizza Margherita", description: "San Marzano tomato, fior di latte, basil", price: 1150, sortOrder: 2 },
-      { category: "Desserts", name: "Tiramisù", description: "Made in house, to the family recipe", price: 750, sortOrder: 1 },
-    ],
-    reviews: [
-      { rating: 5, title: "Proper Italian in Nairobi", comment: "The ragù tastes like someone's nonna made it. Pizza base is excellent." },
-      { rating: 4, title: "Always good, always busy", comment: "Been coming for years. Book on weekends or you will wait." },
-    ],
-  },
-  {
     name: "Ankole Grill", city: "Nairobi", location: "Kitisuru, Nairobi", cuisine: "African Steakhouse",
     description: "Named for the long-horned cattle breed of the Great Lakes, Ankole makes the case for an East African steakhouse — dry-aged local beef over open flame, in a garden setting in Kitisuru.",
     priceRange: 3, phone: "+254 20 000 0000", email: "kitisuru@ankolegrill.example",
@@ -1081,26 +908,6 @@ const RESTAURANTS = [
 
   // ── Cuisine specialists ────────────────────────────────────────────────────
   {
-    name: "Habesha Restaurant", city: "Nairobi", location: "Argwings Kodhek Road, Kilimani, Nairobi", cuisine: "Ethiopian",
-    description: "Nairobi's long-running Ethiopian institution — injera platters shared around a mesob basket, slow-simmered wats, and a coffee ceremony worth staying for.",
-    priceRange: 2, phone: "+254 20 000 0000", email: "info@habesha.example",
-    imageUrl: DINING_IMG.casual, images: [DINING_IMG.casual, DINING_IMG.grill],
-    amenities: ["Outdoor Seating","Bar","Parking","Live Music","Vegan Options","Vegetarian Options","Halal"],
-    openingHours: defaultHours("11:00", "23:00", "11:00", "23:30"),
-    menuItems: [
-      { category: "Platters", name: "Habesha Combination", description: "Seven wats on injera — the full introduction, serves two", price: 2600, sortOrder: 1 },
-      { category: "Platters", name: "Beyaynetu Vegetarian", description: "Lentil, split pea, collard and beetroot wats on injera", price: 1600, sortOrder: 2 },
-      { category: "Mains", name: "Doro Wat", description: "Slow-cooked chicken, berbere, hard-boiled egg", price: 1500, sortOrder: 1 },
-      { category: "Mains", name: "Kitfo", description: "Minced beef, mitmita, niter kibbeh, ayib cheese", price: 1800, sortOrder: 2 },
-      { category: "Drinks", name: "Ethiopian Coffee Ceremony", description: "Roasted, ground and brewed at your table", price: 900, sortOrder: 1 },
-      { category: "Drinks", name: "Tej", description: "Traditional Ethiopian honey wine", price: 700, sortOrder: 2 },
-    ],
-    reviews: [
-      { rating: 5, title: "The real thing", comment: "Doro wat as good as I have had in Addis. Do the coffee ceremony, it is worth the wait." },
-      { rating: 4, title: "Great for vegetarians", comment: "The beyaynetu is enormous and every component is distinct." },
-    ],
-  },
-  {
     name: "Haandi", city: "Nairobi", location: "The Mall, Westlands, Nairobi", cuisine: "North Indian",
     description: "North-West Frontier cooking that has held its Westlands following for decades — tandoor breads, slow-cooked dals and karahi dishes finished at the pass.",
     priceRange: 3, phone: "+254 20 000 0000", email: "westlands@haandi.example",
@@ -1118,26 +925,6 @@ const RESTAURANTS = [
     reviews: [
       { rating: 5, title: "Consistently excellent for years", comment: "The overnight dal is the reason to come. Nothing else in town matches it." },
       { rating: 4, title: "Reliable and generous", comment: "Portions are big, spicing is confident. Book for weekend dinner." },
-    ],
-  },
-  {
-    name: "K'Osewe Ranalo Foods", city: "Nairobi", location: "Kimathi Street, Central Business District, Nairobi", cuisine: "Kenyan Traditional",
-    description: "The CBD institution for Luo home cooking — whole fried tilapia, dry-fry beef, managu and ugali, served fast to a room of civil servants, lawyers and everyone else.",
-    priceRange: 1, phone: "+254 20 000 0000", email: "info@kosewe.example",
-    imageUrl: DINING_IMG.casual, images: [DINING_IMG.casual, DINING_IMG.grill],
-    amenities: ["Takeaway","Family Friendly","Halal","Group Dining"],
-    openingHours: defaultHours("07:00", "22:00", "08:00", "22:00"),
-    menuItems: [
-      { category: "Fish", name: "Whole Fried Tilapia", description: "Lake Victoria tilapia, kachumbari, ugali", price: 950, sortOrder: 1 },
-      { category: "Fish", name: "Fish Stew", description: "Tilapia in tomato and onion broth", price: 850, sortOrder: 2 },
-      { category: "Meat", name: "Dry Fry Beef", description: "Slow-fried beef, onion, chilli", price: 700, sortOrder: 1 },
-      { category: "Meat", name: "Matumbo", description: "Traditional tripe, well spiced", price: 550, sortOrder: 2 },
-      { category: "Vegetables", name: "Managu", description: "African nightshade with milk and onion", price: 300, sortOrder: 1 },
-      { category: "Sides", name: "Ugali", description: "Stone-ground white maize", price: 150, sortOrder: 1 },
-    ],
-    reviews: [
-      { rating: 5, title: "The tilapia is the reason", comment: "No frills, no decor, just the best whole fish in the CBD. Cash is easiest." },
-      { rating: 4, title: "Authentic and cheap", comment: "Lunchtime queues for good reason. Managu and ugali done properly." },
     ],
   },
   {
@@ -1256,6 +1043,187 @@ const RESTAURANTS = [
     reviews: [
       { rating: 4, title: "Cacio e pepe done right", comment: "Emulsified properly, no clumps. That alone puts it ahead of most." },
       { rating: 4, title: "Nice terrace for lunch", comment: "Quiet at midday, good for a long conversation." },
+    ],
+  },
+
+  // ── Hotel dining ───────────────────────────────────────────────────────────
+  {
+    name: "Nyama Choma Ranch — Safari Park Hotel", city: "Nairobi", location: "Safari Park Hotel, Thika Road, Kasarani, Nairobi", cuisine: "Grill / Nyama Choma",
+    description: "The open-sided grill at the heart of Safari Park's gardens, and one of the city's benchmark nyama choma addresses — meat carved to the table, served alongside the Safari Cats dinner show.",
+    priceRange: 3, phone: "+254 20 000 0000", email: "nyamachoma@safariparkhotel.example",
+    imageUrl: DINING_IMG.grill, images: [DINING_IMG.grill, DINING_IMG.casual, DINING_IMG.bar],
+    amenities: ["Outdoor Seating","Bar","Parking","Live Music","Family Friendly","Group Dining","Buffet"],
+    openingHours: defaultHours("12:00", "23:00", "12:00", "23:30"),
+    menuItems: [
+      { category: "From the Grill", name: "Ranch Mixed Grill", description: "Goat, beef, lamb and chicken carved at the table", price: 3400, sortOrder: 1 },
+      { category: "From the Grill", name: "Goat Ribs", description: "Slow-grilled over charcoal, kachumbari, ugali", price: 2400, sortOrder: 2 },
+      { category: "From the Grill", name: "Whole Roast Chicken", description: "Marinated overnight, charcoal-roasted", price: 2100, sortOrder: 3 },
+      { category: "Sides", name: "Ugali & Sukuma", description: "Stone-ground maize, collard greens", price: 500, sortOrder: 1 },
+      { category: "Show Package", name: "Safari Cats Dinner & Show", description: "Buffet dinner with the evening acrobatic and dance performance", price: 5200, sortOrder: 1 },
+      { category: "Cocktails", name: "Dawa", description: "Vodka, honey, lime", price: 950, sortOrder: 1 },
+    ],
+    reviews: [
+      { rating: 5, title: "The dinner show is worth it", comment: "Took visiting family. Meat kept coming and the performance was genuinely good." },
+      { rating: 4, title: "Solid nyama choma", comment: "Not the cheapest in town but the setting under the trees is lovely." },
+    ],
+  },
+
+  // ── Mall dining ────────────────────────────────────────────────────────────
+  {
+    name: "Hero Restaurant", city: "Nairobi", location: "Village Market, Limuru Road, Gigiri, Nairobi", cuisine: "International",
+    description: "The comic-themed dining room at Village Market, built around four house characters. Broad international menu, a long wine list, and a room that works equally for a family lunch or an after-work bottle.",
+    priceRange: 3, phone: "+254 20 000 0000", email: "hello@heronairobi.example",
+    imageUrl: DINING_IMG.casual, images: [DINING_IMG.casual, DINING_IMG.bar],
+    amenities: ["Bar","Outdoor Seating","Parking","Family Friendly","Wine List","Takeaway","Vegetarian Options"],
+    openingHours: defaultHours("11:00", "22:30", "10:00", "23:00"),
+    menuItems: [
+      { category: "Starters", name: "Chef Chops Platter", description: "Wings, sliders, calamari, dips — the house sharer", price: 1850, sortOrder: 1 },
+      { category: "Mains", name: "Hero Ribeye", description: "300g ribeye, peppercorn sauce, hand-cut chips", price: 3200, sortOrder: 1 },
+      { category: "Mains", name: "Spyce Chicken Curry", description: "Coconut curry, basmati, warm naan", price: 1750, sortOrder: 2 },
+      { category: "Mains", name: "Big Mama Burger", description: "Double Kenyan beef patty, aged cheddar, bacon jam", price: 1650, sortOrder: 3 },
+      { category: "Desserts", name: "Honeytooth Sundae", description: "Salted caramel, brownie, vanilla ice cream", price: 800, sortOrder: 1 },
+    ],
+    reviews: [
+      { rating: 4, title: "Fun without being a gimmick", comment: "Kids loved the theme, the steak was genuinely well cooked. Easy parking at Village Market." },
+      { rating: 4, title: "Good all-rounder", comment: "Menu is broad enough that a group of eight all found something." },
+    ],
+  },
+  {
+    name: "Golden Stool", city: "Nairobi", location: "Village Market, Limuru Road, Gigiri, Nairobi", cuisine: "West African",
+    description: "West African cooking at Village Market — jollof, egusi, suya and grilled shrimp, in a room dressed with Ashanti motifs. The most complete Ghanaian and Nigerian menu in Nairobi.",
+    priceRange: 2, phone: "+254 20 000 0000", email: "hello@goldenstool.example",
+    imageUrl: DINING_IMG.casual, images: [DINING_IMG.casual, DINING_IMG.grill],
+    amenities: ["Outdoor Seating","Bar","Parking","Takeaway","Private Dining","Family Friendly","Halal"],
+    openingHours: defaultHours("11:00", "22:00", "11:00", "22:30"),
+    menuItems: [
+      { category: "Starters", name: "Suya Skewers", description: "Beef, groundnut and chilli spice, raw onion", price: 1200, sortOrder: 1 },
+      { category: "Starters", name: "Grilled Shrimp", description: "West African spice rub, charred lime", price: 1650, sortOrder: 2 },
+      { category: "Mains", name: "Jollof Rice & Chicken", description: "Smoky party jollof, grilled chicken, fried plantain", price: 1450, sortOrder: 1 },
+      { category: "Mains", name: "Egusi & Pounded Yam", description: "Melon-seed stew, spinach, goat meat", price: 1600, sortOrder: 2 },
+      { category: "Mains", name: "Waakye", description: "Rice and beans, shito, boiled egg, gari", price: 1250, sortOrder: 3 },
+      { category: "Desserts", name: "Puff Puff", description: "Fried dough, cinnamon sugar", price: 550, sortOrder: 1 },
+    ],
+    reviews: [
+      { rating: 5, title: "Real jollof in Nairobi", comment: "Smoky, properly seasoned, not a compromise version. The suya is excellent too." },
+      { rating: 4, title: "Homesick cure", comment: "As a Ghanaian in Nairobi this is the closest I have found. Waakye done right." },
+    ],
+  },
+  {
+    name: "Sierra Lounge Yaya", city: "Nairobi", location: "Yaya Centre, Argwings Kodhek Road, Kilimani, Nairobi", cuisine: "Grill / Brewery",
+    description: "House-brewed lager and ale alongside a wood-fired grill, on the top level of Yaya Centre. The reliable Kilimani choice for a long lunch that becomes an evening.",
+    priceRange: 3, phone: "+254 20 000 0000", email: "yaya@sierralounge.example",
+    imageUrl: DINING_IMG.bar, images: [DINING_IMG.bar, DINING_IMG.grill, DINING_IMG.casual],
+    amenities: ["Bar","Outdoor Seating","Parking","Live Music","Sports Screens","Takeaway","Brewery"],
+    openingHours: defaultHours("11:00", "23:00", "11:00", "00:00"),
+    menuItems: [
+      { category: "Grill", name: "Sierra Pork Ribs", description: "Half rack, house ale glaze, slaw, fries", price: 2400, sortOrder: 1 },
+      { category: "Grill", name: "Mixed Grill Platter", description: "Beef, chicken, sausage, wings — serves two", price: 3600, sortOrder: 2 },
+      { category: "Small Plates", name: "Buffalo Wings", description: "Eight wings, blue cheese dip", price: 1250, sortOrder: 1 },
+      { category: "Brews", name: "Sierra Blonde Ale", description: "Brewed on site · 500ml", price: 600, sortOrder: 1 },
+      { category: "Brews", name: "Sierra Dark Lager", description: "Brewed on site · 500ml", price: 650, sortOrder: 2 },
+    ],
+    reviews: [
+      { rating: 4, title: "The blonde ale is very drinkable", comment: "Nice to have something brewed on site. Ribs are generous." },
+      { rating: 4, title: "Good for watching a match", comment: "Screens are well placed and it does not get unbearably loud." },
+    ],
+  },
+  {
+    name: "Café Deli The Hub", city: "Nairobi", location: "The Hub Karen, Dagoretti Road, Karen, Nairobi", cuisine: "Café / Kenyan",
+    description: "The Karen branch of the homegrown all-day café — Kenyan breakfasts, a strong pastry counter and a menu that runs from ugali to pasta without apology.",
+    priceRange: 2, phone: "+254 20 000 0000", email: "thehub@cafedeli.example",
+    imageUrl: DINING_IMG.casual, images: [DINING_IMG.casual, DINING_IMG.fine],
+    amenities: ["Outdoor Seating","Parking","Takeaway","Family Friendly","Vegetarian Options","Breakfast"],
+    openingHours: defaultHours("07:00", "22:00", "07:30", "22:00"),
+    menuItems: [
+      { category: "Breakfast", name: "Kenyan Breakfast", description: "Eggs, beef sausage, baked beans, toast, chai", price: 950, sortOrder: 1 },
+      { category: "Breakfast", name: "Mandazi & Chai", description: "Four mandazi, spiced Kenyan tea", price: 450, sortOrder: 2 },
+      { category: "Mains", name: "Nyama Choma & Ugali", description: "Grilled goat, ugali, kachumbari", price: 1350, sortOrder: 1 },
+      { category: "Mains", name: "Chicken Alfredo", description: "Grilled chicken, cream sauce, fettuccine", price: 1250, sortOrder: 2 },
+      { category: "Pastry", name: "Passion Fruit Cheesecake", description: "From the counter, made daily", price: 600, sortOrder: 1 },
+    ],
+    reviews: [
+      { rating: 4, title: "Dependable and good value", comment: "Big portions, quick service, and the mandazi are properly done." },
+      { rating: 4, title: "Easy family stop at The Hub", comment: "Parking is simple and there is something on the menu for everyone." },
+    ],
+  },
+  {
+    name: "Chowpaty", city: "Nairobi", location: "Diamond Plaza, Masari Road, Parklands, Nairobi", cuisine: "Indian Vegetarian",
+    description: "Parklands' long-standing pure-vegetarian Indian kitchen — Mumbai street chaat, South Indian dosas and Gujarati thalis, at Diamond Plaza.",
+    priceRange: 1, phone: "+254 20 000 0000", email: "info@chowpaty.example",
+    imageUrl: DINING_IMG.casual, images: [DINING_IMG.casual, DINING_IMG.fine],
+    amenities: ["Takeaway","Parking","Family Friendly","Vegetarian Options","Vegan Options","Group Dining"],
+    openingHours: defaultHours("11:00", "22:00", "11:00", "22:30"),
+    menuItems: [
+      { category: "Chaat", name: "Pani Puri", description: "Six puris, spiced water, tamarind chutney", price: 450, sortOrder: 1 },
+      { category: "Chaat", name: "Bhel Puri", description: "Puffed rice, chutneys, sev, coriander", price: 400, sortOrder: 2 },
+      { category: "Dosa", name: "Masala Dosa", description: "Crisp rice crepe, spiced potato, sambar, chutneys", price: 700, sortOrder: 1 },
+      { category: "Thali", name: "Gujarati Thali", description: "Unlimited — dal, kadhi, two sabzis, rotli, rice, sweet", price: 1200, sortOrder: 1 },
+      { category: "Drinks", name: "Masala Chai", description: "Brewed with cardamom and ginger", price: 200, sortOrder: 1 },
+    ],
+    reviews: [
+      { rating: 5, title: "Best chaat in Nairobi", comment: "Pani puri exactly as it should be. Queue at the weekend is a good sign." },
+      { rating: 4, title: "The thali is unbeatable value", comment: "They keep refilling until you surrender. Bring an appetite." },
+    ],
+  },
+
+  // ── Nightlife ──────────────────────────────────────────────────────────────
+  // No dedicated venue type in the schema yet, so lounges and clubs sit under
+  // restaurants with a Club & Lounge cuisine so they group in the filter.
+  {
+    name: "B-Club Nairobi", city: "Nairobi", location: "Galana Plaza, Galana Road, Kilimani, Nairobi", cuisine: "Club & Lounge",
+    description: "Nairobi's highest-end nightclub — bottle service, a strict door and a room that fills with the city's celebrity crowd well after midnight. Table reservations are effectively required at weekends.",
+    priceRange: 4, phone: "+254 20 000 0000", email: "tables@bclubnairobi.example",
+    imageUrl: DINING_IMG.bar, images: [DINING_IMG.bar, DINING_IMG.casual],
+    amenities: ["Bar","VIP Tables","Bottle Service","Valet Parking","Live DJ","Reservations Required","Dress Code","Late Night"],
+    openingHours: defaultHours("21:00", "04:00", "21:00", "05:00"),
+    menuItems: [
+      { category: "Tables", name: "VIP Table — Main Floor", description: "Seats six, minimum spend applies", price: 60000, sortOrder: 1 },
+      { category: "Tables", name: "Standard Table", description: "Seats four, minimum spend applies", price: 35000, sortOrder: 2 },
+      { category: "Bottles", name: "Champagne — Brut NV", description: "Presented to table", price: 28000, sortOrder: 1 },
+      { category: "Bottles", name: "Premium Whisky", description: "Bottle with mixers and ice", price: 22000, sortOrder: 2 },
+      { category: "Cocktails", name: "Signature Cocktail", description: "From the house list", price: 1400, sortOrder: 1 },
+    ],
+    reviews: [
+      { rating: 4, title: "The place to be seen", comment: "Expensive, but the production and sound are a level above anywhere else in town." },
+      { rating: 4, title: "Book a table or do not bother", comment: "Queue on a Saturday was over an hour. With a table it is a different night entirely." },
+    ],
+  },
+  {
+    name: "Mercury Lounge Village Market", city: "Nairobi", location: "Village Market, Limuru Road, Gigiri, Nairobi", cuisine: "Club & Lounge",
+    description: "Cocktail bar, restaurant and weekend DJ room in one — and the most reliable place in Nairobi to catch a live rhythm section on a weeknight rather than a playlist.",
+    priceRange: 3, phone: "+254 20 000 0000", email: "gigiri@mercurylounge.example",
+    imageUrl: DINING_IMG.bar, images: [DINING_IMG.bar, DINING_IMG.casual, DINING_IMG.fine],
+    amenities: ["Bar","Outdoor Seating","Live Music","Parking","Late Night","Reservations Required","Vegetarian Options"],
+    openingHours: defaultHours("12:00", "01:00", "12:00", "02:00"),
+    menuItems: [
+      { category: "Small Plates", name: "Salt & Pepper Squid", description: "Crisp squid, chilli, lime aioli", price: 1450, sortOrder: 1 },
+      { category: "Small Plates", name: "Beef Sliders", description: "Three sliders, aged cheddar, house pickle", price: 1350, sortOrder: 2 },
+      { category: "Mains", name: "Grilled Sea Bass", description: "Whole fish, herb butter, seasonal greens", price: 2900, sortOrder: 1 },
+      { category: "Cocktails", name: "Old Fashioned", description: "Bourbon, demerara, bitters, orange oil", price: 1300, sortOrder: 1 },
+      { category: "Cocktails", name: "Espresso Martini", description: "Vodka, Kenyan espresso, coffee liqueur", price: 1250, sortOrder: 2 },
+    ],
+    reviews: [
+      { rating: 5, title: "Actual live jazz on a Thursday", comment: "Piano, double bass, the lot. Rare in this city and worth the drive to Gigiri." },
+      { rating: 4, title: "Grown-up night out", comment: "Cocktails are properly made and you can still hold a conversation." },
+    ],
+  },
+  {
+    name: "The Alchemist Bar", city: "Nairobi", location: "Parklands Road, Westlands, Nairobi", cuisine: "Club & Lounge",
+    description: "The open-air Westlands courtyard that reset Nairobi nightlife — food trucks around a container bar, a proper stage, and a rotation of live bands, DJ sets, comedy and fashion nights.",
+    priceRange: 2, phone: "+254 20 000 0000", email: "hello@alchemist.example",
+    imageUrl: DINING_IMG.bar, images: [DINING_IMG.bar, DINING_IMG.casual, DINING_IMG.grill],
+    amenities: ["Bar","Outdoor Seating","Live Music","Live DJ","Food Trucks","Parking","Late Night","Family Friendly"],
+    openingHours: defaultHours("12:00", "23:00", "12:00", "03:00"),
+    menuItems: [
+      { category: "Food Trucks", name: "Street Tacos", description: "Three tacos from the rotating truck line-up", price: 900, sortOrder: 1 },
+      { category: "Food Trucks", name: "Loaded Fries", description: "Beef, cheese sauce, jalapeño", price: 750, sortOrder: 2 },
+      { category: "Drinks", name: "Draught Beer", description: "500ml, rotating local tap", price: 450, sortOrder: 1 },
+      { category: "Drinks", name: "Gin & Tonic", description: "Kenyan gin, tonic, grapefruit", price: 850, sortOrder: 2 },
+      { category: "Entry", name: "Event Entry", description: "Cover varies by act — free on most weeknights", price: 1500, sortOrder: 1 },
+    ],
+    reviews: [
+      { rating: 5, title: "Nairobi's best atmosphere", comment: "Open air, good music, mixed crowd, no pretension. Go early for a spot near the stage." },
+      { rating: 4, title: "Great on a Sunday afternoon", comment: "Completely different vibe in daylight — families, food trucks, live acoustic sets." },
     ],
   },
 ];

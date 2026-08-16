@@ -14,7 +14,7 @@ export default function RestaurantsPage(props: PageProps) {
       <div className="bg-white border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-6 py-10">
           <h1 className="text-3xl font-bold text-gray-900 mb-1">Restaurants</h1>
-          <p className="text-gray-500 mb-6">Discover the finest dining experiences across East Africa</p>
+          <p className="text-gray-500 mb-6">Discover the finest dining experiences in Nairobi</p>
           <Suspense>
             <SearchBar />
           </Suspense>

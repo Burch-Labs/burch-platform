@@ -23,7 +23,7 @@ export function PriceRangeBadge({ priceRange, className }: PriceRangeBadgeProps)
   const dots = "●".repeat(priceRange) + "○".repeat(Math.max(0, TIERS - priceRange));
   return (
     <span className={cn("inline-flex items-center gap-1 text-xs font-medium px-2.5 py-0.5 rounded-full", COLORS[priceRange] ?? "bg-gray-50 text-gray-600", className)}>
-      <span>KSh</span>
+      <span>KES</span>
       <span className="tracking-tight" aria-hidden>{dots}</span>
       <span className="opacity-60">·</span>
       <span>{label}</span>

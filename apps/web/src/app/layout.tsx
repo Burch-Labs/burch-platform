@@ -23,7 +23,7 @@ const playfair = localFont({
 
 export const metadata: Metadata = {
   title: "dontbeboring",
-  description: "Exceptional hotels, restaurants and events across East Africa.",
+  description: "Exceptional hotels, restaurants and events in Nairobi.",
 };
 
 export default function RootLayout({

@@ -175,7 +175,7 @@ export default function RegisterPage() {
   return (
     <AuthCard
       title="Create your account"
-      subtitle="Join East Africa's experience platform"
+      subtitle="Join Nairobi's experience platform"
     >
       {/* Google Sign-In — only rendered when credentials are configured */}
       <GoogleButton callbackUrl="/dashboard" />

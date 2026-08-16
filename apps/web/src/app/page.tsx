@@ -16,7 +16,13 @@ const CATEGORIES = [
   { emoji: "💼", label: "Business",    q: "category=BUSINESS" },
 ];
 
-const CITIES = ["Nairobi", "Lagos", "Accra", "Johannesburg", "Kigali", "Cairo"];
+// Single-city launch: browse by Nairobi neighbourhood rather than by city.
+// These filter on `q`, which matches the venue's location string, because the
+// `city` column is "Nairobi" for every row. When a second city launches this
+// becomes a city list again and the links move back to ?city=.
+const NEIGHBOURHOODS = [
+  "Westlands", "Karen", "Kilimani", "Gigiri", "Lavington", "Parklands", "CBD",
+];
 
 // Revalidate every 5 minutes — public content changes infrequently
 export const revalidate = 300;
@@ -93,7 +99,7 @@ export default async function HomePage() {
 
         <div className="relative max-w-5xl mx-auto px-6 py-24 text-center">
           <p className="inline-flex items-center gap-2 text-xs font-semibold text-orange-600 uppercase tracking-[0.18em] mb-6 border border-orange-200 bg-orange-50 px-4 py-1.5 rounded-full">
-            <span>✦</span> East Africa&apos;s Experience Platform
+            <span>✦</span> Nairobi&apos;s Experience Platform
           </p>
           <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 mb-6 leading-[1.08] tracking-tight">
             Find your next<br />
@@ -102,7 +108,7 @@ export default async function HomePage() {
           </h1>
           <p className="text-base sm:text-lg text-gray-500 mb-10 max-w-lg mx-auto leading-relaxed">
             Concerts, festivals, hotels, restaurants, and AI-powered trip
-            planning — discover and book the best of East Africa in one place.
+            planning — discover and book the best of Nairobi in one place.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
@@ -148,18 +154,18 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── Popular cities ─────────────────────────────────────────────────── */}
+      {/* ── Popular neighbourhoods ─────────────────────────────────────────────────── */}
       <section className="border-t border-gray-200 py-12 bg-white">
         <div className="max-w-5xl mx-auto px-6">
-          <h2 className="font-display text-2xl font-semibold text-gray-900 mb-6">Popular cities</h2>
+          <h2 className="font-display text-2xl font-semibold text-gray-900 mb-6">Popular neighbourhoods</h2>
           <div className="flex flex-wrap gap-3">
-            {CITIES.map((city) => (
+            {NEIGHBOURHOODS.map((area) => (
               <Link
-                key={city}
-                href={`/events?city=${city}`}
+                key={area}
+                href={`/events?q=${encodeURIComponent(area)}`}
                 className="px-5 py-2.5 bg-gray-50 rounded-full border border-gray-200 text-sm font-medium text-gray-600 hover:border-orange-300 hover:text-orange-700 hover:bg-orange-50 transition"
               >
-                {city}
+                {area}
               </Link>
             ))}
           </div>
@@ -171,7 +177,7 @@ export default async function HomePage() {
         <div className="flex items-end justify-between mb-8">
           <div>
             <h2 className="font-display text-2xl font-semibold text-gray-900">Upcoming events</h2>
-            <p className="text-sm text-gray-400 mt-1">Don&apos;t miss what&apos;s on now across East Africa</p>
+            <p className="text-sm text-gray-400 mt-1">Don&apos;t miss what&apos;s on now in Nairobi</p>
           </div>
           <Link
             href="/events"
@@ -199,7 +205,7 @@ export default async function HomePage() {
               No events scheduled right now
             </h3>
             <p className="text-sm text-gray-500 mb-6 max-w-xs mx-auto">
-              Check back soon — new events are added regularly across East Africa.
+              Check back soon — new events are added regularly in Nairobi.
             </p>
             <Link
               href="/events"
@@ -263,7 +269,7 @@ export default async function HomePage() {
               <h2 className="font-display text-2xl font-semibold text-gray-900">
                 Featured restaurants
               </h2>
-              <p className="text-sm text-gray-400 mt-1">Top dining experiences across East Africa</p>
+              <p className="text-sm text-gray-400 mt-1">Top dining experiences in Nairobi</p>
             </div>
             <Link
               href="/restaurants"
@@ -315,7 +321,7 @@ export default async function HomePage() {
               <h2 className="font-display text-2xl font-semibold text-gray-900">
                 Featured hotels
               </h2>
-              <p className="text-sm text-gray-400 mt-1">Standout stays across East Africa</p>
+              <p className="text-sm text-gray-400 mt-1">Standout stays in Nairobi</p>
             </div>
             <Link
               href="/hotels"
@@ -369,7 +375,7 @@ export default async function HomePage() {
             Host your own event?
           </h2>
           <p className="text-gray-900/80 mb-8 text-sm max-w-sm mx-auto leading-relaxed">
-            Join hundreds of organizers using dontbeboring to sell tickets and grow their audience across East Africa.
+            Join hundreds of organizers using dontbeboring to sell tickets and grow their audience in Nairobi.
           </p>
           <Link
             href="/auth/register"
@@ -383,7 +389,7 @@ export default async function HomePage() {
       {/* ── Footer ─────────────────────────────────────────────────────────── */}
       <footer className="border-t border-gray-200 py-8 text-center">
         <p className="font-display text-sm text-gray-400 tracking-wide">
-          © {new Date().getFullYear()} dontbeboring &nbsp;·&nbsp; Exceptional experiences across East Africa
+          © {new Date().getFullYear()} dontbeboring &nbsp;·&nbsp; Exceptional experiences in Nairobi
         </p>
       </footer>
     </div>

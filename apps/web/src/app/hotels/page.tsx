@@ -190,7 +190,7 @@ async function HotelsContent({ searchParams }: PageProps) {
           emptyMessage={
             hasFilters
               ? "Try adjusting your search or filters."
-              : "Be the first to list your property and reach travellers across East Africa."
+              : "Be the first to list your property and reach travellers in Nairobi."
           }
           emptyAction={
             !hasFilters ? (
@@ -259,7 +259,7 @@ export default function HotelsPage(props: PageProps) {
       <div className="bg-white border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-6 py-10">
           <h1 className="text-3xl font-bold text-gray-900 mb-1">Hotels</h1>
-          <p className="text-gray-500 mb-6">Discover exceptional stays across East Africa</p>
+          <p className="text-gray-500 mb-6">Discover exceptional stays in Nairobi</p>
           <Suspense>
             <SearchBar />
           </Suspense>

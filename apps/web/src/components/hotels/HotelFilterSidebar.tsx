@@ -114,7 +114,9 @@ export function HotelFilterSidebar({ cities }: HotelFilterSidebarProps) {
       </div>
 
       {/* ── City ───────────────────────────────────────────── */}
-      {cities.length > 0 && (
+      {/* Hidden while every listing is in one city — a filter with a single
+          option filters nothing. Reappears automatically on city two. */}
+      {cities.length > 1 && (
         <div>
           <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">
             City
