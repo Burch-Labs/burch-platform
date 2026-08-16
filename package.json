@@ -12,7 +12,6 @@
     "postinstall": "cd apps/web && npx prisma generate"
   },
   "dependencies": {
-    "caniuse-lite": "1.0.30001806",
-    "resend": "^6.17.2"
+    "caniuse-lite": "1.0.30001806"
   }
 }
