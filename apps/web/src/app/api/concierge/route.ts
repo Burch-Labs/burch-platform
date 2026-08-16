@@ -46,6 +46,14 @@ async function fetchContext() {
 type Ctx = Awaited<ReturnType<typeof fetchContext>>;
 type RawRec = { type: string; id: string; reason: string };
 
+const PRICE_TIERS = 4;
+
+/** Filled/empty dots for a 1-4 price tier — "KES" has no $$$-style glyph to repeat. */
+function priceRangeDots(priceRange: number | null | undefined): string {
+  const tier = priceRange ?? 2;
+  return "●".repeat(tier) + "○".repeat(Math.max(0, PRICE_TIERS - tier));
+}
+
 async function enrichRecommendations(recs: RawRec[], ctx: Ctx) {
   return recs.map((rec) => {
     if (rec.type === "hotel") {
@@ -70,7 +78,10 @@ async function enrichRecommendations(recs: RawRec[], ctx: Ctx) {
         city: r.city,
         imageUrl: r.imageUrl,
         subtitle: r.cuisine ?? "Restaurant",
-        meta: ["KES", "KES KES", "KES KES KES", "KES KES KES KES"][Math.max(0, (r.priceRange ?? 2) - 1)],
+        // "KES" repeated per tier once rendered as "KESKESKES" — no single-glyph
+        // currency symbol for the shilling. Show the code once, tier in dots,
+        // matching PriceRangeBadge's convention everywhere else it appears.
+        meta: `KES ${priceRangeDots(r.priceRange)}`,
         href: `/restaurants/${r.id}`,
       };
     }
@@ -99,7 +110,7 @@ function buildSystemPrompt(ctx: Ctx) {
     `- [HOTEL:${h.id}] "${h.name}" | ${h.city} | ${h.starRating ?? "?"}★ | from KES ${h.rooms[0] ? Number(h.rooms[0].price).toLocaleString() : "?"}/night`
   ).join("\n");
   const restaurantsText = ctx.restaurants.map((r) =>
-    `- [RESTAURANT:${r.id}] "${r.name}" | ${r.city} | ${r.cuisine ?? "Various"} | ${"KES".repeat(r.priceRange ?? 2)}`
+    `- [RESTAURANT:${r.id}] "${r.name}" | ${r.city} | ${r.cuisine ?? "Various"} | price tier ${r.priceRange ?? 2} of ${PRICE_TIERS}`
   ).join("\n");
 
   return `You are dontbeboring AI Concierge — a warm, expert travel and lifestyle assistant for Kenya.
