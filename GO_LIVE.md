@@ -36,8 +36,18 @@ cd apps/web && npx prisma db push
 ```
 
 This repo uses `db push` rather than migrations. That is fine while nothing is
-live and worth revisiting once real bookings exist, because `db push` will drop
-a column to match the schema without asking.
+live and worth revisiting once real bookings exist.
+
+**`scripts/post-merge.sh` runs `prisma db push` automatically on every merge**,
+via the `postMerge` hook in `.replit`. It used to pass `--accept-data-loss`,
+which meant a field removed in a pull request would silently drop that column on
+whatever database the environment pointed at — bookings and payments included,
+with no prompt and no backup. The flag is gone, so a destructive change now
+fails the script instead. A failed deploy is recoverable in minutes; a dropped
+column is not recoverable at all.
+
+If a schema change legitimately needs to drop something, do it by hand after a
+`pg_dump`, having read what the push intends to do.
 
 ## 3. Seed, carefully
 
