@@ -5,14 +5,35 @@ import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 type Step = "details" | "code";
+type Channel = "email" | "sms" | "whatsapp";
+
+const CHANNEL_LABEL: Record<Channel, string> = {
+  email: "Email",
+  sms: "SMS",
+  whatsapp: "WhatsApp",
+};
+
+const CHANNEL_SENT: Record<Channel, string> = {
+  email: "We emailed a 6-digit code to",
+  sms: "We texted a 6-digit code to",
+  whatsapp: "We sent a 6-digit code on WhatsApp to",
+};
+
+/** Looks like a phone rather than an email. Good enough to choose a keyboard. */
+function looksLikePhone(value: string): boolean {
+  return value.trim().length > 0 && !value.includes("@");
+}
 
 /**
  * Passwordless join and sign-in, in one form.
  *
- * There is no separate register page: a first-time visitor and a returning one
- * type the same thing, and the account is created behind the scenes on the
- * first successful code. Name and phone are asked for once and ignored on
- * return, so a repeat visitor only ever types their email and a code.
+ * One field takes either an email address or a phone number, because people
+ * know which of their own contact details they are typing and a pair of radio
+ * buttons asking them to declare it first is friction for nothing.
+ *
+ * The channel picker only appears for a phone, and only lists channels the
+ * server says are actually configured — offering WhatsApp when it is not set
+ * up would send someone to wait for a message that never arrives.
  */
 export function JoinForm() {
   const router = useRouter();
@@ -21,13 +42,16 @@ export function JoinForm() {
 
   const [step, setStep] = useState<Step>("details");
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [expiresInMinutes, setExpiresInMinutes] = useState(10);
-  const [channels, setChannels] = useState<string[]>(["email"]);
+  const [channel, setChannel] = useState<Channel>("email");
+  const [preferred, setPreferred] = useState<Channel | null>(null);
+  const [available, setAvailable] = useState<Channel[]>([]);
+
+  const isPhone = looksLikePhone(identifier);
 
   async function requestCode(e: React.FormEvent) {
     e.preventDefault();
@@ -37,7 +61,7 @@ export function JoinForm() {
       const res = await fetch("/api/auth/request-code", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, phone }),
+        body: JSON.stringify({ identifier, channel: preferred ?? undefined }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -45,7 +69,8 @@ export function JoinForm() {
         return;
       }
       setExpiresInMinutes(data.expiresInMinutes ?? 10);
-      setChannels(data.channels ?? ["email"]);
+      setChannel(data.channel ?? "email");
+      setAvailable(data.availableChannels ?? []);
       setStep("code");
     } catch {
       setError("Could not reach the server. Check your connection.");
@@ -61,15 +86,12 @@ export function JoinForm() {
     try {
       const result = await signIn("signin-code", {
         redirect: false,
-        email,
+        email: identifier,
         code,
         name,
-        phone,
         callbackUrl,
       });
       if (result?.error) {
-        // NextAuth collapses every authorize() rejection into one error, so the
-        // wording has to cover a wrong code and an expired one alike.
         setError("That code is not right, or it has expired. Request a new one.");
         return;
       }
@@ -87,16 +109,8 @@ export function JoinForm() {
       <form onSubmit={submitCode} className="space-y-4">
         <div>
           <p className="text-sm text-gray-600">
-            We sent a 6-digit code to{" "}
-            {channels.includes("sms") ? (
-              <>
-                <span className="font-medium text-gray-900">{phone}</span> and{" "}
-                <span className="font-medium text-gray-900">{email}</span>
-              </>
-            ) : (
-              <span className="font-medium text-gray-900">{email}</span>
-            )}
-            .
+            {CHANNEL_SENT[channel]}{" "}
+            <span className="font-medium text-gray-900">{identifier}</span>.
           </p>
           <p className="text-xs text-gray-400 mt-1">
             It expires in {expiresInMinutes} minutes and works once.
@@ -135,6 +149,13 @@ export function JoinForm() {
           {busy ? "Checking…" : "Continue"}
         </button>
 
+        {available.length > 1 && (
+          <p className="text-xs text-gray-400 text-center">
+            Didn&apos;t arrive? Go back and try{" "}
+            {available.filter((c) => c !== channel).map((c) => CHANNEL_LABEL[c]).join(" or ")}.
+          </p>
+        )}
+
         <button
           type="button"
           onClick={() => {
@@ -144,7 +165,7 @@ export function JoinForm() {
           }}
           className="w-full text-sm text-gray-500 hover:text-gray-900 transition"
         >
-          Use a different email
+          Use something else
         </button>
       </form>
     );
@@ -168,37 +189,51 @@ export function JoinForm() {
       </div>
 
       <div>
-        <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-          Phone <span className="text-gray-400 font-normal">— for your tickets</span>
+        <label htmlFor="identifier" className="block text-sm font-medium text-gray-700 mb-1">
+          Phone or email
         </label>
         <input
-          id="phone"
-          name="phone"
-          type="tel"
-          autoComplete="tel"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
+          id="identifier"
+          name="identifier"
+          required
+          inputMode={isPhone ? "tel" : "email"}
+          autoComplete="username"
+          value={identifier}
+          onChange={(e) => {
+            setIdentifier(e.target.value);
+            setPreferred(null);
+          }}
           className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
-          placeholder="0712 345 678"
+          placeholder="0712 345 678 or you@example.com"
         />
       </div>
 
-      <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-          Email
-        </label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          required
-          autoComplete="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
-          placeholder="you@example.com"
-        />
-      </div>
+      {/* Channel choice only means something for a phone — an email address has
+          exactly one way to reach it. */}
+      {isPhone && (
+        <div>
+          <p className="block text-sm font-medium text-gray-700 mb-1.5">Send my code by</p>
+          <div className="flex gap-2">
+            {(["whatsapp", "sms"] as const).map((c) => (
+              <button
+                key={c}
+                type="button"
+                onClick={() => setPreferred(c)}
+                className={`flex-1 px-4 py-2.5 rounded-xl text-sm font-medium border transition ${
+                  preferred === c
+                    ? "border-orange-300 bg-orange-50 text-orange-800"
+                    : "border-gray-200 text-gray-600 hover:bg-gray-50"
+                }`}
+              >
+                {CHANNEL_LABEL[c]}
+              </button>
+            ))}
+          </div>
+          <p className="text-xs text-gray-400 mt-1.5">
+            We&apos;ll use whichever is available if your choice isn&apos;t set up yet.
+          </p>
+        </div>
+      )}
 
       {error && (
         <p role="alert" className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
@@ -208,14 +243,14 @@ export function JoinForm() {
 
       <button
         type="submit"
-        disabled={busy || !email}
+        disabled={busy || !identifier.trim()}
         className="w-full bg-orange-600 text-white px-6 py-3 rounded-xl text-sm font-semibold hover:bg-orange-700 transition disabled:opacity-50"
       >
         {busy ? "Sending…" : "Send me a code"}
       </button>
 
       <p className="text-xs text-gray-400 text-center">
-        No password needed. We email you a code each time you sign in.
+        No password needed. We send a code each time you sign in.
       </p>
     </form>
   );

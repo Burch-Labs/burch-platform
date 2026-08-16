@@ -2,7 +2,8 @@ import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcryptjs";
 import { prisma } from "./prisma";
-import { normalizeIdentifier, verifySignInCode } from "./signin-codes";
+import { verifySignInCode } from "./signin-codes";
+import { parseIdentifier } from "./delivery";
 // Run startup config check so deployment logs surface misconfigurations early
 import "./config-check";
 
@@ -60,11 +61,21 @@ const providers: NextAuthOptions["providers"] = [
     async authorize(credentials) {
       if (!credentials?.email || !credentials.code) return null;
 
-      const email = normalizeIdentifier(credentials.email);
-      const verdict = await verifySignInCode(email, credentials.code);
+      // The field is still called `email` for form compatibility, but it now
+      // carries whatever the user signed in with — an address or a phone.
+      const identifier = parseIdentifier(credentials.email);
+      if (!identifier) return null;
+
+      const verdict = await verifySignInCode(identifier.value, credentials.code);
       if (!verdict.ok) return null;
 
-      const existing = await prisma.user.findUnique({ where: { email } });
+      // Look the account up by the identifier that was actually proven. A phone
+      // sign-in must not resolve to an account by some other field, or proving
+      // one contact detail would open an account belonging to another.
+      const existing =
+        identifier.kind === "email"
+          ? await prisma.user.findUnique({ where: { email: identifier.value } })
+          : await prisma.user.findUnique({ where: { phone: identifier.value } });
 
       const user = existing
         ? await prisma.user.update({
@@ -73,16 +84,31 @@ const providers: NextAuthOptions["providers"] = [
               // Only fill blanks. A returning guest who leaves the optional
               // fields empty must not have their saved details erased.
               name:  existing.name  ?? credentials.name?.trim()  ?? null,
-              phone: existing.phone ?? credentials.phone?.trim() ?? null,
-              emailVerified: existing.emailVerified ?? new Date(),
+              phone: existing.phone ?? (credentials.phone?.trim() || null),
+              emailVerified:
+                identifier.kind === "email"
+                  ? (existing.emailVerified ?? new Date())
+                  : existing.emailVerified,
             },
           })
         : await prisma.user.create({
             data: {
-              email,
-              name:  credentials.name?.trim()  || null,
-              phone: credentials.phone?.trim() || null,
-              emailVerified: new Date(),
+              // A phone-only signup still needs an email column value, since it
+              // is unique and not nullable. A placeholder on our own reserved
+              // domain keeps it distinct without ever being mailable, and the
+              // account is not treated as having a verified address.
+              email:
+                identifier.kind === "email"
+                  ? identifier.value
+                  : `${identifier.value.replace(/\D/g, "")}@phone.dontbeboring.invalid`,
+              name:  credentials.name?.trim() || null,
+              phone:
+                identifier.kind === "phone"
+                  ? identifier.value
+                  : credentials.phone?.trim() || null,
+              // Only an email sign-in proves an address. A phone sign-in proves
+              // the handset, so the placeholder address stays unverified.
+              emailVerified: identifier.kind === "email" ? new Date() : null,
               role: "CUSTOMER",
             },
           });

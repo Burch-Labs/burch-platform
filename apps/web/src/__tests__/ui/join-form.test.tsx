@@ -38,25 +38,50 @@ afterAll(() => {
   global.fetch = originalFetch;
 });
 
-function fillEmail(value = "ada@example.com") {
-  fireEvent.change(screen.getByLabelText(/Email/i), { target: { value } });
+function fillIdentifier(value = "ada@example.com") {
+  fireEvent.change(screen.getByLabelText(/Phone or email/i), { target: { value } });
 }
 
 describe("JoinForm", () => {
-  it("asks for details first, and only email is required to proceed", () => {
+  it("takes a name and one identifier, and needs the identifier to proceed", () => {
     render(<JoinForm />);
     expect(screen.getByLabelText(/Your name/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Phone/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Phone or email/i)).toBeInTheDocument();
 
     const submit = screen.getByRole("button", { name: /Send me a code/i });
     expect(submit).toBeDisabled();
-    fillEmail();
+    fillIdentifier();
     expect(submit).toBeEnabled();
+  });
+
+  it("offers a channel choice for a phone but not for an email", () => {
+    render(<JoinForm />);
+    fillIdentifier("ada@example.com");
+    // An email address has one route; a picker would be a choice about nothing.
+    expect(screen.queryByRole("button", { name: /WhatsApp/i })).not.toBeInTheDocument();
+
+    fillIdentifier("0712345678");
+    expect(screen.getByRole("button", { name: /WhatsApp/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /^SMS$/i })).toBeInTheDocument();
+  });
+
+  it("sends the chosen channel as a preference, never a destination", async () => {
+    render(<JoinForm />);
+    fillIdentifier("0712345678");
+    fireEvent.click(screen.getByRole("button", { name: /WhatsApp/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Send me a code/i }));
+
+    await waitFor(() => expect(global.fetch).toHaveBeenCalled());
+    const body = JSON.parse((global.fetch as jest.Mock).mock.calls[0][1].body);
+    expect(body).toEqual({ identifier: "0712345678", channel: "whatsapp" });
+    // No separate recipient field exists to be abused.
+    expect(Object.keys(body)).not.toContain("to");
+    expect(Object.keys(body)).not.toContain("phone");
   });
 
   it("moves to the code step once a code has been sent", async () => {
     render(<JoinForm />);
-    fillEmail();
+    fillIdentifier();
     fireEvent.click(screen.getByRole("button", { name: /Send me a code/i }));
 
     await waitFor(() => expect(screen.getByLabelText(/Your code/i)).toBeInTheDocument());
@@ -70,7 +95,7 @@ describe("JoinForm", () => {
     }) as unknown as typeof fetch;
 
     render(<JoinForm />);
-    fillEmail();
+    fillIdentifier();
     fireEvent.click(screen.getByRole("button", { name: /Send me a code/i }));
 
     const alert = await screen.findByRole("alert");
@@ -81,7 +106,7 @@ describe("JoinForm", () => {
 
   it("strips non-digits from the code field", async () => {
     render(<JoinForm />);
-    fillEmail();
+    fillIdentifier();
     fireEvent.click(screen.getByRole("button", { name: /Send me a code/i }));
     const codeInput = await screen.findByLabelText(/Your code/i);
 
@@ -94,8 +119,7 @@ describe("JoinForm", () => {
     render(<JoinForm />);
 
     fireEvent.change(screen.getByLabelText(/Your name/i), { target: { value: "Ada" } });
-    fireEvent.change(screen.getByLabelText(/Phone/i), { target: { value: "0712345678" } });
-    fillEmail();
+    fillIdentifier();
     fireEvent.click(screen.getByRole("button", { name: /Send me a code/i }));
 
     const codeInput = await screen.findByLabelText(/Your code/i);
@@ -109,7 +133,6 @@ describe("JoinForm", () => {
           email: "ada@example.com",
           code: "123456",
           name: "Ada",
-          phone: "0712345678",
         })
       )
     );
@@ -118,7 +141,7 @@ describe("JoinForm", () => {
   it("explains a rejected code instead of leaving the form silent", async () => {
     mockSignIn.mockResolvedValue({ error: "CredentialsSignin" });
     render(<JoinForm />);
-    fillEmail();
+    fillIdentifier();
     fireEvent.click(screen.getByRole("button", { name: /Send me a code/i }));
 
     const codeInput = await screen.findByLabelText(/Your code/i);
@@ -132,13 +155,13 @@ describe("JoinForm", () => {
 
   it("lets the user go back and correct a mistyped email", async () => {
     render(<JoinForm />);
-    fillEmail("typo@example.com");
+    fillIdentifier("typo@example.com");
     fireEvent.click(screen.getByRole("button", { name: /Send me a code/i }));
 
     await screen.findByLabelText(/Your code/i);
-    fireEvent.click(screen.getByRole("button", { name: /Use a different email/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Use something else/i }));
 
-    expect(screen.getByLabelText(/Email/i)).toHaveValue("typo@example.com");
+    expect(screen.getByLabelText(/Phone or email/i)).toHaveValue("typo@example.com");
     expect(screen.queryByLabelText(/Your code/i)).not.toBeInTheDocument();
   });
 });

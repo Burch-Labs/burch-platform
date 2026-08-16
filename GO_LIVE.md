@@ -95,8 +95,15 @@ Worth deciding about rather than discovering:
 - **77 of 93 listings have no booking link.** They show contact details as
   unconfirmed and offer "Claim this listing". That is honest, but it is not a
   booking funnel. Closing it is partner outreach, not code.
-- **SMS is off** unless `AFRICASTALKING_*` is configured. Sign-in codes go by
-  email only, which is the weaker channel in this market.
+- **Phone sign-in is off in production** unless SMS or WhatsApp is configured.
+  Someone entering a phone number gets told to use their email instead. In
+  development both channels log the code to the console so the path stays
+  testable, but that fallback is deliberately disabled in production.
+- **WhatsApp needs a template approved by Meta before it will send anything.**
+  A verification code cannot go out as an ordinary message — it must use an
+  AUTHENTICATION-category template with a copy-code button, created in Meta
+  Business Manager and named in `WHATSAPP_OTP_TEMPLATE`. Budget for review
+  time; the credentials alone are not enough.
 - **Four features are switched off** in `src/lib/features.ts`: ratings, star
   classification, menus and direct booking. Each is built and tested. Turning
   one on is a one-line change, but read the note above it first — each is off
