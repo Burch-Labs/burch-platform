@@ -274,6 +274,9 @@ export default async function HotelDetailPage({ params }: PageProps) {
                   venueName={hotel.name}
                   phone={hotel.phone}
                   email={hotel.email}
+                  verified={hotel.verified}
+                  venueType="hotel"
+                  venueId={hotel.id}
                 />
               )}
             </div>

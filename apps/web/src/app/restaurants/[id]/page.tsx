@@ -219,6 +219,9 @@ export default async function RestaurantDetailPage({ params }: PageProps) {
                   venueName={restaurant.name}
                   phone={restaurant.phone}
                   email={restaurant.email}
+                  verified={restaurant.verified}
+                  venueType="restaurant"
+                  venueId={restaurant.id}
                 />
               )}
               {openingHours && <OpeningHours hours={openingHours} />}

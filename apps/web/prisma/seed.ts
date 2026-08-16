@@ -72,7 +72,7 @@ const HOTELS = [
     // serena.co.ke address, conflating two separate groups.
     name: "Fairmont The Norfolk Nairobi", city: "Nairobi", location: "Harry Thuku Road, Nairobi", starRating: 5,
     description: "Nairobi's most iconic hotel since 1904. Colonial charm meets modern luxury, set in beautifully landscaped gardens in the heart of the city.",
-    phone: "+254 20 000 0000", email: "reservations@fairmontnorfolk.example", checkInTime: "14:00", checkOutTime: "11:00",
+    phone: null, email: null, checkInTime: "14:00", checkOutTime: "11:00",
     website: "https://www.fairmont.com/en/hotels/nairobi/fairmont-the-norfolk.html",
     imageUrl: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&q=80",
     images: ["https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&q=80","https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800&q=80","https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80","https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80","https://images.unsplash.com/photo-1455587734955-081b22074882?w=800&q=80"],
@@ -86,7 +86,8 @@ const HOTELS = [
   {
     name: "Sarova Stanley Nairobi", city: "Nairobi", location: "Corner Kimathi & Standard Street, CBD, Nairobi", starRating: 4,
     description: "A Nairobi institution since 1902. Colonial heritage meets contemporary comfort at the heart of the Central Business District.",
-    phone: "+254 20 275 7000", email: "stanley@sarovahotels.com", checkInTime: "14:00", checkOutTime: "10:00",
+    phone: null, email: null, checkInTime: "14:00", checkOutTime: "10:00",
+    website: "https://www.sarovahotels.com/stanley-nairobi/",
     imageUrl: "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&q=80",
     images: ["https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&q=80","https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&q=80","https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800&q=80"],
     amenities: ["WiFi","Swimming Pool","Gym","Restaurant","Bar","Spa","Parking","24h Front Desk","Business Center","Laundry","Concierge"],
@@ -99,7 +100,7 @@ const HOTELS = [
   {
     name: "Villa Rosa Kempinski Nairobi", city: "Nairobi", location: "Chiromo Road, Westlands, Nairobi", starRating: 5,
     description: "Nairobi's tallest and most opulent address. Rooftop infinity pool with skyline views, a dedicated Kids Club, and some of the largest guest rooms in East Africa.",
-    phone: "+254 20 226 6000", email: "reservations.nairobi@kempinski.com", checkInTime: "15:00", checkOutTime: "12:00",
+    phone: null, email: null, checkInTime: "15:00", checkOutTime: "12:00",
     imageUrl: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80",
     images: ["https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80","https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80","https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800&q=80"],
     amenities: ["WiFi","Swimming Pool","Rooftop Pool","Gym","Restaurant","Bar","Spa","Parking","24h Front Desk","Business Center","Conference Rooms","Room Service","Concierge","Kids Club"],
@@ -112,7 +113,7 @@ const HOTELS = [
   {
     name: "Sankara Nairobi", city: "Nairobi", location: "Woodvale Grove, Westlands, Nairobi", starRating: 5,
     description: "A striking all-suite hotel in the heart of Westlands, part of Hilton's Curio Collection. Floor-to-ceiling windows, a rooftop pool bar, and Nairobi's buzziest brunch scene.",
-    phone: "+254 703 049 000", email: "info.nairobi@sankara.com", checkInTime: "14:00", checkOutTime: "12:00",
+    phone: null, email: null, checkInTime: "14:00", checkOutTime: "12:00",
     imageUrl: "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&q=80",
     images: ["https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&q=80","https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80","https://images.unsplash.com/photo-1455587734955-081b22074882?w=800&q=80"],
     amenities: ["WiFi","Rooftop Pool","Gym","Restaurant","Bar","Spa","Parking","24h Front Desk","Business Center","Room Service","Concierge"],
@@ -124,7 +125,7 @@ const HOTELS = [
   {
     name: "Trademark Hotel", city: "Nairobi", location: "Church Road, Museum Hill, Nairobi", starRating: 5,
     description: "A design-forward five-star retreat next to Nairobi's Museum Hill, favoured by business travellers for its rooftop pool, wellness centre, and effortlessly modern rooms.",
-    phone: "+254 709 878 000", email: "reservations@trademarkhotel.co.ke", checkInTime: "14:00", checkOutTime: "11:00",
+    phone: null, email: null, checkInTime: "14:00", checkOutTime: "11:00",
     imageUrl: "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=800&q=80",
     images: ["https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=800&q=80","https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80","https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&q=80"],
     amenities: ["WiFi","Swimming Pool","Gym","Restaurant","Bar","Spa","Parking","24h Front Desk","Business Center","Conference Rooms","Room Service"],
@@ -136,7 +137,7 @@ const HOTELS = [
   {
     name: "Hemingways Nairobi", city: "Nairobi", location: "Mbagathi Ridge, Karen, Nairobi", starRating: 5,
     description: "An intimate all-suite boutique hotel in leafy Karen, run to the exacting standards of the Relais & Châteaux collection, with views over the Ngong Hills.",
-    phone: "+254 730 800 100", email: "reservations@hemingways-nairobi.com", checkInTime: "14:00", checkOutTime: "11:00",
+    phone: null, email: null, checkInTime: "14:00", checkOutTime: "11:00",
     imageUrl: "https://images.unsplash.com/photo-1455587734955-081b22074882?w=800&q=80",
     images: ["https://images.unsplash.com/photo-1455587734955-081b22074882?w=800&q=80","https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80","https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800&q=80"],
     amenities: ["WiFi","Swimming Pool","Spa","Restaurant","Bar","Gym","Parking","24h Front Desk","Concierge","Airport Shuttle"],
@@ -148,7 +149,7 @@ const HOTELS = [
   {
     name: "Tribe Hotel", city: "Nairobi", location: "Limuru Road, Gigiri, Nairobi", starRating: 5,
     description: "An art-filled design hotel in diplomatic Gigiri, close to the UN offices and Village Market. A favourite for its infinity pool, rooftop bar, and rotating contemporary African art collection.",
-    phone: "+254 703 032 000", email: "reservations@tribe-hotel.com", checkInTime: "14:00", checkOutTime: "12:00",
+    phone: null, email: null, checkInTime: "14:00", checkOutTime: "12:00",
     website: "https://www.tribe-hotel.com/",
     imageUrl: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80",
     images: ["https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80","https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&q=80","https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80"],
@@ -161,7 +162,7 @@ const HOTELS = [
   {
     name: "Radisson Blu Hotel, Nairobi Upper Hill", city: "Nairobi", location: "Elgon Road, Upper Hill, Nairobi", starRating: 5,
     description: "A sleek business hotel in Nairobi's financial district, with panoramic city and Ngong Hills views from the rooftop pool and one of the largest ballrooms in East Africa.",
-    phone: "+254 709 102 000", email: "info.upperhill.nairobi@radissonblu.com", checkInTime: "14:00", checkOutTime: "12:00",
+    phone: null, email: null, checkInTime: "14:00", checkOutTime: "12:00",
     imageUrl: "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800&q=80",
     images: ["https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800&q=80","https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=800&q=80","https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80"],
     amenities: ["WiFi","Swimming Pool","Gym","Restaurant","Bar","Spa","Parking","24h Front Desk","Business Center","Conference Rooms","Room Service","Airport Shuttle"],
@@ -173,7 +174,7 @@ const HOTELS = [
   {
     name: "Mövenpick Hotel & Residences Nairobi", city: "Nairobi", location: "Westlands Road, Nairobi", starRating: 5,
     description: "A contemporary Swiss-hospitality property in Westlands, known for its rooftop infinity pool, extensive dining options, and easy access to the CBD and Village Market.",
-    phone: "+254 709 393 000", email: "reservations.nairobi@movenpick.com", checkInTime: "15:00", checkOutTime: "12:00",
+    phone: null, email: null, checkInTime: "15:00", checkOutTime: "12:00",
     imageUrl: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80",
     images: ["https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80","https://images.unsplash.com/photo-1455587734955-081b22074882?w=800&q=80","https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80"],
     amenities: ["WiFi","Rooftop Pool","Gym","Restaurant","Bar","Spa","Parking","24h Front Desk","Business Center","Conference Rooms","Room Service","Airport Shuttle"],
@@ -191,7 +192,7 @@ const HOTELS = [
   {
     name: "Nairobi Serena Hotel", city: "Nairobi", location: "Processional Way, Central Business District, Nairobi", starRating: 5,
     description: "A city-centre landmark overlooking Central Park, known for its tranquil gardens, Maisha Spa and a long-standing reputation for polished service. A short walk from the KICC and the government quarter.",
-    phone: "+254 20 282 2000", email: "nairobi@serenahotels.com", checkInTime: "14:00", checkOutTime: "11:00",
+    phone: null, email: null, checkInTime: "14:00", checkOutTime: "11:00",
     website: "https://www.serenahotels.com/nairobi",
     imageUrl: HOTEL_IMG.classic, images: [HOTEL_IMG.classic, HOTEL_IMG.suite, HOTEL_IMG.lobby, HOTEL_IMG.pool],
     amenities: ["WiFi","Swimming Pool","Gym","Restaurant","Bar","Spa","Parking","24h Front Desk","Business Center","Conference Rooms","Room Service","Concierge"],
@@ -204,7 +205,7 @@ const HOTELS = [
   {
     name: "JW Marriott Hotel Nairobi", city: "Nairobi", location: "Global Trade Centre, Chiromo Road, Westlands, Nairobi", starRating: 5,
     description: "Occupying the upper floors of the Global Trade Centre tower, with some of the widest city views in Nairobi, a rooftop pool and several restaurants including a signature grill.",
-    phone: "+254 20 000 0000", email: "reservations@jwmarriottnairobi.example", checkInTime: "15:00", checkOutTime: "12:00",
+    phone: null, email: null, checkInTime: "15:00", checkOutTime: "12:00",
     imageUrl: HOTEL_IMG.modern, images: [HOTEL_IMG.modern, HOTEL_IMG.suite, HOTEL_IMG.pool, HOTEL_IMG.lobby],
     amenities: ["WiFi","Swimming Pool","Gym","Restaurant","Bar","Spa","Parking","24h Front Desk","Business Center","Conference Rooms","Room Service","Concierge","Airport Shuttle"],
     rooms: [
@@ -215,7 +216,7 @@ const HOTELS = [
   {
     name: "Pan Pacific Nairobi", city: "Nairobi", location: "Global Trade Centre, Chiromo Road, Westlands, Nairobi", starRating: 5,
     description: "Contemporary Asian-influenced hospitality in the Global Trade Centre complex, with serviced-apartment style residences alongside hotel rooms and direct access to the GTC mall.",
-    phone: "+254 20 000 0000", email: "reservations@panpacificnairobi.example", checkInTime: "15:00", checkOutTime: "12:00",
+    phone: null, email: null, checkInTime: "15:00", checkOutTime: "12:00",
     imageUrl: HOTEL_IMG.suite, images: [HOTEL_IMG.suite, HOTEL_IMG.modern, HOTEL_IMG.pool],
     amenities: ["WiFi","Swimming Pool","Gym","Restaurant","Bar","Spa","Parking","24h Front Desk","Business Center","Room Service","Laundry"],
     rooms: [
@@ -226,7 +227,7 @@ const HOTELS = [
   {
     name: "Hyatt Regency Nairobi Westlands", city: "Nairobi", location: "Mpaka Road, Westlands, Nairobi", starRating: 5,
     description: "A polished Westlands business address with a rooftop pool, an all-day dining room and one of the larger ballroom and meeting floors in the area.",
-    phone: "+254 20 000 0000", email: "nairobi.regency@hyatt.example", checkInTime: "15:00", checkOutTime: "12:00",
+    phone: null, email: null, checkInTime: "15:00", checkOutTime: "12:00",
     imageUrl: HOTEL_IMG.modern, images: [HOTEL_IMG.modern, HOTEL_IMG.lobby, HOTEL_IMG.pool],
     amenities: ["WiFi","Swimming Pool","Gym","Restaurant","Bar","Spa","Parking","24h Front Desk","Business Center","Conference Rooms","Room Service","Concierge"],
     rooms: [
@@ -237,7 +238,7 @@ const HOTELS = [
   {
     name: "Hyatt House Nairobi Westlands", city: "Nairobi", location: "Mpaka Road, Westlands, Nairobi", starRating: 4,
     description: "Extended-stay sister property to the Regency, with kitchen-equipped studios and suites aimed at consultants, relocating families and anyone in town for more than a few nights.",
-    phone: "+254 20 000 0000", email: "nairobi.house@hyatt.example", checkInTime: "15:00", checkOutTime: "12:00",
+    phone: null, email: null, checkInTime: "15:00", checkOutTime: "12:00",
     imageUrl: HOTEL_IMG.suite, images: [HOTEL_IMG.suite, HOTEL_IMG.modern],
     amenities: ["WiFi","Swimming Pool","Gym","Restaurant","Parking","24h Front Desk","Laundry","Business Center","Kitchenette"],
     rooms: [
@@ -248,7 +249,7 @@ const HOTELS = [
   {
     name: "Radisson Blu Hotel & Residence, Nairobi Arboretum", city: "Nairobi", location: "Arboretum Drive, Kilimani, Nairobi", starRating: 5,
     description: "Overlooking the Nairobi Arboretum, combining hotel rooms with long-stay residences. Greener and quieter than the Upper Hill business cluster, while still close to it.",
-    phone: "+254 20 000 0000", email: "info.nairobi.arboretum@radissonblu.example", checkInTime: "14:00", checkOutTime: "12:00",
+    phone: null, email: null, checkInTime: "14:00", checkOutTime: "12:00",
     imageUrl: HOTEL_IMG.modern, images: [HOTEL_IMG.modern, HOTEL_IMG.pool, HOTEL_IMG.suite],
     amenities: ["WiFi","Swimming Pool","Gym","Restaurant","Bar","Spa","Parking","24h Front Desk","Business Center","Room Service","Laundry"],
     rooms: [
@@ -259,7 +260,7 @@ const HOTELS = [
   {
     name: "Park Inn by Radisson Nairobi Westlands", city: "Nairobi", location: "Parklands Road, Westlands, Nairobi", starRating: 4,
     description: "Straightforward, well-kept mid-scale rooms in the middle of Westlands, with a rooftop bar and easy reach of the district's offices and restaurants.",
-    phone: "+254 20 000 0000", email: "info.nairobi.westlands@parkinn.example", checkInTime: "14:00", checkOutTime: "12:00",
+    phone: null, email: null, checkInTime: "14:00", checkOutTime: "12:00",
     imageUrl: HOTEL_IMG.classic, images: [HOTEL_IMG.classic, HOTEL_IMG.modern],
     amenities: ["WiFi","Gym","Restaurant","Bar","Parking","24h Front Desk","Business Center","Room Service","Laundry"],
     rooms: [
@@ -270,7 +271,7 @@ const HOTELS = [
   {
     name: "Novotel Nairobi Westlands", city: "Nairobi", location: "Muthithi Road, Westlands, Nairobi", starRating: 4,
     description: "Accor's Westlands property, geared to business travellers and families alike, with flexible room layouts, an all-day restaurant and meeting space.",
-    phone: "+254 20 000 0000", email: "reservations@novotelnairobi.example", checkInTime: "14:00", checkOutTime: "12:00",
+    phone: null, email: null, checkInTime: "14:00", checkOutTime: "12:00",
     imageUrl: HOTEL_IMG.modern, images: [HOTEL_IMG.modern, HOTEL_IMG.lobby],
     amenities: ["WiFi","Swimming Pool","Gym","Restaurant","Bar","Parking","24h Front Desk","Business Center","Conference Rooms","Room Service"],
     rooms: [
@@ -281,7 +282,7 @@ const HOTELS = [
   {
     name: "Kwetu Nairobi, Curio Collection by Hilton", city: "Nairobi", location: "Parklands Road, Westlands, Nairobi", starRating: 5,
     description: "A design-led Curio Collection property whose name means \"our home\" in Kiswahili — Kenyan craft and materials throughout, with a rooftop bar and a strong local food focus.",
-    phone: "+254 20 000 0000", email: "reservations@kwetunairobi.example", checkInTime: "15:00", checkOutTime: "12:00",
+    phone: null, email: null, checkInTime: "15:00", checkOutTime: "12:00",
     imageUrl: HOTEL_IMG.suite, images: [HOTEL_IMG.suite, HOTEL_IMG.modern, HOTEL_IMG.lobby],
     amenities: ["WiFi","Swimming Pool","Gym","Restaurant","Bar","Spa","Parking","24h Front Desk","Room Service","Concierge","Business Center"],
     rooms: [
@@ -292,7 +293,7 @@ const HOTELS = [
   {
     name: "Jacaranda Hotel Nairobi", city: "Nairobi", location: "Chiromo Road, Westlands, Nairobi", starRating: 4,
     description: "A long-established Westlands hotel set in mature gardens, popular for conferences, family weekends and its well-known Sunday lunch.",
-    phone: "+254 20 000 0000", email: "reservations@jacarandahotels.example", checkInTime: "14:00", checkOutTime: "11:00",
+    phone: null, email: null, checkInTime: "14:00", checkOutTime: "11:00",
     imageUrl: HOTEL_IMG.classic, images: [HOTEL_IMG.classic, HOTEL_IMG.pool],
     amenities: ["WiFi","Swimming Pool","Restaurant","Bar","Parking","24h Front Desk","Conference Rooms","Room Service","Laundry"],
     rooms: [
@@ -303,7 +304,7 @@ const HOTELS = [
   {
     name: "Gem Forest Hotel Nairobi", city: "Nairobi", location: "Gigiri, Nairobi", starRating: 4,
     description: "A quiet Gigiri address close to the UN complex and the diplomatic missions, favoured by visiting delegations for its calm setting and generous rooms.",
-    phone: "+254 20 000 0000", email: "reservations@gemforesthotel.example", checkInTime: "14:00", checkOutTime: "11:00",
+    phone: null, email: null, checkInTime: "14:00", checkOutTime: "11:00",
     imageUrl: HOTEL_IMG.modern, images: [HOTEL_IMG.modern, HOTEL_IMG.suite],
     amenities: ["WiFi","Swimming Pool","Gym","Restaurant","Bar","Parking","24h Front Desk","Conference Rooms","Room Service","Airport Shuttle"],
     rooms: [
@@ -314,7 +315,7 @@ const HOTELS = [
   {
     name: "Safari Park Hotel & Casino", city: "Nairobi", location: "Thika Road, Kasarani, Nairobi", starRating: 5,
     description: "Sixty acres of tropical gardens on Thika Road, built as a village of thatched makuti roofs. Best known for the Nyama Choma Ranch and the long-running Safari Cats dinner show, and one of the largest conference capacities in the city.",
-    phone: "+254 20 000 0000", email: "reservations@safariparkhotel.example", checkInTime: "14:00", checkOutTime: "11:00",
+    phone: null, email: null, checkInTime: "14:00", checkOutTime: "11:00",
     imageUrl: HOTEL_IMG.pool, images: [HOTEL_IMG.pool, HOTEL_IMG.classic, HOTEL_IMG.lobby, HOTEL_IMG.suite],
     amenities: ["WiFi","Swimming Pool","Gym","Restaurant","Bar","Spa","Parking","24h Front Desk","Conference Rooms","Business Center","Room Service","Casino","Airport Shuttle","Family Friendly"],
     rooms: [
@@ -326,7 +327,7 @@ const HOTELS = [
   {
     name: "Nairobi Safari Club", city: "Nairobi", location: "Lillian Towers, University Way, Central Business District, Nairobi", starRating: 5,
     description: "An all-suite tower on University Way at the edge of the CBD, a short walk from the university and the National Museum. Every room is a suite, which makes it a long-standing choice for extended business stays.",
-    phone: "+254 20 000 0000", email: "reservations@nairobisafariclub.example", checkInTime: "14:00", checkOutTime: "11:00",
+    phone: null, email: null, checkInTime: "14:00", checkOutTime: "11:00",
     imageUrl: HOTEL_IMG.suite, images: [HOTEL_IMG.suite, HOTEL_IMG.lobby, HOTEL_IMG.classic],
     amenities: ["WiFi","Swimming Pool","Gym","Restaurant","Bar","Spa","Parking","24h Front Desk","Business Center","Conference Rooms","Room Service","Laundry"],
     rooms: [
@@ -339,7 +340,7 @@ const HOTELS = [
   {
     name: "Serena Beach Resort & Spa", city: "Mombasa", location: "Shanzu Beach, North Coast, Mombasa", starRating: 5,
     description: "Built as a replica of a fourteenth-century Swahili town, with carved doors, coral-rag walls and winding lanes opening onto Shanzu Beach. The North Coast benchmark for its gardens and its spa.",
-    phone: "+254 41 000 0000", email: "beach@serenahotels.example", checkInTime: "14:00", checkOutTime: "10:00",
+    phone: null, email: null, checkInTime: "14:00", checkOutTime: "10:00",
     imageUrl: HOTEL_IMG.pool, images: [HOTEL_IMG.pool, HOTEL_IMG.classic, HOTEL_IMG.suite],
     amenities: ["WiFi","Swimming Pool","Beach Access","Gym","Restaurant","Bar","Spa","Parking","24h Front Desk","Room Service","Water Sports","Family Friendly"],
     rooms: [
@@ -350,7 +351,8 @@ const HOTELS = [
   {
     name: "Sarova Whitesands Beach Resort & Spa", city: "Mombasa", location: "Bamburi Beach, North Coast, Mombasa", starRating: 5,
     description: "A long stretch of Bamburi beachfront with five pools, a full water-sports centre and a reputation as the family choice on the North Coast.",
-    phone: "+254 41 000 0000", email: "whitesands@sarovahotels.example", checkInTime: "14:00", checkOutTime: "10:00",
+    phone: null, email: null, checkInTime: "14:00", checkOutTime: "10:00",
+    website: "https://www.sarovahotels.com/whitesands-mombasa/",
     imageUrl: HOTEL_IMG.modern, images: [HOTEL_IMG.modern, HOTEL_IMG.pool],
     amenities: ["WiFi","Swimming Pool","Beach Access","Gym","Restaurant","Bar","Spa","Parking","24h Front Desk","Water Sports","Kids Club","Family Friendly"],
     rooms: [
@@ -361,7 +363,7 @@ const HOTELS = [
   {
     name: "Voyager Beach Resort", city: "Mombasa", location: "Nyali Beach, Mombasa", starRating: 4,
     description: "Nautically themed all-inclusive on Nyali Beach, laid out like a ship's deck. Popular for its dive centre and its evening entertainment programme.",
-    phone: "+254 41 000 0000", email: "voyager@heritagehotels.example", checkInTime: "14:00", checkOutTime: "10:00",
+    phone: null, email: null, checkInTime: "14:00", checkOutTime: "10:00",
     imageUrl: HOTEL_IMG.classic, images: [HOTEL_IMG.classic, HOTEL_IMG.pool],
     amenities: ["WiFi","Swimming Pool","Beach Access","Restaurant","Bar","Parking","24h Front Desk","Water Sports","Kids Club","All Inclusive","Family Friendly"],
     rooms: [
@@ -374,7 +376,7 @@ const HOTELS = [
   {
     name: "Swahili Beach Resort", city: "Diani", location: "Diani Beach Road, Diani, Kwale", starRating: 5,
     description: "Monumental Swahili and Omani architecture set behind one of the best stretches of Diani sand — vaulted lobbies, layered pools and a spa built into the coral.",
-    phone: "+254 40 000 0000", email: "reservations@swahilibeach.example", checkInTime: "14:00", checkOutTime: "10:00",
+    phone: null, email: null, checkInTime: "14:00", checkOutTime: "10:00",
     imageUrl: HOTEL_IMG.pool, images: [HOTEL_IMG.pool, HOTEL_IMG.lobby, HOTEL_IMG.suite],
     amenities: ["WiFi","Swimming Pool","Beach Access","Gym","Restaurant","Bar","Spa","Parking","24h Front Desk","Room Service","Water Sports","Concierge"],
     rooms: [
@@ -385,7 +387,7 @@ const HOTELS = [
   {
     name: "Leopard Beach Resort & Spa", city: "Diani", location: "Diani Beach Road, Diani, Kwale", starRating: 4,
     description: "Long-established Diani resort on a cliff above the beach, with terraced gardens running down to the sand and one of the coast's better-known spas.",
-    phone: "+254 40 000 0000", email: "reservations@leopardbeach.example", checkInTime: "14:00", checkOutTime: "10:00",
+    phone: null, email: null, checkInTime: "14:00", checkOutTime: "10:00",
     imageUrl: HOTEL_IMG.modern, images: [HOTEL_IMG.modern, HOTEL_IMG.pool],
     amenities: ["WiFi","Swimming Pool","Beach Access","Gym","Restaurant","Bar","Spa","Parking","24h Front Desk","Water Sports","Family Friendly"],
     rooms: [
@@ -398,7 +400,7 @@ const HOTELS = [
   {
     name: "Diamonds Dream of Africa", city: "Malindi", location: "Casuarina Road, Malindi, Kilifi", starRating: 5,
     description: "Adults-only boutique resort on Malindi's beachfront, with a strong Italian influence in both the kitchen and the clientele.",
-    phone: "+254 42 000 0000", email: "dreamofafrica@diamonds.example", checkInTime: "14:00", checkOutTime: "10:00",
+    phone: null, email: null, checkInTime: "14:00", checkOutTime: "10:00",
     imageUrl: HOTEL_IMG.suite, images: [HOTEL_IMG.suite, HOTEL_IMG.pool],
     amenities: ["WiFi","Swimming Pool","Beach Access","Restaurant","Bar","Spa","Parking","24h Front Desk","Room Service","Adults Only","All Inclusive"],
     rooms: [
@@ -409,7 +411,7 @@ const HOTELS = [
   {
     name: "Ocean Beach Resort & Spa Malindi", city: "Malindi", location: "Mama Ngina Road, Malindi, Kilifi", starRating: 4,
     description: "Wide gardens and a long pool running toward the Malindi shoreline, with a dive school and easy access to the marine park.",
-    phone: "+254 42 000 0000", email: "reservations@oceanbeachmalindi.example", checkInTime: "14:00", checkOutTime: "10:00",
+    phone: null, email: null, checkInTime: "14:00", checkOutTime: "10:00",
     imageUrl: HOTEL_IMG.pool, images: [HOTEL_IMG.pool, HOTEL_IMG.classic],
     amenities: ["WiFi","Swimming Pool","Beach Access","Restaurant","Bar","Spa","Parking","24h Front Desk","Water Sports","Family Friendly"],
     rooms: [
@@ -422,7 +424,7 @@ const HOTELS = [
   {
     name: "Enashipai Resort & Spa", city: "Naivasha", location: "Moi South Lake Road, Naivasha, Nakuru County", starRating: 5,
     description: "The benchmark Naivasha resort — extensive grounds off South Lake Road, a large spa and conference capacity that makes it the default for corporate retreats out of Nairobi.",
-    phone: "+254 50 000 0000", email: "reservations@enashipai.example", checkInTime: "14:00", checkOutTime: "10:00",
+    phone: null, email: null, checkInTime: "14:00", checkOutTime: "10:00",
     imageUrl: HOTEL_IMG.modern, images: [HOTEL_IMG.modern, HOTEL_IMG.pool, HOTEL_IMG.suite],
     amenities: ["WiFi","Swimming Pool","Gym","Restaurant","Bar","Spa","Parking","24h Front Desk","Conference Rooms","Room Service","Lake Access","Family Friendly"],
     rooms: [
@@ -433,7 +435,7 @@ const HOTELS = [
   {
     name: "Lake Naivasha Sopa Resort", city: "Naivasha", location: "Moi South Lake Road, Naivasha, Nakuru County", starRating: 4,
     description: "Cottages spread across wide lakeside grounds where waterbuck and zebra graze freely between the blocks. A short boat ride from Crescent Island.",
-    phone: "+254 50 000 0000", email: "naivasha@sopalodges.example", checkInTime: "12:00", checkOutTime: "10:00",
+    phone: null, email: null, checkInTime: "12:00", checkOutTime: "10:00",
     imageUrl: HOTEL_IMG.classic, images: [HOTEL_IMG.classic, HOTEL_IMG.pool],
     amenities: ["WiFi","Swimming Pool","Restaurant","Bar","Parking","24h Front Desk","Conference Rooms","Lake Access","Game Viewing","Family Friendly"],
     rooms: [
@@ -446,7 +448,7 @@ const HOTELS = [
   {
     name: "Fairmont Mount Kenya Safari Club", city: "Nanyuki", location: "Mount Kenya, Nanyuki, Laikipia", starRating: 5,
     description: "Founded by William Holden on the equator at the foot of Mount Kenya, with manicured lawns framing the peak, an animal orphanage and a nine-hole course. A Kenyan institution.",
-    phone: "+254 62 000 0000", email: "mountkenya@fairmont.example", checkInTime: "15:00", checkOutTime: "11:00",
+    phone: null, email: null, checkInTime: "15:00", checkOutTime: "11:00",
     imageUrl: HOTEL_IMG.classic, images: [HOTEL_IMG.classic, HOTEL_IMG.lobby, HOTEL_IMG.suite],
     amenities: ["WiFi","Swimming Pool","Restaurant","Bar","Spa","Parking","24h Front Desk","Golf Course","Horse Riding","Game Viewing","Concierge","Room Service"],
     rooms: [
@@ -457,7 +459,7 @@ const HOTELS = [
   {
     name: "Sportsman's Arms Hotel", city: "Nanyuki", location: "Nanyuki Town, Laikipia", starRating: 3,
     description: "The practical Nanyuki base — a long-running town hotel used by climbers heading for Mount Kenya and by anyone staging a Laikipia safari.",
-    phone: "+254 62 000 0000", email: "reservations@sportsmansarms.example", checkInTime: "12:00", checkOutTime: "10:00",
+    phone: null, email: null, checkInTime: "12:00", checkOutTime: "10:00",
     imageUrl: HOTEL_IMG.classic, images: [HOTEL_IMG.classic],
     amenities: ["WiFi","Swimming Pool","Restaurant","Bar","Parking","24h Front Desk","Conference Rooms","Laundry","Family Friendly"],
     rooms: [
@@ -470,7 +472,8 @@ const HOTELS = [
   {
     name: "Sarova Lion Hill Game Lodge", city: "Nakuru", location: "Lake Nakuru National Park, Nakuru", starRating: 4,
     description: "Inside the park on a ridge above Lake Nakuru, with flamingo flats below and rhino on the game drives. The only full-service lodge within the gates.",
-    phone: "+254 51 000 0000", email: "lionhill@sarovahotels.example", checkInTime: "12:00", checkOutTime: "10:00",
+    phone: null, email: null, checkInTime: "12:00", checkOutTime: "10:00",
+    website: "https://www.sarovahotels.com/lionhill-nakuru/",
     imageUrl: HOTEL_IMG.pool, images: [HOTEL_IMG.pool, HOTEL_IMG.classic],
     amenities: ["WiFi","Swimming Pool","Restaurant","Bar","Spa","Parking","24h Front Desk","Game Viewing","Conference Rooms","Family Friendly"],
     rooms: [
@@ -481,7 +484,7 @@ const HOTELS = [
   {
     name: "Merica Hotel Nakuru", city: "Nakuru", location: "Kenyatta Avenue, Nakuru Town", starRating: 4,
     description: "Nakuru town's main business address, on Kenyatta Avenue — conference floors, a rooftop pool and a short drive to the park gate.",
-    phone: "+254 51 000 0000", email: "reservations@mericahotel.example", checkInTime: "12:00", checkOutTime: "10:00",
+    phone: null, email: null, checkInTime: "12:00", checkOutTime: "10:00",
     imageUrl: HOTEL_IMG.modern, images: [HOTEL_IMG.modern],
     amenities: ["WiFi","Swimming Pool","Gym","Restaurant","Bar","Parking","24h Front Desk","Conference Rooms","Business Center","Room Service"],
     rooms: [
@@ -494,7 +497,7 @@ const HOTELS = [
   {
     name: "Acacia Premier Hotel", city: "Kisumu", location: "Achieng Oneko Road, Kisumu", starRating: 5,
     description: "Kisumu's tallest hotel, with a rooftop pool looking over the town toward Lake Victoria, and the city's most-used conference floors.",
-    phone: "+254 57 000 0000", email: "reservations@acaciapremier.example", checkInTime: "14:00", checkOutTime: "11:00",
+    phone: null, email: null, checkInTime: "14:00", checkOutTime: "11:00",
     imageUrl: HOTEL_IMG.modern, images: [HOTEL_IMG.modern, HOTEL_IMG.pool],
     amenities: ["WiFi","Swimming Pool","Gym","Restaurant","Bar","Spa","Parking","24h Front Desk","Conference Rooms","Business Center","Room Service","Airport Shuttle"],
     rooms: [
@@ -505,7 +508,7 @@ const HOTELS = [
   {
     name: "Kiboko Bay Resort", city: "Kisumu", location: "Dunga Beach, Kisumu", starRating: 3,
     description: "Luxury tented rooms on the Lake Victoria shore at Dunga, where hippo surface off the terrace at dusk and the fish comes in the same morning it is served.",
-    phone: "+254 57 000 0000", email: "info@kibokobay.example", checkInTime: "12:00", checkOutTime: "10:00",
+    phone: null, email: null, checkInTime: "12:00", checkOutTime: "10:00",
     imageUrl: HOTEL_IMG.classic, images: [HOTEL_IMG.classic, HOTEL_IMG.pool],
     amenities: ["WiFi","Swimming Pool","Restaurant","Bar","Parking","Lake Access","Boat Trips","Family Friendly"],
     rooms: [
@@ -531,7 +534,7 @@ const RESTAURANTS = [
   {
     name: "The Talisman", city: "Nairobi", location: "320 Lower Kabete Road, Karen, Nairobi", cuisine: "Contemporary African",
     description: "Nestled in a colonial Karen farmhouse surrounded by lush gardens, The Talisman is widely regarded as Nairobi's finest dining experience. Each dish is a creative reinterpretation of African ingredients using modern techniques.",
-    priceRange: 4, phone: "+254 20 386 1927", email: "reservations@talisman.co.ke",
+    priceRange: 4, phone: null, email: null,
     imageUrl: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80",
     images: ["https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80","https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&q=80","https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=800&q=80"],
     amenities: ["Outdoor Seating","Private Dining","Bar","Parking","Reservations Required","Vegan Options"],
@@ -540,7 +543,7 @@ const RESTAURANTS = [
   {
     name: "Kiza Lounge & Restaurant", city: "Nairobi", location: "Galana Plaza, Galana Road, Kilimani, Nairobi", cuisine: "Pan-African",
     description: "Kiza is Nairobi's most vibrant dining and nightlife destination. The kitchen serves bold, contemporary pan-African cuisine while the lounge transforms into the city's most exciting live music venue after dark.",
-    priceRange: 3, phone: "+254 20 261 0069", email: "info@kizanairobi.com",
+    priceRange: 3, phone: null, email: null,
     imageUrl: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80",
     images: ["https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80","https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&q=80"],
     amenities: ["Live Music","Bar","Rooftop","Outdoor Seating","Vegan Options","Reservations Required"],
@@ -549,7 +552,7 @@ const RESTAURANTS = [
   {
     name: "Carnivore Restaurant", city: "Nairobi", location: "Langata Road, Nairobi", cuisine: "Nyama Choma / African Grill",
     description: "Nairobi's most famous restaurant since 1980. An all-you-can-eat carnival of roasted meats carved tableside from a giant Maasai sword, around a legendary charcoal pit.",
-    priceRange: 3, phone: "+254 20 605 933", email: "info@tamarind.co.ke",
+    priceRange: 3, phone: null, email: null,
     imageUrl: "https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=800&q=80",
     images: ["https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=800&q=80","https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80","https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80"],
     amenities: ["Outdoor Seating","Live Music","Bar","Parking","Reservations Required","Private Dining"],
@@ -558,7 +561,7 @@ const RESTAURANTS = [
   {
     name: "About Thyme", city: "Nairobi", location: "Woodvale Grove, Westlands, Nairobi", cuisine: "International",
     description: "A long-standing Westlands favourite for relaxed, well-executed international dishes in a leafy garden setting — a go-to for weekday lunches and long weekend brunches.",
-    priceRange: 3, phone: "+254 20 444 5599", email: "reservations@aboutthyme.co.ke",
+    priceRange: 3, phone: null, email: null,
     imageUrl: "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&q=80",
     images: ["https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&q=80","https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80"],
     amenities: ["Outdoor Seating","WiFi","Vegetarian Options","Parking","Reservations Required"],
@@ -567,7 +570,7 @@ const RESTAURANTS = [
   {
     name: "Cultiva Farm to Table", city: "Nairobi", location: "Karen, Nairobi", cuisine: "Farm-to-Table",
     description: "A garden restaurant built around its own working farm — herbs, vegetables, and eggs harvested steps from the kitchen, with a menu that changes with the season.",
-    priceRange: 3, phone: "+254 20 800 1122", email: "hello@cultiva.co.ke",
+    priceRange: 3, phone: null, email: null,
     imageUrl: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80",
     images: ["https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80","https://images.unsplash.com/photo-1445116572660-236099ec97a0?w=800&q=80"],
     amenities: ["Outdoor Seating","Vegan Options","Vegetarian Options","Kid Friendly","Parking","Farm Tours"],
@@ -576,7 +579,7 @@ const RESTAURANTS = [
   {
     name: "Seven Seafood & Grill", city: "Nairobi", location: "The Alchemist, Westlands, Nairobi", cuisine: "Seafood & Grill",
     description: "A stylish rooftop seafood and grill house above The Alchemist, known for fresh coastal catches flown in daily and a lively cocktail scene into the night.",
-    priceRange: 4, phone: "+254 795 771 771", email: "bookings@sevennairobi.com",
+    priceRange: 4, phone: null, email: null,
     imageUrl: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80",
     images: ["https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80","https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=800&q=80"],
     amenities: ["Rooftop","Live Music","Bar","Outdoor Seating","Reservations Required","Valet Parking"],
@@ -585,7 +588,7 @@ const RESTAURANTS = [
   {
     name: "Mediterraneo Restaurant", city: "Nairobi", location: "Lenana Road, Kilimani, Nairobi", cuisine: "Italian",
     description: "A neighbourhood Italian trattoria loved for its wood-fired pizzas, homemade pasta, and unpretentious garden courtyard — a Kilimani classic for decades.",
-    priceRange: 2, phone: "+254 20 271 6273", email: "info@mediterraneo.co.ke",
+    priceRange: 2, phone: null, email: null,
     imageUrl: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80",
     images: ["https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80","https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&q=80"],
     amenities: ["Outdoor Seating","Vegetarian Options","Parking","Kid Friendly","Takeaway"],
@@ -594,7 +597,7 @@ const RESTAURANTS = [
   {
     name: "Nyama Mama", city: "Nairobi", location: "The Prism, Westlands, Nairobi", cuisine: "Modern Kenyan",
     description: "A vibrant modern take on Kenyan comfort food — think elevated nyama choma, matumbo, and mursik, served in a colourful, Instagram-ready space.",
-    priceRange: 2, phone: "+254 709 601 000", email: "hello@nyamamama.com",
+    priceRange: 2, phone: null, email: null,
     imageUrl: "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&q=80",
     images: ["https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&q=80","https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80"],
     amenities: ["Outdoor Seating","WiFi","Vegetarian Options","Delivery","Kid Friendly"],
@@ -603,7 +606,7 @@ const RESTAURANTS = [
   {
     name: "Onami Restaurant", city: "Nairobi", location: "General Mathenge Drive, Westlands, Nairobi", cuisine: "Japanese",
     description: "Nairobi's most established Japanese restaurant — sushi, teppanyaki, and robata grill in a serene, minimalist dining room.",
-    priceRange: 4, phone: "+254 733 616 161", email: "reservations@onami.co.ke",
+    priceRange: 4, phone: null, email: null,
     imageUrl: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80",
     images: ["https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80","https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80"],
     amenities: ["Private Dining","Bar","Parking","Reservations Required","Vegetarian Options"],
@@ -612,7 +615,7 @@ const RESTAURANTS = [
   {
     name: "K'Osewe Ranalo Foods", city: "Nairobi", location: "Koinange Street, CBD, Nairobi", cuisine: "Kenyan / Luo",
     description: "The city's best-loved home for authentic Luo cuisine — fresh tilapia, omena, and traditional greens served exactly as they would be in Nyanza.",
-    priceRange: 1, phone: "+254 20 224 1234", email: "info@kosewe.co.ke",
+    priceRange: 1, phone: null, email: null,
     imageUrl: "https://images.unsplash.com/photo-1445116572660-236099ec97a0?w=800&q=80",
     images: ["https://images.unsplash.com/photo-1445116572660-236099ec97a0?w=800&q=80","https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&q=80"],
     amenities: ["Takeaway","WiFi","Halal Options","Vegetarian Options"],
@@ -621,7 +624,7 @@ const RESTAURANTS = [
   {
     name: "Java House", city: "Nairobi", location: "Junction Mall, Ngong Road, Nairobi", cuisine: "Café / American",
     description: "Kenya's original coffee house chain — the go-to for a proper cappuccino, all-day breakfast, and reliable comfort food across the city.",
-    priceRange: 2, phone: "+254 709 830 000", email: "customercare@javahouseafrica.com",
+    priceRange: 2, phone: null, email: null,
     imageUrl: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80",
     images: ["https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80","https://images.unsplash.com/photo-1445116572660-236099ec97a0?w=800&q=80"],
     amenities: ["WiFi","Outdoor Seating","Takeaway","Delivery","Kid Friendly","Vegetarian Options"],
@@ -630,7 +633,7 @@ const RESTAURANTS = [
   {
     name: "Artcaffe", city: "Nairobi", location: "The Oval, Westlands, Nairobi", cuisine: "Café / Bakery",
     description: "A stylish bakery-café known for its fresh pastries, all-day brunch menu, and consistently excellent coffee — a Nairobi mainstay for over a decade.",
-    priceRange: 2, phone: "+254 709 902 000", email: "info@artcaffe.co.ke",
+    priceRange: 2, phone: null, email: null,
     imageUrl: "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&q=80",
     images: ["https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&q=80","https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80"],
     amenities: ["WiFi","Outdoor Seating","Takeaway","Delivery","Vegetarian Options","Vegan Options"],
@@ -639,7 +642,7 @@ const RESTAURANTS = [
   {
     name: "Mama Rocks Burgers", city: "Nairobi", location: "Delta Corner, Westlands, Nairobi", cuisine: "American / Burgers",
     description: "Nairobi's original gourmet burger joint — thick, juicy, made-to-order patties with a build-your-own topping bar and hand-cut fries.",
-    priceRange: 2, phone: "+254 700 555 111", email: "hello@mamarocks.co.ke",
+    priceRange: 2, phone: null, email: null,
     imageUrl: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80",
     images: ["https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80","https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80"],
     amenities: ["Outdoor Seating","Takeaway","Delivery","Kid Friendly","Vegetarian Options"],
@@ -648,7 +651,7 @@ const RESTAURANTS = [
   {
     name: "Habesha Restaurant", city: "Nairobi", location: "Woodvale Grove, Westlands, Nairobi", cuisine: "Ethiopian",
     description: "An authentic Ethiopian dining experience — communal platters of injera and richly spiced stews, served in a warm, traditionally decorated space with live cultural music on weekends.",
-    priceRange: 2, phone: "+254 20 444 0321", email: "info@habesharestaurant.co.ke",
+    priceRange: 2, phone: null, email: null,
     imageUrl: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80",
     images: ["https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80","https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&q=80"],
     amenities: ["Live Music","Vegan Options","Vegetarian Options","Outdoor Seating","Private Dining"],
@@ -657,7 +660,7 @@ const RESTAURANTS = [
   {
     name: "Osteria del Chianti", city: "Nairobi", location: "General Mathenge Drive, Westlands, Nairobi", cuisine: "Italian",
     description: "A refined, intimate Italian osteria specialising in handmade pasta and an extensive Tuscan wine list, run by an Italian-trained kitchen team.",
-    priceRange: 3, phone: "+254 733 222 444", email: "reservations@osteriadelchianti.co.ke",
+    priceRange: 3, phone: null, email: null,
     imageUrl: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80",
     images: ["https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80","https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80"],
     amenities: ["Reservations Required","Bar","Outdoor Seating","Vegetarian Options","Private Dining"],
@@ -666,7 +669,7 @@ const RESTAURANTS = [
   {
     name: "Le Grenier à Pain", city: "Nairobi", location: "Riverside Drive, Nairobi", cuisine: "French Bakery & Bistro",
     description: "A true French bakery and bistro — flaky croissants, real baguettes, and classic bistro plates, run with unmistakable Parisian precision.",
-    priceRange: 3, phone: "+254 20 444 7788", email: "info@legrenier.co.ke",
+    priceRange: 3, phone: null, email: null,
     imageUrl: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80",
     images: ["https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80","https://images.unsplash.com/photo-1445116572660-236099ec97a0?w=800&q=80"],
     amenities: ["Outdoor Seating","WiFi","Takeaway","Vegetarian Options","Parking"],
@@ -675,7 +678,7 @@ const RESTAURANTS = [
   {
     name: "Charcoal Grill Woodvale", city: "Nairobi", location: "Woodvale Grove, Westlands, Nairobi", cuisine: "Grill / Nyama Choma",
     description: "A no-frills, always-packed Westlands grill house famous for its charcoal-roasted meats and lively weekend crowd — a favourite for casual nights out.",
-    priceRange: 2, phone: "+254 733 909 090", email: "bookings@charcoalgrill.co.ke",
+    priceRange: 2, phone: null, email: null,
     imageUrl: "https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=800&q=80",
     images: ["https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=800&q=80","https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80"],
     amenities: ["Outdoor Seating","Live Music","Bar","Parking","Takeaway"],
@@ -684,7 +687,7 @@ const RESTAURANTS = [
   {
     name: "Fogo Gaucho Brazilian Steakhouse", city: "Nairobi", location: "Rosslyn Riviera, Nairobi", cuisine: "Brazilian Steakhouse",
     description: "Nairobi's take on the Brazilian churrascaria — endless tableside-carved cuts of beef, lamb, and chicken, paired with a full salad and hot bar.",
-    priceRange: 4, phone: "+254 709 555 200", email: "reservations@fogogaucho.co.ke",
+    priceRange: 4, phone: null, email: null,
     imageUrl: "https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=800&q=80",
     images: ["https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=800&q=80","https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80"],
     amenities: ["Private Dining","Bar","Parking","Reservations Required","Outdoor Seating"],
@@ -693,7 +696,7 @@ const RESTAURANTS = [
   {
     name: "Symphony Restaurant & Lounge", city: "Nairobi", location: "Yaya Centre, Kilimani, Nairobi", cuisine: "International Fusion",
     description: "A sleek, upscale lounge above Yaya Centre with a broad international menu, sushi bar, and a rooftop terrace that turns into one of Kilimani's liveliest evening spots.",
-    priceRange: 3, phone: "+254 709 700 500", email: "hello@symphonynairobi.com",
+    priceRange: 3, phone: null, email: null,
     imageUrl: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80",
     images: ["https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80","https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80"],
     amenities: ["Rooftop","Live Music","Bar","Outdoor Seating","Vegetarian Options","Reservations Required"],
@@ -702,7 +705,7 @@ const RESTAURANTS = [
   {
     name: "Ocean Basket", city: "Nairobi", location: "The Junction Mall, Ngong Road, Nairobi", cuisine: "Seafood",
     description: "The Nairobi outpost of the popular pan-African seafood chain — fresh calamari, prawns, and fish served in a casual, family-friendly setting.",
-    priceRange: 2, phone: "+254 709 830 500", email: "junction@oceanbasket.co.ke",
+    priceRange: 2, phone: null, email: null,
     imageUrl: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80",
     images: ["https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80","https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80"],
     amenities: ["Kid Friendly","Takeaway","Delivery","WiFi","Vegetarian Options"],
@@ -715,7 +718,7 @@ const RESTAURANTS = [
   {
     name: "INTI", city: "Nairobi", location: "One Africa Place, Waiyaki Way, Westlands, Nairobi", cuisine: "Japanese-Peruvian",
     description: "Nikkei cooking twenty floors above Westlands — the Japanese-Peruvian tradition of ceviche, tiradito and robata, plated with the most ambitious kitchen technique in the city and a skyline to match.",
-    priceRange: 4, phone: "+254 20 000 0000", email: "reservations@inti.example",
+    priceRange: 4, phone: null, email: null,
     imageUrl: DINING_IMG.fine, images: [DINING_IMG.fine, DINING_IMG.bar, DINING_IMG.casual],
     amenities: ["Rooftop","Bar","Reservations Required","Private Dining","Valet Parking","Vegetarian Options"],
     openingHours: defaultHours("12:00", "23:00", "12:00", "00:00"),
@@ -723,7 +726,7 @@ const RESTAURANTS = [
   {
     name: "Ankole Grill", city: "Nairobi", location: "Kitisuru, Nairobi", cuisine: "African Steakhouse",
     description: "Named for the long-horned cattle breed of the Great Lakes, Ankole makes the case for an East African steakhouse — dry-aged local beef over open flame, in a garden setting in Kitisuru.",
-    priceRange: 3, phone: "+254 20 000 0000", email: "kitisuru@ankolegrill.example",
+    priceRange: 3, phone: null, email: null,
     imageUrl: DINING_IMG.grill, images: [DINING_IMG.grill, DINING_IMG.casual, DINING_IMG.bar],
     amenities: ["Outdoor Seating","Bar","Parking","Live Music","Private Dining","Family Friendly"],
     openingHours: defaultHours("12:00", "22:30", "11:00", "23:00"),
@@ -731,7 +734,7 @@ const RESTAURANTS = [
   {
     name: "Shamba Café", city: "Nairobi", location: "Karen, Nairobi", cuisine: "Health & Brunch",
     description: "An all-day Karen café built around locally sourced produce — grain bowls, cold-press juices and a shop selling the same farm goods the kitchen cooks with.",
-    priceRange: 2, phone: "+254 20 000 0000", email: "hello@shambacafe.example",
+    priceRange: 2, phone: null, email: null,
     imageUrl: DINING_IMG.casual, images: [DINING_IMG.casual, DINING_IMG.fine],
     amenities: ["Outdoor Seating","Takeaway","Parking","Vegan Options","Vegetarian Options","Gluten-Free Options","Family Friendly"],
     openingHours: defaultHours("07:30", "18:00", "08:00", "18:00"),
@@ -741,7 +744,7 @@ const RESTAURANTS = [
   {
     name: "Haandi", city: "Nairobi", location: "The Mall, Westlands, Nairobi", cuisine: "North Indian",
     description: "North-West Frontier cooking that has held its Westlands following for decades — tandoor breads, slow-cooked dals and karahi dishes finished at the pass.",
-    priceRange: 3, phone: "+254 20 000 0000", email: "westlands@haandi.example",
+    priceRange: 3, phone: null, email: null,
     imageUrl: DINING_IMG.fine, images: [DINING_IMG.fine, DINING_IMG.casual],
     amenities: ["Bar","Parking","Takeaway","Private Dining","Vegetarian Options","Vegan Options","Halal"],
     openingHours: defaultHours("12:00", "22:30", "12:00", "23:00"),
@@ -749,7 +752,7 @@ const RESTAURANTS = [
   {
     name: "Misono", city: "Nairobi", location: "Lavington, Nairobi", cuisine: "Japanese",
     description: "A quiet Lavington Japanese room doing teppanyaki tables, a small sushi counter and a proper ramen bowl — the city's most complete Japanese offering.",
-    priceRange: 3, phone: "+254 20 000 0000", email: "reservations@misono.example",
+    priceRange: 3, phone: null, email: null,
     imageUrl: DINING_IMG.fine, images: [DINING_IMG.fine, DINING_IMG.casual],
     amenities: ["Bar","Parking","Private Dining","Reservations Required","Vegetarian Options","Takeaway"],
     openingHours: defaultHours("12:00", "22:00", "12:00", "22:30"),
@@ -759,7 +762,7 @@ const RESTAURANTS = [
   {
     name: "Sarabi Rooftop — Sankara Nairobi", city: "Nairobi", location: "Sankara Nairobi, Woodvale Grove, Westlands, Nairobi", cuisine: "Pan-African",
     description: "Sankara's rooftop pool deck and grill, and the Westlands address for closing a deal over nyama choma with a view. Sunset service is the one to book.",
-    priceRange: 4, phone: "+254 20 000 0000", email: "sarabi@sankara.example",
+    priceRange: 4, phone: null, email: null,
     imageUrl: DINING_IMG.bar, images: [DINING_IMG.bar, DINING_IMG.grill, DINING_IMG.fine],
     amenities: ["Rooftop","Bar","Outdoor Seating","Live Music","Valet Parking","Reservations Required","Pool Access"],
     openingHours: defaultHours("11:00", "23:00", "11:00", "00:00"),
@@ -767,7 +770,7 @@ const RESTAURANTS = [
   {
     name: "Jiko — Tribe Hotel", city: "Nairobi", location: "Tribe Hotel, Limuru Road, Gigiri, Nairobi", cuisine: "Contemporary African",
     description: "Tribe's signature dining room, built as a tribute to Kenyan growers — organic produce, a playful hand with presentation, and one of the more thoughtful African menus in the city.",
-    priceRange: 4, phone: "+254 20 000 0000", email: "jiko@tribe-hotel.example",
+    priceRange: 4, phone: null, email: null,
     website: "https://www.tribe-hotel.com/nairobi/jiko-restaurant-nairobi/",
     imageUrl: DINING_IMG.fine, images: [DINING_IMG.fine, DINING_IMG.casual],
     amenities: ["Bar","Outdoor Seating","Private Dining","Valet Parking","Reservations Required","Vegetarian Options","Vegan Options"],
@@ -776,7 +779,7 @@ const RESTAURANTS = [
   {
     name: "Lucca — Villa Rosa Kempinski", city: "Nairobi", location: "Villa Rosa Kempinski, Chiromo Road, Westlands, Nairobi", cuisine: "Italian",
     description: "Kempinski's Italian dining room, and the most formal of the hotel's eight venues — house-made pasta, a serious cellar, and service pitched at the old-school end.",
-    priceRange: 4, phone: "+254 20 000 0000", email: "lucca@kempinski.example",
+    priceRange: 4, phone: null, email: null,
     website: "https://www.kempinski.com/en/hotel-villa-rosa/restaurants-bars",
     imageUrl: DINING_IMG.fine, images: [DINING_IMG.fine, DINING_IMG.bar],
     amenities: ["Bar","Private Dining","Valet Parking","Reservations Required","Wine List","Vegetarian Options"],
@@ -785,7 +788,7 @@ const RESTAURANTS = [
   {
     name: "Harvest — Trademark Hotel", city: "Nairobi", location: "Trademark Hotel, Church Road, Museum Hill, Nairobi", cuisine: "International",
     description: "Trademark's all-day dining room off the atrium — a strong breakfast buffet, a working lunch menu, and a poolside terrace that gets the afternoon sun.",
-    priceRange: 3, phone: "+254 20 000 0000", email: "harvest@trademark.example",
+    priceRange: 3, phone: null, email: null,
     imageUrl: DINING_IMG.casual, images: [DINING_IMG.casual, DINING_IMG.fine],
     amenities: ["Outdoor Seating","Bar","Valet Parking","Buffet","Family Friendly","Vegetarian Options"],
     openingHours: defaultHours("06:30", "22:30", "07:00", "23:00"),
@@ -793,7 +796,7 @@ const RESTAURANTS = [
   {
     name: "Osteria Romana Terrazo — Sankara Nairobi", city: "Nairobi", location: "Sankara Nairobi, Woodvale Grove, Westlands, Nairobi", cuisine: "Italian",
     description: "The terrace-level Italian at Sankara — Roman classics served from lunch through dinner, spilling onto a covered terrace over Woodvale Grove.",
-    priceRange: 3, phone: "+254 20 000 0000", email: "osteriaromana@sankara.example",
+    priceRange: 3, phone: null, email: null,
     website: "https://sankara.com/dining/osteria-romana-terrazo/",
     imageUrl: DINING_IMG.casual, images: [DINING_IMG.casual, DINING_IMG.bar],
     amenities: ["Outdoor Seating","Bar","Valet Parking","Reservations Required","Vegetarian Options","Wine List"],
@@ -804,7 +807,7 @@ const RESTAURANTS = [
   {
     name: "Nyama Choma Ranch — Safari Park Hotel", city: "Nairobi", location: "Safari Park Hotel, Thika Road, Kasarani, Nairobi", cuisine: "Grill / Nyama Choma",
     description: "The open-sided grill at the heart of Safari Park's gardens, and one of the city's benchmark nyama choma addresses — meat carved to the table, served alongside the Safari Cats dinner show.",
-    priceRange: 3, phone: "+254 20 000 0000", email: "nyamachoma@safariparkhotel.example",
+    priceRange: 3, phone: null, email: null,
     imageUrl: DINING_IMG.grill, images: [DINING_IMG.grill, DINING_IMG.casual, DINING_IMG.bar],
     amenities: ["Outdoor Seating","Bar","Parking","Live Music","Family Friendly","Group Dining","Buffet"],
     openingHours: defaultHours("12:00", "23:00", "12:00", "23:30"),
@@ -814,7 +817,7 @@ const RESTAURANTS = [
   {
     name: "Hero Restaurant", city: "Nairobi", location: "Village Market, Limuru Road, Gigiri, Nairobi", cuisine: "International",
     description: "The comic-themed dining room at Village Market, built around four house characters. Broad international menu, a long wine list, and a room that works equally for a family lunch or an after-work bottle.",
-    priceRange: 3, phone: "+254 20 000 0000", email: "hello@heronairobi.example",
+    priceRange: 3, phone: null, email: null,
     imageUrl: DINING_IMG.casual, images: [DINING_IMG.casual, DINING_IMG.bar],
     amenities: ["Bar","Outdoor Seating","Parking","Family Friendly","Wine List","Takeaway","Vegetarian Options"],
     openingHours: defaultHours("11:00", "22:30", "10:00", "23:00"),
@@ -822,7 +825,7 @@ const RESTAURANTS = [
   {
     name: "Golden Stool", city: "Nairobi", location: "Village Market, Limuru Road, Gigiri, Nairobi", cuisine: "West African",
     description: "West African cooking at Village Market — jollof, egusi, suya and grilled shrimp, in a room dressed with Ashanti motifs. The most complete Ghanaian and Nigerian menu in Nairobi.",
-    priceRange: 2, phone: "+254 20 000 0000", email: "hello@goldenstool.example",
+    priceRange: 2, phone: null, email: null,
     imageUrl: DINING_IMG.casual, images: [DINING_IMG.casual, DINING_IMG.grill],
     amenities: ["Outdoor Seating","Bar","Parking","Takeaway","Private Dining","Family Friendly","Halal"],
     openingHours: defaultHours("11:00", "22:00", "11:00", "22:30"),
@@ -830,7 +833,7 @@ const RESTAURANTS = [
   {
     name: "Sierra Lounge Yaya", city: "Nairobi", location: "Yaya Centre, Argwings Kodhek Road, Kilimani, Nairobi", cuisine: "Grill / Brewery",
     description: "House-brewed lager and ale alongside a wood-fired grill, on the top level of Yaya Centre. The reliable Kilimani choice for a long lunch that becomes an evening.",
-    priceRange: 3, phone: "+254 20 000 0000", email: "yaya@sierralounge.example",
+    priceRange: 3, phone: null, email: null,
     imageUrl: DINING_IMG.bar, images: [DINING_IMG.bar, DINING_IMG.grill, DINING_IMG.casual],
     amenities: ["Bar","Outdoor Seating","Parking","Live Music","Sports Screens","Takeaway","Brewery"],
     openingHours: defaultHours("11:00", "23:00", "11:00", "00:00"),
@@ -838,7 +841,7 @@ const RESTAURANTS = [
   {
     name: "Café Deli The Hub", city: "Nairobi", location: "The Hub Karen, Dagoretti Road, Karen, Nairobi", cuisine: "Café / Kenyan",
     description: "The Karen branch of the homegrown all-day café — Kenyan breakfasts, a strong pastry counter and a menu that runs from ugali to pasta without apology.",
-    priceRange: 2, phone: "+254 20 000 0000", email: "thehub@cafedeli.example",
+    priceRange: 2, phone: null, email: null,
     imageUrl: DINING_IMG.casual, images: [DINING_IMG.casual, DINING_IMG.fine],
     amenities: ["Outdoor Seating","Parking","Takeaway","Family Friendly","Vegetarian Options","Breakfast"],
     openingHours: defaultHours("07:00", "22:00", "07:30", "22:00"),
@@ -846,7 +849,7 @@ const RESTAURANTS = [
   {
     name: "Chowpaty", city: "Nairobi", location: "Diamond Plaza, Masari Road, Parklands, Nairobi", cuisine: "Indian Vegetarian",
     description: "Parklands' long-standing pure-vegetarian Indian kitchen — Mumbai street chaat, South Indian dosas and Gujarati thalis, at Diamond Plaza.",
-    priceRange: 1, phone: "+254 20 000 0000", email: "info@chowpaty.example",
+    priceRange: 1, phone: null, email: null,
     imageUrl: DINING_IMG.casual, images: [DINING_IMG.casual, DINING_IMG.fine],
     amenities: ["Takeaway","Parking","Family Friendly","Vegetarian Options","Vegan Options","Group Dining"],
     openingHours: defaultHours("11:00", "22:00", "11:00", "22:30"),
@@ -858,7 +861,7 @@ const RESTAURANTS = [
   {
     name: "B-Club Nairobi", city: "Nairobi", location: "Galana Plaza, Galana Road, Kilimani, Nairobi", cuisine: "Club & Lounge",
     description: "Nairobi's highest-end nightclub — bottle service, a strict door and a room that fills with the city's celebrity crowd well after midnight. Table reservations are effectively required at weekends.",
-    priceRange: 4, phone: "+254 20 000 0000", email: "tables@bclubnairobi.example",
+    priceRange: 4, phone: null, email: null,
     imageUrl: DINING_IMG.bar, images: [DINING_IMG.bar, DINING_IMG.casual],
     amenities: ["Bar","VIP Tables","Bottle Service","Valet Parking","Live DJ","Reservations Required","Dress Code","Late Night"],
     openingHours: defaultHours("21:00", "04:00", "21:00", "05:00"),
@@ -866,7 +869,7 @@ const RESTAURANTS = [
   {
     name: "Mercury Lounge Village Market", city: "Nairobi", location: "Village Market, Limuru Road, Gigiri, Nairobi", cuisine: "Club & Lounge",
     description: "Cocktail bar, restaurant and weekend DJ room in one — and the most reliable place in Nairobi to catch a live rhythm section on a weeknight rather than a playlist.",
-    priceRange: 3, phone: "+254 20 000 0000", email: "gigiri@mercurylounge.example",
+    priceRange: 3, phone: null, email: null,
     imageUrl: DINING_IMG.bar, images: [DINING_IMG.bar, DINING_IMG.casual, DINING_IMG.fine],
     amenities: ["Bar","Outdoor Seating","Live Music","Parking","Late Night","Reservations Required","Vegetarian Options"],
     openingHours: defaultHours("12:00", "01:00", "12:00", "02:00"),
@@ -874,7 +877,7 @@ const RESTAURANTS = [
   {
     name: "The Alchemist Bar", city: "Nairobi", location: "Parklands Road, Westlands, Nairobi", cuisine: "Club & Lounge",
     description: "The open-air Westlands courtyard that reset Nairobi nightlife — food trucks around a container bar, a proper stage, and a rotation of live bands, DJ sets, comedy and fashion nights.",
-    priceRange: 2, phone: "+254 20 000 0000", email: "hello@alchemist.example",
+    priceRange: 2, phone: null, email: null,
     imageUrl: DINING_IMG.bar, images: [DINING_IMG.bar, DINING_IMG.casual, DINING_IMG.grill],
     amenities: ["Bar","Outdoor Seating","Live Music","Live DJ","Food Trucks","Parking","Late Night","Family Friendly"],
     openingHours: defaultHours("12:00", "23:00", "12:00", "03:00"),
@@ -884,7 +887,7 @@ const RESTAURANTS = [
   {
     name: "Tamarind Mombasa", city: "Mombasa", location: "Silo Road, Nyali, Mombasa", cuisine: "Seafood",
     description: "The white Moorish landmark above Tudor Creek, and the coast's best-known seafood room for four decades. The dhow dinner cruise leaves from the jetty below.",
-    priceRange: 4, phone: "+254 41 000 0000", email: "mombasa@tamarind.example",
+    priceRange: 4, phone: null, email: null,
     imageUrl: DINING_IMG.fine, images: [DINING_IMG.fine, DINING_IMG.bar],
     amenities: ["Outdoor Seating","Bar","Parking","Reservations Required","Private Dining","Sea View","Wine List"],
     openingHours: defaultHours("12:00", "22:30", "12:00", "23:00"),
@@ -892,7 +895,7 @@ const RESTAURANTS = [
   {
     name: "Ali Barbour's Cave Restaurant", city: "Diani", location: "Diani Beach Road, Diani, Kwale", cuisine: "Seafood",
     description: "Dinner served in a coral cave several hundred thousand years old, open to the stars through gaps in the roof. Candlelit, seafood-led, and unlike anywhere else in Kenya.",
-    priceRange: 4, phone: "+254 40 000 0000", email: "reservations@alibarbours.example",
+    priceRange: 4, phone: null, email: null,
     imageUrl: DINING_IMG.fine, images: [DINING_IMG.fine, DINING_IMG.casual],
     amenities: ["Reservations Required","Bar","Parking","Private Dining","Romantic","Wine List"],
     openingHours: defaultHours("18:30", "23:00", "18:30", "23:30"),
@@ -900,7 +903,7 @@ const RESTAURANTS = [
   {
     name: "The Old Man and the Sea", city: "Malindi", location: "Vasco Da Gama Road, Malindi, Kilifi", cuisine: "Italian Seafood",
     description: "Malindi's Italian-Swahili seafood room in an old Portuguese-era building near the jetty — pasta with the morning's catch, and a wine list unusual for a coastal town.",
-    priceRange: 3, phone: "+254 42 000 0000", email: "info@oldmanandthesea.example",
+    priceRange: 3, phone: null, email: null,
     imageUrl: DINING_IMG.fine, images: [DINING_IMG.fine, DINING_IMG.casual],
     amenities: ["Outdoor Seating","Bar","Reservations Required","Wine List","Sea View"],
     openingHours: defaultHours("12:00", "22:30", "12:00", "23:00"),
@@ -908,7 +911,7 @@ const RESTAURANTS = [
   {
     name: "Ranch House Bistro", city: "Naivasha", location: "Moi South Lake Road, Naivasha, Nakuru County", cuisine: "Farm-to-Table",
     description: "A working-farm bistro on South Lake Road serving what the surrounding smallholdings produce — the standard stop between Nairobi and the Mara.",
-    priceRange: 2, phone: "+254 50 000 0000", email: "hello@ranchhousebistro.example",
+    priceRange: 2, phone: null, email: null,
     imageUrl: DINING_IMG.casual, images: [DINING_IMG.casual, DINING_IMG.grill],
     amenities: ["Outdoor Seating","Garden","Parking","Family Friendly","Vegetarian Options","Takeaway"],
     openingHours: defaultHours("08:00", "20:00", "08:00", "21:00"),
@@ -916,7 +919,7 @@ const RESTAURANTS = [
   {
     name: "Trout Tree Restaurant", city: "Nanyuki", location: "Nanyuki–Naro Moru Road, Nanyuki, Laikipia", cuisine: "Trout / Farm-to-Table",
     description: "Tables built into the branches of a giant mugumo fig above a working trout farm, with colobus monkeys in the canopy. You choose the fish from the ponds below.",
-    priceRange: 2, phone: "+254 62 000 0000", email: "info@trouttree.example",
+    priceRange: 2, phone: null, email: null,
     imageUrl: DINING_IMG.casual, images: [DINING_IMG.casual, DINING_IMG.grill],
     amenities: ["Outdoor Seating","Parking","Family Friendly","Vegetarian Options","Takeaway","Garden"],
     openingHours: defaultHours("10:00", "18:00", "10:00", "18:00"),
@@ -924,7 +927,7 @@ const RESTAURANTS = [
   {
     name: "Kiboko Bay Lakeside Restaurant", city: "Kisumu", location: "Dunga Beach, Kisumu", cuisine: "Lake Fish",
     description: "An open deck on the Lake Victoria shore where the tilapia comes out of the water the same morning. Hippo surface off the terrace at dusk.",
-    priceRange: 2, phone: "+254 57 000 0000", email: "restaurant@kibokobay.example",
+    priceRange: 2, phone: null, email: null,
     imageUrl: DINING_IMG.casual, images: [DINING_IMG.casual, DINING_IMG.grill],
     amenities: ["Outdoor Seating","Bar","Parking","Family Friendly","Lake View","Boat Trips"],
     openingHours: defaultHours("08:00", "22:00", "08:00", "22:30"),
@@ -932,7 +935,7 @@ const RESTAURANTS = [
   {
     name: "Courtyard Restaurant Nakuru", city: "Nakuru", location: "Kenyatta Avenue, Nakuru Town", cuisine: "Grill / Nyama Choma",
     description: "Nakuru town's reliable grill — charcoal nyama choma in a walled courtyard, busy from lunch through the evening.",
-    priceRange: 1, phone: "+254 51 000 0000", email: "info@courtyardnakuru.example",
+    priceRange: 1, phone: null, email: null,
     imageUrl: DINING_IMG.grill, images: [DINING_IMG.grill, DINING_IMG.casual],
     amenities: ["Outdoor Seating","Bar","Parking","Takeaway","Family Friendly","Group Dining","Halal"],
     openingHours: defaultHours("10:00", "22:30", "10:00", "23:00"),
@@ -952,7 +955,7 @@ const CLUBS = [
     description: "Kenya's best-known championship course and long-time host of the Kenya Open, laid out among the mature trees of Muthaiga. Visitors can play, but the tee sheet belongs to members first.",
     holes: 18, par: 71, visitorFee: 6000, currency: "KES",
     visitorNotes: "Call ahead. Wednesday and Saturday are competition days and generally closed to visitors.",
-    phone: "+254 20 000 0000", email: "info@muthaigagolfclub.example", website: "https://www.muthaigagolfclub.com",
+    phone: null, email: null, website: "https://www.muthaigagolfclub.com",
     amenities: ["Championship Course","Clubhouse","Pro Shop","Driving Range","Caddies","Restaurant","Bar","Tennis","Swimming Pool","Parking"],
   },
   {
@@ -961,7 +964,7 @@ const CLUBS = [
     description: "A parkland course on part of Karen Blixen's original estate, with the Ngong Hills on the skyline. As much a country club as a golf club — tennis, squash and a busy social calendar alongside the course.",
     holes: 18, par: 72, visitorFee: 7000, currency: "KES",
     visitorNotes: "Visitors play by prior arrangement, usually introduced by a member.",
-    phone: "+254 20 000 0000", email: "info@karencountryclub.example", website: null,
+    phone: null, email: null, website: null,
     amenities: ["Championship Course","Clubhouse","Pro Shop","Driving Range","Caddies","Tennis","Squash","Swimming Pool","Restaurant","Bar","Parking"],
   },
   {
@@ -970,7 +973,7 @@ const CLUBS = [
     description: "Founded in 1906 and the oldest golf club in East Africa, a short drive from the city centre on Ngong Road. Compact, tree-lined and more central than its rivals.",
     holes: 18, par: 71, visitorFee: 5000, currency: "KES",
     visitorNotes: "Weekday visitor tee times are the easiest to get.",
-    phone: "+254 20 000 0000", email: "info@royalnairobigc.example", website: null,
+    phone: null, email: null, website: null,
     amenities: ["Clubhouse","Pro Shop","Driving Range","Caddies","Restaurant","Bar","Parking"],
   },
   {
@@ -979,7 +982,7 @@ const CLUBS = [
     description: "The one Nairobi club built around a hotel, so a visitor can book a room and a tee time in the same call. An undulating course through indigenous forest on the northern edge of the city.",
     holes: 18, par: 72, visitorFee: 8000, currency: "KES",
     visitorNotes: "Open to visiting golfers and hotel guests without an introduction.",
-    phone: "+254 20 000 0000", email: "reservations@windsorgolfresort.example", website: null,
+    phone: null, email: null, website: null,
     amenities: ["Championship Course","Hotel","Clubhouse","Pro Shop","Driving Range","Caddies","Spa","Swimming Pool","Tennis","Restaurant","Bar","Conference Rooms","Parking"],
   },
   {
@@ -988,7 +991,7 @@ const CLUBS = [
     description: "A hilly, well-regarded course outside the city at Kikuyu, rated by many Kenyan golfers alongside Muthaiga for the quality of the layout if not for convenience.",
     holes: 18, par: 71, visitorFee: 7500, currency: "KES",
     visitorNotes: "Weekday green fee around 7,500; weekends nearer 10,000. Book ahead.",
-    phone: "+254 20 000 0000", email: "info@sigonagolfclub.example", website: null,
+    phone: null, email: null, website: null,
     amenities: ["Championship Course","Clubhouse","Pro Shop","Driving Range","Caddies","Restaurant","Bar","Parking"],
   },
   {
@@ -997,7 +1000,7 @@ const CLUBS = [
     description: "High above Nairobi in the tea country at Limuru, cool enough to want a sweater and quiet enough to hear the birds. A different game from the city courses.",
     holes: 18, par: 71, visitorFee: 6000, currency: "KES",
     visitorNotes: "Visitors welcome by arrangement; the drive from Nairobi takes about an hour.",
-    phone: "+254 20 000 0000", email: "info@limurucountryclub.example", website: null,
+    phone: null, email: null, website: null,
     amenities: ["Clubhouse","Pro Shop","Caddies","Tennis","Restaurant","Bar","Parking"],
   },
   {
@@ -1006,7 +1009,7 @@ const CLUBS = [
     description: "A relaxed members' sports club off Ngong Road with a nine-hole course alongside cricket and hockey. Less formal than the championship clubs and correspondingly easier to get on.",
     holes: 9, par: 35, visitorFee: 3000, currency: "KES",
     visitorNotes: "Nine holes played twice for a full round. Cricket and hockey share the grounds.",
-    phone: "+254 20 000 0000", email: "info@vetlabsportsclub.example", website: null,
+    phone: null, email: null, website: null,
     amenities: ["Clubhouse","Cricket","Hockey","Caddies","Restaurant","Bar","Parking"],
   },
   {
@@ -1015,7 +1018,7 @@ const CLUBS = [
     description: "The coast's championship course, a short drive from the Nyali beach hotels. Warm, flat, and played early before the heat builds.",
     holes: 18, par: 71, visitorFee: 5500, currency: "KES",
     visitorNotes: "Popular with hotel guests; the early morning tee times are the pleasant ones.",
-    phone: "+254 41 000 0000", email: "info@nyaligolf.example", website: null,
+    phone: null, email: null, website: null,
     amenities: ["Championship Course","Clubhouse","Pro Shop","Driving Range","Caddies","Swimming Pool","Restaurant","Bar","Parking"],
   },
   {
@@ -1024,7 +1027,7 @@ const CLUBS = [
     description: "Cut into an escarpment above Lake Naivasha with the Rift floor spread out below — the most dramatic setting of any course in Kenya, and zebra on the fairways often enough to be unremarkable.",
     holes: 18, par: 72, visitorFee: 7000, currency: "KES",
     visitorNotes: "Open to lodge guests and visiting golfers. The altitude adds noticeable distance off the tee.",
-    phone: "+254 50 000 0000", email: "golf@greatriftvalleylodge.example", website: null,
+    phone: null, email: null, website: null,
     amenities: ["Championship Course","Hotel","Clubhouse","Pro Shop","Caddies","Swimming Pool","Restaurant","Bar","Game Viewing","Parking"],
   },
   {
@@ -1033,7 +1036,7 @@ const CLUBS = [
     description: "A nine-hole course on the equator with Mount Kenya filling the skyline on a clear morning. Unfussy, welcoming, and the social centre of Nanyuki.",
     holes: 9, par: 35, visitorFee: 2500, currency: "KES",
     visitorNotes: "Visitors pay a green fee at the clubhouse. Mountain views are best before the cloud comes in.",
-    phone: "+254 62 000 0000", email: "info@nanyukisportsclub.example", website: null,
+    phone: null, email: null, website: null,
     amenities: ["Clubhouse","Caddies","Tennis","Squash","Restaurant","Bar","Parking"],
   },
 ];
@@ -1083,7 +1086,7 @@ async function main() {
   for (const h of HOTELS) {
     const existing = await prisma.hotel.findFirst({ where: { name: h.name } });
     if (!existing) {
-      const hotel = await prisma.hotel.create({ data: { partnerId: hotelPartner.id, name: h.name, description: h.description, city: h.city, location: h.location, starRating: h.starRating, phone: h.phone, email: h.email, website: "website" in h ? h.website : null, checkInTime: h.checkInTime, checkOutTime: h.checkOutTime, imageUrl: h.imageUrl, images: h.images, amenities: h.amenities, published: true } });
+      const hotel = await prisma.hotel.create({ data: { partnerId: hotelPartner.id, name: h.name, description: h.description, city: h.city, location: h.location, starRating: h.starRating, phone: h.phone, email: h.email, website: "website" in h ? h.website : null, checkInTime: h.checkInTime, checkOutTime: h.checkOutTime, imageUrl: h.imageUrl, images: h.images, amenities: h.amenities, published: true, verified: "website" in h && !!h.website } });
       for (const r of h.rooms) await prisma.room.create({ data: { hotelId: hotel.id, ...r, available: true } });
       // No seeded reviews. Ratings belong to real guests after a real stay;
       // inventing them for a named hotel is both misleading and unlawful in
@@ -1097,7 +1100,7 @@ async function main() {
   for (const r of RESTAURANTS) {
     const existing = await prisma.restaurant.findFirst({ where: { name: r.name } });
     if (!existing) {
-      const restaurant = await prisma.restaurant.create({ data: { partnerId: restaurantPartner.id, name: r.name, description: r.description, city: r.city, location: r.location, cuisine: r.cuisine, priceRange: r.priceRange, phone: r.phone, email: r.email, website: "website" in r ? r.website : null, imageUrl: r.imageUrl, images: r.images, amenities: r.amenities, openingHours: r.openingHours, published: true } });
+      const restaurant = await prisma.restaurant.create({ data: { partnerId: restaurantPartner.id, name: r.name, description: r.description, city: r.city, location: r.location, cuisine: r.cuisine, priceRange: r.priceRange, phone: r.phone, email: r.email, website: "website" in r ? r.website : null, imageUrl: r.imageUrl, images: r.images, amenities: r.amenities, openingHours: r.openingHours, published: true, verified: "website" in r && !!r.website } });
       // No seeded menu items — prices are the venue's to confirm, and guests
       // are sent to the venue's own site to book. Partners add their real menu
       // from the dashboard during onboarding.
@@ -1122,7 +1125,7 @@ async function main() {
           visitorNotes: c.visitorNotes,
           phone: c.phone, email: c.email, website: c.website,
           imageUrl: HOTEL_IMG.pool, images: [HOTEL_IMG.pool, HOTEL_IMG.classic],
-          amenities: c.amenities, published: true,
+          amenities: c.amenities, published: true, verified: !!c.website,
         },
       });
       clubsCreated++;

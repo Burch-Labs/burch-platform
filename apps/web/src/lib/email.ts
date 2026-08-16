@@ -76,6 +76,62 @@ function primaryButton(href: string, label: string): string {
   return `<a href="${href}" style="display:inline-block;background:#8A6914;color:#ffffff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;margin-bottom:24px;">${label}</a>`;
 }
 
+// ─── Venue listing claims ────────────────────────────────────────────────────
+
+export interface VenueClaim {
+  venueName: string;
+  venueType: "hotel" | "restaurant" | "club";
+  venueId: string;
+  contactName: string;
+  role: string;
+  workEmail: string;
+  phone: string;
+  website?: string;
+}
+
+/**
+ * Alerts the team that someone wants to take ownership of a listing.
+ *
+ * Goes to our own inbox, never to the venue's seeded address — that address is
+ * unconfirmed research, and mailing it about a claim would be both noise to a
+ * stranger and a way to leak who is claiming what.
+ */
+export async function sendVenueClaimNotification(claim: VenueClaim): Promise<void> {
+  const subject = `Listing claim: ${claim.venueName}`;
+  const link = `${BASE_URL}/${claim.venueType}s/${claim.venueId}`;
+
+  if (!HAS_RESEND) {
+    devLog(subject, link);
+    console.log(`  ${claim.contactName} (${claim.role}) — ${claim.workEmail} / ${claim.phone}`);
+    if (claim.website) console.log(`  website: ${claim.website}`);
+    return;
+  }
+
+  const { Resend } = await import("resend");
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  await resend.emails.send({
+    from: FROM,
+    to: OVERRIDE_TO ?? process.env.CLAIMS_INBOX ?? FROM,
+    replyTo: claim.workEmail,
+    subject,
+    html: emailWrapper(`
+      <h2 style="margin:0 0 8px;font-size:20px;color:#131E30;">Listing claim</h2>
+      <p style="margin:0 0 24px;font-size:15px;color:#435671;line-height:1.6;">
+        <strong>${claim.contactName}</strong> (${claim.role}) says they work at
+        <strong>${claim.venueName}</strong>.
+      </p>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
+        <tr><td style="padding:8px 0;font-size:14px;color:#5D708F;width:40%;">Email</td><td style="padding:8px 0;font-size:14px;color:#131E30;">${claim.workEmail}</td></tr>
+        <tr><td style="padding:8px 0;font-size:14px;color:#5D708F;">Phone</td><td style="padding:8px 0;font-size:14px;color:#131E30;">${claim.phone}</td></tr>
+        ${claim.website ? `<tr><td style="padding:8px 0;font-size:14px;color:#5D708F;">Booking page</td><td style="padding:8px 0;font-size:14px;color:#131E30;">${claim.website}</td></tr>` : ""}
+        <tr><td style="padding:8px 0;font-size:14px;color:#5D708F;">Listing</td><td style="padding:8px 0;font-size:14px;color:#131E30;">${link}</td></tr>
+      </table>
+      <p style="margin:0;font-size:13px;color:#5D708F;">Confirm they work there before changing anything on the listing.</p>
+    `),
+  });
+}
+
 // ─── Passwordless sign-in code ───────────────────────────────────────────────
 
 export async function sendSignInCodeEmail(

@@ -118,6 +118,9 @@ export default async function ClubDetailPage({ params }: PageProps) {
                 venueName={club.name}
                 phone={club.phone}
                 email={club.email}
+                verified={club.verified}
+                venueType="club"
+                venueId={club.id}
               />
             </div>
           </div>

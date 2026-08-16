@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { UnverifiedNotice } from "./UnverifiedNotice";
 
 interface BookExternallyProps {
   /** The venue's own booking page. Null until the partner supplies one. */
@@ -6,6 +7,11 @@ interface BookExternallyProps {
   venueName: string;
   phone?: string | null;
   email?: string | null;
+  /** Whether the venue itself confirmed these details. */
+  verified?: boolean;
+  /** Used to build the claim link when details are unconfirmed. */
+  venueType?: "hotel" | "restaurant" | "club";
+  venueId?: string;
   className?: string;
 }
 
@@ -24,8 +30,58 @@ export function BookExternally({
   venueName,
   phone,
   email,
+  verified = false,
+  venueType,
+  venueId,
   className,
 }: BookExternallyProps) {
+  // Unconfirmed details never get a confident "Book" button. Sending someone to
+  // a URL we guessed at, under a button that says booking, is the failure this
+  // whole flag exists to prevent.
+  if (!verified && venueType && venueId) {
+    return (
+      <div className={cn("space-y-2", className)}>
+        {(website || phone || email) && (
+          <div className="rounded-xl border border-gray-200 bg-white px-5 py-4 space-y-1">
+            <p className="text-sm font-medium text-gray-700 mb-1">What we have</p>
+            {website && (
+              <p className="text-sm">
+                <a
+                  href={website}
+                  target="_blank"
+                  rel="noopener noreferrer nofollow"
+                  className="text-orange-700 hover:underline break-all"
+                >
+                  {website.replace(/^https?:\/\//, "")}
+                </a>
+              </p>
+            )}
+            {phone && (
+              <p className="text-sm text-gray-600">
+                <a href={`tel:${phone.replace(/\s/g, "")}`} className="text-orange-700 hover:underline">
+                  {phone}
+                </a>
+              </p>
+            )}
+            {email && (
+              <p className="text-sm text-gray-600">
+                <a href={`mailto:${email}`} className="text-orange-700 hover:underline">
+                  {email}
+                </a>
+              </p>
+            )}
+          </div>
+        )}
+        <UnverifiedNotice
+          venueType={venueType}
+          venueId={venueId}
+          venueName={venueName}
+          bare={!website && !phone && !email}
+        />
+      </div>
+    );
+  }
+
   if (website) {
     return (
       <div className={cn("space-y-2", className)}>

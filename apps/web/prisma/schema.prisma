@@ -261,6 +261,16 @@ model Club {
   images    String[] @default([])
   amenities String[] @default([])
   published Boolean  @default(false)
+  /**
+   * Whether the venue itself has confirmed these details.
+   *
+   * False on everything we seeded. Seeded contact details are our research, not
+   * the venue's word, and a plausible-looking wrong number is worse than no
+   * number — someone dials it and reaches a stranger. The UI presents details
+   * as actionable only when this is true; otherwise it says so and offers the
+   * venue a way to correct them.
+   */
+  verified     Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -337,6 +347,16 @@ model Hotel {
   checkInTime  String   @default("14:00")
   checkOutTime String   @default("11:00")
   published    Boolean  @default(false)
+  /**
+   * Whether the venue itself has confirmed these details.
+   *
+   * False on everything we seeded. Seeded contact details are our research, not
+   * the venue's word, and a plausible-looking wrong number is worse than no
+   * number — someone dials it and reaches a stranger. The UI presents details
+   * as actionable only when this is true; otherwise it says so and offers the
+   * venue a way to correct them.
+   */
+  verified     Boolean  @default(false)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -407,6 +427,16 @@ model Restaurant {
   openingHours Json?
   amenities    String[] @default([])
   published    Boolean  @default(false)
+  /**
+   * Whether the venue itself has confirmed these details.
+   *
+   * False on everything we seeded. Seeded contact details are our research, not
+   * the venue's word, and a plausible-looking wrong number is worse than no
+   * number — someone dials it and reaches a stranger. The UI presents details
+   * as actionable only when this is true; otherwise it says so and offers the
+   * venue a way to correct them.
+   */
+  verified     Boolean  @default(false)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
