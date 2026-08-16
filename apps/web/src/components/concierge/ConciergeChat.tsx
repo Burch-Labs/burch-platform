@@ -47,7 +47,7 @@ export function ConciergeChat() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Hello! I'm your Burch AI Concierge. I can help you discover the best hotels, restaurants, and events across Africa — or plan a full travel itinerary. What are you looking for today?",
+      content: "Hello! I'm your dontbeboring AI Concierge. I can help you discover the best hotels, restaurants, and events across Kenya — or plan a full travel itinerary. What are you looking for today?",
     },
   ]);
   const [input, setInput] = useState("");
@@ -242,7 +242,7 @@ export function ConciergeChat() {
           </button>
         </div>
         <p className="text-xs text-gray-400 mt-2 text-center">
-          Powered by Burch AI · Recommendations are based on live availability
+          Powered by dontbeboring AI · Recommendations are based on live availability
         </p>
       </div>
     </div>

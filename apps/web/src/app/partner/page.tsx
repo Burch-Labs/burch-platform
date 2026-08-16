@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { PayoutStatusCard } from "@/components/partner/PayoutStatusCard";
 import { NavBar } from "@/components/layout/NavBar";
 import { ConfigHealthBanner } from "@/components/partner/ConfigHealthBanner";
 import Link from "next/link";
@@ -17,6 +18,7 @@ export default async function PartnerPage() {
     where: { userId: session.user.id },
     include: {
       _count: { select: { events: true, hotels: true, restaurants: true } },
+      payoutAccount: { select: { status: true, rejectionReason: true } },
       hotels:      { select: { id: true } },
       events:      { select: { id: true } },
       restaurants: { select: { id: true } },
@@ -70,7 +72,7 @@ export default async function PartnerPage() {
             <p className="text-4xl mb-4">🏢</p>
             <h2 className="text-lg font-semibold text-gray-900 mb-2">Set up your business</h2>
             <p className="text-sm text-gray-500 mb-6 max-w-sm mx-auto">
-              Create your partner profile to start listing events, hotels, and restaurants on Burch.
+              Create your partner profile to start listing events, hotels, and restaurants on dontbeboring.
             </p>
             <Link
               href="/partner/onboarding"
@@ -81,16 +83,19 @@ export default async function PartnerPage() {
           </div>
         ) : (
           <>
-            {/* Status banner */}
-            {partner.status === "PENDING" && (
-              <div className="mb-6 rounded-xl bg-amber-50 border border-amber-200 px-5 py-4 flex items-start gap-3">
-                <span className="text-amber-500 text-lg">⏳</span>
-                <div>
-                  <p className="text-sm font-medium text-amber-800">Awaiting approval</p>
-                  <p className="text-sm text-amber-700 mt-0.5">
-                    Your partner account is under review. You&apos;ll be notified once approved.
-                  </p>
-                </div>
+            {/* Listing is open from signup, so the only thing still gated is
+                money. This is the banner that matters now. */}
+            <PayoutStatusCard
+              status={partner.payoutAccount?.status ?? null}
+              rejectionReason={partner.payoutAccount?.rejectionReason}
+            />
+
+            {partner.status === "SUSPENDED" && (
+              <div className="mb-6 rounded-xl bg-red-50 border border-red-200 px-5 py-4">
+                <p className="text-sm font-medium text-red-800">Account suspended</p>
+                <p className="text-sm text-red-700 mt-0.5">
+                  Your listings are hidden and payouts are stopped. Contact support.
+                </p>
               </div>
             )}
 

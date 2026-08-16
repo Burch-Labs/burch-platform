@@ -1,3 +1,4 @@
+import { formatVenueAddress } from "@/lib/utils";
 import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -33,7 +34,7 @@ export async function generateMetadata({ params }: PageProps) {
   });
   if (!event) return { title: "Event not found" };
   return {
-    title: `${event.title} — Burch`,
+    title: `${event.title} — dontbeboring`,
     description: event.description ?? undefined,
   };
 }
@@ -151,7 +152,7 @@ export default async function EventDetailPage({ params }: PageProps) {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   ),
                   label: "Location",
-                  value: `${event.location}${event.city ? `, ${event.city}` : ""}`,
+                  value: formatVenueAddress(event.location, event.city),
                 },
                 {
                   icon: (

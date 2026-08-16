@@ -140,6 +140,58 @@ export async function stkPush({
   };
 }
 
+export interface StkQueryResult {
+  /** "0" when the customer completed payment; any other code means they did not. */
+  resultCode: string;
+  resultDesc: string;
+}
+
+/**
+ * Ask Daraja directly what happened to an STK push.
+ *
+ * Daraja does not sign its callbacks, and the callback endpoint has to stay
+ * publicly reachable for Safaricom to hit it. That combination means a POST
+ * claiming success proves nothing on its own — anyone can send one. This query
+ * is the out-of-band check: we ask Safaricom over an authenticated channel we
+ * opened ourselves, so a forged callback cannot influence the answer.
+ *
+ * Treat a throw as "unknown", never as failure — Daraja returns an error while
+ * a push is still being processed, and marking a real payment failed because a
+ * query came back early would lose a paying customer their ticket.
+ */
+export async function stkQuery(checkoutRequestId: string): Promise<StkQueryResult> {
+  const shortcode = process.env.MPESA_SHORTCODE;
+  const passkey = process.env.MPESA_PASSKEY;
+  if (!shortcode || !passkey) throw new Error("M-Pesa is not configured");
+
+  const token = await getAccessToken();
+  const ts = timestamp();
+  const password = Buffer.from(`${shortcode}${passkey}${ts}`).toString("base64");
+
+  const res = await fetch(`${BASE_URL}/mpesa/stkpushquery/v1/query`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      BusinessShortCode: shortcode,
+      Password: password,
+      Timestamp: ts,
+      CheckoutRequestID: checkoutRequestId,
+    }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(`M-Pesa STK query failed: ${data.errorMessage ?? res.status}`);
+  }
+  return {
+    resultCode: String(data.ResultCode ?? ""),
+    resultDesc: String(data.ResultDesc ?? ""),
+  };
+}
+
 // ─── Callback payload shape ───────────────────────────────────────────────────
 
 export interface MpesaCallbackMetadataItem {

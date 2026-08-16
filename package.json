@@ -8,10 +8,10 @@
   ],
   "scripts": {
     "dev": "cd apps/web && npm run dev",
-    "build": "cd apps/web && npm run build"
+    "build": "cd apps/web && npm run build",
+    "postinstall": "cd apps/web && npx prisma generate"
   },
   "dependencies": {
-    "caniuse-lite": "1.0.30001806",
-    "resend": "^6.17.2"
+    "caniuse-lite": "1.0.30001806"
   }
 }

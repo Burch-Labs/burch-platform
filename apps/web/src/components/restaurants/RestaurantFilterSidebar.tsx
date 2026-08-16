@@ -62,7 +62,9 @@ export function RestaurantFilterSidebar({ cities, cuisines }: RestaurantFilterSi
           </div>
         )}
 
-        {cities.length > 0 && (
+        {/* Hidden while every listing is in one city — a single-option filter
+            filters nothing. Reappears automatically on city two. */}
+        {cities.length > 1 && (
           <div>
             <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">City</p>
             <div className="flex flex-col gap-1">

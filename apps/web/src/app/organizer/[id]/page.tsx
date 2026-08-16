@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: PageProps) {
     select: { name: true },
   });
   if (!partner) return { title: "Organizer not found" };
-  return { title: `${partner.name} — Burch` };
+  return { title: `${partner.name} — dontbeboring` };
 }
 
 export default async function OrganizerPage({ params }: PageProps) {

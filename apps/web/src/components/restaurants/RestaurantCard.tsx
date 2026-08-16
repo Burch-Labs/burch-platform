@@ -3,6 +3,7 @@ import Image from "next/image";
 import { StarRating } from "@/components/hotels/StarRating";
 import { PriceRangeBadge } from "./PriceRangeBadge";
 import { AmenityList } from "@/components/hotels/AmenityList";
+import { FEATURES } from "@/lib/features";
 import type { RestaurantCard as RestaurantCardType } from "@/types/restaurants";
 
 interface RestaurantCardProps {
@@ -28,7 +29,7 @@ export function RestaurantCard({ restaurant, priority = false }: RestaurantCardP
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-rose-400 to-orange-500 flex items-center justify-center">
+          <div className="w-full h-full bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center">
             <span className="text-5xl opacity-40">🍽️</span>
           </div>
         )}
@@ -43,7 +44,7 @@ export function RestaurantCard({ restaurant, priority = false }: RestaurantCardP
           <h3 className="font-semibold text-gray-900 leading-snug line-clamp-1 group-hover:text-orange-600 transition-colors flex-1">
             {restaurant.name}
           </h3>
-          {restaurant.avgRating && (
+          {FEATURES.ratings && restaurant.avgRating && (
             <span className="text-xs font-bold text-white bg-orange-500 rounded-md px-1.5 py-0.5 flex-shrink-0">
               {restaurant.avgRating.toFixed(1)}
             </span>
@@ -68,15 +69,20 @@ export function RestaurantCard({ restaurant, priority = false }: RestaurantCardP
           <AmenityList amenities={restaurant.amenities} max={3} size="sm" />
         )}
 
-        {/* Footer */}
-        <div className="flex items-center justify-between mt-auto pt-2.5 border-t border-gray-50">
-          <span className="text-xs text-gray-400">
-            {restaurant._count.menuItems > 0 ? `${restaurant._count.menuItems} menu items` : "Menu available"}
-          </span>
-          {restaurant.avgRating && restaurant._count.reviews > 0 && (
-            <StarRating rating={restaurant.avgRating} size="sm" count={restaurant._count.reviews} />
-          )}
-        </div>
+        {/* Footer — hidden entirely when neither menus nor ratings are live,
+            so the card ends on its amenities rather than an empty rule */}
+        {(FEATURES.menus || FEATURES.ratings) && (
+          <div className="flex items-center justify-between mt-auto pt-2.5 border-t border-gray-50">
+            {FEATURES.menus && (
+              <span className="text-xs text-gray-400">
+                {restaurant._count.menuItems > 0 ? `${restaurant._count.menuItems} menu items` : "Menu available"}
+              </span>
+            )}
+            {FEATURES.ratings && restaurant.avgRating && restaurant._count.reviews > 0 && (
+              <StarRating rating={restaurant.avgRating} size="sm" count={restaurant._count.reviews} />
+            )}
+          </div>
+        )}
       </div>
     </Link>
   );

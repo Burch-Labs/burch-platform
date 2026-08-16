@@ -37,7 +37,8 @@
 
 ## Deployment
 
-- Render
+- Replit (autoscale deployment) — current, see `.replit`
+- Render/Vercel — documented alternative for a custom domain and off-Replit hosting; see `DEPLOYMENT.md`
 
 ## Storage
 

@@ -37,7 +37,7 @@ export function StarRating({
                 <defs>
                   <linearGradient id={`partial-${i}`}>
                     <stop offset={`${(rating % 1) * 100}%`} stopColor="currentColor" />
-                    <stop offset={`${(rating % 1) * 100}%`} stopColor="#e5e7eb" />
+                    <stop offset={`${(rating % 1) * 100}%`} stopColor="#D8E0EC" />
                   </linearGradient>
                   <path
                     fill={`url(#partial-${i})`}

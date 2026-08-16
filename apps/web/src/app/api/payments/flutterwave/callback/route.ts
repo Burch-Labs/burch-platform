@@ -32,7 +32,13 @@ export async function GET(req: NextRequest) {
     } else if (transactionId) {
       try {
         const verified = await verifyTransaction(transactionId);
-        const amountOk = verified.amount >= Number(payment.amount);
+        // Currency must match, not just the number. Flutterwave will happily
+        // settle a transaction in another currency, and 5,000 of a weaker unit
+        // is not 5,000 shillings — comparing amounts alone lets a cheap
+        // currency clear an expensive ticket.
+        const amountOk =
+          verified.amount >= Number(payment.amount) &&
+          verified.currency.toUpperCase() === payment.currency.toUpperCase();
         if (verified.status === "successful" && amountOk) {
           const booking = await markPaymentSuccess({
             paymentId: payment.id,

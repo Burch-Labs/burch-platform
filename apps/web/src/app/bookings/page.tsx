@@ -7,7 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { BookingStatus, ReservationStatus } from "@prisma/client";
 import { CancelButton } from "../dashboard/CancelButton";
 
-export const metadata = { title: "My bookings — Burch" };
+export const metadata = { title: "My bookings — dontbeboring" };
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 

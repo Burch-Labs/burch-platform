@@ -59,7 +59,7 @@ function LoginForm() {
   }
 
   return (
-    <AuthCard title="Welcome back" subtitle="Sign in to your Burch account">
+    <AuthCard title="Welcome back" subtitle="Sign in to your dontbeboring account">
       {verified && (
         <div className="mb-5 rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-700">
           ✓ Email verified — you can now sign in.

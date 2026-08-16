@@ -2,11 +2,19 @@
 
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useTransition } from "react";
+import { FEATURES } from "@/lib/features";
 
+// Sorting by a classification the cards do not show would leave the reader no
+// way to see why the order changed, so the star options come and go with the
+// badge. The server still honours stars_desc/stars_asc if a URL carries one.
 const SORT_OPTIONS = [
   { value: "name",       label: "Name (A–Z)"        },
-  { value: "stars_desc", label: "Stars (5★ first)"   },
-  { value: "stars_asc",  label: "Stars (budget first)" },
+  ...(FEATURES.starRating
+    ? ([
+        { value: "stars_desc", label: "Stars (5★ first)"     },
+        { value: "stars_asc",  label: "Stars (budget first)" },
+      ] as const)
+    : []),
   { value: "newest",     label: "Newest first"       },
 ] as const;
 
@@ -32,7 +40,10 @@ export function HotelSortBar({ total, hasFilters }: HotelSortBarProps) {
   }
 
   return (
-    <div className="flex items-center justify-between mb-4">
+    // flex-1 matters: this sits inside a flex row, so without it the bar
+    // shrinks to its content and justify-between has no space to distribute,
+    // pushing the count and the Sort label together.
+    <div className="flex flex-1 items-center justify-between gap-4">
       <p className={`text-sm transition-opacity ${isPending ? "opacity-50" : ""} text-gray-500`}>
         {total === 0
           ? "No hotels found"

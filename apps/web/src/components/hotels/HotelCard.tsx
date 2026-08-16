@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { HotelStars, StarRating } from "./StarRating";
 import { AmenityList } from "./AmenityList";
+import { FEATURES } from "@/lib/features";
 import { formatCurrency } from "@/lib/format";
 import type { HotelCard as HotelCardType } from "@/types/hotels";
 
@@ -22,7 +23,7 @@ export function HotelCard({ hotel, priority = false }: HotelCardProps) {
       className="group flex flex-col bg-white rounded-2xl border border-gray-100 overflow-hidden hover:border-orange-200 hover:shadow-md transition-all duration-200"
     >
       {/* Cover image */}
-      <div className="relative h-48 overflow-hidden bg-gradient-to-br from-blue-400 to-indigo-600">
+      <div className="relative h-48 overflow-hidden bg-gradient-to-br from-gray-700 to-gray-900">
         {hotel.imageUrl ? (
           <Image
             src={hotel.imageUrl}
@@ -33,13 +34,13 @@ export function HotelCard({ hotel, priority = false }: HotelCardProps) {
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-amber-800 to-orange-900 flex items-center justify-center">
+          <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
             <span className="text-5xl opacity-30">🏨</span>
           </div>
         )}
 
         {/* Star classification badge */}
-        {hotel.starRating && (
+        {FEATURES.starRating && hotel.starRating && (
           <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm rounded-full px-2.5 py-1 flex items-center gap-1">
             <HotelStars stars={hotel.starRating} />
           </div>
@@ -53,7 +54,7 @@ export function HotelCard({ hotel, priority = false }: HotelCardProps) {
           <h3 className="font-semibold text-gray-900 leading-snug line-clamp-2 group-hover:text-orange-600 transition-colors flex-1">
             {hotel.name}
           </h3>
-          {hotel.avgRating && (
+          {FEATURES.ratings && hotel.avgRating && (
             <div className="flex items-center gap-1 flex-shrink-0">
               <span className="text-xs font-bold text-white bg-orange-500 rounded-md px-1.5 py-0.5">
                 {hotel.avgRating.toFixed(1)}
@@ -92,7 +93,7 @@ export function HotelCard({ hotel, priority = false }: HotelCardProps) {
               <span className="text-xs text-gray-400">Contact for pricing</span>
             )}
           </div>
-          {hotel._count.reviews > 0 && hotel.avgRating && (
+          {FEATURES.ratings && hotel._count.reviews > 0 && hotel.avgRating && (
             <StarRating
               rating={hotel.avgRating}
               size="sm"

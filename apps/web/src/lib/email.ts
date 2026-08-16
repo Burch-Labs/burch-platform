@@ -27,7 +27,7 @@ function resolveBaseUrl(): string {
 }
 
 const BASE_URL = resolveBaseUrl();
-const FROM = process.env.EMAIL_FROM ?? "Burch Platform <onboarding@resend.dev>";
+const FROM = process.env.EMAIL_FROM ?? "dontbeboring <onboarding@resend.dev>";
 // When set, all outgoing emails are redirected to this address (useful while
 // the sending domain is not yet verified in Resend).
 const OVERRIDE_TO = process.env.EMAIL_OVERRIDE_TO ?? null;
@@ -48,20 +48,20 @@ function emailWrapper(content: string): string {
   return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;padding:0;background:#f9fafb;font-family:ui-sans-serif,system-ui,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f9fafb;padding:40px 20px;">
+<body style="margin:0;padding:0;background:#F6F8FB;font-family:ui-sans-serif,system-ui,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#F6F8FB;padding:40px 20px;">
     <tr><td align="center">
-      <table width="100%" style="max-width:520px;background:#ffffff;border-radius:16px;border:1px solid #e5e7eb;overflow:hidden;">
+      <table width="100%" style="max-width:520px;background:#ffffff;border-radius:16px;border:1px solid #D8E0EC;overflow:hidden;">
         <tr>
           <td style="padding:32px 32px 0;">
-            <p style="margin:0 0 24px;font-size:22px;font-weight:700;color:#e85d04;">Burch</p>
+            <p style="margin:0 0 24px;font-size:22px;font-weight:700;color:#8A6914;">dontbeboring</p>
             ${content}
           </td>
         </tr>
         <tr>
-          <td style="padding:24px 32px;background:#f9fafb;border-top:1px solid #e5e7eb;">
-            <p style="margin:0;font-size:12px;color:#9ca3af;">
-              Africa's AI-Powered Experience Platform
+          <td style="padding:24px 32px;background:#F6F8FB;border-top:1px solid #D8E0EC;">
+            <p style="margin:0;font-size:12px;color:#5D708F;">
+              Exceptional experiences across Kenya
             </p>
           </td>
         </tr>
@@ -73,16 +73,74 @@ function emailWrapper(content: string): string {
 }
 
 function primaryButton(href: string, label: string): string {
-  return `<a href="${href}" style="display:inline-block;background:#e85d04;color:#ffffff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;margin-bottom:24px;">${label}</a>`;
+  return `<a href="${href}" style="display:inline-block;background:#8A6914;color:#ffffff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;margin-bottom:24px;">${label}</a>`;
 }
 
-// ─── Email verification ───────────────────────────────────────────────────────
+// ─── Venue listing claims ────────────────────────────────────────────────────
 
-export async function sendVerificationEmail(email: string, token: string): Promise<void> {
-  const url = `${BASE_URL}/api/auth/verify-email?token=${token}`;
+export interface VenueClaim {
+  venueName: string;
+  venueType: "hotel" | "restaurant" | "club";
+  venueId: string;
+  contactName: string;
+  role: string;
+  workEmail: string;
+  phone: string;
+  website?: string;
+}
+
+/**
+ * Alerts the team that someone wants to take ownership of a listing.
+ *
+ * Goes to our own inbox, never to the venue's seeded address — that address is
+ * unconfirmed research, and mailing it about a claim would be both noise to a
+ * stranger and a way to leak who is claiming what.
+ */
+export async function sendVenueClaimNotification(claim: VenueClaim): Promise<void> {
+  const subject = `Listing claim: ${claim.venueName}`;
+  const link = `${BASE_URL}/${claim.venueType}s/${claim.venueId}`;
 
   if (!HAS_RESEND) {
-    devLog("Verify your Burch account", url);
+    devLog(subject, link);
+    console.log(`  ${claim.contactName} (${claim.role}) — ${claim.workEmail} / ${claim.phone}`);
+    if (claim.website) console.log(`  website: ${claim.website}`);
+    return;
+  }
+
+  const { Resend } = await import("resend");
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  await resend.emails.send({
+    from: FROM,
+    to: OVERRIDE_TO ?? process.env.CLAIMS_INBOX ?? FROM,
+    replyTo: claim.workEmail,
+    subject,
+    html: emailWrapper(`
+      <h2 style="margin:0 0 8px;font-size:20px;color:#131E30;">Listing claim</h2>
+      <p style="margin:0 0 24px;font-size:15px;color:#435671;line-height:1.6;">
+        <strong>${claim.contactName}</strong> (${claim.role}) says they work at
+        <strong>${claim.venueName}</strong>.
+      </p>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
+        <tr><td style="padding:8px 0;font-size:14px;color:#5D708F;width:40%;">Email</td><td style="padding:8px 0;font-size:14px;color:#131E30;">${claim.workEmail}</td></tr>
+        <tr><td style="padding:8px 0;font-size:14px;color:#5D708F;">Phone</td><td style="padding:8px 0;font-size:14px;color:#131E30;">${claim.phone}</td></tr>
+        ${claim.website ? `<tr><td style="padding:8px 0;font-size:14px;color:#5D708F;">Booking page</td><td style="padding:8px 0;font-size:14px;color:#131E30;">${claim.website}</td></tr>` : ""}
+        <tr><td style="padding:8px 0;font-size:14px;color:#5D708F;">Listing</td><td style="padding:8px 0;font-size:14px;color:#131E30;">${link}</td></tr>
+      </table>
+      <p style="margin:0;font-size:13px;color:#5D708F;">Confirm they work there before changing anything on the listing.</p>
+    `),
+  });
+}
+
+// ─── Passwordless sign-in code ───────────────────────────────────────────────
+
+export async function sendSignInCodeEmail(
+  email: string,
+  code: string,
+  ttlMinutes: number
+): Promise<void> {
+  if (!HAS_RESEND) {
+    devLog(`Your dontbeboring sign-in code: ${code}`, "(no link — enter the code)");
     return;
   }
 
@@ -92,14 +150,45 @@ export async function sendVerificationEmail(email: string, token: string): Promi
   await resend.emails.send({
     from: FROM,
     to: OVERRIDE_TO ?? email,
-    subject: "Verify your Burch account",
+    // The code stays out of the subject line: subjects show in notification
+    // previews on a locked screen, where a shoulder is all it takes.
+    subject: "Your dontbeboring sign-in code",
     html: emailWrapper(`
-      <h2 style="margin:0 0 8px;font-size:20px;color:#111827;">Verify your email address</h2>
-      <p style="margin:0 0 24px;font-size:15px;color:#6b7280;line-height:1.6;">
+      <h2 style="margin:0 0 8px;font-size:20px;color:#131E30;">Your sign-in code</h2>
+      <p style="margin:0 0 24px;font-size:15px;color:#435671;line-height:1.6;">
+        Enter this code to finish signing in.
+      </p>
+      <p style="margin:0 0 24px;font-size:34px;font-weight:700;letter-spacing:8px;color:#8A6914;">${code}</p>
+      <p style="margin:0 0 8px;font-size:13px;color:#5D708F;">The code expires in ${ttlMinutes} minutes and can be used once.</p>
+      <p style="margin:0;font-size:13px;color:#5D708F;">If you did not ask to sign in, you can ignore this email — nobody can use the code without it.</p>
+    `),
+  });
+}
+
+// ─── Email verification ───────────────────────────────────────────────────────
+
+export async function sendVerificationEmail(email: string, token: string): Promise<void> {
+  const url = `${BASE_URL}/api/auth/verify-email?token=${token}`;
+
+  if (!HAS_RESEND) {
+    devLog("Verify your dontbeboring account", url);
+    return;
+  }
+
+  const { Resend } = await import("resend");
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  await resend.emails.send({
+    from: FROM,
+    to: OVERRIDE_TO ?? email,
+    subject: "Verify your dontbeboring account",
+    html: emailWrapper(`
+      <h2 style="margin:0 0 8px;font-size:20px;color:#131E30;">Verify your email address</h2>
+      <p style="margin:0 0 24px;font-size:15px;color:#435671;line-height:1.6;">
         Thanks for signing up! Click the button below to verify your email and activate your account.
       </p>
       ${primaryButton(url, "Verify email address")}
-      <p style="margin:0 0 8px;font-size:13px;color:#9ca3af;">Link expires in 24 hours.</p>
+      <p style="margin:0 0 8px;font-size:13px;color:#5D708F;">Link expires in 24 hours.</p>
     `),
   });
 }
@@ -110,7 +199,7 @@ export async function sendPasswordResetEmail(email: string, token: string): Prom
   const url = `${BASE_URL}/auth/reset-password?token=${token}`;
 
   if (!HAS_RESEND) {
-    devLog("Reset your Burch password", url);
+    devLog("Reset your dontbeboring password", url);
     return;
   }
 
@@ -120,15 +209,15 @@ export async function sendPasswordResetEmail(email: string, token: string): Prom
   await resend.emails.send({
     from: FROM,
     to: OVERRIDE_TO ?? email,
-    subject: "Reset your Burch password",
+    subject: "Reset your dontbeboring password",
     html: emailWrapper(`
-      <h2 style="margin:0 0 8px;font-size:20px;color:#111827;">Reset your password</h2>
-      <p style="margin:0 0 24px;font-size:15px;color:#6b7280;line-height:1.6;">
+      <h2 style="margin:0 0 8px;font-size:20px;color:#131E30;">Reset your password</h2>
+      <p style="margin:0 0 24px;font-size:15px;color:#435671;line-height:1.6;">
         We received a request to reset your password. Click the button below to choose a new one.
       </p>
       ${primaryButton(url, "Reset password")}
-      <p style="margin:0 0 8px;font-size:13px;color:#9ca3af;">Link expires in 1 hour.</p>
-      <p style="margin:0;font-size:13px;color:#9ca3af;">If you didn't request this, ignore this email.</p>
+      <p style="margin:0 0 8px;font-size:13px;color:#5D708F;">Link expires in 1 hour.</p>
+      <p style="margin:0;font-size:13px;color:#5D708F;">If you didn't request this, ignore this email.</p>
     `),
   });
 }
@@ -179,26 +268,26 @@ export async function sendPartnerBookingNotification(
     to: OVERRIDE_TO ?? partnerEmail,
     subject,
     html: emailWrapper(`
-      <h2 style="margin:0 0 8px;font-size:20px;color:#111827;">New ${typeLabel} request</h2>
-      <p style="margin:0 0 24px;font-size:15px;color:#6b7280;line-height:1.6;">
+      <h2 style="margin:0 0 8px;font-size:20px;color:#131E30;">New ${typeLabel} request</h2>
+      <p style="margin:0 0 24px;font-size:15px;color:#435671;line-height:1.6;">
         Hi ${partnerName}, you have a new ${typeLabel} waiting for your attention.
       </p>
       <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
         <tr>
-          <td style="padding:8px 0;font-size:14px;color:#9ca3af;width:40%;">Guest</td>
-          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${guestName}</td>
+          <td style="padding:8px 0;font-size:14px;color:#5D708F;width:40%;">Guest</td>
+          <td style="padding:8px 0;font-size:14px;color:#131E30;font-weight:600;">${guestName}</td>
         </tr>
         <tr>
-          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Property</td>
-          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${propertyName}</td>
+          <td style="padding:8px 0;font-size:14px;color:#5D708F;">Property</td>
+          <td style="padding:8px 0;font-size:14px;color:#131E30;font-weight:600;">${propertyName}</td>
         </tr>
         <tr>
-          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Details</td>
-          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${bookingDetail}</td>
+          <td style="padding:8px 0;font-size:14px;color:#5D708F;">Details</td>
+          <td style="padding:8px 0;font-size:14px;color:#131E30;font-weight:600;">${bookingDetail}</td>
         </tr>
       </table>
       ${primaryButton(dashboardUrl, "View on dashboard")}
-      <p style="margin:0 0 8px;font-size:13px;color:#9ca3af;">Log in to confirm or manage this ${typeLabel}.</p>
+      <p style="margin:0 0 8px;font-size:13px;color:#5D708F;">Log in to confirm or manage this ${typeLabel}.</p>
     `),
   });
 }
@@ -252,39 +341,39 @@ export async function sendGuestHotelConfirmation(
     to: OVERRIDE_TO ?? guestEmail,
     subject,
     html: emailWrapper(`
-      <h2 style="margin:0 0 8px;font-size:20px;color:#111827;">Booking confirmed!</h2>
-      <p style="margin:0 0 24px;font-size:15px;color:#6b7280;line-height:1.6;">
-        Hi ${guestName}, your stay at <strong style="color:#111827;">${propertyName}</strong> is confirmed. Here are your details:
+      <h2 style="margin:0 0 8px;font-size:20px;color:#131E30;">Booking confirmed!</h2>
+      <p style="margin:0 0 24px;font-size:15px;color:#435671;line-height:1.6;">
+        Hi ${guestName}, your stay at <strong style="color:#131E30;">${propertyName}</strong> is confirmed. Here are your details:
       </p>
       <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
         <tr>
-          <td style="padding:8px 0;font-size:14px;color:#9ca3af;width:40%;">Property</td>
-          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${propertyName}</td>
+          <td style="padding:8px 0;font-size:14px;color:#5D708F;width:40%;">Property</td>
+          <td style="padding:8px 0;font-size:14px;color:#131E30;font-weight:600;">${propertyName}</td>
         </tr>
         <tr>
-          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Check-in</td>
-          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${checkInLabel}</td>
+          <td style="padding:8px 0;font-size:14px;color:#5D708F;">Check-in</td>
+          <td style="padding:8px 0;font-size:14px;color:#131E30;font-weight:600;">${checkInLabel}</td>
         </tr>
         <tr>
-          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Check-out</td>
-          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${checkOutLabel}</td>
+          <td style="padding:8px 0;font-size:14px;color:#5D708F;">Check-out</td>
+          <td style="padding:8px 0;font-size:14px;color:#131E30;font-weight:600;">${checkOutLabel}</td>
         </tr>
         <tr>
-          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Nights</td>
-          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${nights} night${nights !== 1 ? "s" : ""}</td>
+          <td style="padding:8px 0;font-size:14px;color:#5D708F;">Nights</td>
+          <td style="padding:8px 0;font-size:14px;color:#131E30;font-weight:600;">${nights} night${nights !== 1 ? "s" : ""}</td>
         </tr>
         <tr>
-          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Total</td>
-          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${amountLabel}</td>
+          <td style="padding:8px 0;font-size:14px;color:#5D708F;">Total</td>
+          <td style="padding:8px 0;font-size:14px;color:#131E30;font-weight:600;">${amountLabel}</td>
         </tr>
       </table>
       ${primaryButton(`${BASE_URL}/dashboard/bookings`, "View booking")}
-      <p style="margin:0 0 8px;font-size:13px;color:#9ca3af;">
+      <p style="margin:0 0 8px;font-size:13px;color:#5D708F;">
         Need to cancel or make changes? You can manage or cancel this booking from
-        <a href="${BASE_URL}/dashboard/bookings" style="color:#e85d04;">your bookings page</a>
+        <a href="${BASE_URL}/dashboard/bookings" style="color:#8A6914;">your bookings page</a>
         (cancellation may not be available close to check-in).
       </p>
-      <p style="margin:0 0 8px;font-size:13px;color:#9ca3af;">We look forward to hosting you. Have a wonderful stay!</p>
+      <p style="margin:0 0 8px;font-size:13px;color:#5D708F;">We look forward to hosting you. Have a wonderful stay!</p>
     `),
   });
 }
@@ -323,34 +412,34 @@ export async function sendGuestReservationConfirmation(
     to: OVERRIDE_TO ?? guestEmail,
     subject,
     html: emailWrapper(`
-      <h2 style="margin:0 0 8px;font-size:20px;color:#111827;">Reservation confirmed!</h2>
-      <p style="margin:0 0 24px;font-size:15px;color:#6b7280;line-height:1.6;">
-        Hi ${guestName}, your table at <strong style="color:#111827;">${restaurantName}</strong> is confirmed. Here are your details:
+      <h2 style="margin:0 0 8px;font-size:20px;color:#131E30;">Reservation confirmed!</h2>
+      <p style="margin:0 0 24px;font-size:15px;color:#435671;line-height:1.6;">
+        Hi ${guestName}, your table at <strong style="color:#131E30;">${restaurantName}</strong> is confirmed. Here are your details:
       </p>
       <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
         <tr>
-          <td style="padding:8px 0;font-size:14px;color:#9ca3af;width:40%;">Restaurant</td>
-          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${restaurantName}</td>
+          <td style="padding:8px 0;font-size:14px;color:#5D708F;width:40%;">Restaurant</td>
+          <td style="padding:8px 0;font-size:14px;color:#131E30;font-weight:600;">${restaurantName}</td>
         </tr>
         <tr>
-          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Date</td>
-          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${dateLabel}</td>
+          <td style="padding:8px 0;font-size:14px;color:#5D708F;">Date</td>
+          <td style="padding:8px 0;font-size:14px;color:#131E30;font-weight:600;">${dateLabel}</td>
         </tr>
         <tr>
-          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Time</td>
-          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${timeLabel}</td>
+          <td style="padding:8px 0;font-size:14px;color:#5D708F;">Time</td>
+          <td style="padding:8px 0;font-size:14px;color:#131E30;font-weight:600;">${timeLabel}</td>
         </tr>
         <tr>
-          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Party size</td>
-          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${partySize} guest${partySize !== 1 ? "s" : ""}</td>
+          <td style="padding:8px 0;font-size:14px;color:#5D708F;">Party size</td>
+          <td style="padding:8px 0;font-size:14px;color:#131E30;font-weight:600;">${partySize} guest${partySize !== 1 ? "s" : ""}</td>
         </tr>
       </table>
       ${primaryButton(`${BASE_URL}/dashboard/bookings`, "View reservation")}
-      <p style="margin:0 0 8px;font-size:13px;color:#9ca3af;">
+      <p style="margin:0 0 8px;font-size:13px;color:#5D708F;">
         Need to cancel or make changes? Manage this reservation from
-        <a href="${BASE_URL}/dashboard/bookings" style="color:#e85d04;">your bookings page</a>.
+        <a href="${BASE_URL}/dashboard/bookings" style="color:#8A6914;">your bookings page</a>.
       </p>
-      <p style="margin:0 0 8px;font-size:13px;color:#9ca3af;">We look forward to seeing you. Enjoy your dining experience!</p>
+      <p style="margin:0 0 8px;font-size:13px;color:#5D708F;">We look forward to seeing you. Enjoy your dining experience!</p>
     `),
   });
 }
@@ -387,34 +476,34 @@ export async function sendGuestHotelEnquiryReceived(
     to: OVERRIDE_TO ?? guestEmail,
     subject,
     html: emailWrapper(`
-      <h2 style="margin:0 0 8px;font-size:20px;color:#111827;">Request sent!</h2>
-      <p style="margin:0 0 24px;font-size:15px;color:#6b7280;line-height:1.6;">
-        Hi ${guestName}, we've sent your stay request to <strong style="color:#111827;">${propertyName}</strong>. This isn't confirmed yet — the property will accept or decline shortly, and we'll email you the moment they respond.
+      <h2 style="margin:0 0 8px;font-size:20px;color:#131E30;">Request sent!</h2>
+      <p style="margin:0 0 24px;font-size:15px;color:#435671;line-height:1.6;">
+        Hi ${guestName}, we've sent your stay request to <strong style="color:#131E30;">${propertyName}</strong>. This isn't confirmed yet — the property will accept or decline shortly, and we'll email you the moment they respond.
       </p>
       <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
         <tr>
-          <td style="padding:8px 0;font-size:14px;color:#9ca3af;width:40%;">Property</td>
-          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${propertyName}</td>
+          <td style="padding:8px 0;font-size:14px;color:#5D708F;width:40%;">Property</td>
+          <td style="padding:8px 0;font-size:14px;color:#131E30;font-weight:600;">${propertyName}</td>
         </tr>
         <tr>
-          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Check-in</td>
-          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${checkInLabel}</td>
+          <td style="padding:8px 0;font-size:14px;color:#5D708F;">Check-in</td>
+          <td style="padding:8px 0;font-size:14px;color:#131E30;font-weight:600;">${checkInLabel}</td>
         </tr>
         <tr>
-          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Check-out</td>
-          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${checkOutLabel}</td>
+          <td style="padding:8px 0;font-size:14px;color:#5D708F;">Check-out</td>
+          <td style="padding:8px 0;font-size:14px;color:#131E30;font-weight:600;">${checkOutLabel}</td>
         </tr>
         <tr>
-          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Nights</td>
-          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${nights} night${nights !== 1 ? "s" : ""}</td>
+          <td style="padding:8px 0;font-size:14px;color:#5D708F;">Nights</td>
+          <td style="padding:8px 0;font-size:14px;color:#131E30;font-weight:600;">${nights} night${nights !== 1 ? "s" : ""}</td>
         </tr>
         <tr>
-          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Estimated total</td>
-          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${amountLabel}</td>
+          <td style="padding:8px 0;font-size:14px;color:#5D708F;">Estimated total</td>
+          <td style="padding:8px 0;font-size:14px;color:#131E30;font-weight:600;">${amountLabel}</td>
         </tr>
       </table>
       ${primaryButton(`${BASE_URL}/dashboard/bookings`, "Track this request")}
-      <p style="margin:0;font-size:13px;color:#9ca3af;">No payment has been taken. You'll settle up directly with the property.</p>
+      <p style="margin:0;font-size:13px;color:#5D708F;">No payment has been taken. You'll settle up directly with the property.</p>
     `),
   });
 }
@@ -442,26 +531,26 @@ export async function sendGuestReservationEnquiryReceived(
     to: OVERRIDE_TO ?? guestEmail,
     subject,
     html: emailWrapper(`
-      <h2 style="margin:0 0 8px;font-size:20px;color:#111827;">Request sent!</h2>
-      <p style="margin:0 0 24px;font-size:15px;color:#6b7280;line-height:1.6;">
-        Hi ${guestName}, we've sent your table request to <strong style="color:#111827;">${restaurantName}</strong>. This isn't confirmed yet — the restaurant will accept or decline shortly, and we'll email you the moment they respond.
+      <h2 style="margin:0 0 8px;font-size:20px;color:#131E30;">Request sent!</h2>
+      <p style="margin:0 0 24px;font-size:15px;color:#435671;line-height:1.6;">
+        Hi ${guestName}, we've sent your table request to <strong style="color:#131E30;">${restaurantName}</strong>. This isn't confirmed yet — the restaurant will accept or decline shortly, and we'll email you the moment they respond.
       </p>
       <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
         <tr>
-          <td style="padding:8px 0;font-size:14px;color:#9ca3af;width:40%;">Restaurant</td>
-          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${restaurantName}</td>
+          <td style="padding:8px 0;font-size:14px;color:#5D708F;width:40%;">Restaurant</td>
+          <td style="padding:8px 0;font-size:14px;color:#131E30;font-weight:600;">${restaurantName}</td>
         </tr>
         <tr>
-          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Date</td>
-          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${dateLabel}</td>
+          <td style="padding:8px 0;font-size:14px;color:#5D708F;">Date</td>
+          <td style="padding:8px 0;font-size:14px;color:#131E30;font-weight:600;">${dateLabel}</td>
         </tr>
         <tr>
-          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Time</td>
-          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${timeLabel}</td>
+          <td style="padding:8px 0;font-size:14px;color:#5D708F;">Time</td>
+          <td style="padding:8px 0;font-size:14px;color:#131E30;font-weight:600;">${timeLabel}</td>
         </tr>
         <tr>
-          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Party size</td>
-          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${partySize} guest${partySize !== 1 ? "s" : ""}</td>
+          <td style="padding:8px 0;font-size:14px;color:#5D708F;">Party size</td>
+          <td style="padding:8px 0;font-size:14px;color:#131E30;font-weight:600;">${partySize} guest${partySize !== 1 ? "s" : ""}</td>
         </tr>
       </table>
       ${primaryButton(`${BASE_URL}/dashboard/bookings`, "Track this request")}
@@ -497,9 +586,9 @@ export async function sendGuestRequestDeclined(params: GuestRequestDeclinedParam
     to: OVERRIDE_TO ?? guestEmail,
     subject,
     html: emailWrapper(`
-      <h2 style="margin:0 0 8px;font-size:20px;color:#111827;">Couldn't confirm this one</h2>
-      <p style="margin:0 0 24px;font-size:15px;color:#6b7280;line-height:1.6;">
-        Hi ${guestName}, unfortunately <strong style="color:#111827;">${propertyName}</strong> wasn't able to confirm your ${noun} request. No charge has been made. Here are other options that might work instead.
+      <h2 style="margin:0 0 8px;font-size:20px;color:#131E30;">Couldn't confirm this one</h2>
+      <p style="margin:0 0 24px;font-size:15px;color:#435671;line-height:1.6;">
+        Hi ${guestName}, unfortunately <strong style="color:#131E30;">${propertyName}</strong> wasn't able to confirm your ${noun} request. No charge has been made. Here are other options that might work instead.
       </p>
       ${primaryButton(browseUrl, `Browse ${propertyType === "hotel" ? "hotels" : "restaurants"}`)}
     `),
@@ -516,21 +605,24 @@ export interface GuestEventConfirmationParams {
   quantity: number;
   totalAmount: number;
   currency: string;
+  /** Needed for the link to the tickets themselves — the point of the email. */
+  bookingId: string;
 }
 
 export async function sendGuestEventConfirmation(
   params: GuestEventConfirmationParams
 ): Promise<void> {
-  const { guestEmail, guestName, eventTitle, eventDate, quantity, totalAmount, currency } = params;
+  const { guestEmail, guestName, eventTitle, eventDate, quantity, totalAmount, currency, bookingId } = params;
 
   const subject = `Your tickets for ${eventTitle} are confirmed`;
 
   const dateLabel = eventDate.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
   const timeLabel = eventDate.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
   const amountLabel = new Intl.NumberFormat("en-US", { style: "currency", currency }).format(totalAmount);
+  const ticketsUrl = `${BASE_URL}/tickets/${bookingId}`;
 
   if (!HAS_RESEND) {
-    devLog(subject, `${BASE_URL}/dashboard/bookings`);
+    devLog(subject, ticketsUrl);
     console.log(
       `  Guest: ${guestName} | Event: ${eventTitle} | ${dateLabel} at ${timeLabel} | ${quantity} ticket${quantity !== 1 ? "s" : ""} | ${amountLabel}`
     );
@@ -545,33 +637,38 @@ export async function sendGuestEventConfirmation(
     to: OVERRIDE_TO ?? guestEmail,
     subject,
     html: emailWrapper(`
-      <h2 style="margin:0 0 8px;font-size:20px;color:#111827;">Tickets confirmed!</h2>
-      <p style="margin:0 0 24px;font-size:15px;color:#6b7280;line-height:1.6;">
-        Hi ${guestName}, your ticket${quantity !== 1 ? "s" : ""} for <strong style="color:#111827;">${eventTitle}</strong> ${quantity !== 1 ? "are" : "is"} confirmed. Here are your details:
+      <h2 style="margin:0 0 8px;font-size:20px;color:#131E30;">Tickets confirmed!</h2>
+      <p style="margin:0 0 24px;font-size:15px;color:#435671;line-height:1.6;">
+        Hi ${guestName}, your ticket${quantity !== 1 ? "s" : ""} for <strong style="color:#131E30;">${eventTitle}</strong> ${quantity !== 1 ? "are" : "is"} confirmed. Here are your details:
       </p>
       <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
         <tr>
-          <td style="padding:8px 0;font-size:14px;color:#9ca3af;width:40%;">Event</td>
-          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${eventTitle}</td>
+          <td style="padding:8px 0;font-size:14px;color:#5D708F;width:40%;">Event</td>
+          <td style="padding:8px 0;font-size:14px;color:#131E30;font-weight:600;">${eventTitle}</td>
         </tr>
         <tr>
-          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Date</td>
-          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${dateLabel}</td>
+          <td style="padding:8px 0;font-size:14px;color:#5D708F;">Date</td>
+          <td style="padding:8px 0;font-size:14px;color:#131E30;font-weight:600;">${dateLabel}</td>
         </tr>
         <tr>
-          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Time</td>
-          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${timeLabel}</td>
+          <td style="padding:8px 0;font-size:14px;color:#5D708F;">Time</td>
+          <td style="padding:8px 0;font-size:14px;color:#131E30;font-weight:600;">${timeLabel}</td>
         </tr>
         <tr>
-          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Tickets</td>
-          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${quantity} ticket${quantity !== 1 ? "s" : ""}</td>
+          <td style="padding:8px 0;font-size:14px;color:#5D708F;">Tickets</td>
+          <td style="padding:8px 0;font-size:14px;color:#131E30;font-weight:600;">${quantity} ticket${quantity !== 1 ? "s" : ""}</td>
         </tr>
         <tr>
-          <td style="padding:8px 0;font-size:14px;color:#9ca3af;">Total</td>
-          <td style="padding:8px 0;font-size:14px;color:#111827;font-weight:600;">${amountLabel}</td>
+          <td style="padding:8px 0;font-size:14px;color:#5D708F;">Total</td>
+          <td style="padding:8px 0;font-size:14px;color:#131E30;font-weight:600;">${amountLabel}</td>
         </tr>
       </table>
-      <p style="margin:0 0 8px;font-size:13px;color:#9ca3af;">We look forward to seeing you there. Enjoy the event!</p>
+      ${primaryButton(ticketsUrl, quantity !== 1 ? "View your tickets" : "View your ticket")}
+      <p style="margin:0 0 8px;font-size:13px;color:#5D708F;line-height:1.6;">
+        Open that link at the door and show the code on screen — a screenshot works just as
+        well. Each code admits one person, once.
+      </p>
+      <p style="margin:0;font-size:13px;color:#5D708F;">We look forward to seeing you there.</p>
     `),
   });
 }

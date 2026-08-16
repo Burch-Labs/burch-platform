@@ -13,8 +13,12 @@ datasource db {
 
 model User {
   id            String    @id @default(cuid())
+  /** Either of these can identify an account at sign-in, so both must be
+      unique. Postgres allows many nulls in a unique column, so accounts
+      without a phone are unaffected. */
   email         String    @unique
   name          String?
+  phone         String?   @unique
   image         String?
   emailVerified DateTime?
   password      String?
@@ -120,6 +124,27 @@ model EmailResendRateLimit {
   @@map("email_resend_rate_limits")
 }
 
+// ─── Passwordless sign-in ────────────────────────────────────────────────────
+
+model SignInCode {
+  id         String    @id @default(cuid())
+  /** Email address, or phone in 2547XXXXXXXX form. Lower-cased for email. */
+  identifier String
+  /** bcrypt hash. The code itself is never stored, so a database read cannot
+      be turned into someone else's session. */
+  codeHash   String
+  expiresAt  DateTime
+  /** Wrong guesses so far. A code is burned after ATTEMPT_LIMIT of them, which
+      is what keeps six digits out of reach of a brute force. */
+  attempts   Int       @default(0)
+  consumedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([identifier, createdAt])
+  @@index([expiresAt])
+  @@map("sign_in_codes")
+}
+
 // ─── Partner ─────────────────────────────────────────────────────────────────
 
 model Partner {
@@ -129,7 +154,17 @@ model Partner {
   description String?
   logoUrl     String?
   website     String?
-  status      PartnerStatus @default(PENDING)
+  /**
+   * Whether the partner may list publicly. APPROVED on creation — signing up
+   * should not block anyone from getting their venue on the site. SUSPENDED is
+   * the lever for abuse after the fact.
+   */
+  status      PartnerStatus @default(APPROVED)
+  /** Set together with status SUSPENDED. The reason is shown to the partner,
+      because a suspension they cannot understand is one they cannot fix. */
+  suspendedAt     DateTime?
+  suspendedReason String?
+  suspendedBy     String?
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
@@ -137,8 +172,189 @@ model Partner {
   events      Event[]
   hotels      Hotel[]
   restaurants Restaurant[]
+  clubs       Club[]
+  payoutAccount PayoutAccount?
 
   @@map("partners")
+}
+
+// ─── Payouts ─────────────────────────────────────────────────────────────────
+// Deliberately separate from Partner.status, because listing and getting paid
+// are different risks. Listing a venue you do not own wastes a guest's time;
+// collecting their money for it is fraud. So a partner lists the moment they
+// sign up, and money only moves once a human has checked who they are.
+//
+// Kept in its own table rather than as columns on Partner so the identity
+// documents are not loaded by every query that happens to touch a partner.
+
+model PayoutAccount {
+  id        String       @id @default(cuid())
+  partnerId String       @unique
+  status    PayoutStatus @default(UNVERIFIED)
+
+  /** Registered business or individual name, as it appears on the ID or cert. */
+  legalName    String?
+  /** KRA PIN — the Kenyan tax identifier. */
+  taxId        String?
+  /** National ID or business registration number. */
+  idNumber     String?
+
+  /** Where money would go. One of the two is required to submit. */
+  mpesaNumber  String?
+  bankName     String?
+  bankAccount  String?
+
+  submittedAt  DateTime?
+  reviewedAt   DateTime?
+  /** Admin user id who approved or rejected. */
+  reviewedBy   String?
+  /** Shown to the partner so a rejection is actionable rather than a dead end. */
+  rejectionReason String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  partner Partner @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@map("payout_accounts")
+}
+
+enum PayoutStatus {
+  /** Nothing submitted. Can list, cannot be paid. */
+  UNVERIFIED
+  /** Details in, awaiting a human. Still cannot be paid. */
+  SUBMITTED
+  /** Checked. The only state money may move in. */
+  VERIFIED
+  /** Checked and refused. Partner can correct and resubmit. */
+  REJECTED
+}
+
+// ─── Clubs & leisure ─────────────────────────────────────────────────────────
+// Golf and country clubs do not fit either existing type. A hotel sells nights
+// and a restaurant sells covers; a club sells a round, and mostly to its own
+// members. Forcing one into the hotel model would print an empty rate table
+// under a "Book a room" button that means nothing here.
+//
+// The field that actually decides whether a listing is useful is `access`: a
+// reader wants to know whether they can play at all before they care about the
+// fee. Short-term rentals deliberately do not live here — they sell nights with
+// a calendar and guest limits, which is the hotel shape, not this one.
+
+model Club {
+  id          String       @id @default(cuid())
+  partnerId   String
+  name        String
+  description String?
+  city        String
+  location    String
+  category    ClubCategory @default(GOLF)
+  access      ClubAccess   @default(BY_ARRANGEMENT)
+
+  /** Golf specifics. Null on clubs without a course. */
+  holes       Int?
+  par         Int?
+
+  /** Indicative weekday visitor green fee, for orientation not for booking. */
+  visitorFee  Decimal?     @db.Decimal(10, 2)
+  currency    String       @default("KES")
+  /** Free text for the caveats a fee cannot carry — competition days, dress. */
+  visitorNotes String?
+
+  phone     String?
+  email     String?
+  website   String?
+  imageUrl  String?
+  images    String[] @default([])
+  amenities String[] @default([])
+  published Boolean  @default(false)
+  /**
+   * Whether the venue itself has confirmed these details.
+   *
+   * False on everything we seeded. Seeded contact details are our research, not
+   * the venue's word, and a plausible-looking wrong number is worse than no
+   * number — someone dials it and reaches a stranger. The UI presents details
+   * as actionable only when this is true; otherwise it says so and offers the
+   * venue a way to correct them.
+   */
+  verified     Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  partner Partner @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+
+  @@index([city, published])
+  @@map("clubs")
+}
+
+enum ClubCategory {
+  GOLF
+  COUNTRY
+  SPORTS
+  POLO
+  YACHT
+}
+
+enum ClubAccess {
+  /** Members and their guests only. A visitor cannot simply turn up. */
+  MEMBERS_ONLY
+  /** Visitors can play, but must call ahead. The common case in Kenya. */
+  BY_ARRANGEMENT
+  /** Green fee at the desk, no introduction needed. */
+  VISITORS_WELCOME
+}
+
+// ─── Venue claims ────────────────────────────────────────────────────────────
+// Someone saying they work at a venue we listed from public information.
+//
+// Stored rather than only emailed. A claim that exists solely as a message in
+// an inbox is one nobody can hand over, search, or count — and these are the
+// only inbound partner leads the platform generates, so losing them to an
+// unread inbox loses the one mechanism that closes the unverified-listing gap.
+
+model VenueClaim {
+  id        String      @id @default(cuid())
+  venueType VenueType
+  venueId   String
+  /** Denormalised so a claim stays readable if the listing is later removed. */
+  venueName String
+
+  contactName String
+  role        String
+  workEmail   String
+  phone       String
+  /** The booking page they say is theirs, if they gave one. */
+  website     String?
+
+  status      ClaimStatus @default(NEW)
+  reviewedAt  DateTime?
+  reviewedBy  String?
+  reviewNote  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, createdAt])
+  @@index([venueType, venueId])
+  @@map("venue_claims")
+}
+
+enum VenueType {
+  HOTEL
+  RESTAURANT
+  CLUB
+}
+
+enum ClaimStatus {
+  /** Nobody has looked at it. */
+  NEW
+  /** Someone is working it. */
+  CONTACTED
+  /** Confirmed — the listing has been handed over. */
+  APPROVED
+  /** Not who they said they were, or no longer relevant. */
+  REJECTED
 }
 
 // ─── Events ──────────────────────────────────────────────────────────────────
@@ -164,6 +380,7 @@ model Event {
 
   partner  Partner   @relation(fields: [partnerId], references: [id], onDelete: Cascade)
   bookings Booking[]
+  tickets  Ticket[]
 
   // Speeds up the common listing queries: published feed sorted by date, and city filter
   @@index([published, startDate])
@@ -186,9 +403,20 @@ model Hotel {
   amenities    String[] @default([])
   phone        String?
   email        String?
+  website      String?
   checkInTime  String   @default("14:00")
   checkOutTime String   @default("11:00")
   published    Boolean  @default(false)
+  /**
+   * Whether the venue itself has confirmed these details.
+   *
+   * False on everything we seeded. Seeded contact details are our research, not
+   * the venue's word, and a plausible-looking wrong number is worse than no
+   * number — someone dials it and reaches a stranger. The UI presents details
+   * as actionable only when this is true; otherwise it says so and offers the
+   * venue a way to correct them.
+   */
+  verified     Boolean  @default(false)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -259,6 +487,16 @@ model Restaurant {
   openingHours Json?
   amenities    String[] @default([])
   published    Boolean  @default(false)
+  /**
+   * Whether the venue itself has confirmed these details.
+   *
+   * False on everything we seeded. Seeded contact details are our research, not
+   * the venue's word, and a plausible-looking wrong number is worse than no
+   * number — someone dials it and reaches a stranger. The UI presents details
+   * as actionable only when this is true; otherwise it says so and offers the
+   * venue a way to correct them.
+   */
+  verified     Boolean  @default(false)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -356,6 +594,7 @@ model Booking {
   room       Room?       @relation(fields: [roomId], references: [id])
   restaurant Restaurant? @relation(fields: [restaurantId], references: [id])
   payments   Payment[]
+  tickets    Ticket[]
 
   @@map("bookings")
 }
@@ -418,6 +657,46 @@ enum BookingType {
   EVENT
   HOTEL
   RESTAURANT
+}
+
+// ─── Tickets ─────────────────────────────────────────────────────────────────
+// One row per admitted person, not per booking: a party of four gets four
+// tickets, each independently named and each scannable exactly once. That is
+// what makes a ticket transferable to a friend without handing over the whole
+// booking, and what stops one screenshot admitting the entire group.
+//
+// No secret is stored here. The QR carries an HMAC of the ticket id signed with
+// TICKET_SIGNING_SECRET, so forging one means forging the signature; this table
+// only answers "has it already been used".
+
+model Ticket {
+  id           String       @id @default(cuid())
+  bookingId    String
+  eventId      String
+  /** 1..n within the booking — printed as "Ticket 2 of 4". */
+  serial       Int
+  /** Who is coming. Null until the buyer names them; the ticket still admits. */
+  attendeeName String?
+  status       TicketStatus @default(VALID)
+  checkedInAt  DateTime?
+  /** User id of the organiser or gate staff who scanned it. */
+  checkedInBy  String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  event   Event   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([bookingId, serial])
+  @@index([eventId, status])
+  @@map("tickets")
+}
+
+enum TicketStatus {
+  VALID
+  CHECKED_IN
+  /** Refunded, or cancelled after issue. Never admits. */
+  VOID
 }
 
 enum BookingStatus {

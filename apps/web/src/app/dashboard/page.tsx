@@ -277,7 +277,7 @@ export default async function DashboardPage() {
                          "Welcome back";
 
   const subtitle =
-    role === "ADMIN"   ? "Manage the Burch platform." :
+    role === "ADMIN"   ? "Manage the dontbeboring platform." :
     role === "PARTNER" ? "Manage your listings and view bookings." :
                          "Your bookings and reservations at a glance.";
 

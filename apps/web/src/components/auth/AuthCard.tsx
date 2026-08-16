@@ -12,7 +12,7 @@ export function AuthCard({ children, title, subtitle }: AuthCardProps) {
       <div className="w-full max-w-md">
         {/* Brand logotype */}
         <Link href="/" className="font-display block text-xl font-semibold text-orange-600 mb-8 tracking-wide">
-          Burch
+          dontbeboring
         </Link>
         <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-[0_4px_24px_0_rgba(30,21,16,0.07)]">
           <h1 className="text-2xl font-bold text-gray-900 mb-1">{title}</h1>

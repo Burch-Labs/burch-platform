@@ -13,6 +13,7 @@ const NAV_LINKS = [
   { href: "/events",      label: "Events" },
   { href: "/hotels",      label: "Hotels" },
   { href: "/restaurants", label: "Restaurants" },
+  { href: "/clubs",       label: "Golf & Clubs" },
 ];
 
 export async function NavBar() {
@@ -28,7 +29,7 @@ export async function NavBar() {
             href="/"
             className="font-display text-xl font-semibold text-orange-600 flex-shrink-0 tracking-wide"
           >
-            Burch
+            dontbeboring
           </Link>
           <nav className="hidden md:flex items-center gap-0.5">
             {NAV_LINKS.map(({ href, label }) => (
@@ -56,12 +57,22 @@ export async function NavBar() {
           {session ? (
             <div className="flex items-center gap-3">
               {role === "CUSTOMER" && (
-                <Link
-                  href="/bookings"
-                  className="hidden sm:block text-sm text-gray-500 hover:text-gray-900 transition font-medium"
-                >
-                  My bookings
-                </Link>
+                <>
+                  {/* Tickets sit ahead of bookings because this is the link people
+                      open while standing at a door, often in a hurry. */}
+                  <Link
+                    href="/tickets"
+                    className="hidden sm:block text-sm text-gray-500 hover:text-gray-900 transition font-medium"
+                  >
+                    My tickets
+                  </Link>
+                  <Link
+                    href="/bookings"
+                    className="hidden sm:block text-sm text-gray-500 hover:text-gray-900 transition font-medium"
+                  >
+                    My bookings
+                  </Link>
+                </>
               )}
               <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${ROLE_BADGE[role]}`}>
                 {role.charAt(0) + role.slice(1).toLowerCase()}
@@ -83,7 +94,7 @@ export async function NavBar() {
                 Sign in
               </Link>
               <Link
-                href="/auth/register"
+                href="/auth/join"
                 className="text-sm bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition font-semibold shadow-sm"
               >
                 Get started
