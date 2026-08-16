@@ -6,7 +6,8 @@ import type { NextConfig } from "next";
 if (process.env.NODE_ENV === "production" && !process.env.RESEND_API_KEY) {
   throw new Error(
     "[config] RESEND_API_KEY is required in production. " +
-      "New users will not receive verification emails without it. " +
+      "Email carries the sign-in codes, which are the only way into an account — " +
+      "without it nobody can sign in at all, existing users included. " +
       "Set the secret in your deployment environment and redeploy."
   );
 }

@@ -114,3 +114,36 @@ Worth deciding about rather than discovering:
   records that we believe the claimant. Changing a real business's public
   contact details is a separate, deliberate act — not a side effect of a status
   button.
+
+## 7. What a pre-deployment pass already confirmed
+
+Run against a production build (`npm run build && npm run start`) on a database
+dropped and rebuilt from scratch, not the dev server — dev has fallbacks that
+mask exactly the problems this is looking for.
+
+Confirmed working:
+
+- all nine public routes return 200; the six protected ones redirect rather than
+  error; an unknown listing id 404s rather than 500s;
+- sign-in by emailed code creates the account and the session;
+- a free ticket booking issues a Ticket row;
+- scanning that ticket admits once, refuses the second scan as already used, and
+  rejects a forged signature — the three properties the gate depends on;
+- an unauthenticated scan is refused outright;
+- an anonymous listing claim submits and persists;
+- a partner submits payout details and an admin approves them;
+- all three admin queues render.
+
+No JavaScript errors and no 5xx responses anywhere in the sweep.
+
+Still unverifiable without live credentials, and therefore still the riskiest
+part of the first deploy:
+
+- **real email delivery** — the smoke test injects codes directly, because
+  Resend needs an account. If mail is broken nobody can sign in at all;
+- **M-Pesa and Flutterwave** against live gateways, per section 4;
+- **WhatsApp**, which needs an approved Meta template.
+
+One build warning is expected and benign: `resend` cannot resolve
+`@react-email/render`. That module is only loaded when passing React components
+to Resend, and we send HTML strings, so the code path never runs.

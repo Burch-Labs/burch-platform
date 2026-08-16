@@ -1133,7 +1133,10 @@ async function main() {
   }
   console.log(`✅  ${restaurantsCreated} restaurants seeded (${RESTAURANTS.length - restaurantsCreated} already existed)`);
   console.log(`✅  ${clubsCreated} clubs seeded    (${CLUBS.length - clubsCreated} already existed)`);
-  console.log("\n📋 Demo accounts (all password: Password123!)");
+  // Passwords are gone: these accounts sign in with an emailed code like any
+  // other. The hashes are seeded only so the legacy /auth/login route still
+  // works for anyone who used it before the change.
+  console.log("\n📋 Demo accounts — sign in at /auth/join with a code");
   console.log("   admin@dontbeboring.example     → Admin");
   console.log("   events@dontbeboring.example    → Events Partner");
   console.log("   hotels@dontbeboring.example    → Hotels Partner");
