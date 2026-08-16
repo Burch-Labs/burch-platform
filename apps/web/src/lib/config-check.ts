@@ -215,6 +215,40 @@ function checkConfig(): ConfigIssue[] {
     });
   }
 
+
+  // ── WhatsApp ───────────────────────────────────────────────────────────────
+  const waToken = process.env.WHATSAPP_ACCESS_TOKEN;
+  const waPhoneId = process.env.WHATSAPP_PHONE_NUMBER_ID;
+  const waTemplate = process.env.WHATSAPP_OTP_TEMPLATE;
+  const waAny = Boolean(waToken || waPhoneId || waTemplate);
+  const waAll = Boolean(waToken && waPhoneId && waTemplate);
+
+  if (waAny && !waAll) {
+    issues.push({
+      key: "WHATSAPP",
+      level: "error",
+      message:
+        "Partly configured. WHATSAPP_ACCESS_TOKEN, WHATSAPP_PHONE_NUMBER_ID and " +
+        "WHATSAPP_OTP_TEMPLATE are all required — any missing one leaves WhatsApp off " +
+        "while appearing set up.",
+    });
+  }
+
+  // The commonest setup mistake by a distance: WHATSAPP_PHONE_NUMBER_ID is a
+  // Meta-assigned identifier, not the WhatsApp number itself. Pasting the number
+  // in produces a 404 from the Graph API that reads like an auth problem, so
+  // catch it here where the message can actually say what is wrong.
+  if (waPhoneId && /^\+?\d{7,14}$/.test(waPhoneId.trim()) && !/^\d{15,}$/.test(waPhoneId.trim())) {
+    issues.push({
+      key: "WHATSAPP_PHONE_NUMBER_ID",
+      level: "error",
+      message:
+        `Looks like a phone number ("${waPhoneId.trim()}"), not a phone number ID. ` +
+        "Meta assigns a separate numeric ID — find it under WhatsApp → API Setup in your " +
+        "Meta app dashboard. The phone number itself is never used in configuration.",
+    });
+  }
+
   return issues;
 }
 
