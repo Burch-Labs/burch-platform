@@ -163,3 +163,17 @@ export async function checkInTicket(params: {
 export function newIdempotencyKey(): string {
   return randomUUID();
 }
+
+/**
+ * A short, human-readable code derived from the ticket id — for a door team
+ * to read aloud or radio to another gate if a scanner dies. This is NOT a
+ * second way to check someone in: `checkInTicket` still only ever accepts a
+ * token that passes `verifyTicketToken`, so this string alone admits no one.
+ * It exists purely so a person can identify a ticket without a working
+ * scanner, not to identify a *person* — it carries no personal data either.
+ */
+export function referenceCode(ticketId: string): string {
+  const clean = ticketId.replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
+  const tail = clean.slice(-8).padStart(8, "0");
+  return `${tail.slice(0, 4)}-${tail.slice(4)}`;
+}
