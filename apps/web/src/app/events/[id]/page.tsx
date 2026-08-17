@@ -91,7 +91,10 @@ export default async function EventDetailPage({ params }: PageProps) {
   });
 
   const totalBooked = await prisma.booking.aggregate({
-    where: { eventId: id },
+    // Matches reserveEventBooking's own capacity check — a cancelled booking
+    // (payment failed or expired) shouldn't count as sold, or a string of
+    // failed M-Pesa attempts would make an event look sold out when it isn't.
+    where: { eventId: id, status: { not: "CANCELLED" } },
     _sum: { quantity: true },
   });
   const booked = totalBooked._sum.quantity ?? 0;
