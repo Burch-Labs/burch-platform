@@ -13,15 +13,14 @@ const BASE_URL =
     : "https://sandbox.safaricom.co.ke";
 
 /**
- * Safaricom uses a different STK Push transaction type for a Till (Buy Goods)
- * account than for a PayBill — sending the wrong one against a real account
- * either fails outright or, worse, is accepted but never actually reaches the
- * merchant's till. Defaults to PayBill, which was this codebase's only
- * supported account type until a Till account needed testing.
+ * Despite the name suggesting it varies by account, Safaricom's STK Push
+ * (M-Pesa Express) endpoint only ever accepts CustomerPayBillOnline here —
+ * confirmed directly against a real Till (Buy Goods) account, which rejected
+ * CustomerBuyGoodsOnline with "Bad Request - Invalid TransactionType". Which
+ * kind of account actually receives the money is determined by the shortcode
+ * itself on Safaricom's side, not by this field.
  */
-const MPESA_ACCOUNT_TYPE = process.env.MPESA_ACCOUNT_TYPE === "till" ? "till" : "paybill";
-const MPESA_TRANSACTION_TYPE =
-  MPESA_ACCOUNT_TYPE === "till" ? "CustomerBuyGoodsOnline" : "CustomerPayBillOnline";
+const MPESA_TRANSACTION_TYPE = "CustomerPayBillOnline";
 
 export const HAS_MPESA = !!(
   process.env.MPESA_CONSUMER_KEY &&

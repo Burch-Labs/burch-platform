@@ -1,21 +1,14 @@
 /**
- * Till vs PayBill transaction type.
+ * STK Push TransactionType.
  *
- * Safaricom rejects — or worse, silently accepts but never delivers to the
- * merchant — an STK push sent with the wrong TransactionType for the account
- * behind it. A PayBill needs CustomerPayBillOnline; a Till (Buy Goods) needs
- * CustomerBuyGoodsOnline. Getting this wrong against a real account is a real
- * payment that never reaches anyone, so this pins the mapping directly rather
- * than trusting it by inspection.
+ * Despite the field name implying it varies by account, Safaricom's M-Pesa
+ * Express (STK Push) endpoint only accepts CustomerPayBillOnline — confirmed
+ * directly against a real Till (Buy Goods) account, which rejected
+ * CustomerBuyGoodsOnline with "Bad Request - Invalid TransactionType". This
+ * pins that down so a future "fix" doesn't reintroduce a value that looks
+ * more correct by name than it is by behavior.
  */
 const OLD_ENV = process.env;
-
-function mockFetchOnce(body: unknown) {
-  global.fetch = jest.fn().mockResolvedValue({
-    ok: true,
-    json: async () => body,
-  }) as unknown as typeof fetch;
-}
 
 beforeEach(() => {
   jest.resetModules();
@@ -62,36 +55,18 @@ async function pushAndCaptureBody() {
   return JSON.parse(stkCallArgs[1].body);
 }
 
-describe("MPESA_ACCOUNT_TYPE", () => {
-  it("defaults to PayBill when unset", async () => {
+describe("STK Push TransactionType", () => {
+  it("always sends CustomerPayBillOnline, PayBill or Till alike", async () => {
     const body = await pushAndCaptureBody();
     expect(body.TransactionType).toBe("CustomerPayBillOnline");
   });
 
-  it("uses CustomerPayBillOnline when explicitly set to paybill", async () => {
-    process.env.MPESA_ACCOUNT_TYPE = "paybill";
-    const body = await pushAndCaptureBody();
-    expect(body.TransactionType).toBe("CustomerPayBillOnline");
-  });
-
-  it("uses CustomerBuyGoodsOnline for a till account", async () => {
-    process.env.MPESA_ACCOUNT_TYPE = "till";
-    const body = await pushAndCaptureBody();
-    expect(body.TransactionType).toBe("CustomerBuyGoodsOnline");
-  });
-
-  it("sends the same shortcode as PartyB for a till account", async () => {
+  it("sends the configured shortcode as both PartyB and BusinessShortCode", async () => {
     // A Till's business shortcode IS the till number itself — unlike PayBill,
-    // there's no separate account number field for Daraja to route on.
-    process.env.MPESA_ACCOUNT_TYPE = "till";
+    // there's no separate account number field for Daraja to route on — so
+    // this must hold regardless of which kind of account it is.
     const body = await pushAndCaptureBody();
     expect(body.PartyB).toBe(process.env.MPESA_SHORTCODE);
     expect(body.BusinessShortCode).toBe(process.env.MPESA_SHORTCODE);
-  });
-
-  it("falls back to paybill for an unrecognized value rather than guessing", async () => {
-    process.env.MPESA_ACCOUNT_TYPE = "buy-goods";
-    const body = await pushAndCaptureBody();
-    expect(body.TransactionType).toBe("CustomerPayBillOnline");
   });
 });
