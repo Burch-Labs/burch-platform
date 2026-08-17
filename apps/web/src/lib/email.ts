@@ -4,6 +4,7 @@
  */
 // Run startup config check so deployment logs surface misconfigurations early
 import "./config-check";
+import { prisma } from "./prisma";
 
 /**
  * Resolve the canonical base URL for building links inside emails.
@@ -128,6 +129,183 @@ export async function sendVenueClaimNotification(claim: VenueClaim): Promise<voi
         <tr><td style="padding:8px 0;font-size:14px;color:#5D708F;">Listing</td><td style="padding:8px 0;font-size:14px;color:#131E30;">${link}</td></tr>
       </table>
       <p style="margin:0;font-size:13px;color:#5D708F;">Confirm they work there before changing anything on the listing.</p>
+    `),
+  });
+}
+
+// ─── Public event submission review ──────────────────────────────────────────
+
+/**
+ * Where "new event to review" alerts go.
+ *
+ * ADMIN_INBOX is an explicit override, same convention as CLAIMS_INBOX. Left
+ * unset, this falls back to whichever accounts currently hold the
+ * SUPER_ADMIN role — the one role allowed to approve or reject a submission
+ * — so notifications keep reaching the right inbox even as who holds that
+ * role changes, with no env var to remember to update.
+ */
+async function resolveAdminInbox(): Promise<string> {
+  if (process.env.ADMIN_INBOX) return process.env.ADMIN_INBOX;
+
+  const superAdmins = await prisma.user.findMany({
+    where: { role: "SUPER_ADMIN" },
+    select: { email: true },
+  });
+  const emails = superAdmins.map((u) => u.email).filter(Boolean);
+  return emails.length > 0 ? emails.join(",") : FROM;
+}
+
+export interface EventSubmissionReceivedParams {
+  toEmail: string;
+  toName?: string | null;
+  eventTitle: string;
+}
+
+/**
+ * Sent to the organizer the moment they submit (or fix and resubmit) an
+ * event — the "yes, this went somewhere" reassurance a form with no
+ * confirmation email leaves people guessing about.
+ */
+export async function sendEventSubmissionReceived(params: EventSubmissionReceivedParams): Promise<void> {
+  const { toEmail, toName, eventTitle } = params;
+  const subject = `"${eventTitle}" is pending approval`;
+  const trackUrl = `${BASE_URL}/partner/events`;
+
+  if (!HAS_RESEND) {
+    devLog(subject, trackUrl);
+    return;
+  }
+
+  const { Resend } = await import("resend");
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  await resend.emails.send({
+    from: FROM,
+    to: OVERRIDE_TO ?? toEmail,
+    subject,
+    html: emailWrapper(`
+      <h2 style="margin:0 0 8px;font-size:20px;color:#131E30;">Submitted for review</h2>
+      <p style="margin:0 0 24px;font-size:15px;color:#435671;line-height:1.6;">
+        Hi ${toName ?? "there"}, we've received <strong style="color:#131E30;">${eventTitle}</strong>.
+        Our team reviews every new event by hand, usually within 24 hours. We'll email you the moment
+        it's approved and live — or if we need something changed first.
+      </p>
+      ${primaryButton(trackUrl, "Track its status")}
+    `),
+  });
+}
+
+export interface EventSubmissionAdminAlertParams {
+  eventTitle: string;
+  partnerName: string;
+  city: string;
+}
+
+/** Alerts whoever can approve it that a new event is waiting in the queue. */
+export async function sendEventSubmissionAdminAlert(params: EventSubmissionAdminAlertParams): Promise<void> {
+  const { eventTitle, partnerName, city } = params;
+  const subject = `New event to review: ${eventTitle}`;
+  const link = `${BASE_URL}/admin/events`;
+  const recipients = await resolveAdminInbox();
+
+  if (!HAS_RESEND) {
+    devLog(subject, link);
+    console.log(`  ${partnerName} · ${city} → notifying: ${recipients}`);
+    return;
+  }
+
+  const { Resend } = await import("resend");
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  await resend.emails.send({
+    from: FROM,
+    to: OVERRIDE_TO ?? recipients,
+    subject,
+    html: emailWrapper(`
+      <h2 style="margin:0 0 8px;font-size:20px;color:#131E30;">New event waiting for review</h2>
+      <p style="margin:0 0 24px;font-size:15px;color:#435671;line-height:1.6;">
+        <strong style="color:#131E30;">${partnerName}</strong> submitted
+        <strong style="color:#131E30;">${eventTitle}</strong> (${city}) for approval.
+      </p>
+      ${primaryButton(link, "Review submissions")}
+    `),
+  });
+}
+
+export interface EventApprovedEmailParams {
+  toEmail: string;
+  toName?: string | null;
+  eventTitle: string;
+  eventId: string;
+}
+
+export async function sendEventApprovedEmail(params: EventApprovedEmailParams): Promise<void> {
+  const { toEmail, toName, eventTitle, eventId } = params;
+  const subject = `"${eventTitle}" is live!`;
+  const url = `${BASE_URL}/events/${eventId}`;
+
+  if (!HAS_RESEND) {
+    devLog(subject, url);
+    return;
+  }
+
+  const { Resend } = await import("resend");
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  await resend.emails.send({
+    from: FROM,
+    to: OVERRIDE_TO ?? toEmail,
+    subject,
+    html: emailWrapper(`
+      <h2 style="margin:0 0 8px;font-size:20px;color:#131E30;">Approved and live</h2>
+      <p style="margin:0 0 24px;font-size:15px;color:#435671;line-height:1.6;">
+        Hi ${toName ?? "there"}, <strong style="color:#131E30;">${eventTitle}</strong> has been approved and
+        is now live on dontbeboring.
+      </p>
+      ${primaryButton(url, "View your event")}
+    `),
+  });
+}
+
+export interface EventRejectedEmailParams {
+  toEmail: string;
+  toName?: string | null;
+  eventTitle: string;
+  reason: string;
+}
+
+export async function sendEventRejectedEmail(params: EventRejectedEmailParams): Promise<void> {
+  const { toEmail, toName, eventTitle, reason } = params;
+  const subject = `Changes needed on "${eventTitle}"`;
+  const editUrl = `${BASE_URL}/partner/events`;
+
+  if (!HAS_RESEND) {
+    devLog(subject, editUrl);
+    console.log(`  Reason: ${reason}`);
+    return;
+  }
+
+  const { Resend } = await import("resend");
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  await resend.emails.send({
+    from: FROM,
+    to: OVERRIDE_TO ?? toEmail,
+    subject,
+    html: emailWrapper(`
+      <h2 style="margin:0 0 8px;font-size:20px;color:#131E30;">Changes needed</h2>
+      <p style="margin:0 0 16px;font-size:15px;color:#435671;line-height:1.6;">
+        Hi ${toName ?? "there"}, we weren't able to approve
+        <strong style="color:#131E30;">${eventTitle}</strong> yet.
+      </p>
+      <p style="margin:0 0 24px;font-size:14px;color:#131E30;background:#FDF3E7;border-radius:8px;padding:12px 16px;">
+        ${reason}
+      </p>
+      <p style="margin:0 0 24px;font-size:15px;color:#435671;line-height:1.6;">
+        Fix it up and save your changes — editing sends it straight back into the review queue,
+        no need to submit it again from scratch.
+      </p>
+      ${primaryButton(editUrl, "Edit and resubmit")}
     `),
   });
 }

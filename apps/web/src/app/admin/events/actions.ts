@@ -6,6 +6,7 @@ import { z } from "zod";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { isSuperAdmin } from "@/lib/roles";
+import { sendEventApprovedEmail, sendEventRejectedEmail } from "@/lib/email";
 
 const schema = z.object({
   eventId: z.string().min(1),
@@ -45,7 +46,11 @@ export async function reviewEventSubmission(
 
   const event = await prisma.event.findUnique({
     where: { id: parsed.data.eventId },
-    select: { approvalStatus: true },
+    select: {
+      approvalStatus: true,
+      title: true,
+      partner: { select: { user: { select: { email: true, name: true } } } },
+    },
   });
   if (!event) return { error: "Event not found." };
   if (event.approvalStatus !== "PENDING") {
@@ -66,6 +71,25 @@ export async function reviewEventSubmission(
   if (approve) revalidateTag("events-listing");
   revalidatePath("/admin/events");
   revalidatePath("/partner/events");
+
+  // Best-effort — the review itself has already gone through either way.
+  const organizerEmail = event.partner.user.email;
+  if (organizerEmail && !organizerEmail.endsWith("@phone.dontbeboring.invalid")) {
+    const notify = approve
+      ? sendEventApprovedEmail({
+          toEmail: organizerEmail,
+          toName: event.partner.user.name,
+          eventTitle: event.title,
+          eventId: parsed.data.eventId,
+        })
+      : sendEventRejectedEmail({
+          toEmail: organizerEmail,
+          toName: event.partner.user.name,
+          eventTitle: event.title,
+          reason: parsed.data.reason!,
+        });
+    notify.catch((err) => console.error("[reviewEventSubmission] notification failed", err));
+  }
 
   return { message: approve ? "Event approved and published." : "Event rejected." };
 }

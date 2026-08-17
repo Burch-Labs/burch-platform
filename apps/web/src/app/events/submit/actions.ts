@@ -8,6 +8,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { findOrCreatePartner } from "@/lib/partner-onboarding";
 import { isAdminRole } from "@/lib/roles";
+import { sendEventSubmissionReceived, sendEventSubmissionAdminAlert } from "@/lib/email";
 
 export type SubmitEventState = { error?: string };
 
@@ -75,7 +76,28 @@ export async function submitEventForReview(
     },
   });
 
-  if (autoApprove) revalidateTag("events-listing");
+  if (autoApprove) {
+    revalidateTag("events-listing");
+  } else {
+    // Best-effort — a failed notification should never block the submission
+    // itself, the organizer's own edit-to-resubmit path is the fallback.
+    const notifications: Promise<void>[] = [
+      sendEventSubmissionAdminAlert({ eventTitle: title, partnerName: partner.name, city }),
+    ];
+    // A phone-only signup has a placeholder, non-deliverable address — nothing to send to.
+    if (session.user.email && !session.user.email.endsWith("@phone.dontbeboring.invalid")) {
+      notifications.push(
+        sendEventSubmissionReceived({
+          toEmail: session.user.email,
+          toName: session.user.name,
+          eventTitle: title,
+        })
+      );
+    }
+    await Promise.all(notifications).catch((err) =>
+      console.error("[submitEventForReview] notification failed", err)
+    );
+  }
 
   redirect("/events/submit/thanks");
 }

@@ -8,6 +8,7 @@ import { EventCategory } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { Client as ObjectStorageClient } from "@replit/object-storage";
 import { isAdminRole } from "@/lib/roles";
+import { sendEventSubmissionReceived, sendEventSubmissionAdminAlert } from "@/lib/email";
 
 // ─── storage helpers ──────────────────────────────────────────────────────────
 
@@ -62,10 +63,10 @@ async function requirePartner() {
   }
   const partner = await prisma.partner.findUnique({
     where: { userId: session.user.id },
-    select: { id: true },
+    select: { id: true, name: true },
   });
   if (!partner) throw new Error("Partner profile not found");
-  return partner;
+  return { partner, session };
 }
 
 function parseFormData(data: FormData) {
@@ -93,7 +94,7 @@ export async function createEvent(
 ): Promise<{ error?: string }> {
   let partner;
   try {
-    partner = await requirePartner();
+    ({ partner } = await requirePartner());
   } catch (e: unknown) {
     return { error: (e as Error).message };
   }
@@ -132,9 +133,9 @@ export async function updateEvent(
   _prev: { error?: string } | null,
   data: FormData,
 ): Promise<{ error?: string }> {
-  let partner;
+  let partner, session;
   try {
-    partner = await requirePartner();
+    ({ partner, session } = await requirePartner());
   } catch (e: unknown) {
     return { error: (e as Error).message };
   }
@@ -142,7 +143,7 @@ export async function updateEvent(
   // Verify ownership and capture current imageUrl so we can clean it up if replaced
   const existing = await prisma.event.findFirst({
     where: { id: eventId, partnerId: partner.id },
-    select: { id: true, published: true, imageUrl: true },
+    select: { id: true, published: true, imageUrl: true, approvalStatus: true },
   });
   if (!existing) return { error: "Event not found or access denied" };
 
@@ -156,10 +157,21 @@ export async function updateEvent(
     return { error: "Cannot publish an event whose start date is in the past. Save it as a draft instead." };
   }
 
+  // A previously rejected event that gets edited is implicitly a
+  // resubmission — send it back into the review queue rather than leaving
+  // the organizer stuck with no way back in short of deleting and starting
+  // over. It can't publish until reviewed again either way.
+  const isResubmission = existing.approvalStatus === "REJECTED";
+
   try {
     await prisma.event.update({
       where: { id: eventId },
-      data:  fields,
+      data: {
+        ...fields,
+        ...(isResubmission
+          ? { approvalStatus: "PENDING" as const, published: false, rejectionReason: null, reviewedAt: null, reviewedBy: null }
+          : {}),
+      },
     });
   } catch (err) {
     console.error("[updateEvent]", err);
@@ -169,6 +181,22 @@ export async function updateEvent(
   // If the photo was replaced or removed, clean up the old file from object storage
   if (existing.imageUrl && existing.imageUrl !== fields.imageUrl) {
     await deleteStorageImage(existing.imageUrl);
+  }
+
+  if (isResubmission) {
+    const notifications: Promise<void>[] = [
+      sendEventSubmissionAdminAlert({ eventTitle: fields.title, partnerName: partner.name, city: fields.city }),
+    ];
+    if (session.user.email && !session.user.email.endsWith("@phone.dontbeboring.invalid")) {
+      notifications.push(
+        sendEventSubmissionReceived({
+          toEmail: session.user.email,
+          toName: session.user.name,
+          eventTitle: fields.title,
+        })
+      );
+    }
+    await Promise.all(notifications).catch((err) => console.error("[updateEvent] notification failed", err));
   }
 
   // Bust the events listing cache whenever a published event changes (or is published now)
@@ -186,7 +214,7 @@ export async function updateEvent(
 export async function deleteEvent(eventId: string): Promise<{ error?: string }> {
   let partner;
   try {
-    partner = await requirePartner();
+    ({ partner } = await requirePartner());
   } catch (e: unknown) {
     return { error: (e as Error).message };
   }
