@@ -111,6 +111,14 @@ export async function stkPush({
   const passkey = process.env.MPESA_PASSKEY;
   if (!shortcode || !passkey) throw new Error("M-Pesa is not configured");
 
+  // A Till provisioned through the Safaricom Business Portal is linked to a
+  // Head Office/Organization shortcode: that shortcode (MPESA_SHORTCODE) is
+  // what authenticates and generates the password, but the money has to be
+  // credited to the Till itself — a different number Daraja calls PartyB. A
+  // standalone Till (or a PayBill) has no such split, so PartyB just falls
+  // back to the same shortcode, unchanged from before.
+  const partyB = process.env.MPESA_TILL_NUMBER || shortcode;
+
   const token = await getAccessToken();
   const ts = timestamp();
   const password = Buffer.from(`${shortcode}${passkey}${ts}`).toString("base64");
@@ -129,7 +137,7 @@ export async function stkPush({
       TransactionType: MPESA_TRANSACTION_TYPE,
       Amount: Math.round(amount),
       PartyA: msisdn,
-      PartyB: shortcode,
+      PartyB: partyB,
       PhoneNumber: msisdn,
       CallBackURL: callbackUrl,
       AccountReference: accountReference.slice(0, 12),

@@ -61,12 +61,21 @@ describe("STK Push TransactionType", () => {
     expect(body.TransactionType).toBe("CustomerPayBillOnline");
   });
 
-  it("sends the configured shortcode as both PartyB and BusinessShortCode", async () => {
-    // A Till's business shortcode IS the till number itself — unlike PayBill,
-    // there's no separate account number field for Daraja to route on — so
-    // this must hold regardless of which kind of account it is.
+  it("sends the shortcode as both PartyB and BusinessShortCode when there's no separate till number", async () => {
+    // A standalone Till's business shortcode IS the till number itself —
+    // unlike PayBill, there's no separate account number field to route on.
     const body = await pushAndCaptureBody();
     expect(body.PartyB).toBe(process.env.MPESA_SHORTCODE);
     expect(body.BusinessShortCode).toBe(process.env.MPESA_SHORTCODE);
+  });
+
+  it("routes to MPESA_TILL_NUMBER as PartyB when set, keeping the shortcode for auth", async () => {
+    // A Till issued through the Safaricom Business Portal is linked to a
+    // Head Office shortcode: that shortcode authenticates and generates the
+    // password, but the money has to land in the Till itself.
+    process.env.MPESA_TILL_NUMBER = "555555";
+    const body = await pushAndCaptureBody();
+    expect(body.BusinessShortCode).toBe(process.env.MPESA_SHORTCODE);
+    expect(body.PartyB).toBe("555555");
   });
 });
