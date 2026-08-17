@@ -25,6 +25,8 @@ export default async function PartnerPage() {
     },
   });
 
+  const partnerShare = partner ? 100 - Number(partner.commissionRate) : null;
+
   // Count pending bookings and table reservations for this partner
   let pendingCount = 0;
   if (partner) {
@@ -89,6 +91,19 @@ export default async function PartnerPage() {
               status={partner.payoutAccount?.status ?? null}
               rejectionReason={partner.payoutAccount?.rejectionReason}
             />
+
+            {partnerShare !== null && (
+              <div className="mb-6 rounded-xl bg-orange-50 border border-orange-100 px-5 py-4 flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-orange-900">
+                    You keep {partnerShare}% of every sale
+                  </p>
+                  <p className="text-xs text-orange-700 mt-0.5">
+                    dontbeboring&apos;s share is {Number(partner.commissionRate)}% — paid out to you directly.
+                  </p>
+                </div>
+              </div>
+            )}
 
             {partner.status === "SUSPENDED" && (
               <div className="mb-6 rounded-xl bg-red-50 border border-red-200 px-5 py-4">

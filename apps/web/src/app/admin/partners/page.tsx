@@ -3,6 +3,8 @@ import { NavBar } from "@/components/layout/NavBar";
 import { AdminNav } from "../AdminNav";
 import { getQueueCounts } from "../queue-counts";
 import { SuspendControls } from "./SuspendControls";
+import { CommissionControls } from "./CommissionControls";
+import { DEFAULT_COMMISSION_RATE } from "@/lib/commission";
 
 export const metadata = { title: "Partners — dontbeboring" };
 export const dynamic = "force-dynamic";
@@ -77,6 +79,14 @@ export default async function AdminPartnersPage() {
                       {p.suspendedReason}
                     </p>
                   )}
+
+                  <div className="mb-3">
+                    <CommissionControls
+                      partnerId={p.id}
+                      rate={Number(p.commissionRate)}
+                      isDefault={Number(p.commissionRate) === DEFAULT_COMMISSION_RATE}
+                    />
+                  </div>
 
                   <SuspendControls partnerId={p.id} suspended={suspended} />
                 </div>

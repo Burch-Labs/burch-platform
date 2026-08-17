@@ -165,6 +165,15 @@ model Partner {
   suspendedAt     DateTime?
   suspendedReason String?
   suspendedBy     String?
+  /**
+   * Percentage of each sale the platform keeps; the partner keeps the rest.
+   * 5.00 = 5%. Defaults to the standard rate — set individually only when a
+   * partner has actually negotiated a different one, so a bare list of
+   * partners doesn't read as if everyone's rate was hand-picked.
+   */
+  commissionRate    Decimal   @default(5.00) @db.Decimal(5, 2)
+  commissionSetAt   DateTime?
+  commissionSetBy   String?
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
