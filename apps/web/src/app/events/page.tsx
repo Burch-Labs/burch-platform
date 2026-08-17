@@ -40,7 +40,7 @@ async function EventsContent({ searchParams }: PageProps) {
   const hasFilters = q || category || city || dateFrom || dateTo;
 
   return (
-    <div className="flex gap-6 items-start">
+    <div className="flex flex-col lg:flex-row gap-6 items-start">
       {/* Sidebar */}
       <Suspense>
         <FilterSidebar cities={cities} />
@@ -171,9 +171,9 @@ export default function EventsPage(props: PageProps) {
       <main className="max-w-6xl mx-auto px-6 py-8">
         <Suspense
           fallback={
-            <div className="flex gap-6">
-              <div className="w-56 h-96 bg-white rounded-2xl border border-gray-100 animate-pulse" />
-              <div className="flex-1 grid grid-cols-3 gap-5">
+            <div className="flex flex-col lg:flex-row gap-6">
+              <div className="w-full lg:w-56 h-24 lg:h-96 bg-white rounded-2xl border border-gray-100 animate-pulse flex-shrink-0" />
+              <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {Array.from({ length: 6 }).map((_, i) => (
                   <div key={i} className="h-64 bg-white rounded-2xl border border-gray-100 animate-pulse" />
                 ))}

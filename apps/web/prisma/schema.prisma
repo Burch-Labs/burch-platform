@@ -385,6 +385,9 @@ model Event {
   currency    String        @default("KES")
   capacity    Int
   tags        String[]      @default([])
+  /** Incremented once per public detail-page view. Rough interest signal for
+      the admin event report, not a deduplicated analytics count. */
+  viewCount   Int           @default(0)
   /**
    * Visible to the public. Distinct from approvalStatus: an event only
    * reaches APPROVED, and only then gets published, once reviewed — but

@@ -1,10 +1,12 @@
 import Link from "next/link";
 
 const TABS = [
+  { href: "/admin",          label: "Office"   },
   { href: "/admin/payouts",  label: "Payouts"  },
   { href: "/admin/partners", label: "Partners" },
   { href: "/admin/events",   label: "Events"   },
   { href: "/admin/claims",   label: "Claims"   },
+  { href: "/admin/reports",  label: "Reports"  },
 ];
 
 /**
@@ -22,7 +24,7 @@ export function AdminNav({
   counts?: Partial<Record<string, number>>;
 }) {
   return (
-    <nav className="flex gap-1 mb-8 border-b border-gray-200">
+    <nav className="flex gap-1 mb-8 border-b border-gray-200 overflow-x-auto">
       {TABS.map(({ href, label }) => {
         const isActive = href === active;
         const count = counts?.[href];
@@ -30,7 +32,7 @@ export function AdminNav({
           <Link
             key={href}
             href={href}
-            className={`px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition ${
+            className={`px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition whitespace-nowrap flex-shrink-0 ${
               isActive
                 ? "border-orange-600 text-orange-700"
                 : "border-transparent text-gray-500 hover:text-gray-900"

@@ -18,7 +18,7 @@ export default async function PartnerPage() {
   const partner = await prisma.partner.findUnique({
     where: { userId: session.user.id },
     include: {
-      _count: { select: { events: true, hotels: true, restaurants: true } },
+      _count: { select: { events: true, hotels: true, restaurants: true, clubs: true } },
       payoutAccount: { select: { status: true, rejectionReason: true } },
       hotels:      { select: { id: true } },
       events:      { select: { id: true } },
@@ -116,11 +116,12 @@ export default async function PartnerPage() {
             )}
 
             {/* Listing stats */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
               {[
                 { label: "Events", count: partner._count.events, href: "/partner/events", emoji: "🎉" },
                 { label: "Hotels", count: partner._count.hotels, href: "/partner/hotels", emoji: "🏨" },
                 { label: "Restaurants", count: partner._count.restaurants, href: "/partner/restaurants", emoji: "🍽️" },
+                { label: "Clubs", count: partner._count.clubs, href: "/partner/clubs", emoji: "⛳" },
               ].map(({ label, count, href, emoji }) => (
                 <Link
                   key={label}
@@ -170,6 +171,7 @@ export default async function PartnerPage() {
                   { label: "Add event", href: "/partner/events/new" },
                   { label: "Add hotel", href: "/partner/hotels/new" },
                   { label: "Add restaurant", href: "/partner/restaurants/new" },
+                  { label: "Add golf club", href: "/partner/clubs/new" },
                 ].map(({ label, href }) => (
                   <Link
                     key={label}

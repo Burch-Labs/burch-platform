@@ -60,6 +60,15 @@ export default async function EventDetailPage({ params }: PageProps) {
 
   if (!event) notFound();
 
+  // Rough interest signal for the admin event report. Awaited rather than
+  // fire-and-forget — a serverless function can be frozen the moment the
+  // response is sent, which would silently drop an un-awaited write.
+  try {
+    await prisma.event.update({ where: { id }, data: { viewCount: { increment: 1 } } });
+  } catch (err) {
+    console.error("[EventDetailPage] view count increment failed", err);
+  }
+
   // Related events
   const related = await prisma.event.findMany({
     where: {

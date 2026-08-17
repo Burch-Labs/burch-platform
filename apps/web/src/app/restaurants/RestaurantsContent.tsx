@@ -37,7 +37,7 @@ export async function RestaurantsContent({ searchParams }: PageProps) {
   }
 
   return (
-    <div className="flex gap-6 items-start">
+    <div className="flex flex-col lg:flex-row gap-6 items-start">
       <Suspense>
         <RestaurantFilterSidebar cities={cities} cuisines={cuisines} />
       </Suspense>

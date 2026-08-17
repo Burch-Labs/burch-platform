@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import Link from "next/link";
 import { SignOutButton } from "./SignOutButton";
+import { MobileMenu } from "./MobileMenu";
 import { isAdminRole } from "@/lib/roles";
 
 const ROLE_BADGE: Record<string, string> = {
@@ -22,7 +23,7 @@ export async function NavBar() {
   const role = session?.user?.role ?? "CUSTOMER";
 
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-[0_1px_3px_0_rgba(30,21,16,0.06)]">
+    <header className="relative bg-white border-b border-gray-200 sticky top-0 z-40 shadow-[0_1px_3px_0_rgba(30,21,16,0.06)]">
       <div className="max-w-6xl mx-auto px-6 py-3.5 flex items-center justify-between gap-4">
         <div className="flex items-center gap-7">
           {/* Brand logotype in display font */}
@@ -116,12 +117,19 @@ export async function NavBar() {
               </Link>
               <Link
                 href="/auth/join"
-                className="text-sm bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition font-semibold shadow-sm"
+                className="hidden sm:inline-block text-sm bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition font-semibold shadow-sm"
               >
                 Get started
               </Link>
             </div>
           )}
+
+          <MobileMenu
+            isSignedIn={!!session}
+            isCustomer={role === "CUSTOMER"}
+            isAdmin={isAdminRole(role)}
+            userLabel={session?.user.name ?? session?.user.email}
+          />
         </div>
       </div>
     </header>
