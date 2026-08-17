@@ -72,7 +72,10 @@ ten carrying a source-checked website, and the UI says so on each one.
 Both callbacks are hardened but neither has run against a live gateway. Test
 each with real money before announcing anything.
 
-**M-Pesa.** Set all four `MPESA_*` variables and `MPESA_ENV=production`. Confirm
+**M-Pesa.** Set all four `MPESA_*` variables and `MPESA_ENV=production`. If the
+account is a Till (Buy Goods) rather than a PayBill, also set
+`MPESA_ACCOUNT_TYPE=till` — sending the wrong transaction type for the account
+either fails outright or is accepted but never reaches the merchant. Confirm
 the Daraja callback URL is `https://<your-domain>/api/payments/mpesa/callback`.
 Then buy one real ticket end to end and check:
 
