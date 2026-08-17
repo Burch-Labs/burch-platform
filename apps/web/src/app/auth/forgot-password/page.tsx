@@ -56,6 +56,13 @@ export default function ForgotPasswordPage() {
       title="Forgot your password?"
       subtitle="Enter your email and we'll send you a reset link."
     >
+      <div className="mb-5 rounded-lg bg-orange-50 border border-orange-100 px-4 py-3 text-sm text-orange-800">
+        Most accounts don&apos;t have a password to reset — they sign in with an
+        emailed code instead.{" "}
+        <Link href="/auth/join" className="font-semibold underline">
+          Try that first →
+        </Link>
+      </div>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>

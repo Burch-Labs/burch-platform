@@ -74,6 +74,14 @@ export async function NavBar() {
                   </Link>
                 </>
               )}
+              {role === "ADMIN" && (
+                <Link
+                  href="/admin"
+                  className="hidden sm:block text-sm text-purple-600 hover:text-purple-800 transition font-semibold"
+                >
+                  Admin
+                </Link>
+              )}
               <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${ROLE_BADGE[role]}`}>
                 {role.charAt(0) + role.slice(1).toLowerCase()}
               </span>
@@ -87,8 +95,13 @@ export async function NavBar() {
             </div>
           ) : (
             <div className="flex items-center gap-2">
+              {/* /auth/join handles sign-in for existing accounts too — an
+                  emailed code, not a password — so it's the one link that
+                  works for everyone. /auth/login (password) stays reachable
+                  directly for the handful of accounts that predate codes,
+                  but isn't the one the nav sends people to. */}
               <Link
-                href="/auth/login"
+                href="/auth/join"
                 className="text-sm text-gray-500 hover:text-gray-900 transition font-medium px-3 py-2"
               >
                 Sign in
