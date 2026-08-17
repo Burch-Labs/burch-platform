@@ -374,6 +374,8 @@ model Event {
   title       String
   description String?
   imageUrl    String?
+  /** Additional photos beyond the cover image, same convention as Hotel/Restaurant. */
+  images      String[]      @default([])
   category    EventCategory @default(OTHER)
   city        String        @default("")
   location    String
@@ -383,7 +385,28 @@ model Event {
   currency    String        @default("KES")
   capacity    Int
   tags        String[]      @default([])
+  /**
+   * Visible to the public. Distinct from approvalStatus: an event only
+   * reaches APPROVED, and only then gets published, once reviewed — but
+   * published stays the single field every listing query already filters
+   * on, so approval doesn't change how the rest of the app finds events.
+   */
   published   Boolean       @default(false)
+  /**
+   * APPROVED by default — an existing partner creating an event through
+   * their own dashboard is already a vetted business and publishes
+   * instantly, same as today. PENDING is set explicitly only by the public
+   * submission path, where the submitter's identity hasn't been vetted at
+   * all and a human needs to look at it first.
+   */
+  approvalStatus  EventApprovalStatus @default(APPROVED)
+  rejectionReason String?
+  reviewedAt      DateTime?
+  reviewedBy      String?
+  /** When the submitter accepted the organizer terms. Required to submit
+      through the public path; not asked of an existing partner, who agreed
+      to the same terms once, at signup. */
+  termsAcceptedAt DateTime?
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
@@ -394,7 +417,15 @@ model Event {
   // Speeds up the common listing queries: published feed sorted by date, and city filter
   @@index([published, startDate])
   @@index([published, city])
+  // The admin review queue's whole query is "find everything PENDING."
+  @@index([approvalStatus])
   @@map("events")
+}
+
+enum EventApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
 
 // ─── Hotels ──────────────────────────────────────────────────────────────────
@@ -641,6 +672,10 @@ enum UserRole {
   CUSTOMER
   PARTNER
   ADMIN
+  /** Everything ADMIN can do, plus reviewing publicly-submitted events —
+      the one queue where a wrong approval puts a fake or scam event in
+      front of real guests, so it stays behind a narrower role. */
+  SUPER_ADMIN
 }
 
 enum PartnerStatus {

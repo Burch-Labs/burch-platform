@@ -5,11 +5,12 @@ import { prisma } from "@/lib/prisma";
 import { NavBar } from "@/components/layout/NavBar";
 import Link from "next/link";
 import { DeleteEventButton } from "./DeleteEventButton";
+import { isAdminRole } from "@/lib/roles";
 
 export default async function PartnerEventsPage() {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/auth/login");
-  if (session.user.role !== "PARTNER" && session.user.role !== "ADMIN") {
+  if (session.user.role !== "PARTNER" && !isAdminRole(session.user.role)) {
     redirect("/dashboard");
   }
 
@@ -29,6 +30,8 @@ export default async function PartnerEventsPage() {
       startDate: true,
       published: true,
       category: true,
+      approvalStatus: true,
+      rejectionReason: true,
       _count: { select: { bookings: true } },
     },
   });
@@ -78,17 +81,30 @@ export default async function PartnerEventsPage() {
                     <p className="font-medium text-gray-900 truncate">{event.title}</p>
                     <span
                       className={`shrink-0 inline-block text-xs font-medium px-2 py-0.5 rounded-full border ${
-                        event.published
+                        event.approvalStatus === "PENDING"
+                          ? "bg-amber-50 text-amber-700 border-amber-200"
+                          : event.approvalStatus === "REJECTED"
+                          ? "bg-red-50 text-red-700 border-red-200"
+                          : event.published
                           ? "bg-green-50 text-green-700 border-green-200"
                           : "bg-gray-50 text-gray-500 border-gray-200"
                       }`}
                     >
-                      {event.published ? "Published" : "Draft"}
+                      {event.approvalStatus === "PENDING"
+                        ? "Pending review"
+                        : event.approvalStatus === "REJECTED"
+                        ? "Rejected"
+                        : event.published
+                        ? "Published"
+                        : "Draft"}
                     </span>
                   </div>
                   <p className="text-xs text-gray-400 mt-0.5">
                     {event.city} · {event.startDate.toLocaleDateString("en-KE", { day: "numeric", month: "short", year: "numeric" })} · {event._count.bookings} booking{event._count.bookings !== 1 ? "s" : ""}
                   </p>
+                  {event.approvalStatus === "REJECTED" && event.rejectionReason && (
+                    <p className="text-xs text-red-600 mt-0.5">{event.rejectionReason}</p>
+                  )}
                 </div>
                 <div className="flex items-center gap-2 ml-4 shrink-0">
                   <Link

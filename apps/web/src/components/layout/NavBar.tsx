@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import Link from "next/link";
 import { SignOutButton } from "./SignOutButton";
+import { isAdminRole } from "@/lib/roles";
 
 const ROLE_BADGE: Record<string, string> = {
   ADMIN:    "bg-purple-100 text-purple-700",
@@ -74,7 +75,7 @@ export async function NavBar() {
                   </Link>
                 </>
               )}
-              {role === "ADMIN" && (
+              {isAdminRole(role) && (
                 <Link
                   href="/admin"
                   className="hidden sm:block text-sm text-purple-600 hover:text-purple-800 transition font-semibold"
@@ -90,6 +91,13 @@ export async function NavBar() {
                 className="hidden sm:block text-sm text-gray-500 hover:text-gray-900 transition truncate max-w-[140px]"
               >
                 {session.user.name ?? session.user.email}
+              </Link>
+              <Link
+                href="/settings"
+                className="hidden sm:block text-sm text-gray-400 hover:text-gray-900 transition"
+                title="Account settings"
+              >
+                Settings
               </Link>
               <SignOutButton />
             </div>

@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { BookingStatus, ReservationStatus } from "@prisma/client";
+import { isAdminRole } from "@/lib/roles";
 
 function csvEscape(value: string | number | null | undefined): string {
   const str = value == null ? "" : String(value);
@@ -21,7 +22,7 @@ function fmtDate(date: Date | null | undefined): string {
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  if (session.user.role !== "PARTNER" && session.user.role !== "ADMIN") {
+  if (session.user.role !== "PARTNER" && !isAdminRole(session.user.role)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

@@ -8,6 +8,7 @@ import { BookingStatus, ReservationStatus } from "@prisma/client";
 import { CancelButton } from "./CancelButton";
 import { PartnerActionButtons } from "./PartnerActionButtons";
 import { SavedSearchesList } from "@/components/dashboard/SavedSearchesList";
+import { isAdminRole } from "@/lib/roles";
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 
@@ -223,7 +224,7 @@ export default async function DashboardPage() {
 
   // ── Admin data ─────────────────────────────────────────────────────────────
   const adminStats =
-    role === "ADMIN"
+    isAdminRole(role)
       ? await prisma.$transaction([
           prisma.booking.count(),
           prisma.booking.count({ where: { status: "CONFIRMED" } }),
@@ -234,7 +235,7 @@ export default async function DashboardPage() {
       : null;
 
   const recentAdminBookings =
-    role === "ADMIN"
+    isAdminRole(role)
       ? await prisma.booking.findMany({
           include: {
             user: { select: { name: true, email: true } },
@@ -269,15 +270,15 @@ export default async function DashboardPage() {
   ];
 
   const links =
-    role === "ADMIN" ? adminLinks : role === "PARTNER" ? partnerLinks : customerLinks;
+    isAdminRole(role) ? adminLinks : role === "PARTNER" ? partnerLinks : customerLinks;
 
   const greeting =
-    role === "ADMIN"   ? "Admin dashboard" :
+    isAdminRole(role)   ? "Admin dashboard" :
     role === "PARTNER" ? "Partner dashboard" :
                          "Welcome back";
 
   const subtitle =
-    role === "ADMIN"   ? "Manage the dontbeboring platform." :
+    isAdminRole(role)   ? "Manage the dontbeboring platform." :
     role === "PARTNER" ? "Manage your listings and view bookings." :
                          "Your bookings and reservations at a glance.";
 
@@ -598,7 +599,7 @@ export default async function DashboardPage() {
         )}
 
         {/* ── ADMIN: platform booking overview ────────────────────────────── */}
-        {role === "ADMIN" && adminStats && (
+        {isAdminRole(role) && adminStats && (
           <div className="space-y-10">
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
               <StatCard emoji="📋" label="Total bookings" value={adminStats[0]} />

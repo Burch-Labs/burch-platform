@@ -7,6 +7,7 @@ import { BookingStatus, ReservationStatus } from "@prisma/client";
 import { PartnerActionButtons } from "@/app/dashboard/PartnerActionButtons";
 import { BookingsFilter } from "./BookingsFilter";
 import Link from "next/link";
+import { isAdminRole } from "@/lib/roles";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -42,7 +43,7 @@ interface PageProps {
 export default async function PartnerBookingsPage({ searchParams }: PageProps) {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/auth/login");
-  if (session.user.role !== "PARTNER" && session.user.role !== "ADMIN") {
+  if (session.user.role !== "PARTNER" && !isAdminRole(session.user.role)) {
     redirect("/dashboard");
   }
 

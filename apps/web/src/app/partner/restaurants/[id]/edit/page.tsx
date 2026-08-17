@@ -6,6 +6,7 @@ import { NavBar } from "@/components/layout/NavBar";
 import Link from "next/link";
 import { RestaurantForm } from "../../RestaurantForm";
 import { updateRestaurant } from "../../actions";
+import { isAdminRole } from "@/lib/roles";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -16,7 +17,7 @@ export default async function EditRestaurantPage({ params }: Props) {
 
   const session = await getServerSession(authOptions);
   if (!session) redirect("/auth/login");
-  if (session.user.role !== "PARTNER" && session.user.role !== "ADMIN") {
+  if (session.user.role !== "PARTNER" && !isAdminRole(session.user.role)) {
     redirect("/dashboard");
   }
 

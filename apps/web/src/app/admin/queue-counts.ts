@@ -2,12 +2,14 @@ import { prisma } from "@/lib/prisma";
 
 /** Waiting-work counts for the admin tab bar. */
 export async function getQueueCounts() {
-  const [payouts, claims] = await Promise.all([
+  const [payouts, claims, events] = await Promise.all([
     prisma.payoutAccount.count({ where: { status: "SUBMITTED" } }),
     prisma.venueClaim.count({ where: { status: "NEW" } }),
+    prisma.event.count({ where: { approvalStatus: "PENDING" } }),
   ]);
   return {
     "/admin/payouts": payouts,
     "/admin/claims": claims,
+    "/admin/events": events,
   };
 }

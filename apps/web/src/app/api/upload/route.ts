@@ -7,12 +7,12 @@ const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 const MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
 
 export async function POST(req: NextRequest) {
-  // Must be a partner or admin
+  // Any signed-in user — the public event submission form uploads photos
+  // before the submitter has a partner profile (that's created alongside the
+  // event itself). An unreferenced upload is just an orphaned file, the same
+  // risk a partner already has if they upload and abandon a draft.
   const session = await getServerSession(authOptions);
-  if (
-    !session ||
-    (session.user.role !== "PARTNER" && session.user.role !== "ADMIN")
-  ) {
+  if (!session) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

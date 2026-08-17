@@ -6,11 +6,12 @@ import { NavBar } from "@/components/layout/NavBar";
 import Link from "next/link";
 import { HotelForm } from "../HotelForm";
 import { createHotel } from "../actions";
+import { isAdminRole } from "@/lib/roles";
 
 export default async function NewHotelPage() {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/auth/login");
-  if (session.user.role !== "PARTNER" && session.user.role !== "ADMIN") {
+  if (session.user.role !== "PARTNER" && !isAdminRole(session.user.role)) {
     redirect("/dashboard");
   }
 

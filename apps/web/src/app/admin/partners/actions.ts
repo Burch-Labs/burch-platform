@@ -10,6 +10,7 @@ import {
   resetPartnerCommissionRate,
   InvalidCommissionRateError,
 } from "@/lib/commission";
+import { isAdminRole } from "@/lib/roles";
 
 const schema = z.object({
   partnerId: z.string().min(1),
@@ -31,7 +32,7 @@ export async function togglePartnerSuspension(
   formData: FormData
 ): Promise<SuspendState> {
   const session = await getServerSession(authOptions);
-  if (session?.user?.role !== "ADMIN") {
+  if (!session || !isAdminRole(session.user.role)) {
     return { error: "Only admins can suspend partners." };
   }
 
@@ -83,7 +84,7 @@ export async function updatePartnerCommission(
   formData: FormData
 ): Promise<CommissionState> {
   const session = await getServerSession(authOptions);
-  if (session?.user?.role !== "ADMIN") {
+  if (!session || !isAdminRole(session.user.role)) {
     return { error: "Only admins can change commission rates." };
   }
 

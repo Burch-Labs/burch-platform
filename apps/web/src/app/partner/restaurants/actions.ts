@@ -5,12 +5,13 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
+import { isAdminRole } from "@/lib/roles";
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 
 async function requirePartner() {
   const session = await getServerSession(authOptions);
-  if (!session || (session.user.role !== "PARTNER" && session.user.role !== "ADMIN")) {
+  if (!session || (session.user.role !== "PARTNER" && !isAdminRole(session.user.role))) {
     throw new Error("Forbidden");
   }
   const partner = await prisma.partner.findUnique({

@@ -6,11 +6,12 @@ import { PayoutStatusCard } from "@/components/partner/PayoutStatusCard";
 import { NavBar } from "@/components/layout/NavBar";
 import { ConfigHealthBanner } from "@/components/partner/ConfigHealthBanner";
 import Link from "next/link";
+import { isAdminRole } from "@/lib/roles";
 
 export default async function PartnerPage() {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/auth/login");
-  if (session.user.role !== "PARTNER" && session.user.role !== "ADMIN") {
+  if (session.user.role !== "PARTNER" && !isAdminRole(session.user.role)) {
     redirect("/dashboard");
   }
 

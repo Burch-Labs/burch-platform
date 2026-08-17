@@ -4,6 +4,7 @@ import { z } from "zod";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { checkInTicket } from "@/lib/tickets";
+import { isAdminRole } from "@/lib/roles";
 
 const schema = z.object({
   token: z.string().min(1).max(500),
@@ -45,7 +46,7 @@ export async function POST(req: NextRequest) {
   }
 
   const isOwner = event.partner?.userId === session.user.id;
-  const isAdmin = session.user.role === "ADMIN";
+  const isAdmin = isAdminRole(session.user.role);
   if (!isOwner && !isAdmin) {
     return NextResponse.json(
       { error: "You cannot scan tickets for this event." },

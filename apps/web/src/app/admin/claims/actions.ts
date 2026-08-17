@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth";
 import { z } from "zod";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { isAdminRole } from "@/lib/roles";
 
 const schema = z.object({
   claimId: z.string().min(1),
@@ -27,7 +28,7 @@ export async function reviewClaim(
   formData: FormData
 ): Promise<ClaimReviewState> {
   const session = await getServerSession(authOptions);
-  if (session?.user?.role !== "ADMIN") {
+  if (!session || !isAdminRole(session.user.role)) {
     return { error: "Only admins can review claims." };
   }
 

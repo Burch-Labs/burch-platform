@@ -150,7 +150,15 @@ export default function EventsPage(props: PageProps) {
       {/* Hero */}
       <div className="bg-white border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-6 py-10">
-          <h1 className="text-3xl font-bold text-gray-900 mb-1">Discover Events</h1>
+          <div className="flex items-start justify-between gap-4 mb-1">
+            <h1 className="text-3xl font-bold text-gray-900">Discover Events</h1>
+            <Link
+              href="/events/submit"
+              className="hidden sm:inline-block flex-shrink-0 text-sm font-semibold text-orange-600 border border-orange-200 bg-orange-50 hover:bg-orange-100 px-4 py-2 rounded-xl transition"
+            >
+              + List your event
+            </Link>
+          </div>
           <p className="text-gray-500 mb-6">
             Find the best events happening across Kenya
           </p>

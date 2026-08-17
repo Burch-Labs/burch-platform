@@ -36,10 +36,16 @@ function looksLikePhone(value: string): boolean {
  * a number and failing after a round trip — the worst version of this screen is
  * one that accepts a phone, shows a channel picker, and then dead-ends.
  */
-export function JoinForm({ allowPhone = false }: { allowPhone?: boolean }) {
+export function JoinForm({
+  allowPhone = false,
+  defaultCallbackUrl = "/",
+}: {
+  allowPhone?: boolean;
+  defaultCallbackUrl?: string;
+}) {
   const router = useRouter();
   const params = useSearchParams();
-  const callbackUrl = params.get("callbackUrl") ?? "/";
+  const callbackUrl = params.get("callbackUrl") ?? defaultCallbackUrl;
 
   const [step, setStep] = useState<Step>("details");
   const [name, setName] = useState("");

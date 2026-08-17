@@ -7,8 +7,14 @@ export default withAuth(
     const token = req.nextauth.token;
     const role = token?.role as string | undefined;
 
-    // Admin-only routes
-    if (pathname.startsWith("/admin") && role !== "ADMIN") {
+    // The admin sign-in page has to be reachable by someone who isn't signed
+    // in yet — that's the whole point of it.
+    if (pathname.startsWith("/admin/login")) {
+      return NextResponse.next();
+    }
+
+    // Admin-only routes — SUPER_ADMIN is a strict superset of ADMIN
+    if (pathname.startsWith("/admin") && role !== "ADMIN" && role !== "SUPER_ADMIN") {
       return NextResponse.redirect(new URL("/dashboard?error=unauthorized", req.url));
     }
 
@@ -16,7 +22,8 @@ export default withAuth(
     if (
       pathname.startsWith("/partner") &&
       role !== "PARTNER" &&
-      role !== "ADMIN"
+      role !== "ADMIN" &&
+      role !== "SUPER_ADMIN"
     ) {
       return NextResponse.redirect(new URL("/dashboard?error=unauthorized", req.url));
     }
@@ -28,7 +35,11 @@ export default withAuth(
     // even when NEXTAUTH_SECRET is absent and SESSION_SECRET is used instead.
     secret: process.env.NEXTAUTH_SECRET ?? process.env.SESSION_SECRET,
     callbacks: {
-      authorized: ({ token }) => !!token,
+      // /admin/login must be reachable without a token, same reason as above —
+      // withAuth's authorized gate runs before the middleware function, so the
+      // bypass has to live here too or an anonymous visitor never gets past it.
+      authorized: ({ token, req }) =>
+        req.nextUrl.pathname.startsWith("/admin/login") || !!token,
     },
   }
 );

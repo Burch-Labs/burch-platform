@@ -7,6 +7,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { EventCategory } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { Client as ObjectStorageClient } from "@replit/object-storage";
+import { isAdminRole } from "@/lib/roles";
 
 // ─── storage helpers ──────────────────────────────────────────────────────────
 
@@ -56,7 +57,7 @@ async function deleteStorageImage(imageUrl: string | null | undefined) {
 
 async function requirePartner() {
   const session = await getServerSession(authOptions);
-  if (!session || (session.user.role !== "PARTNER" && session.user.role !== "ADMIN")) {
+  if (!session || (session.user.role !== "PARTNER" && !isAdminRole(session.user.role))) {
     throw new Error("Forbidden");
   }
   const partner = await prisma.partner.findUnique({
