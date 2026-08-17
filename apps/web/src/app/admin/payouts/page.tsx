@@ -4,7 +4,7 @@ import { ReviewControls } from "./ReviewControls";
 import { AdminNav } from "../AdminNav";
 import { getQueueCounts } from "../queue-counts";
 
-export const metadata = { title: "Payout reviews — dontbeboring" };
+export const metadata = { title: "Payout reviews — dontbeboringKE" };
 export const dynamic = "force-dynamic";
 
 /**

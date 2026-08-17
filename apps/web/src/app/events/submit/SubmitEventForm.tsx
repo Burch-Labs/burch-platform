@@ -24,7 +24,7 @@ const TERMS_TEXT = `By submitting an event you confirm that:
 
 1. You are authorised to sell tickets or admission for this event.
 2. All details — dates, pricing, capacity, and venue — are accurate.
-3. dontbeboring may reject or remove listings that are fraudulent, misleading, or violate local law.
+3. dontbeboringKE may reject or remove listings that are fraudulent, misleading, or violate local law.
 4. Payouts follow the platform's standard commission rate unless a different rate has been agreed with you directly.
 5. You are responsible for honouring every ticket sold through the platform.
 

@@ -7,7 +7,7 @@ import type { VenueType } from "./actions";
 
 const TYPES = ["hotel", "restaurant", "club"] as const;
 
-export const metadata = { title: "Claim a listing — dontbeboring" };
+export const metadata = { title: "Claim a listing — dontbeboringKE" };
 
 export default async function ClaimPage({
   params,

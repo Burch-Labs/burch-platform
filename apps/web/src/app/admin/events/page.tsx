@@ -8,7 +8,7 @@ import { getQueueCounts } from "../queue-counts";
 import { isAdminRole, isSuperAdmin } from "@/lib/roles";
 import { EventReviewControls } from "./EventReviewControls";
 
-export const metadata = { title: "Event submissions — dontbeboring" };
+export const metadata = { title: "Event submissions — dontbeboringKE" };
 export const dynamic = "force-dynamic";
 
 export default async function AdminEventsPage() {

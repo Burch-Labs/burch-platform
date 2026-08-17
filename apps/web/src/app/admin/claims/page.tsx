@@ -5,7 +5,7 @@ import { AdminNav } from "../AdminNav";
 import { getQueueCounts } from "../queue-counts";
 import { ClaimControls } from "./ClaimControls";
 
-export const metadata = { title: "Listing claims — dontbeboring" };
+export const metadata = { title: "Listing claims — dontbeboringKE" };
 export const dynamic = "force-dynamic";
 
 const PATH = { HOTEL: "hotels", RESTAURANT: "restaurants", CLUB: "clubs" } as const;

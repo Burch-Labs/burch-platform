@@ -6,7 +6,7 @@ import { authOptions } from "@/lib/auth";
 import { ticketToken } from "@/lib/tickets";
 import { qrSvg } from "@/lib/qr";
 
-export const metadata = { title: "Your tickets — dontbeboring" };
+export const metadata = { title: "Your tickets — dontbeboringKE" };
 
 /**
  * A ticket carries a live credential, so this page must never be cached or
@@ -116,7 +116,7 @@ export default async function TicketWalletPage({
               {/* ── Stub: the part staff look at ── */}
               <div className="bg-gray-900 px-6 py-5 print:bg-white print:border-b print:border-gray-200">
                 <p className="text-[10px] font-semibold tracking-[0.2em] text-orange-300 print:text-orange-700">
-                  DONTBEBORING
+                  DONTBEBORINGKE
                 </p>
                 <h1 className="font-display text-2xl text-white mt-2 leading-tight print:text-gray-900">
                   {event.title}
@@ -181,7 +181,7 @@ export default async function TicketWalletPage({
 
               <div className="bg-gray-50 px-6 py-3 print:bg-white">
                 <p className="text-[10px] text-gray-400 leading-relaxed">
-                  Issued by dontbeboring
+                  Issued by dontbeboringKE
                   {organiser ? ` on behalf of ${organiser}` : ""}. Booking {booking.id}.
                 </p>
               </div>

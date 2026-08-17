@@ -28,7 +28,7 @@ function resolveBaseUrl(): string {
 }
 
 const BASE_URL = resolveBaseUrl();
-const FROM = process.env.EMAIL_FROM ?? "dontbeboring <onboarding@resend.dev>";
+const FROM = process.env.EMAIL_FROM ?? "dontbeboringKE <onboarding@resend.dev>";
 // When set, all outgoing emails are redirected to this address (useful while
 // the sending domain is not yet verified in Resend).
 const OVERRIDE_TO = process.env.EMAIL_OVERRIDE_TO ?? null;
@@ -55,7 +55,7 @@ function emailWrapper(content: string): string {
       <table width="100%" style="max-width:520px;background:#ffffff;border-radius:16px;border:1px solid #D8E0EC;overflow:hidden;">
         <tr>
           <td style="padding:32px 32px 0;">
-            <p style="margin:0 0 24px;font-size:22px;font-weight:700;color:#8A6914;">dontbeboring</p>
+            <p style="margin:0 0 24px;font-size:22px;font-weight:700;color:#8A6914;">dontbeboringKE</p>
             ${content}
           </td>
         </tr>
@@ -260,7 +260,7 @@ export async function sendEventApprovedEmail(params: EventApprovedEmailParams): 
       <h2 style="margin:0 0 8px;font-size:20px;color:#131E30;">Approved and live</h2>
       <p style="margin:0 0 24px;font-size:15px;color:#435671;line-height:1.6;">
         Hi ${toName ?? "there"}, <strong style="color:#131E30;">${eventTitle}</strong> has been approved and
-        is now live on dontbeboring.
+        is now live on dontbeboringKE.
       </p>
       ${primaryButton(url, "View your event")}
     `),
@@ -318,7 +318,7 @@ export async function sendSignInCodeEmail(
   ttlMinutes: number
 ): Promise<void> {
   if (!HAS_RESEND) {
-    devLog(`Your dontbeboring sign-in code: ${code}`, "(no link — enter the code)");
+    devLog(`Your dontbeboringKE sign-in code: ${code}`, "(no link — enter the code)");
     return;
   }
 
@@ -330,7 +330,7 @@ export async function sendSignInCodeEmail(
     to: OVERRIDE_TO ?? email,
     // The code stays out of the subject line: subjects show in notification
     // previews on a locked screen, where a shoulder is all it takes.
-    subject: "Your dontbeboring sign-in code",
+    subject: "Your dontbeboringKE sign-in code",
     html: emailWrapper(`
       <h2 style="margin:0 0 8px;font-size:20px;color:#131E30;">Your sign-in code</h2>
       <p style="margin:0 0 24px;font-size:15px;color:#435671;line-height:1.6;">
@@ -349,7 +349,7 @@ export async function sendVerificationEmail(email: string, token: string): Promi
   const url = `${BASE_URL}/api/auth/verify-email?token=${token}`;
 
   if (!HAS_RESEND) {
-    devLog("Verify your dontbeboring account", url);
+    devLog("Verify your dontbeboringKE account", url);
     return;
   }
 
@@ -359,7 +359,7 @@ export async function sendVerificationEmail(email: string, token: string): Promi
   await resend.emails.send({
     from: FROM,
     to: OVERRIDE_TO ?? email,
-    subject: "Verify your dontbeboring account",
+    subject: "Verify your dontbeboringKE account",
     html: emailWrapper(`
       <h2 style="margin:0 0 8px;font-size:20px;color:#131E30;">Verify your email address</h2>
       <p style="margin:0 0 24px;font-size:15px;color:#435671;line-height:1.6;">
@@ -377,7 +377,7 @@ export async function sendPasswordResetEmail(email: string, token: string): Prom
   const url = `${BASE_URL}/auth/reset-password?token=${token}`;
 
   if (!HAS_RESEND) {
-    devLog("Reset your dontbeboring password", url);
+    devLog("Reset your dontbeboringKE password", url);
     return;
   }
 
@@ -387,7 +387,7 @@ export async function sendPasswordResetEmail(email: string, token: string): Prom
   await resend.emails.send({
     from: FROM,
     to: OVERRIDE_TO ?? email,
-    subject: "Reset your dontbeboring password",
+    subject: "Reset your dontbeboringKE password",
     html: emailWrapper(`
       <h2 style="margin:0 0 8px;font-size:20px;color:#131E30;">Reset your password</h2>
       <p style="margin:0 0 24px;font-size:15px;color:#435671;line-height:1.6;">

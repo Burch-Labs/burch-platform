@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { NavBar } from "@/components/layout/NavBar";
 
-export const metadata = { title: "Submitted — dontbeboring" };
+export const metadata = { title: "Submitted — dontbeboringKE" };
 
 export default function SubmitEventThanksPage() {
   return (

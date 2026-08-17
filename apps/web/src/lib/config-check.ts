@@ -150,7 +150,7 @@ function checkConfig(): ConfigIssue[] {
           "That sandbox sender only delivers to your own Resend account address — " +
           "every other recipient is silently dropped, sign-in codes included. " +
           "Set EMAIL_FROM to an address on a domain you have verified in Resend, " +
-          'e.g. EMAIL_FROM="dontbeboring <hello@yourdomain.com>".',
+          'e.g. EMAIL_FROM="dontbeboringKE <hello@yourdomain.com>".',
       });
     }
   } else {
@@ -307,7 +307,7 @@ const warnCount = configIssues.filter((i) => i.level === "warn").length;
 if (configIssues.length > 0) {
   const border = "═".repeat(60);
   console.log(`\n${border}`);
-  console.log("⚙️   dontbeboring — CONFIG CHECK");
+  console.log("⚙️   dontbeboringKE — CONFIG CHECK");
   console.log(border);
 
   for (const issue of configIssues) {

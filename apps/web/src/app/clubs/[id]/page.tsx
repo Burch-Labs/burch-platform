@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: PageProps) {
     select: { name: true, description: true },
   });
   if (!club) return { title: "Club not found" };
-  return { title: `${club.name} — dontbeboring`, description: club.description ?? undefined };
+  return { title: `${club.name} — dontbeboringKE`, description: club.description ?? undefined };
 }
 
 export default async function ClubDetailPage({ params }: PageProps) {

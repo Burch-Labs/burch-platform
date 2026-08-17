@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: PageProps) {
   });
   if (!event) return { title: "Event not found" };
   return {
-    title: `${event.title} — dontbeboring`,
+    title: `${event.title} — dontbeboringKE`,
     description: event.description ?? undefined,
   };
 }

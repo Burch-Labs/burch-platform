@@ -75,7 +75,7 @@ export default async function PartnerPage() {
             <p className="text-4xl mb-4">🏢</p>
             <h2 className="text-lg font-semibold text-gray-900 mb-2">Set up your business</h2>
             <p className="text-sm text-gray-500 mb-6 max-w-sm mx-auto">
-              Create your partner profile to start listing events, hotels, and restaurants on dontbeboring.
+              Create your partner profile to start listing events, hotels, and restaurants on dontbeboringKE.
             </p>
             <Link
               href="/partner/onboarding"
@@ -100,7 +100,7 @@ export default async function PartnerPage() {
                     You keep {partnerShare}% of every sale
                   </p>
                   <p className="text-xs text-orange-700 mt-0.5">
-                    dontbeboring&apos;s share is {Number(partner.commissionRate)}% — paid out to you directly.
+                    dontbeboringKE&apos;s share is {Number(partner.commissionRate)}% — paid out to you directly.
                   </p>
                 </div>
               </div>

@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { AuthCard } from "@/components/auth/AuthCard";
 import { JoinForm } from "@/app/auth/join/JoinForm";
 
-export const metadata = { title: "Admin sign-in — dontbeboring" };
+export const metadata = { title: "Admin sign-in — dontbeboringKE" };
 
 // Same reason as /auth/join: whether phone sign-in is offered depends on
 // runtime config, so this can't be statically rendered either.

@@ -1531,25 +1531,25 @@ const CLUBS = [
 
 export async function runSeed() {
   try {
-    console.log("🌱 Seeding dontbeboring database…\n");
+    console.log("🌱 Seeding dontbeboringKE database…\n");
 
     // Users
     const [eventP1User, eventP2User, hotelPartnerUser, restaurantPartnerUser, adminUser, customerUser] =
       await Promise.all([
-        prisma.user.upsert({ where: { email: "events@dontbeboring.example" }, update: {}, create: { name: "dontbeboring Events Co.", email: "events@dontbeboring.example", password: await hash("Password123!", 12), role: UserRole.PARTNER, emailVerified: new Date() } }),
-        prisma.user.upsert({ where: { email: "continental@dontbeboring.example" }, update: {}, create: { name: "Continental Productions", email: "continental@dontbeboring.example", password: await hash("Password123!", 12), role: UserRole.PARTNER, emailVerified: new Date() } }),
-        prisma.user.upsert({ where: { email: "hotels@dontbeboring.example" }, update: {}, create: { name: "dontbeboring Hotels", email: "hotels@dontbeboring.example", password: await hash("Password123!", 12), role: UserRole.PARTNER, emailVerified: new Date() } }),
-        prisma.user.upsert({ where: { email: "dining@dontbeboring.example" }, update: {}, create: { name: "dontbeboring Dining", email: "dining@dontbeboring.example", password: await hash("Password123!", 12), role: UserRole.PARTNER, emailVerified: new Date() } }),
-        prisma.user.upsert({ where: { email: "admin@dontbeboring.example" }, update: {}, create: { name: "Admin", email: "admin@dontbeboring.example", password: await hash("Password123!", 12), role: UserRole.ADMIN, emailVerified: new Date() } }),
-        prisma.user.upsert({ where: { email: "customer@dontbeboring.example" }, update: {}, create: { name: "Alex Osei", email: "customer@dontbeboring.example", password: await hash("Password123!", 12), role: UserRole.CUSTOMER, emailVerified: new Date() } }),
+        prisma.user.upsert({ where: { email: "events@dontbeboringKE.example" }, update: {}, create: { name: "dontbeboringKE Events Co.", email: "events@dontbeboringKE.example", password: await hash("Password123!", 12), role: UserRole.PARTNER, emailVerified: new Date() } }),
+        prisma.user.upsert({ where: { email: "continental@dontbeboringKE.example" }, update: {}, create: { name: "Continental Productions", email: "continental@dontbeboringKE.example", password: await hash("Password123!", 12), role: UserRole.PARTNER, emailVerified: new Date() } }),
+        prisma.user.upsert({ where: { email: "hotels@dontbeboringKE.example" }, update: {}, create: { name: "dontbeboringKE Hotels", email: "hotels@dontbeboringKE.example", password: await hash("Password123!", 12), role: UserRole.PARTNER, emailVerified: new Date() } }),
+        prisma.user.upsert({ where: { email: "dining@dontbeboringKE.example" }, update: {}, create: { name: "dontbeboringKE Dining", email: "dining@dontbeboringKE.example", password: await hash("Password123!", 12), role: UserRole.PARTNER, emailVerified: new Date() } }),
+        prisma.user.upsert({ where: { email: "admin@dontbeboringKE.example" }, update: {}, create: { name: "Admin", email: "admin@dontbeboringKE.example", password: await hash("Password123!", 12), role: UserRole.ADMIN, emailVerified: new Date() } }),
+        prisma.user.upsert({ where: { email: "customer@dontbeboringKE.example" }, update: {}, create: { name: "Alex Osei", email: "customer@dontbeboringKE.example", password: await hash("Password123!", 12), role: UserRole.CUSTOMER, emailVerified: new Date() } }),
       ]);
 
     // Partners
     const [eventP1, eventP2, hotelPartner, restaurantPartner] = await Promise.all([
-      prisma.partner.upsert({ where: { userId: eventP1User.id }, update: {}, create: { userId: eventP1User.id, name: "dontbeboring Events Co.", description: "East Africa's leading event management company.", status: PartnerStatus.APPROVED } }),
+      prisma.partner.upsert({ where: { userId: eventP1User.id }, update: {}, create: { userId: eventP1User.id, name: "dontbeboringKE Events Co.", description: "East Africa's leading event management company.", status: PartnerStatus.APPROVED } }),
       prisma.partner.upsert({ where: { userId: eventP2User.id }, update: {}, create: { userId: eventP2User.id, name: "Continental Productions", description: "From Lagos to Nairobi, we produce unforgettable experiences.", status: PartnerStatus.APPROVED } }),
-      prisma.partner.upsert({ where: { userId: hotelPartnerUser.id }, update: {}, create: { userId: hotelPartnerUser.id, name: "dontbeboring Hotels Collection", description: "Curating East Africa's finest hotel experiences.", status: PartnerStatus.APPROVED } }),
-      prisma.partner.upsert({ where: { userId: restaurantPartnerUser.id }, update: {}, create: { userId: restaurantPartnerUser.id, name: "dontbeboring Dining Group", description: "East Africa's premier restaurant collection.", status: PartnerStatus.APPROVED } }),
+      prisma.partner.upsert({ where: { userId: hotelPartnerUser.id }, update: {}, create: { userId: hotelPartnerUser.id, name: "dontbeboringKE Hotels Collection", description: "Curating East Africa's finest hotel experiences.", status: PartnerStatus.APPROVED } }),
+      prisma.partner.upsert({ where: { userId: restaurantPartnerUser.id }, update: {}, create: { userId: restaurantPartnerUser.id, name: "dontbeboringKE Dining Group", description: "East Africa's premier restaurant collection.", status: PartnerStatus.APPROVED } }),
     ]);
 
     // Seed events
@@ -1624,11 +1624,11 @@ export async function runSeed() {
     // other. The hashes are seeded only so the legacy /auth/login route still
     // works for anyone who used it before the change.
     console.log("\n📋 Demo accounts — sign in at /auth/join with a code");
-    console.log("   admin@dontbeboring.example     → Admin");
-    console.log("   events@dontbeboring.example    → Events Partner");
-    console.log("   hotels@dontbeboring.example    → Hotels Partner");
-    console.log("   dining@dontbeboring.example    → Dining Partner");
-    console.log("   customer@dontbeboring.example  → Customer");
+    console.log("   admin@dontbeboringKE.example     → Admin");
+    console.log("   events@dontbeboringKE.example    → Events Partner");
+    console.log("   hotels@dontbeboringKE.example    → Hotels Partner");
+    console.log("   dining@dontbeboringKE.example    → Dining Partner");
+    console.log("   customer@dontbeboringKE.example  → Customer");
 
     return { eventsCreated, hotelsCreated, restaurantsCreated, clubsCreated };
   } finally {

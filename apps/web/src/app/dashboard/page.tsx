@@ -278,7 +278,7 @@ export default async function DashboardPage() {
                          "Welcome back";
 
   const subtitle =
-    isAdminRole(role)   ? "Manage the dontbeboring platform." :
+    isAdminRole(role)   ? "Manage the dontbeboringKE platform." :
     role === "PARTNER" ? "Manage your listings and view bookings." :
                          "Your bookings and reservations at a glance.";
 

@@ -107,5 +107,5 @@ export async function sendSms(to: string, message: string): Promise<SmsResult> {
 
 /** The sign-in code message. Short, because an SMS is charged per segment. */
 export function signInCodeSms(code: string, ttlMinutes: number): string {
-  return `${code} is your dontbeboring sign-in code. It expires in ${ttlMinutes} minutes. Do not share it.`;
+  return `${code} is your dontbeboringKE sign-in code. It expires in ${ttlMinutes} minutes. Do not share it.`;
 }

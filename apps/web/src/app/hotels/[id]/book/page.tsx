@@ -7,7 +7,7 @@ interface PageProps {
 }
 
 export const metadata = {
-  title: "Confirm Booking — dontbeboring",
+  title: "Confirm Booking — dontbeboringKE",
 };
 
 export default async function BookPage({ params }: PageProps) {

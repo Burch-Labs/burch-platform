@@ -5,7 +5,7 @@ import { getQueueCounts } from "./queue-counts";
 import { getRecentActivity } from "./activity";
 import Link from "next/link";
 
-export const metadata = { title: "Admin office — dontbeboring" };
+export const metadata = { title: "Admin office — dontbeboringKE" };
 export const dynamic = "force-dynamic";
 
 function timeAgo(date: Date): string {

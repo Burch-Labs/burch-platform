@@ -22,7 +22,7 @@ const playfair = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "dontbeboring",
+  title: "dontbeboringKE",
   description: "Exceptional hotels, restaurants and events across Kenya.",
 };
 

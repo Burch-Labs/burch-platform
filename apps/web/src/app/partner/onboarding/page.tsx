@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { NavBar } from "@/components/layout/NavBar";
 import { OnboardingForm } from "./OnboardingForm";
 
-export const metadata = { title: "Set up your business — dontbeboring" };
+export const metadata = { title: "Set up your business — dontbeboringKE" };
 export const dynamic = "force-dynamic";
 
 export default async function PartnerOnboardingPage() {

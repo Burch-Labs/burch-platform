@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { NavBar } from "@/components/layout/NavBar";
 import { PasswordForm } from "./PasswordForm";
 
-export const metadata = { title: "Account settings — dontbeboring" };
+export const metadata = { title: "Account settings — dontbeboringKE" };
 export const dynamic = "force-dynamic";
 
 export default async function SettingsPage() {

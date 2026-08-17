@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: PageProps) {
   const { id } = await params;
   const r = await prisma.restaurant.findUnique({ where: { id }, select: { name: true, description: true } });
   if (!r) return { title: "Restaurant not found" };
-  return { title: `${r.name} — dontbeboring`, description: r.description ?? undefined };
+  return { title: `${r.name} — dontbeboringKE`, description: r.description ?? undefined };
 }
 
 export default async function RestaurantDetailPage({ params }: PageProps) {

@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { NavBar } from "@/components/layout/NavBar";
 import { SubmitEventForm } from "./SubmitEventForm";
 
-export const metadata = { title: "List your event — dontbeboring" };
+export const metadata = { title: "List your event — dontbeboringKE" };
 export const dynamic = "force-dynamic";
 
 export default async function SubmitEventPage() {

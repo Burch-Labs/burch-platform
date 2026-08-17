@@ -372,7 +372,7 @@ export default async function HomePage() {
             Host your own event?
           </h2>
           <p className="text-gray-900/80 mb-8 text-sm max-w-sm mx-auto leading-relaxed">
-            Join hundreds of organizers using dontbeboring to sell tickets and grow their audience across Kenya.
+            Join hundreds of organizers using dontbeboringKE to sell tickets and grow their audience across Kenya.
           </p>
           <Link
             href="/auth/join"
@@ -386,7 +386,7 @@ export default async function HomePage() {
       {/* ── Footer ─────────────────────────────────────────────────────────── */}
       <footer className="border-t border-gray-200 py-8 text-center">
         <p className="font-display text-sm text-gray-400 tracking-wide">
-          © {new Date().getFullYear()} dontbeboring &nbsp;·&nbsp; Exceptional experiences across Kenya
+          © {new Date().getFullYear()} dontbeboringKE &nbsp;·&nbsp; Exceptional experiences across Kenya
         </p>
       </footer>
     </div>
