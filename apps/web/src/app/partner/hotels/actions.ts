@@ -28,6 +28,7 @@ function parseFormData(data: FormData) {
     name:         (data.get("name") as string).trim(),
     description:  (data.get("description") as string | null)?.trim() ?? null,
     imageUrl:     (data.get("imageUrl") as string | null)?.trim() || null,
+    images:       (data.getAll("images") as string[]).map((s) => s.trim()).filter(Boolean),
     city:         (data.get("city") as string).trim(),
     location:     (data.get("location") as string).trim(),
     starRating:   starRatingRaw ? parseInt(starRatingRaw, 10) : null,
@@ -37,6 +38,7 @@ function parseFormData(data: FormData) {
                     .filter(Boolean),
     phone:        (data.get("phone") as string | null)?.trim() || null,
     email:        (data.get("email") as string | null)?.trim() || null,
+    website:      (data.get("website") as string | null)?.trim() || null,
     checkInTime:  (data.get("checkInTime") as string | null)?.trim() || "14:00",
     checkOutTime: (data.get("checkOutTime") as string | null)?.trim() || "11:00",
     published:    data.has("published"),
@@ -80,23 +82,33 @@ export async function createHotel(
 
 // ─── Update ───────────────────────────────────────────────────────────────────
 
+/**
+ * True if this session may edit the given hotel: its owning partner, or any
+ * admin. Admins can fix up any listing's info regardless of who owns it —
+ * useful for curating real venue data (seeded or partner-submitted) without
+ * needing to also own a partner profile for every business on the platform.
+ */
+async function canEditHotel(hotelId: string): Promise<boolean> {
+  const session = await getServerSession(authOptions);
+  if (!session) return false;
+  if (isAdminRole(session.user.role)) {
+    return !!(await prisma.hotel.findUnique({ where: { id: hotelId }, select: { id: true } }));
+  }
+  if (session.user.role !== "PARTNER") return false;
+  const partner = await prisma.partner.findUnique({ where: { userId: session.user.id }, select: { id: true } });
+  if (!partner) return false;
+  const owned = await prisma.hotel.findFirst({ where: { id: hotelId, partnerId: partner.id }, select: { id: true } });
+  return !!owned;
+}
+
 export async function updateHotel(
   hotelId: string,
   _prev: { error?: string } | null,
   data: FormData,
 ): Promise<{ error?: string }> {
-  let partner;
-  try {
-    partner = await requirePartner();
-  } catch (e: unknown) {
-    return { error: (e as Error).message };
+  if (!(await canEditHotel(hotelId))) {
+    return { error: "Hotel not found or access denied" };
   }
-
-  const existing = await prisma.hotel.findFirst({
-    where: { id: hotelId, partnerId: partner.id },
-    select: { id: true },
-  });
-  if (!existing) return { error: "Hotel not found or access denied" };
 
   const fields = parseFormData(data);
   if (!fields.name)     return { error: "Hotel name is required" };
@@ -118,8 +130,13 @@ export async function updateHotel(
   revalidatePath("/hotels");
   revalidatePath(`/hotels/${hotelId}`);
   revalidatePath("/partner/hotels");
+  revalidatePath("/admin/hotels");
 
-  redirect("/partner/hotels");
+  // An admin editing someone else's hotel has no partner profile of their
+  // own, so /partner/hotels would just bounce them to onboarding — send
+  // them back to the admin listing instead.
+  const session = await getServerSession(authOptions);
+  redirect(isAdminRole(session?.user?.role) ? "/admin/hotels" : "/partner/hotels");
 }
 
 // ─── Delete ───────────────────────────────────────────────────────────────────

@@ -15,16 +15,20 @@ export interface HotelFormDefaults {
   name?: string;
   description?: string;
   imageUrl?: string;
+  images?: string[];
   city?: string;
   location?: string;
   starRating?: string;
   amenities?: string; // comma-separated
   phone?: string;
   email?: string;
+  website?: string;
   checkInTime?: string;
   checkOutTime?: string;
   published?: boolean;
 }
+
+const MAX_GALLERY_PHOTOS = 8;
 
 interface Props {
   action: (prev: { error?: string } | null, data: FormData) => Promise<{ error?: string }>;
@@ -78,6 +82,43 @@ export function HotelForm({ action, defaults = {}, submitLabel = "Save hotel", c
   }
 
   const effectiveImageUrl = uploadedUrl || previewSrc;
+
+  // Gallery photos — separate from the single cover photo above.
+  const galleryInputRef = useRef<HTMLInputElement>(null);
+  const [gallery, setGallery] = useState<string[]>(defaults.images ?? []);
+  const [galleryUploading, setGalleryUploading] = useState(false);
+  const [galleryError, setGalleryError] = useState("");
+
+  async function handleGalleryFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (gallery.length >= MAX_GALLERY_PHOTOS) {
+      setGalleryError(`You can add up to ${MAX_GALLERY_PHOTOS} gallery photos.`);
+      return;
+    }
+    setGalleryError("");
+    setGalleryUploading(true);
+    const body = new FormData();
+    body.append("file", file);
+    try {
+      const res = await fetch("/api/upload", { method: "POST", body });
+      const json = await res.json();
+      if (!res.ok || json.error) {
+        setGalleryError(json.error ?? "Upload failed");
+      } else {
+        setGallery((prev) => [...prev, json.url]);
+      }
+    } catch {
+      setGalleryError("Upload failed — please try again");
+    } finally {
+      setGalleryUploading(false);
+      if (galleryInputRef.current) galleryInputRef.current.value = "";
+    }
+  }
+
+  function removeGalleryPhoto(url: string) {
+    setGallery((prev) => prev.filter((p) => p !== url));
+  }
 
   return (
     <form action={formAction} className="space-y-6">
@@ -169,6 +210,60 @@ export function HotelForm({ action, defaults = {}, submitLabel = "Save hotel", c
 
         {uploadError && <p className="mt-1.5 text-xs text-red-600">{uploadError}</p>}
         <input type="hidden" name="imageUrl" value={effectiveImageUrl} />
+      </div>
+
+      {/* Gallery photos */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+          Gallery photos <span className="text-gray-400 font-normal">(up to {MAX_GALLERY_PHOTOS})</span>
+        </label>
+
+        {gallery.length > 0 && (
+          <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-3">
+            {gallery.map((url) => (
+              <div key={url} className="relative h-20 rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={url} alt="Hotel gallery photo" className="w-full h-full object-cover" />
+                <button
+                  type="button"
+                  onClick={() => removeGalleryPhoto(url)}
+                  className="absolute top-1 right-1 bg-white/80 hover:bg-white text-gray-700 rounded-full p-0.5 shadow transition"
+                  title="Remove photo"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </button>
+                <input type="hidden" name="images" value={url} />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {gallery.length < MAX_GALLERY_PHOTOS && (
+          <div
+            className={`flex items-center gap-3 border-2 border-dashed rounded-xl px-4 py-3 cursor-pointer transition ${
+              galleryUploading ? "border-orange-200 bg-orange-50 cursor-wait" : "border-gray-200 hover:border-orange-300 hover:bg-orange-50"
+            }`}
+            onClick={() => !galleryUploading && galleryInputRef.current?.click()}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+            </svg>
+            <p className="text-sm text-gray-600 font-medium">
+              {galleryUploading ? "Uploading…" : "Add a gallery photo"}
+            </p>
+            <input
+              ref={galleryInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              className="hidden"
+              onChange={handleGalleryFileChange}
+              disabled={galleryUploading}
+            />
+          </div>
+        )}
+        {galleryError && <p className="mt-1.5 text-xs text-red-600">{galleryError}</p>}
       </div>
 
       {/* City + Star rating */}
@@ -272,6 +367,18 @@ export function HotelForm({ action, defaults = {}, submitLabel = "Save hotel", c
             className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent"
           />
         </div>
+      </div>
+
+      {/* Website */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1.5">Website</label>
+        <input
+          name="website"
+          type="url"
+          defaultValue={defaults.website ?? ""}
+          placeholder="https://yourhotel.com"
+          className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent"
+        />
       </div>
 
       {/* Published toggle */}
