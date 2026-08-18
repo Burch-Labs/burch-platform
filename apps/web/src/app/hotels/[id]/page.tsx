@@ -106,8 +106,18 @@ export default async function HotelDetailPage({ params }: PageProps) {
             <HotelGallery images={allImages} name={hotel.name} />
           </div>
         ) : (
-          <div className="mb-8 h-64 sm:h-72 md:h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center">
+          <div className="mb-8 h-64 sm:h-72 md:h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-gray-700 to-gray-900 flex flex-col items-center justify-center gap-3">
             <span className="text-7xl opacity-60">🏨</span>
+            {hotel.website && (
+              <a
+                href={hotel.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm font-medium text-white/90 hover:text-white underline underline-offset-4"
+              >
+                See photos on the official website →
+              </a>
+            )}
           </div>
         )}
 
