@@ -41,7 +41,14 @@ const getHotelsData = unstable_cache(
         include: {
           partner: { select: { id: true, name: true } },
           rooms:   { select: { price: true, currency: true }, orderBy: { price: "asc" } },
-          _count:  { select: { rooms: true, reviews: true, bookings: true } },
+          _count:  {
+            select: {
+              rooms: true,
+              reviews: true,
+              bookings: true,
+              happenings: { where: { published: true } },
+            },
+          },
           reviews: { select: { rating: true } },
         },
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

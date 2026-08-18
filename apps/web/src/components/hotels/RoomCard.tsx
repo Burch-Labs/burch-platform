@@ -4,6 +4,7 @@ import type { Room } from "@prisma/client";
 import { formatCurrency } from "@/lib/format";
 import { AmenityList } from "./AmenityList";
 import { cn } from "@/lib/utils";
+import { FEATURES } from "@/lib/features";
 
 interface RoomCardProps {
   room: Room & { availableCount?: number; isAvailable?: boolean };
@@ -76,12 +77,14 @@ export function RoomCard({
               <span>👤 Up to {room.maxGuests} guests</span>
             </div>
           </div>
-          <div className="text-right flex-shrink-0">
-            <p className="text-xl font-bold text-gray-900">
-              {formatCurrency(price, room.currency)}
-            </p>
-            <p className="text-xs text-gray-400">per night</p>
-          </div>
+          {FEATURES.roomRates && (
+            <div className="text-right flex-shrink-0">
+              <p className="text-xl font-bold text-gray-900">
+                {formatCurrency(price, room.currency)}
+              </p>
+              <p className="text-xs text-gray-400">per night</p>
+            </div>
+          )}
         </div>
 
         {room.description && (

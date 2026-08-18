@@ -32,7 +32,13 @@ export default async function HomePage() {
         partner: { select: { id: true, name: true } },
         reviews: { select: { rating: true } },
         rooms: { select: { price: true, currency: true } },
-        _count: { select: { rooms: true, reviews: true } },
+        _count: {
+          select: {
+            rooms: true,
+            reviews: true,
+            happenings: { where: { published: true } },
+          },
+        },
       },
       orderBy: { name: "asc" },
       take: 3,
@@ -331,10 +337,10 @@ export default async function HomePage() {
             </Link>
           </div>
           {featuredHotels.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {featuredHotels.map((hotel, i) => (
+            <div className="flex flex-col divide-y divide-gray-100 border-t border-b border-gray-100">
+              {featuredHotels.map((hotel) => (
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                <HotelCard key={hotel.id} hotel={hotel as any} priority={i === 0} />
+                <HotelCard key={hotel.id} hotel={hotel as any} />
               ))}
             </div>
           ) : (

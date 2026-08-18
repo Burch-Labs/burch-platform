@@ -19,6 +19,14 @@ interface PageProps {
   params: Promise<{ id: string }>;
 }
 
+function formatHappeningRange(startsAt: Date | null, endsAt: Date | null): string | null {
+  if (!startsAt && !endsAt) return null;
+  const fmt = (d: Date) =>
+    d.toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+  if (startsAt && endsAt) return `${fmt(startsAt)} – ${fmt(endsAt)}`;
+  return fmt((startsAt ?? endsAt) as Date);
+}
+
 export async function generateMetadata({ params }: PageProps) {
   const { id } = await params;
   const hotel = await prisma.hotel.findUnique({
@@ -51,6 +59,10 @@ export default async function HotelDetailPage({ params }: PageProps) {
           include: { user: { select: { id: true, name: true, image: true } } },
           orderBy: { createdAt: "desc" },
           take: 20,
+        },
+        happenings: {
+          where: { published: true },
+          orderBy: [{ startsAt: "asc" }, { createdAt: "desc" }],
         },
         _count: { select: { bookings: true, reviews: true } },
       },
@@ -105,6 +117,18 @@ export default async function HotelDetailPage({ params }: PageProps) {
           <div className="mb-8">
             <HotelGallery images={allImages} name={hotel.name} />
           </div>
+        ) : hotel.website ? (
+          <a
+            href={hotel.website}
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+            className="group mb-8 h-64 sm:h-72 md:h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-gray-700 to-gray-900 flex flex-col items-center justify-center gap-3 hover:from-gray-800 hover:to-black transition-colors"
+          >
+            <span className="text-7xl opacity-60">🏨</span>
+            <span className="text-sm font-medium text-white/90 group-hover:text-white transition-colors">
+              See photos on {hotel.name}&apos;s official website →
+            </span>
+          </a>
         ) : (
           <div className="mb-8 h-64 sm:h-72 md:h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center">
             <span className="text-7xl opacity-60">🏨</span>
@@ -156,6 +180,74 @@ export default async function HotelDetailPage({ params }: PageProps) {
               ))}
             </div>
 
+            {/* Happenings */}
+            <div
+              id="happenings"
+              className="scroll-mt-24 bg-gradient-to-br from-orange-50/70 to-white rounded-2xl border border-orange-100 p-6"
+            >
+              <div className="flex items-center gap-2 mb-4">
+                <span aria-hidden>✨</span>
+                <h2 className="text-lg font-semibold text-gray-900">Happenings</h2>
+                {hotel.happenings.length === 0 && (
+                  <span className="text-xs font-medium text-orange-700 bg-orange-100 rounded-full px-2.5 py-0.5">
+                    Coming soon
+                  </span>
+                )}
+              </div>
+
+              {hotel.happenings.length > 0 ? (
+                <div className="space-y-4">
+                  {hotel.happenings.map((happening) => (
+                    <div
+                      key={happening.id}
+                      className="flex items-start gap-4 bg-white rounded-xl border border-orange-100 p-4"
+                    >
+                      {happening.flyerUrl && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={happening.flyerUrl}
+                          alt={happening.title}
+                          className="w-20 h-20 rounded-lg object-cover flex-shrink-0"
+                        />
+                      )}
+                      <div className="min-w-0">
+                        <h3 className="font-semibold text-gray-900">{happening.title}</h3>
+                        {formatHappeningRange(happening.startsAt, happening.endsAt) && (
+                          <p className="text-xs text-orange-700 font-medium mt-0.5">
+                            {formatHappeningRange(happening.startsAt, happening.endsAt)}
+                          </p>
+                        )}
+                        {happening.description && (
+                          <p className="text-sm text-gray-600 leading-relaxed mt-1.5 whitespace-pre-line">
+                            {happening.description}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-gray-600 leading-relaxed max-w-prose">
+                  Restaurant events and activities at {hotel.name} — Sunday brunch, live band
+                  nights, seasonal specials, and more — will show up here as we add them.
+                </p>
+              )}
+
+              {hotel.website && (
+                <p className="text-sm text-gray-500 mt-4">
+                  Booking a stay?{" "}
+                  <a
+                    href={hotel.website}
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    className="text-orange-700 font-medium hover:underline"
+                  >
+                    Visit {hotel.name}&apos;s official site ↗
+                  </a>
+                </p>
+              )}
+            </div>
+
             {/* Description */}
             {hotel.description && (
               <div className="bg-white rounded-2xl border border-gray-100 p-6">
@@ -184,7 +276,7 @@ export default async function HotelDetailPage({ params }: PageProps) {
                       ({rooms.length})
                     </span>
                   </h2>
-                  {minPrice !== null && (
+                  {FEATURES.roomRates && minPrice !== null ? (
                     <p className="text-sm text-gray-500">
                       from{" "}
                       <span className="font-semibold text-gray-900">
@@ -192,6 +284,17 @@ export default async function HotelDetailPage({ params }: PageProps) {
                       </span>
                       <span className="text-gray-400"> / night</span>
                     </p>
+                  ) : (
+                    !FEATURES.roomRates && hotel.website && (
+                      <a
+                        href={hotel.website}
+                        target="_blank"
+                        rel="noopener noreferrer nofollow"
+                        className="text-sm font-medium text-orange-600 hover:underline whitespace-nowrap"
+                      >
+                        See website for bookings and rates →
+                      </a>
+                    )
                   )}
                 </div>
 
@@ -206,7 +309,7 @@ export default async function HotelDetailPage({ params }: PageProps) {
                   ))}
                 </div>
 
-                {!session && (
+                {FEATURES.directBooking && !session && (
                   <p className="text-sm text-center text-gray-400 mt-4">
                     <Link
                       href={`/auth/login?callbackUrl=/hotels/${hotel.id}`}
@@ -225,8 +328,19 @@ export default async function HotelDetailPage({ params }: PageProps) {
               <div className="bg-white rounded-2xl border border-gray-100 p-8 text-center">
                 <p className="text-2xl mb-2">🛏️</p>
                 <p className="text-sm text-gray-500">No rooms listed yet. Contact the hotel directly.</p>
-                {hotel.phone && (
-                  <p className="text-sm font-medium text-orange-600 mt-2">{hotel.phone}</p>
+                {hotel.website ? (
+                  <a
+                    href={hotel.website}
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    className="text-sm font-medium text-orange-600 hover:underline mt-2 inline-block"
+                  >
+                    See website for bookings and rates →
+                  </a>
+                ) : (
+                  hotel.phone && (
+                    <p className="text-sm font-medium text-orange-600 mt-2">{hotel.phone}</p>
+                  )
                 )}
               </div>
             )}

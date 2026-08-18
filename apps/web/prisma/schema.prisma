@@ -463,13 +463,37 @@ model Hotel {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  partner  Partner       @relation(fields: [partnerId], references: [id], onDelete: Cascade)
-  rooms    Room[]
-  bookings Booking[]
-  reviews  HotelReview[]
+  partner    Partner          @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  rooms      Room[]
+  bookings   Booking[]
+  reviews    HotelReview[]
+  happenings HotelHappening[]
 
   @@index([published])
   @@map("hotels")
+}
+
+// What's on at a hotel's restaurant right now — brunch, a live band, a
+// seasonal menu — as opposed to Room, which is what's bookable year-round.
+// Deliberately time-bounded and disposable: a happening is meant to be
+// swapped out "now and then" as the hotel's own promotions change, not
+// curated once and left stale like the rest of the seeded listing data.
+model HotelHappening {
+  id          String    @id @default(cuid())
+  hotelId     String
+  title       String
+  description String?
+  flyerUrl    String?
+  startsAt    DateTime?
+  endsAt      DateTime?
+  published   Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  hotel Hotel @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+  @@index([hotelId, published])
+  @@map("hotel_happenings")
 }
 
 model Room {

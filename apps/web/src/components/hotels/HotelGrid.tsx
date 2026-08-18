@@ -21,7 +21,7 @@ export function HotelGrid({ hotels, emptyMessage, emptyAction }: HotelGridProps)
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+    <div className="flex flex-col divide-y divide-gray-100 border-t border-b border-gray-100">
       {hotels.map((hotel) => (
         <HotelCardComponent key={hotel.id} hotel={hotel} />
       ))}
