@@ -1,13 +1,16 @@
 @import "tailwindcss";
 
-/* ─── Navy & gold palette ──────────────────────────────────────────────────────
+/* ─── Navy & spark palette ─────────────────────────────────────────────────────
    Tailwind v4 @theme overrides replace the default token values.
    Every component using gray-* or orange-* instantly picks up the palette, so
    the whole brand recolours from this block alone.
 
-   The gold ramp darkens sharply from 500 onwards on purpose: bright gold under
-   white text fails WCAG AA, so the interactive shades (600/700, used for
-   buttons and links) are deep antique gold that clears 4.5:1 on white.
+   The orange ramp darkens sharply from 500 onwards on purpose, same reasoning
+   as before: true orange at full brightness fails WCAG AA as text or as a
+   button fill under white text (~3.5:1). 600/700 — the shades actually used
+   for buttons and links — are calibrated to clear 4.5:1 on white, so the
+   accent reads as vivid orange without failing accessibility the way a flat
+   #EA580C throughout would.
 ──────────────────────────────────────────────────────────────────────────────── */
 @theme {
   /* Navy-tinted neutrals (replaces cold gray) */
@@ -22,17 +25,17 @@
   --color-gray-800: #1F2D42;
   --color-gray-900: #131E30;
 
-  /* Antique gold (replaces flat orange) */
-  --color-orange-50:  #FBF7EA;
-  --color-orange-100: #F5ECCE;
-  --color-orange-200: #EBD9A0;
-  --color-orange-300: #DCC168;
-  --color-orange-400: #C9A73F;
-  --color-orange-500: #A98A22;
-  --color-orange-600: #8A6914;
-  --color-orange-700: #6E5410;
-  --color-orange-800: #4F3C0B;
-  --color-orange-900: #332706;
+  /* Vivid orange (replaces antique gold) */
+  --color-orange-50:  #FFF7ED;
+  --color-orange-100: #FFEDD5;
+  --color-orange-200: #FED7AA;
+  --color-orange-300: #FDBA74;
+  --color-orange-400: #FB923C;
+  --color-orange-500: #EA580C;
+  --color-orange-600: #C2410C;
+  --color-orange-700: #9A3412;
+  --color-orange-800: #7C2D12;
+  --color-orange-900: #4A1D09;
 }
 
 /* ─── Base ─────────────────────────────────────────────────────────────────── */

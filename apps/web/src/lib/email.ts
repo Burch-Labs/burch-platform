@@ -55,7 +55,7 @@ function emailWrapper(content: string): string {
       <table width="100%" style="max-width:520px;background:#ffffff;border-radius:16px;border:1px solid #D8E0EC;overflow:hidden;">
         <tr>
           <td style="padding:32px 32px 0;">
-            <p style="margin:0 0 24px;font-size:22px;font-weight:700;color:#8A6914;">dontbeboringKE</p>
+            <p style="margin:0 0 24px;font-size:22px;font-weight:700;color:#C2410C;">dontbeboringKE</p>
             ${content}
           </td>
         </tr>
@@ -74,7 +74,7 @@ function emailWrapper(content: string): string {
 }
 
 function primaryButton(href: string, label: string): string {
-  return `<a href="${href}" style="display:inline-block;background:#8A6914;color:#ffffff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;margin-bottom:24px;">${label}</a>`;
+  return `<a href="${href}" style="display:inline-block;background:#C2410C;color:#ffffff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;margin-bottom:24px;">${label}</a>`;
 }
 
 // ─── Venue listing claims ────────────────────────────────────────────────────
@@ -336,7 +336,7 @@ export async function sendSignInCodeEmail(
       <p style="margin:0 0 24px;font-size:15px;color:#435671;line-height:1.6;">
         Enter this code to finish signing in.
       </p>
-      <p style="margin:0 0 24px;font-size:34px;font-weight:700;letter-spacing:8px;color:#8A6914;">${code}</p>
+      <p style="margin:0 0 24px;font-size:34px;font-weight:700;letter-spacing:8px;color:#C2410C;">${code}</p>
       <p style="margin:0 0 8px;font-size:13px;color:#5D708F;">The code expires in ${ttlMinutes} minutes and can be used once.</p>
       <p style="margin:0;font-size:13px;color:#5D708F;">If you did not ask to sign in, you can ignore this email — nobody can use the code without it.</p>
     `),
@@ -548,7 +548,7 @@ export async function sendGuestHotelConfirmation(
       ${primaryButton(`${BASE_URL}/dashboard/bookings`, "View booking")}
       <p style="margin:0 0 8px;font-size:13px;color:#5D708F;">
         Need to cancel or make changes? You can manage or cancel this booking from
-        <a href="${BASE_URL}/dashboard/bookings" style="color:#8A6914;">your bookings page</a>
+        <a href="${BASE_URL}/dashboard/bookings" style="color:#C2410C;">your bookings page</a>
         (cancellation may not be available close to check-in).
       </p>
       <p style="margin:0 0 8px;font-size:13px;color:#5D708F;">We look forward to hosting you. Have a wonderful stay!</p>
@@ -615,7 +615,7 @@ export async function sendGuestReservationConfirmation(
       ${primaryButton(`${BASE_URL}/dashboard/bookings`, "View reservation")}
       <p style="margin:0 0 8px;font-size:13px;color:#5D708F;">
         Need to cancel or make changes? Manage this reservation from
-        <a href="${BASE_URL}/dashboard/bookings" style="color:#8A6914;">your bookings page</a>.
+        <a href="${BASE_URL}/dashboard/bookings" style="color:#C2410C;">your bookings page</a>.
       </p>
       <p style="margin:0 0 8px;font-size:13px;color:#5D708F;">We look forward to seeing you. Enjoy your dining experience!</p>
     `),

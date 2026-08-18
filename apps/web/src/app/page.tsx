@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { NavBar } from "@/components/layout/NavBar";
+import { LogoMark } from "@/components/layout/Logo";
 import { RestaurantCard } from "@/components/restaurants/RestaurantCard";
 import { HotelCard } from "@/components/hotels/HotelCard";
 import { EventCard } from "@/components/events/EventCard";
@@ -250,7 +251,7 @@ export default async function HomePage() {
             <Link
               href="/concierge"
               className="flex-shrink-0 text-white px-7 py-3 rounded-xl text-sm font-semibold transition shadow-sm whitespace-nowrap"
-              style={{ background: "linear-gradient(135deg, #8A6914, #6E5410)" }}
+              style={{ background: "linear-gradient(135deg, #EA580C, #9A3412)" }}
             >
               Ask the Concierge →
             </Link>
@@ -384,7 +385,8 @@ export default async function HomePage() {
       </section>
 
       {/* ── Footer ─────────────────────────────────────────────────────────── */}
-      <footer className="border-t border-gray-200 py-8 text-center">
+      <footer className="border-t border-gray-200 py-8 flex flex-col items-center gap-2">
+        <LogoMark className="h-5 w-[26.7px] text-orange-600" />
         <p className="font-display text-sm text-gray-400 tracking-wide">
           © {new Date().getFullYear()} dontbeboringKE &nbsp;·&nbsp; Exceptional experiences across Kenya
         </p>
