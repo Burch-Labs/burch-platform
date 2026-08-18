@@ -76,6 +76,12 @@ export default async function AdminHotelsPage() {
                 </div>
                 <div className="flex items-center gap-2 ml-4 shrink-0">
                   <Link
+                    href={`/admin/hotels/${hotel.id}/import`}
+                    className="text-sm text-gray-500 hover:text-gray-700 font-medium px-3 py-1.5 rounded-lg hover:bg-gray-50 transition"
+                  >
+                    Import JSON
+                  </Link>
+                  <Link
                     href={`/partner/hotels/${hotel.id}/edit`}
                     className="text-sm text-orange-600 hover:text-orange-700 font-medium px-3 py-1.5 rounded-lg hover:bg-orange-50 transition"
                   >

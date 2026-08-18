@@ -139,6 +139,107 @@ export async function updateHotel(
   redirect(isAdminRole(session?.user?.role) ? "/admin/hotels" : "/partner/hotels");
 }
 
+// ─── JSON import (admin) ──────────────────────────────────────────────────────
+
+/**
+ * Bulk-friendly alternative to the field-by-field form: paste a JSON object
+ * with any subset of hotel fields and it's applied as a partial update. Built
+ * for curating real venue data from research — image URLs can point straight
+ * at a source's own hosting, no upload step required.
+ */
+export async function importHotelJson(
+  hotelId: string,
+  _prev: { error?: string; success?: boolean } | null,
+  data: FormData,
+): Promise<{ error?: string; success?: boolean }> {
+  if (!(await canEditHotel(hotelId))) {
+    return { error: "Hotel not found or access denied" };
+  }
+
+  const raw = (data.get("json") as string | null) ?? "";
+  let parsed: Record<string, unknown>;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    return { error: "That's not valid JSON — check for a stray comma or missing quote." };
+  }
+  if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
+    return { error: "JSON must be a single object, not an array or primitive." };
+  }
+
+  const fields: Record<string, unknown> = {};
+
+  if ("name" in parsed) {
+    const name = typeof parsed.name === "string" ? parsed.name.trim() : "";
+    if (!name) return { error: "\"name\" can't be empty" };
+    fields.name = name;
+  }
+  if ("city" in parsed) {
+    const city = typeof parsed.city === "string" ? parsed.city.trim() : "";
+    if (!city) return { error: "\"city\" can't be empty" };
+    fields.city = city;
+  }
+  if ("location" in parsed) {
+    const location = typeof parsed.location === "string" ? parsed.location.trim() : "";
+    if (!location) return { error: "\"location\" can't be empty" };
+    fields.location = location;
+  }
+  if ("description" in parsed) {
+    fields.description = typeof parsed.description === "string" ? parsed.description.trim() || null : null;
+  }
+  if ("imageUrl" in parsed) {
+    fields.imageUrl = typeof parsed.imageUrl === "string" ? parsed.imageUrl.trim() || null : null;
+  }
+  if ("images" in parsed) {
+    fields.images = Array.isArray(parsed.images)
+      ? parsed.images.filter((x): x is string => typeof x === "string" && x.trim().length > 0)
+      : [];
+  }
+  if ("starRating" in parsed) {
+    fields.starRating = typeof parsed.starRating === "number" ? parsed.starRating : null;
+  }
+  if ("amenities" in parsed) {
+    fields.amenities = Array.isArray(parsed.amenities)
+      ? parsed.amenities.filter((x): x is string => typeof x === "string" && x.trim().length > 0)
+      : typeof parsed.amenities === "string"
+        ? parsed.amenities.split(",").map((a) => a.trim()).filter(Boolean)
+        : [];
+  }
+  if ("phone" in parsed) {
+    fields.phone = typeof parsed.phone === "string" ? parsed.phone.trim() || null : null;
+  }
+  if ("email" in parsed) {
+    fields.email = typeof parsed.email === "string" ? parsed.email.trim() || null : null;
+  }
+  if ("website" in parsed) {
+    fields.website = typeof parsed.website === "string" ? parsed.website.trim() || null : null;
+  }
+  if ("checkInTime" in parsed) {
+    fields.checkInTime = typeof parsed.checkInTime === "string" ? parsed.checkInTime.trim() || "14:00" : "14:00";
+  }
+  if ("checkOutTime" in parsed) {
+    fields.checkOutTime = typeof parsed.checkOutTime === "string" ? parsed.checkOutTime.trim() || "11:00" : "11:00";
+  }
+  if ("published" in parsed) {
+    fields.published = typeof parsed.published === "boolean" ? parsed.published : false;
+  }
+
+  try {
+    await prisma.hotel.update({ where: { id: hotelId }, data: fields });
+  } catch (err) {
+    console.error("[importHotelJson]", err);
+    return { error: "Failed to save — check that field types match (starRating is a number, published is true/false)." };
+  }
+
+  revalidateTag("hotels-listing");
+  revalidatePath("/hotels");
+  revalidatePath(`/hotels/${hotelId}`);
+  revalidatePath("/partner/hotels");
+  revalidatePath("/admin/hotels");
+
+  return { success: true };
+}
+
 // ─── Delete ───────────────────────────────────────────────────────────────────
 
 export async function deleteHotel(hotelId: string): Promise<{ error?: string }> {
