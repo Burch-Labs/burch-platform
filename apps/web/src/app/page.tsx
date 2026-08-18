@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { NavBar } from "@/components/layout/NavBar";
 import { LogoMark } from "@/components/layout/Logo";
+import { SparkField } from "@/components/home/SparkField";
 import { RestaurantCard } from "@/components/restaurants/RestaurantCard";
 import { HotelCard } from "@/components/hotels/HotelCard";
 import { EventCard } from "@/components/events/EventCard";
@@ -90,10 +91,15 @@ export default async function HomePage() {
 
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-white border-b border-gray-200">
-        {/* Ambient glow — gold kept low so it tints rather than washing the
+        {/* Ambient glow — kept low so it tints rather than washing the
             section cream, with a cool counterweight to hold the navy cast */}
         <div className="pointer-events-none absolute -top-32 -right-32 w-[520px] h-[520px] rounded-full bg-orange-100 opacity-25 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-16 -left-16 w-80 h-80 rounded-full bg-gray-100 opacity-80 blur-2xl" />
+
+        {/* Drifting sparks — the same mark as the logo and the ticket
+            tear-line, in motion. No video asset, disappears entirely under
+            prefers-reduced-motion. */}
+        <SparkField />
 
         <div className="relative max-w-5xl mx-auto px-6 py-24 text-center">
           <p className="inline-flex items-center gap-2 text-xs font-semibold text-orange-600 uppercase tracking-[0.18em] mb-6 border border-orange-200 bg-orange-50 px-4 py-1.5 rounded-full">
