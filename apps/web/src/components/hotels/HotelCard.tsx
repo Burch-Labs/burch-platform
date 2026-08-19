@@ -7,11 +7,8 @@ interface HotelCardProps {
 
 export function HotelCard({ hotel }: HotelCardProps) {
   return (
-    <Link
-      href={`/hotels/${hotel.id}#happenings`}
-      className="group flex items-center justify-between gap-4 py-4 px-1 hover:bg-orange-50/60 transition-colors rounded-xl"
-    >
-      <div className="min-w-0">
+    <div className="flex items-center justify-between gap-4 py-4 px-1 hover:bg-orange-50/60 transition-colors rounded-xl">
+      <Link href={`/hotels/${hotel.id}#happenings`} className="group min-w-0 flex-1">
         <h3 className="font-semibold text-gray-900 group-hover:text-orange-700 transition-colors truncate">
           {hotel.name}
         </h3>
@@ -23,14 +20,29 @@ export function HotelCard({ hotel }: HotelCardProps) {
           <span className="truncate">{hotel.location}</span>
           {hotel.city && <span className="text-gray-400 flex-shrink-0">· {hotel.city}</span>}
         </p>
-      </div>
+      </Link>
 
-      <div className="flex-shrink-0 flex items-center gap-1.5 text-xs font-medium text-orange-600 bg-orange-50 border border-orange-100 rounded-full px-3 py-1.5 group-hover:bg-orange-100 transition-colors">
-        <span aria-hidden>✨</span>{" "}
-        {hotel._count.happenings > 0
-          ? `${hotel._count.happenings} happening${hotel._count.happenings !== 1 ? "s" : ""}`
-          : "Happenings — coming soon"}
+      <div className="flex-shrink-0 flex flex-col items-end gap-1.5">
+        <Link
+          href={`/hotels/${hotel.id}#happenings`}
+          className="flex items-center gap-1.5 text-xs font-medium text-orange-600 bg-orange-50 border border-orange-100 rounded-full px-3 py-1.5 hover:bg-orange-100 transition-colors"
+        >
+          <span aria-hidden>✨</span>
+          {hotel._count.happenings > 0
+            ? `${hotel._count.happenings} happening${hotel._count.happenings !== 1 ? "s" : ""}`
+            : "Happenings — coming soon"}
+        </Link>
+        {hotel.website && (
+          <a
+            href={hotel.website}
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+            className="text-xs text-gray-400 hover:text-orange-600 hover:underline transition-colors"
+          >
+            Visit website ↗
+          </a>
+        )}
       </div>
-    </Link>
+    </div>
   );
 }

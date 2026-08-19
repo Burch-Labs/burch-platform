@@ -1,5 +1,4 @@
 import { formatVenueAddress } from "@/lib/utils";
-import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -8,10 +7,8 @@ import { NavBar } from "@/components/layout/NavBar";
 import { HotelGallery } from "@/components/hotels/HotelGallery";
 import { AmenityList } from "@/components/hotels/AmenityList";
 import { ReviewsList } from "@/components/hotels/ReviewsList";
-import { BookingForm } from "@/components/hotels/BookingForm";
 import { BookExternally } from "@/components/venues/BookExternally";
 import { FEATURES } from "@/lib/features";
-import { RoomCard } from "@/components/hotels/RoomCard";
 import { HotelStars, StarRating } from "@/components/hotels/StarRating";
 import Link from "next/link";
 
@@ -51,10 +48,6 @@ export default async function HotelDetailPage({ params }: PageProps) {
         partner: {
           include: { user: { select: { id: true, name: true, image: true } } },
         },
-        rooms: {
-          where: { available: true },
-          orderBy: { price: "asc" },
-        },
         reviews: {
           include: { user: { select: { id: true, name: true, image: true } } },
           orderBy: { createdAt: "desc" },
@@ -85,18 +78,6 @@ export default async function HotelDetailPage({ params }: PageProps) {
     ...(hotel.imageUrl ? [hotel.imageUrl] : []),
     ...hotel.images.filter((img) => img !== hotel.imageUrl),
   ];
-
-  // Serialize Prisma Decimal → number so rooms can cross the RSC→client boundary
-  // (React 19 / Next.js 15 rejects non-plain objects at the serialization boundary)
-  const rooms = hotel.rooms.map((r) => ({
-    ...r,
-    price: Number(r.price) as unknown as (typeof r)["price"],
-  }));
-
-  const minPrice =
-    rooms.length > 0
-      ? Math.min(...rooms.map((r) => Number(r.price)))
-      : null;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -163,14 +144,10 @@ export default async function HotelDetailPage({ params }: PageProps) {
             </div>
 
             {/* Quick-info strip */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="grid grid-cols-3 gap-3">
               {[
                 { label: "Check-in",  value: hotel.checkInTime },
                 { label: "Check-out", value: hotel.checkOutTime },
-                {
-                  label: "Room types",
-                  value: `${rooms.length} type${rooms.length !== 1 ? "s" : ""}`,
-                },
                 { label: "Contact", value: hotel.phone ?? hotel.email ?? "At reception" },
               ].map(({ label, value }) => (
                 <div key={label} className="bg-white rounded-xl border border-gray-100 p-3">
@@ -266,85 +243,6 @@ export default async function HotelDetailPage({ params }: PageProps) {
               </div>
             )}
 
-            {/* ── Room Types ─────────────────────────────── */}
-            {rooms.length > 0 && (
-              <div>
-                <div className="flex items-baseline justify-between mb-4">
-                  <h2 className="text-lg font-semibold text-gray-900">
-                    Room types
-                    <span className="ml-2 text-sm font-normal text-gray-400">
-                      ({rooms.length})
-                    </span>
-                  </h2>
-                  {FEATURES.roomRates && minPrice !== null ? (
-                    <p className="text-sm text-gray-500">
-                      from{" "}
-                      <span className="font-semibold text-gray-900">
-                        KES {minPrice.toLocaleString()}
-                      </span>
-                      <span className="text-gray-400"> / night</span>
-                    </p>
-                  ) : (
-                    !FEATURES.roomRates && hotel.website && (
-                      <a
-                        href={hotel.website}
-                        target="_blank"
-                        rel="noopener noreferrer nofollow"
-                        className="text-sm font-medium text-orange-600 hover:underline whitespace-nowrap"
-                      >
-                        See website for bookings and rates →
-                      </a>
-                    )
-                  )}
-                </div>
-
-                <div className="space-y-4">
-                  {rooms.map((room) => (
-                    <RoomCard
-                      key={room.id}
-                      room={room}
-                      hotelId={hotel.id}
-                      showBookButton={FEATURES.directBooking && !!session}
-                    />
-                  ))}
-                </div>
-
-                {FEATURES.directBooking && !session && (
-                  <p className="text-sm text-center text-gray-400 mt-4">
-                    <Link
-                      href={`/auth/login?callbackUrl=/hotels/${hotel.id}`}
-                      className="text-orange-600 font-medium hover:underline"
-                    >
-                      Sign in
-                    </Link>{" "}
-                    to check availability and reserve a room.
-                  </p>
-                )}
-              </div>
-            )}
-
-            {/* Empty rooms state */}
-            {rooms.length === 0 && (
-              <div className="bg-white rounded-2xl border border-gray-100 p-8 text-center">
-                <p className="text-2xl mb-2">🛏️</p>
-                <p className="text-sm text-gray-500">No rooms listed yet. Contact the hotel directly.</p>
-                {hotel.website ? (
-                  <a
-                    href={hotel.website}
-                    target="_blank"
-                    rel="noopener noreferrer nofollow"
-                    className="text-sm font-medium text-orange-600 hover:underline mt-2 inline-block"
-                  >
-                    See website for bookings and rates →
-                  </a>
-                ) : (
-                  hotel.phone && (
-                    <p className="text-sm font-medium text-orange-600 mt-2">{hotel.phone}</p>
-                  )
-                )}
-              </div>
-            )}
-
             {/* Guest reviews */}
             <div>
               <h2 className="text-lg font-semibold text-gray-900 mb-4">
@@ -367,32 +265,18 @@ export default async function HotelDetailPage({ params }: PageProps) {
             </div>
           </div>
 
-          {/* ── Right: date picker + live availability ───── */}
+          {/* ── Right: accommodation — a link out, nothing else ───── */}
           <div className="lg:w-96 flex-shrink-0">
             <div className="sticky top-20">
-              {FEATURES.directBooking ? (
-                <Suspense
-                  fallback={
-                    <div className="h-64 bg-white rounded-2xl border border-gray-100 animate-pulse" />
-                  }
-                >
-                  <BookingForm
-                    hotelId={hotel.id}
-                    rooms={rooms}
-                    isAuthenticated={!!session}
-                  />
-                </Suspense>
-              ) : (
-                <BookExternally
-                  website={hotel.website}
-                  venueName={hotel.name}
-                  phone={hotel.phone}
-                  email={hotel.email}
-                  verified={hotel.verified}
-                  venueType="hotel"
-                  venueId={hotel.id}
-                />
-              )}
+              <BookExternally
+                website={hotel.website}
+                venueName={hotel.name}
+                phone={hotel.phone}
+                email={hotel.email}
+                verified={hotel.verified}
+                venueType="hotel"
+                venueId={hotel.id}
+              />
             </div>
           </div>
         </div>
