@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: PageProps) {
   });
   if (!hotel) return { title: "Hotel not found" };
   return {
-    title: `${hotel.name} — dontbeboring`,
+    title: `${hotel.name} — dontbeboringKE`,
     description: hotel.description ?? undefined,
   };
 }

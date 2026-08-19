@@ -57,7 +57,7 @@ describe("EMAIL_FROM", () => {
 
   it("stays quiet when a verified-domain sender is configured", async () => {
     expect(
-      emailFromIssues(await issuesUnder({ ...PROD, EMAIL_FROM: "dontbeboring <hello@example.com>" }))
+      emailFromIssues(await issuesUnder({ ...PROD, EMAIL_FROM: "dontbeboringKE <hello@example.com>" }))
     ).toHaveLength(0);
   });
 
@@ -68,7 +68,7 @@ describe("EMAIL_FROM", () => {
   });
 
   it("rejects a sender that is not an address at all", async () => {
-    const [issue] = emailFromIssues(await issuesUnder({ ...PROD, EMAIL_FROM: "dontbeboring" }));
+    const [issue] = emailFromIssues(await issuesUnder({ ...PROD, EMAIL_FROM: "dontbeboringKE" }));
     expect(issue.level).toBe("error");
   });
 
@@ -76,7 +76,7 @@ describe("EMAIL_FROM", () => {
     // Setting it by hand to the sandbox domain is the same silent failure,
     // just arrived at deliberately.
     const [issue] = emailFromIssues(
-      await issuesUnder({ ...PROD, EMAIL_FROM: "dontbeboring <onboarding@resend.dev>" })
+      await issuesUnder({ ...PROD, EMAIL_FROM: "dontbeboringKE <onboarding@resend.dev>" })
     );
     expect(issue.level).toBe("error");
   });

@@ -3,7 +3,7 @@ import { NavBar } from "@/components/layout/NavBar";
 import { AdminNav } from "../AdminNav";
 import { getQueueCounts } from "../queue-counts";
 
-export const metadata = { title: "Event reports — dontbeboring" };
+export const metadata = { title: "Event reports — dontbeboringKE" };
 export const dynamic = "force-dynamic";
 
 export default async function AdminReportsPage() {

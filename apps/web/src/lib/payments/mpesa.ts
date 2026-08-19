@@ -13,15 +13,14 @@ const BASE_URL =
     : "https://sandbox.safaricom.co.ke";
 
 /**
- * Safaricom uses a different STK Push transaction type for a Till (Buy Goods)
- * account than for a PayBill — sending the wrong one against a real account
- * either fails outright or, worse, is accepted but never actually reaches the
- * merchant's till. Defaults to PayBill, which was this codebase's only
- * supported account type until a Till account needed testing.
+ * Despite the name suggesting it varies by account, Safaricom's STK Push
+ * (M-Pesa Express) endpoint only ever accepts CustomerPayBillOnline here —
+ * confirmed directly against a real Till (Buy Goods) account, which rejected
+ * CustomerBuyGoodsOnline with "Bad Request - Invalid TransactionType". Which
+ * kind of account actually receives the money is determined by the shortcode
+ * itself on Safaricom's side, not by this field.
  */
-const MPESA_ACCOUNT_TYPE = process.env.MPESA_ACCOUNT_TYPE === "till" ? "till" : "paybill";
-const MPESA_TRANSACTION_TYPE =
-  MPESA_ACCOUNT_TYPE === "till" ? "CustomerBuyGoodsOnline" : "CustomerPayBillOnline";
+const MPESA_TRANSACTION_TYPE = "CustomerPayBillOnline";
 
 export const HAS_MPESA = !!(
   process.env.MPESA_CONSUMER_KEY &&
@@ -112,6 +111,14 @@ export async function stkPush({
   const passkey = process.env.MPESA_PASSKEY;
   if (!shortcode || !passkey) throw new Error("M-Pesa is not configured");
 
+  // A Till provisioned through the Safaricom Business Portal is linked to a
+  // Head Office/Organization shortcode: that shortcode (MPESA_SHORTCODE) is
+  // what authenticates and generates the password, but the money has to be
+  // credited to the Till itself — a different number Daraja calls PartyB. A
+  // standalone Till (or a PayBill) has no such split, so PartyB just falls
+  // back to the same shortcode, unchanged from before.
+  const partyB = process.env.MPESA_TILL_NUMBER || shortcode;
+
   const token = await getAccessToken();
   const ts = timestamp();
   const password = Buffer.from(`${shortcode}${passkey}${ts}`).toString("base64");
@@ -130,7 +137,7 @@ export async function stkPush({
       TransactionType: MPESA_TRANSACTION_TYPE,
       Amount: Math.round(amount),
       PartyA: msisdn,
-      PartyB: shortcode,
+      PartyB: partyB,
       PhoneNumber: msisdn,
       CallBackURL: callbackUrl,
       AccountReference: accountReference.slice(0, 12),

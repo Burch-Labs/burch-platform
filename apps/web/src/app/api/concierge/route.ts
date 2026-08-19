@@ -113,7 +113,7 @@ function buildSystemPrompt(ctx: Ctx) {
     `- [RESTAURANT:${r.id}] "${r.name}" | ${r.city} | ${r.cuisine ?? "Various"} | price tier ${r.priceRange ?? 2} of ${PRICE_TIERS}`
   ).join("\n");
 
-  return `You are dontbeboring AI Concierge — a warm, expert travel and lifestyle assistant for Kenya.
+  return `You are dontbeboringKE AI Concierge — a warm, expert travel and lifestyle assistant for Kenya.
 Help users discover events, hotels, restaurants, and plan trips across the continent.
 
 LIVE INVENTORY (use EXACT IDs in your recommendations):
@@ -185,7 +185,7 @@ function buildFallbackResponse(message: string, ctx: Ctx) {
   else if (isHotel) text = `Here are the finest stays${cityStr} in our collection. All properties are carefully selected for comfort, service, and location.`;
   else if (isEvent) text = `There are some exciting events coming up${cityStr}! Here are the highlights worth adding to your calendar.`;
   else if (isRestaurant) text = `These are my top dining recommendations${cityStr} — each one offers a distinct and memorable experience.`;
-  else text = `Here's what's on at dontbeboring${cityStr} right now. I've picked a mix of dining, accommodation, and events to inspire your next adventure.`;
+  else text = `Here's what's on at dontbeboringKE${cityStr} right now. I've picked a mix of dining, accommodation, and events to inspire your next adventure.`;
 
   return { text, recommendations: recs, itinerary: null };
 }

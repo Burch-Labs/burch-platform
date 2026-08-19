@@ -97,7 +97,7 @@ export function BookExternally({
           <span aria-hidden>↗</span>
         </a>
         <p className="text-xs text-gray-400 text-center">
-          Booking is handled by the venue. You will leave dontbeboring.
+          Booking is handled by the venue. You will leave dontbeboringKE.
         </p>
       </div>
     );

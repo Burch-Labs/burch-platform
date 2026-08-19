@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { NavBar } from "@/components/layout/NavBar";
+import { LogoMark } from "@/components/layout/Logo";
+import { SparkField } from "@/components/home/SparkField";
 import { RestaurantCard } from "@/components/restaurants/RestaurantCard";
 import { HotelCard } from "@/components/hotels/HotelCard";
 import { EventCard } from "@/components/events/EventCard";
@@ -95,10 +97,15 @@ export default async function HomePage() {
 
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-white border-b border-gray-200">
-        {/* Ambient glow — gold kept low so it tints rather than washing the
+        {/* Ambient glow — kept low so it tints rather than washing the
             section cream, with a cool counterweight to hold the navy cast */}
         <div className="pointer-events-none absolute -top-32 -right-32 w-[520px] h-[520px] rounded-full bg-orange-100 opacity-25 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-16 -left-16 w-80 h-80 rounded-full bg-gray-100 opacity-80 blur-2xl" />
+
+        {/* Drifting sparks — the same mark as the logo and the ticket
+            tear-line, in motion. No video asset, disappears entirely under
+            prefers-reduced-motion. */}
+        <SparkField />
 
         <div className="relative max-w-5xl mx-auto px-6 py-24 text-center">
           <p className="inline-flex items-center gap-2 text-xs font-semibold text-orange-600 uppercase tracking-[0.18em] mb-6 border border-orange-200 bg-orange-50 px-4 py-1.5 rounded-full">
@@ -256,7 +263,7 @@ export default async function HomePage() {
             <Link
               href="/concierge"
               className="flex-shrink-0 text-white px-7 py-3 rounded-xl text-sm font-semibold transition shadow-sm whitespace-nowrap"
-              style={{ background: "linear-gradient(135deg, #8A6914, #6E5410)" }}
+              style={{ background: "linear-gradient(135deg, #EA580C, #9A3412)" }}
             >
               Ask the Concierge →
             </Link>
@@ -378,7 +385,7 @@ export default async function HomePage() {
             Host your own event?
           </h2>
           <p className="text-gray-900/80 mb-8 text-sm max-w-sm mx-auto leading-relaxed">
-            Join hundreds of organizers using dontbeboring to sell tickets and grow their audience across Kenya.
+            Join hundreds of organizers using dontbeboringKE to sell tickets and grow their audience across Kenya.
           </p>
           <Link
             href="/auth/join"
@@ -390,9 +397,10 @@ export default async function HomePage() {
       </section>
 
       {/* ── Footer ─────────────────────────────────────────────────────────── */}
-      <footer className="border-t border-gray-200 py-8 text-center">
+      <footer className="border-t border-gray-200 py-8 flex flex-col items-center gap-2">
+        <LogoMark className="h-5 w-[26.7px] text-orange-600" />
         <p className="font-display text-sm text-gray-400 tracking-wide">
-          © {new Date().getFullYear()} dontbeboring &nbsp;·&nbsp; Exceptional experiences across Kenya
+          © {new Date().getFullYear()} dontbeboringKE &nbsp;·&nbsp; Exceptional experiences across Kenya
         </p>
       </footer>
     </div>

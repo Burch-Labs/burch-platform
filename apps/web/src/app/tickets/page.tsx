@@ -5,7 +5,7 @@ import { NavBar } from "@/components/layout/NavBar";
 import { prisma } from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
 
-export const metadata = { title: "My tickets — dontbeboring" };
+export const metadata = { title: "My tickets — dontbeboringKE" };
 export const dynamic = "force-dynamic";
 
 function fmtDate(d: Date) {

@@ -2,7 +2,7 @@ import { NavBar } from "@/components/layout/NavBar";
 import { ConciergeChat } from "@/components/concierge/ConciergeChat";
 
 export const metadata = {
-  title: "AI Concierge — dontbeboring",
+  title: "AI Concierge — dontbeboringKE",
   description: "Your personal AI guide to the best hotels, restaurants, events, and experiences across Kenya.",
 };
 

@@ -7,6 +7,7 @@ import { NavBar } from "@/components/layout/NavBar";
 import { EventGrid } from "@/components/events/EventGrid";
 import { OrganizerCard } from "@/components/events/OrganizerCard";
 import { TicketSelector } from "@/components/events/TicketSelector";
+import { EventActions } from "@/components/events/EventActions";
 import { Badge } from "@/components/ui/Badge";
 import { HAS_MPESA } from "@/lib/payments/mpesa";
 import { HAS_PESAPAL } from "@/lib/payments/pesapal";
@@ -34,7 +35,7 @@ export async function generateMetadata({ params }: PageProps) {
   });
   if (!event) return { title: "Event not found" };
   return {
-    title: `${event.title} — dontbeboring`,
+    title: `${event.title} — dontbeboringKE`,
     description: event.description ?? undefined,
   };
 }
@@ -91,7 +92,10 @@ export default async function EventDetailPage({ params }: PageProps) {
   });
 
   const totalBooked = await prisma.booking.aggregate({
-    where: { eventId: id },
+    // Matches reserveEventBooking's own capacity check — a cancelled booking
+    // (payment failed or expired) shouldn't count as sold, or a string of
+    // failed M-Pesa attempts would make an event look sold out when it isn't.
+    where: { eventId: id, status: { not: "CANCELLED" } },
     _sum: { quantity: true },
   });
   const booked = totalBooked._sum.quantity ?? 0;
@@ -162,6 +166,10 @@ export default async function EventDetailPage({ params }: PageProps) {
                   ),
                   label: "Location",
                   value: formatVenueAddress(event.location, event.city),
+                  link: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                    event.city ? `${event.location}, ${event.city}` : event.location
+                  )}`,
+                  linkLabel: "Open in Maps",
                 },
                 {
                   icon: (
@@ -170,7 +178,7 @@ export default async function EventDetailPage({ params }: PageProps) {
                   label: "Price",
                   value: formatCurrency(price, event.currency),
                 },
-              ].map(({ icon, label, value }) => (
+              ].map(({ icon, label, value, link, linkLabel }) => (
                 <div key={label} className="bg-white rounded-2xl border border-gray-100 p-4 flex gap-3">
                   <div className="w-9 h-9 rounded-lg bg-orange-50 flex items-center justify-center flex-shrink-0">
                     <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -180,6 +188,16 @@ export default async function EventDetailPage({ params }: PageProps) {
                   <div className="min-w-0">
                     <p className="text-xs text-gray-500 font-medium">{label}</p>
                     <p className="text-sm font-semibold text-gray-900 mt-0.5 leading-snug">{value}</p>
+                    {link && (
+                      <a
+                        href={link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs font-medium text-orange-600 hover:text-orange-700 mt-1 inline-block"
+                      >
+                        {linkLabel} →
+                      </a>
+                    )}
                   </div>
                 </div>
               ))}
@@ -255,6 +273,15 @@ export default async function EventDetailPage({ params }: PageProps) {
                   </p>
                 )}
               </div>
+
+              <EventActions
+                title={event.title}
+                description={event.description}
+                location={event.location}
+                city={event.city}
+                startDate={event.startDate.toISOString()}
+                endDate={event.endDate.toISOString()}
+              />
             </div>
           </div>
         </div>

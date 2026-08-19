@@ -6,7 +6,7 @@ import { SuspendControls } from "./SuspendControls";
 import { CommissionControls } from "./CommissionControls";
 import { DEFAULT_COMMISSION_RATE } from "@/lib/commission";
 
-export const metadata = { title: "Partners — dontbeboring" };
+export const metadata = { title: "Partners — dontbeboringKE" };
 export const dynamic = "force-dynamic";
 
 export default async function AdminPartnersPage() {

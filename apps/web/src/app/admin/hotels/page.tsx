@@ -1,21 +1,26 @@
-import Link from "next/link";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { NavBar } from "@/components/layout/NavBar";
+import Link from "next/link";
 import { AdminNav } from "../AdminNav";
 import { getQueueCounts } from "../queue-counts";
+import { isAdminRole } from "@/lib/roles";
 
-export const metadata = { title: "Hotels — dontbeboring" };
+export const metadata = { title: "Hotels — dontbeboringKE" };
 export const dynamic = "force-dynamic";
 
 export default async function AdminHotelsPage() {
+  const session = await getServerSession(authOptions);
+  if (!session || !isAdminRole(session.user.role)) redirect("/dashboard?error=unauthorized");
+
   const [hotels, counts] = await Promise.all([
     prisma.hotel.findMany({
       orderBy: { name: "asc" },
-      select: {
-        id: true,
-        name: true,
-        city: true,
-        _count: { select: { happenings: true } },
+      include: {
+        partner: { select: { name: true } },
+        _count: { select: { bookings: true, rooms: true, happenings: true } },
       },
     }),
     getQueueCounts(),
@@ -24,11 +29,12 @@ export default async function AdminHotelsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <NavBar />
-      <main className="max-w-4xl mx-auto px-6 py-8">
+      <main className="max-w-5xl mx-auto px-6 py-8">
         <h1 className="text-2xl font-bold text-gray-900 mb-1">Hotels</h1>
         <p className="text-sm text-gray-500 mb-6">
-          Add flyers and text for what's on at each hotel's restaurant — brunch, live music,
-          seasonal specials. Rooms and rates aren't managed here.
+          Edit any hotel's info and photos regardless of which partner owns it, or add flyers
+          and text for what's on at its restaurant — brunch, live music, seasonal specials.
+          Guests never see rooms or rates; that's not managed from here.
         </p>
 
         <AdminNav active="/admin/hotels" counts={counts} />
@@ -38,29 +44,68 @@ export default async function AdminHotelsPage() {
             <p className="text-sm text-gray-500">No hotels yet.</p>
           </div>
         ) : (
-          <div className="bg-white rounded-2xl border border-gray-100 divide-y divide-gray-100">
+          <div className="bg-white rounded-2xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
             {hotels.map((hotel) => (
-              <Link
+              <div
                 key={hotel.id}
-                href={`/admin/hotels/${hotel.id}`}
-                className="flex items-center justify-between gap-4 px-6 py-4 hover:bg-orange-50/60 transition"
+                className="flex items-center justify-between gap-4 px-6 py-4 hover:bg-gray-50 transition"
               >
-                <div className="min-w-0">
-                  <p className="font-medium text-gray-900 truncate">{hotel.name}</p>
-                  {hotel.city && <p className="text-sm text-gray-400">{hotel.city}</p>}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <p className="font-medium text-gray-900 truncate">{hotel.name}</p>
+                    <span
+                      className={`shrink-0 inline-block text-xs font-medium px-2 py-0.5 rounded-full border ${
+                        hotel.published
+                          ? "bg-green-50 text-green-700 border-green-200"
+                          : "bg-gray-50 text-gray-500 border-gray-200"
+                      }`}
+                    >
+                      {hotel.published ? "Published" : "Draft"}
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    {hotel.partner.name}
+                    {" · "}
+                    {hotel.city}
+                    {hotel.starRating ? ` · ${hotel.starRating}★` : ""}
+                    {" · "}
+                    {hotel._count.rooms} room{hotel._count.rooms !== 1 ? "s" : ""}
+                    {" · "}
+                    {hotel._count.bookings} booking{hotel._count.bookings !== 1 ? "s" : ""}
+                  </p>
                 </div>
-                <span
-                  className={`text-xs font-medium px-2.5 py-1 rounded-full flex-shrink-0 ${
-                    hotel._count.happenings > 0
-                      ? "bg-orange-50 text-orange-700 border border-orange-200"
-                      : "bg-gray-50 text-gray-500 border border-gray-200"
-                  }`}
-                >
-                  {hotel._count.happenings > 0
-                    ? `${hotel._count.happenings} happening${hotel._count.happenings !== 1 ? "s" : ""}`
-                    : "None yet"}
-                </span>
-              </Link>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span
+                    className={`hidden sm:inline-block text-xs font-medium px-2.5 py-1 rounded-full ${
+                      hotel._count.happenings > 0
+                        ? "bg-orange-50 text-orange-700 border border-orange-200"
+                        : "bg-gray-50 text-gray-500 border border-gray-200"
+                    }`}
+                  >
+                    {hotel._count.happenings > 0
+                      ? `${hotel._count.happenings} happening${hotel._count.happenings !== 1 ? "s" : ""}`
+                      : "No happenings"}
+                  </span>
+                  <Link
+                    href={`/admin/hotels/${hotel.id}`}
+                    className="text-sm text-orange-600 hover:text-orange-700 font-medium px-3 py-1.5 rounded-lg hover:bg-orange-50 transition"
+                  >
+                    Happenings
+                  </Link>
+                  <Link
+                    href={`/admin/hotels/${hotel.id}/import`}
+                    className="text-sm text-gray-500 hover:text-gray-700 font-medium px-3 py-1.5 rounded-lg hover:bg-gray-50 transition"
+                  >
+                    Import JSON
+                  </Link>
+                  <Link
+                    href={`/partner/hotels/${hotel.id}/edit`}
+                    className="text-sm text-gray-500 hover:text-gray-700 font-medium px-3 py-1.5 rounded-lg hover:bg-gray-50 transition"
+                  >
+                    Edit
+                  </Link>
+                </div>
+              </div>
             ))}
           </div>
         )}

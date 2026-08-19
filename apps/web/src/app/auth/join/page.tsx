@@ -3,7 +3,7 @@ import { AuthCard } from "@/components/auth/AuthCard";
 import { channelsFor } from "@/lib/delivery";
 import { JoinForm } from "./JoinForm";
 
-export const metadata = { title: "Sign in — dontbeboring" };
+export const metadata = { title: "Sign in — dontbeboringKE" };
 
 // Whether a phone can be signed in with depends on runtime configuration, so
 // this page cannot be statically rendered.

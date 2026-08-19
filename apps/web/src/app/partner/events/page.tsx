@@ -63,7 +63,7 @@ export default async function PartnerEventsPage() {
             <p className="text-4xl mb-4">🎉</p>
             <h2 className="text-lg font-semibold text-gray-900 mb-2">No events yet</h2>
             <p className="text-sm text-gray-500 mb-6 max-w-xs mx-auto">
-              Create your first event and it will appear on the dontbeboring homepage immediately after publishing.
+              Create your first event and it will appear on the dontbeboringKE homepage immediately after publishing.
             </p>
             <Link
               href="/partner/events/new"

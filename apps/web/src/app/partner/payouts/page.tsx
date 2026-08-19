@@ -7,7 +7,7 @@ import { NavBar } from "@/components/layout/NavBar";
 import { PayoutStatusCard } from "@/components/partner/PayoutStatusCard";
 import { PayoutForm } from "./PayoutForm";
 
-export const metadata = { title: "Payout details — dontbeboring" };
+export const metadata = { title: "Payout details — dontbeboringKE" };
 
 export default async function PayoutsPage() {
   const session = await getServerSession(authOptions);

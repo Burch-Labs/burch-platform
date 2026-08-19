@@ -21,15 +21,22 @@ export default async function EditHotelPage({ params }: Props) {
     redirect("/dashboard");
   }
 
-  const partner = await prisma.partner.findUnique({
-    where: { userId: session.user.id },
-    select: { id: true },
-  });
-  if (!partner) redirect("/partner/onboarding");
+  const isAdmin = isAdminRole(session.user.role);
 
-  const hotel = await prisma.hotel.findFirst({
-    where: { id, partnerId: partner.id },
-  });
+  // An admin can curate any hotel's info regardless of who owns it — no
+  // partner profile of their own required. A plain partner is still scoped
+  // to hotels they actually own.
+  let hotel;
+  if (isAdmin) {
+    hotel = await prisma.hotel.findUnique({ where: { id } });
+  } else {
+    const partner = await prisma.partner.findUnique({
+      where: { userId: session.user.id },
+      select: { id: true },
+    });
+    if (!partner) redirect("/partner/onboarding");
+    hotel = await prisma.hotel.findFirst({ where: { id, partnerId: partner.id } });
+  }
   if (!hotel) notFound();
 
   // Bind the hotelId into the action so the form only needs prev+data
@@ -40,8 +47,11 @@ export default async function EditHotelPage({ params }: Props) {
       <NavBar />
       <main className="max-w-2xl mx-auto px-6 py-12">
         <div className="flex items-center gap-3 mb-8">
-          <Link href="/partner/hotels" className="text-sm text-gray-500 hover:text-gray-700">
-            ← My hotels
+          <Link
+            href={isAdmin ? "/admin/hotels" : "/partner/hotels"}
+            className="text-sm text-gray-500 hover:text-gray-700"
+          >
+            ← {isAdmin ? "All hotels" : "My hotels"}
           </Link>
           <span className="text-gray-300">/</span>
           <h1 className="text-2xl font-bold text-gray-900 truncate">{hotel.name}</h1>
@@ -69,12 +79,14 @@ export default async function EditHotelPage({ params }: Props) {
               name:         hotel.name,
               description:  hotel.description ?? "",
               imageUrl:     hotel.imageUrl ?? "",
+              images:       hotel.images,
               city:         hotel.city,
               location:     hotel.location,
               starRating:   hotel.starRating != null ? String(hotel.starRating) : "",
               amenities:    hotel.amenities.join(", "),
               phone:        hotel.phone ?? "",
               email:        hotel.email ?? "",
+              website:      hotel.website ?? "",
               checkInTime:  hotel.checkInTime,
               checkOutTime: hotel.checkOutTime,
               published:    hotel.published,

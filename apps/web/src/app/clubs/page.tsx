@@ -5,7 +5,7 @@ import { SearchBar } from "@/components/events/SearchBar";
 import { Suspense } from "react";
 
 export const metadata = {
-  title: "Golf & clubs — dontbeboring",
+  title: "Golf & clubs — dontbeboringKE",
   description: "Golf courses, country clubs and sports clubs across Kenya.",
 };
 

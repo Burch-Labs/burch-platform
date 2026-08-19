@@ -59,7 +59,7 @@ function LoginForm() {
   }
 
   return (
-    <AuthCard title="Welcome back" subtitle="Sign in to your dontbeboring account">
+    <AuthCard title="Welcome back" subtitle="Sign in to your dontbeboringKE account">
       <div className="mb-5 rounded-lg bg-orange-50 border border-orange-100 px-4 py-3 text-sm text-orange-800">
         Most accounts don&apos;t use a password anymore.{" "}
         <Link href="/auth/join" className="font-semibold underline">
