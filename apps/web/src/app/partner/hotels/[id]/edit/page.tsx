@@ -57,6 +57,24 @@ export default async function EditHotelPage({ params }: Props) {
           <h1 className="text-2xl font-bold text-gray-900 truncate">{hotel.name}</h1>
         </div>
 
+        {/* Manage happenings shortcut */}
+        {!isAdmin && (
+          <div className="mb-6 flex items-center justify-between bg-white rounded-2xl border border-gray-200 px-6 py-4">
+            <div>
+              <p className="text-sm font-semibold text-gray-900">Happenings</p>
+              <p className="text-xs text-gray-500 mt-0.5">
+                Add up to 10 flyers for what's on at your restaurant — brunch, live music, seasonal specials
+              </p>
+            </div>
+            <Link
+              href={`/partner/hotels/${hotel.id}/happenings`}
+              className="text-sm text-orange-600 hover:text-orange-700 font-medium px-4 py-2 rounded-xl hover:bg-orange-50 transition"
+            >
+              Manage happenings →
+            </Link>
+          </div>
+        )}
+
         {/* Manage rooms shortcut */}
         <div className="mb-6 flex items-center justify-between bg-white rounded-2xl border border-gray-200 px-6 py-4">
           <div>
