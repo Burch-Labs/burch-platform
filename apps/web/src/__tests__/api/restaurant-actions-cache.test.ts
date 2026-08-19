@@ -88,7 +88,7 @@ describe("partner restaurant actions — restaurants-listing cache invalidation"
     await expect(createRestaurant(null, makeForm(true))).rejects.toBe(REDIRECT);
 
     expect(mockRestaurantCreate).toHaveBeenCalledTimes(1);
-    expect(mockRevalidateTag).toHaveBeenCalledWith("restaurants-listing");
+    expect(mockRevalidateTag).toHaveBeenCalledWith("restaurants-listing", { expire: 0 });
     expect(mockRevalidatePath).toHaveBeenCalledWith("/restaurants");
   });
 
@@ -107,7 +107,7 @@ describe("partner restaurant actions — restaurants-listing cache invalidation"
         data: expect.objectContaining({ published: false }),
       })
     );
-    expect(mockRevalidateTag).toHaveBeenCalledWith("restaurants-listing");
+    expect(mockRevalidateTag).toHaveBeenCalledWith("restaurants-listing", { expire: 0 });
     expect(mockRevalidatePath).toHaveBeenCalledWith("/restaurants");
     expect(mockRevalidatePath).toHaveBeenCalledWith("/restaurants/resto-1");
   });
@@ -126,7 +126,7 @@ describe("partner restaurant actions — restaurants-listing cache invalidation"
         data: expect.objectContaining({ published: true }),
       })
     );
-    expect(mockRevalidateTag).toHaveBeenCalledWith("restaurants-listing");
+    expect(mockRevalidateTag).toHaveBeenCalledWith("restaurants-listing", { expire: 0 });
   });
 
   it("deleteRestaurant revalidates the listing tag and paths", async () => {
@@ -140,7 +140,7 @@ describe("partner restaurant actions — restaurants-listing cache invalidation"
     expect(mockRestaurantDelete).toHaveBeenCalledWith({
       where: { id: "resto-1" },
     });
-    expect(mockRevalidateTag).toHaveBeenCalledWith("restaurants-listing");
+    expect(mockRevalidateTag).toHaveBeenCalledWith("restaurants-listing", { expire: 0 });
     expect(mockRevalidatePath).toHaveBeenCalledWith("/restaurants");
     expect(mockRevalidatePath).toHaveBeenCalledWith("/restaurants/resto-1");
   });

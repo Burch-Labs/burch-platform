@@ -71,7 +71,7 @@ export async function createHotel(
   }
 
   // Bust the hotels listing cache so the new hotel appears immediately
-  revalidateTag("hotels-listing");
+  revalidateTag("hotels-listing", { expire: 0 });
   revalidatePath("/hotels");
   revalidatePath("/partner/hotels");
 
@@ -114,7 +114,7 @@ export async function updateHotel(
   }
 
   // Bust the hotels listing cache whenever a hotel changes
-  revalidateTag("hotels-listing");
+  revalidateTag("hotels-listing", { expire: 0 });
   revalidatePath("/hotels");
   revalidatePath(`/hotels/${hotelId}`);
   revalidatePath("/partner/hotels");
@@ -145,7 +145,7 @@ export async function deleteHotel(hotelId: string): Promise<{ error?: string }> 
     return { error: "Failed to delete hotel" };
   }
 
-  revalidateTag("hotels-listing");
+  revalidateTag("hotels-listing", { expire: 0 });
   revalidatePath("/hotels");
   revalidatePath(`/hotels/${hotelId}`);
   revalidatePath("/partner/hotels");

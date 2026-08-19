@@ -68,7 +68,7 @@ export async function reviewEventSubmission(
     },
   });
 
-  if (approve) revalidateTag("events-listing");
+  if (approve) revalidateTag("events-listing", { expire: 0 });
   revalidatePath("/admin/events");
   revalidatePath("/partner/events");
 

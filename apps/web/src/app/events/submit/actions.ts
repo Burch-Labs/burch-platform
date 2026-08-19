@@ -77,7 +77,7 @@ export async function submitEventForReview(
   });
 
   if (autoApprove) {
-    revalidateTag("events-listing");
+    revalidateTag("events-listing", { expire: 0 });
   } else {
     // Best-effort — a failed notification should never block the submission
     // itself, the organizer's own edit-to-resubmit path is the fallback.

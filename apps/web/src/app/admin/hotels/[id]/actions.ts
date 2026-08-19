@@ -42,7 +42,7 @@ function revalidateHotel(hotelId: string) {
   revalidatePath(`/hotels/${hotelId}`);
   // The /hotels listing's data fetcher is wrapped in unstable_cache keyed by
   // this tag, not just the path — revalidatePath alone won't bust it.
-  revalidateTag("hotels-listing");
+  revalidateTag("hotels-listing", { expire: 0 });
   revalidatePath("/");
 }
 

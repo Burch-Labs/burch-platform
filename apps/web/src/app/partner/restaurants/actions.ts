@@ -71,7 +71,7 @@ export async function createRestaurant(
   }
 
   // Bust the restaurants listing cache so the new restaurant appears immediately
-  revalidateTag("restaurants-listing");
+  revalidateTag("restaurants-listing", { expire: 0 });
   revalidatePath("/restaurants");
   revalidatePath("/partner/restaurants");
 
@@ -114,7 +114,7 @@ export async function updateRestaurant(
   }
 
   // Bust the restaurants listing cache whenever a restaurant changes
-  revalidateTag("restaurants-listing");
+  revalidateTag("restaurants-listing", { expire: 0 });
   revalidatePath("/restaurants");
   revalidatePath(`/restaurants/${restaurantId}`);
   revalidatePath("/partner/restaurants");
@@ -145,7 +145,7 @@ export async function deleteRestaurant(restaurantId: string): Promise<{ error?: 
     return { error: "Failed to delete restaurant" };
   }
 
-  revalidateTag("restaurants-listing");
+  revalidateTag("restaurants-listing", { expire: 0 });
   revalidatePath("/restaurants");
   revalidatePath(`/restaurants/${restaurantId}`);
   revalidatePath("/partner/restaurants");

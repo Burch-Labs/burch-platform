@@ -119,7 +119,7 @@ export async function createEvent(
   }
 
   // Bust the events listing cache so the new event appears immediately
-  revalidateTag("events-listing");
+  revalidateTag("events-listing", { expire: 0 });
   revalidatePath("/");
   revalidatePath("/partner/events");
 
@@ -200,7 +200,7 @@ export async function updateEvent(
   }
 
   // Bust the events listing cache whenever a published event changes (or is published now)
-  revalidateTag("events-listing");
+  revalidateTag("events-listing", { expire: 0 });
   revalidatePath("/");
   revalidatePath(`/events/${eventId}`);
   revalidatePath(`/organizer/${partner.id}`);
@@ -235,7 +235,7 @@ export async function deleteEvent(eventId: string): Promise<{ error?: string }> 
   // Remove the event's photo from object storage now that the record is gone
   await deleteStorageImage(existing.imageUrl);
 
-  revalidateTag("events-listing");
+  revalidateTag("events-listing", { expire: 0 });
   revalidatePath("/");
   revalidatePath(`/events/${eventId}`);
   revalidatePath(`/organizer/${partner.id}`);
