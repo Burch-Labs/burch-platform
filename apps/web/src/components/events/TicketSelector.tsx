@@ -12,10 +12,10 @@ interface TicketSelectorProps {
   isAuthenticated: boolean;
   loginUrl: string;
   hasMpesa: boolean;
-  hasFlutterwave: boolean;
+  hasPesapal: boolean;
 }
 
-type PaymentMethod = "mpesa" | "flutterwave";
+type PaymentMethod = "mpesa" | "pesapal";
 type Step = "select" | "awaiting-mpesa" | "success" | "failed";
 
 const POLL_INTERVAL_MS = 3000;
@@ -29,11 +29,11 @@ export function TicketSelector({
   isAuthenticated,
   loginUrl,
   hasMpesa,
-  hasFlutterwave,
+  hasPesapal,
 }: TicketSelectorProps) {
   const router = useRouter();
   const [quantity, setQuantity] = useState(1);
-  const [method, setMethod] = useState<PaymentMethod | null>(hasMpesa ? "mpesa" : hasFlutterwave ? "flutterwave" : null);
+  const [method, setMethod] = useState<PaymentMethod | null>(hasMpesa ? "mpesa" : hasPesapal ? "pesapal" : null);
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -47,7 +47,7 @@ export function TicketSelector({
   const isSoldOut = remaining === 0;
   const maxQty = Math.min(10, remaining);
   const total = price * quantity;
-  const paymentsConfigured = hasMpesa || hasFlutterwave;
+  const paymentsConfigured = hasMpesa || hasPesapal;
 
   function pollBookingStatus(bookingId: string) {
     const startedAt = Date.now();
@@ -126,7 +126,7 @@ export function TicketSelector({
       return;
     }
 
-    if (method === "flutterwave" && data.paymentLink) {
+    if (method === "pesapal" && data.paymentLink) {
       window.location.href = data.paymentLink;
     }
   }
@@ -251,12 +251,12 @@ export function TicketSelector({
                         M-Pesa
                       </button>
                     )}
-                    {hasFlutterwave && (
+                    {hasPesapal && (
                       <button
                         type="button"
-                        onClick={() => setMethod("flutterwave")}
+                        onClick={() => setMethod("pesapal")}
                         className={`flex-1 py-2 rounded-lg text-sm font-medium border transition ${
-                          method === "flutterwave"
+                          method === "pesapal"
                             ? "border-orange-600 bg-orange-50 text-orange-700"
                             : "border-gray-200 text-gray-600 hover:bg-gray-50"
                         }`}

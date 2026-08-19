@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import { configBaseUrl } from "@/lib/config-check";
 import { HAS_MPESA, isValidMsisdn, stkPush } from "@/lib/payments/mpesa";
-import { HAS_FLUTTERWAVE, initializePayment } from "@/lib/payments/flutterwave";
+import { HAS_PESAPAL, submitOrder } from "@/lib/payments/pesapal";
 import {
   CapacityError,
   attachProviderRef,
@@ -19,7 +19,7 @@ import { issueTicketsForBooking } from "@/lib/tickets";
 
 const schema = z.object({
   quantity: z.number().int().min(1).max(10),
-  method: z.enum(["mpesa", "flutterwave"]).optional(),
+  method: z.enum(["mpesa", "pesapal"]).optional(),
   phone: z.string().optional(),
 });
 
@@ -80,7 +80,7 @@ export async function POST(
     if (method === "mpesa" && !HAS_MPESA) {
       return NextResponse.json({ error: "M-Pesa is not configured yet." }, { status: 503 });
     }
-    if (method === "flutterwave" && !HAS_FLUTTERWAVE) {
+    if (method === "pesapal" && !HAS_PESAPAL) {
       return NextResponse.json({ error: "Card payment is not configured yet." }, { status: 503 });
     }
     if (method === "mpesa" && (!phone || !isValidMsisdn(phone))) {
@@ -97,7 +97,7 @@ export async function POST(
       status: "PENDING",
     });
 
-    const provider = method === "mpesa" ? "MPESA" : "FLUTTERWAVE";
+    const provider = method === "mpesa" ? "MPESA" : "PESAPAL";
     const payment = await createPendingPayment({
       bookingId: booking.id,
       provider,
@@ -133,35 +133,34 @@ export async function POST(
       }
     }
 
-    // Flutterwave
+    // Pesapal
     if (!session.user.email) {
       await markPaymentFailed({ paymentId: payment.id });
       return NextResponse.json({ error: "Your account needs a verified email to pay by card." }, { status: 400 });
     }
     try {
       await attachProviderRef(payment.id, payment.id);
-      const { paymentLink } = await initializePayment({
-        txRef: payment.id,
+      const { redirectUrl } = await submitOrder({
+        merchantReference: payment.id,
         amount: Number(booking.totalAmount),
         currency: event.currency,
-        redirectUrl: `${configBaseUrl}/api/payments/flutterwave/callback`,
+        description: event.title,
+        callbackUrl: `${configBaseUrl}/api/payments/pesapal/callback`,
         customerEmail: session.user.email,
         customerName: session.user.name ?? undefined,
-        title: "dontbeboring Event Ticket",
-        description: event.title,
       });
 
       return NextResponse.json(
         {
           booking: { id: booking.id, status: booking.status },
           payment: { id: payment.id, status: payment.status },
-          paymentLink,
+          paymentLink: redirectUrl,
         },
         { status: 201 }
       );
     } catch (err) {
       await markPaymentFailed({ paymentId: payment.id });
-      console.error("[POST /api/events/[id]/book] Flutterwave initialize failed:", err);
+      console.error("[POST /api/events/[id]/book] Pesapal initialize failed:", err);
       return NextResponse.json({ error: "Could not start card payment. Please try again." }, { status: 502 });
     }
   } catch (err) {

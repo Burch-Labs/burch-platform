@@ -5,7 +5,7 @@ import type { BookingWithContext } from "./ledger";
 /**
  * Fires the guest confirmation + partner notification emails for a confirmed
  * event booking. Shared by the free-ticket path and every paid-payment
- * success path (M-Pesa callback, Flutterwave webhook) so there's one place
+ * success path (M-Pesa callback, Pesapal webhook) so there's one place
  * that defines "what happens when an event booking is confirmed."
  */
 export function notifyEventBookingConfirmed(booking: BookingWithContext): void {

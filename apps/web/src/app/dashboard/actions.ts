@@ -52,7 +52,7 @@ export async function partnerConfirmBooking(bookingId: string): Promise<{ error?
   if (booking.status !== "PENDING") return { error: "Only PENDING bookings can be confirmed" };
   if (booking.type === "EVENT") {
     // Event tickets are confirmed automatically by the payment webhook once
-    // M-Pesa/Flutterwave settles — a partner can't hand-confirm an unpaid one.
+    // M-Pesa/Pesapal settles — a partner can't hand-confirm an unpaid one.
     return { error: "Event tickets confirm automatically once payment completes." };
   }
 
@@ -98,7 +98,7 @@ export async function partnerCancelBooking(bookingId: string): Promise<{ error?:
   await prisma.booking.update({ where: { id: bookingId }, data: { status: "CANCELLED" } });
 
   if (booking.type === "EVENT") {
-    // A stuck/abandoned M-Pesa or Flutterwave attempt shouldn't be able to
+    // A stuck/abandoned M-Pesa or Pesapal attempt shouldn't be able to
     // resurrect this booking if its callback finally lands after the fact.
     await prisma.payment.updateMany({
       where: { bookingId, status: "PENDING" },
@@ -251,7 +251,7 @@ export async function cancelBooking(bookingId: string): Promise<{ error?: string
   });
 
   // If this was a paid event ticket with a payment still in flight, make sure
-  // a late M-Pesa/Flutterwave callback can't resurrect it. No-op for
+  // a late M-Pesa/Pesapal callback can't resurrect it. No-op for
   // hotel/restaurant bookings, which never have Payment rows.
   await prisma.payment.updateMany({
     where: { bookingId, status: "PENDING" },

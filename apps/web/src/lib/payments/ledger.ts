@@ -1,6 +1,6 @@
 /**
  * Shared booking/payment state transitions for paid event tickets.
- * Both the M-Pesa callback and the Flutterwave webhook funnel through the
+ * Both the M-Pesa callback and the Pesapal webhook funnel through the
  * same two transitions here, so "what happens when a payment succeeds or
  * fails" only lives in one place.
  */

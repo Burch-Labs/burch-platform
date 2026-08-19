@@ -9,7 +9,7 @@ import { OrganizerCard } from "@/components/events/OrganizerCard";
 import { TicketSelector } from "@/components/events/TicketSelector";
 import { Badge } from "@/components/ui/Badge";
 import { HAS_MPESA } from "@/lib/payments/mpesa";
-import { HAS_FLUTTERWAVE } from "@/lib/payments/flutterwave";
+import { HAS_PESAPAL } from "@/lib/payments/pesapal";
 import {
   CATEGORY_LABELS,
   CATEGORY_COLORS,
@@ -232,7 +232,7 @@ export default async function EventDetailPage({ params }: PageProps) {
                 isAuthenticated={!!session}
                 loginUrl={loginUrl}
                 hasMpesa={HAS_MPESA}
-                hasFlutterwave={HAS_FLUTTERWAVE}
+                hasPesapal={HAS_PESAPAL}
               />
 
               {/* Capacity info */}
