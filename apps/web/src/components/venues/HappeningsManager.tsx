@@ -12,6 +12,7 @@ interface Happening {
   startsAt: string | null;
   endsAt: string | null;
   published: boolean;
+  isFeatured?: boolean;
 }
 
 type HappeningAction = (prev: { error?: string } | null, data: FormData) => Promise<{ error?: string }>;
@@ -21,6 +22,9 @@ interface Props {
   createAction: HappeningAction;
   updateActions: Record<string, HappeningAction>;
   deleteAction: (happeningId: string) => Promise<{ error?: string }>;
+  visibleLabel?: string;
+  showFeaturedToggle?: boolean;
+  emptyStateBody?: string;
 }
 
 function formatRange(startsAt: string | null, endsAt: string | null): string | null {
@@ -31,7 +35,15 @@ function formatRange(startsAt: string | null, endsAt: string | null): string | n
   return fmt((startsAt ?? endsAt) as string);
 }
 
-export function HappeningsManager({ happenings, createAction, updateActions, deleteAction }: Props) {
+export function HappeningsManager({
+  happenings,
+  createAction,
+  updateActions,
+  deleteAction,
+  visibleLabel,
+  showFeaturedToggle = false,
+  emptyStateBody = "Add a flyer and a few lines about what's on at this hotel's restaurant right now.",
+}: Props) {
   const router = useRouter();
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -79,6 +91,8 @@ export function HappeningsManager({ happenings, createAction, updateActions, del
           <HappeningForm
             action={createAction}
             submitLabel="Add happening"
+            visibleLabel={visibleLabel}
+            showFeaturedToggle={showFeaturedToggle}
             onSuccess={handleAddSuccess}
             onCancel={() => setShowAddForm(false)}
           />
@@ -96,7 +110,7 @@ export function HappeningsManager({ happenings, createAction, updateActions, del
           <p className="text-4xl mb-4">✨</p>
           <h3 className="text-base font-semibold text-gray-900 mb-2">No happenings yet</h3>
           <p className="text-sm text-gray-500 mb-6 max-w-xs mx-auto">
-            Add a flyer and a few lines about what's on at this hotel's restaurant right now.
+            {emptyStateBody}
           </p>
           <button
             onClick={() => setShowAddForm(true)}
@@ -121,8 +135,11 @@ export function HappeningsManager({ happenings, createAction, updateActions, del
                       startsAt: happening.startsAt ?? "",
                       endsAt: happening.endsAt ?? "",
                       published: happening.published,
+                      isFeatured: happening.isFeatured ?? false,
                     }}
                     submitLabel="Save changes"
+                    visibleLabel={visibleLabel}
+                    showFeaturedToggle={showFeaturedToggle}
                     onSuccess={handleEditSuccess}
                     onCancel={() => setEditingId(null)}
                   />
@@ -150,6 +167,11 @@ export function HappeningsManager({ happenings, createAction, updateActions, del
                         >
                           {happening.published ? "Visible" : "Hidden"}
                         </span>
+                        {happening.isFeatured && (
+                          <span className="text-xs font-medium px-2 py-0.5 rounded-full border bg-amber-50 text-amber-700 border-amber-200">
+                            ★ Pinned
+                          </span>
+                        )}
                       </div>
                       {formatRange(happening.startsAt, happening.endsAt) && (
                         <p className="text-sm text-gray-500 mt-0.5">

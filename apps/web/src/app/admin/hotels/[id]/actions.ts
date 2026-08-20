@@ -24,6 +24,9 @@ function parseHappeningFormData(data: FormData) {
     startsAt: startsAtRaw ? new Date(startsAtRaw) : null,
     endsAt: endsAtRaw ? new Date(endsAtRaw) : null,
     published: data.has("published"),
+    // Admin-only field — the partner form never renders this checkbox, so a
+    // partner edit never touches it.
+    isFeatured: data.has("isFeatured"),
   };
 }
 
@@ -131,6 +134,99 @@ export async function deleteHappening(
   } catch (err) {
     console.error("[deleteHappening]", err);
     return { error: "Failed to delete happening" };
+  }
+
+  revalidateHotel(hotelId);
+  return {};
+}
+
+// ─── Spa offers — same shape as Happenings, separate model/section ─────────
+
+export async function createSpaOffer(
+  hotelId: string,
+  _prev: { error?: string } | null,
+  data: FormData,
+): Promise<{ error?: string }> {
+  try {
+    await requireAdmin();
+  } catch (e: unknown) {
+    return { error: (e as Error).message };
+  }
+
+  const fields = parseHappeningFormData(data);
+  const validationError = validateHappeningFields(fields);
+  if (validationError) return { error: validationError };
+
+  try {
+    await prisma.hotelSpaOffer.create({
+      data: { ...fields, hotelId },
+    });
+  } catch (err) {
+    console.error("[createSpaOffer]", err);
+    return { error: "Failed to create spa offer" };
+  }
+
+  revalidateHotel(hotelId);
+  return {};
+}
+
+export async function updateSpaOffer(
+  hotelId: string,
+  offerId: string,
+  _prev: { error?: string } | null,
+  data: FormData,
+): Promise<{ error?: string }> {
+  try {
+    await requireAdmin();
+  } catch (e: unknown) {
+    return { error: (e as Error).message };
+  }
+
+  const existing = await prisma.hotelSpaOffer.findFirst({
+    where: { id: offerId, hotelId },
+    select: { id: true },
+  });
+  if (!existing) return { error: "Spa offer not found" };
+
+  const fields = parseHappeningFormData(data);
+  const validationError = validateHappeningFields(fields);
+  if (validationError) return { error: validationError };
+
+  try {
+    await prisma.hotelSpaOffer.update({
+      where: { id: offerId },
+      data: fields,
+    });
+  } catch (err) {
+    console.error("[updateSpaOffer]", err);
+    return { error: "Failed to update spa offer" };
+  }
+
+  revalidateHotel(hotelId);
+  return {};
+}
+
+export async function deleteSpaOffer(
+  hotelId: string,
+  offerId: string,
+): Promise<{ error?: string }> {
+  try {
+    await requireAdmin();
+  } catch (e: unknown) {
+    return { error: (e as Error).message };
+  }
+
+  const offer = await prisma.hotelSpaOffer.findFirst({
+    where: { id: offerId, hotelId },
+    select: { id: true },
+  });
+  if (!offer) return { error: "Spa offer not found" };
+
+  try {
+    await prisma.hotelSpaOffer.delete({ where: { id: offerId } });
+  } catch (err) {
+    console.error("[deleteSpaOffer]", err);
+    return { error: "Failed to delete spa offer" };
   }
 
   revalidateHotel(hotelId);

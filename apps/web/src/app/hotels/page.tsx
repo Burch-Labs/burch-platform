@@ -7,7 +7,32 @@ import { HotelFilterSidebar } from "@/components/hotels/HotelFilterSidebar";
 import { HotelSortBar } from "@/components/hotels/HotelSortBar";
 import { SearchBar } from "@/components/events/SearchBar";
 import { ShareLinkButton } from "@/components/events/ShareLinkButton";
+import { OffersList } from "@/components/venues/OffersList";
 import { prisma } from "@/lib/prisma";
+
+// Cross-hotel "what's on" rows for the unfiltered landing view — ranked by
+// the super-admin pin first, then by click-through popularity. Small and
+// cheap (top 6, indexed on [published, isFeatured]), so fetched unconditionally
+// and just not rendered on a filtered/paginated view.
+const getTopOffers = unstable_cache(
+  async () => {
+    const [happenings, spaOffers] = await Promise.all([
+      prisma.hotelHappening.findMany({
+        where: { published: true, hotel: { published: true } },
+        orderBy: [{ isFeatured: "desc" }, { viewCount: "desc" }, { createdAt: "desc" }],
+        take: 6,
+      }),
+      prisma.hotelSpaOffer.findMany({
+        where: { published: true, hotel: { published: true } },
+        orderBy: [{ isFeatured: "desc" }, { viewCount: "desc" }, { createdAt: "desc" }],
+        take: 6,
+      }),
+    ]);
+    return { happenings, spaOffers };
+  },
+  ["hotels-top-offers"],
+  { revalidate: 60, tags: ["hotels-listing"] }
+);
 
 const PAGE_SIZE = 12;
 
@@ -152,6 +177,10 @@ async function HotelsContent({ searchParams }: PageProps) {
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
   const hasFilters = !!(q || city || stars || amenities.length > 0);
+  const showTopOffers = !hasFilters && page === 1;
+  const { happenings: topHappenings, spaOffers: topSpaOffers } = showTopOffers
+    ? await getTopOffers()
+    : { happenings: [], spaOffers: [] };
 
   function buildHref(overrides: Record<string, string>): string {
     const merged = {
@@ -177,6 +206,35 @@ async function HotelsContent({ searchParams }: PageProps) {
 
       {/* Main column */}
       <div className="flex-1 min-w-0">
+        {/* Happenings & Spa offers — unfiltered landing view only, ranked by
+            super-admin pin then click-through popularity */}
+        {showTopOffers && topHappenings.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-lg font-semibold text-gray-900 mb-3">✨ Happenings near you</h2>
+            <OffersList
+              offers={topHappenings.map((h) => ({
+                ...h,
+                startsAt: h.startsAt ? h.startsAt.toISOString() : null,
+                endsAt: h.endsAt ? h.endsAt.toISOString() : null,
+              }))}
+              kind="hotelHappening"
+            />
+          </div>
+        )}
+        {showTopOffers && topSpaOffers.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-lg font-semibold text-gray-900 mb-3">💆 Spa &amp; Wellness offers</h2>
+            <OffersList
+              offers={topSpaOffers.map((o) => ({
+                ...o,
+                startsAt: o.startsAt ? o.startsAt.toISOString() : null,
+                endsAt: o.endsAt ? o.endsAt.toISOString() : null,
+              }))}
+              kind="hotelSpaOffer"
+            />
+          </div>
+        )}
+
         {/* Active-filter chips */}
         <ActiveFilterChips city={city} stars={stars} amenities={amenities} baseHref={buildHref} />
 

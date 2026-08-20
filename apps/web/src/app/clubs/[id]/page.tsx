@@ -6,8 +6,19 @@ import { HotelGallery } from "@/components/hotels/HotelGallery";
 import { AmenityList } from "@/components/hotels/AmenityList";
 import { AccessBadge, ACCESS_EXPLANATION } from "@/components/clubs/AccessBadge";
 import { BookExternally } from "@/components/venues/BookExternally";
+import { OffersList } from "@/components/venues/OffersList";
 import { formatCurrency } from "@/lib/format";
 import { formatVenueAddress } from "@/lib/utils";
+import type { ClubCategory } from "@prisma/client";
+
+const CATEGORY_ICON: Record<ClubCategory, string> = {
+  GOLF: "⛳",
+  COUNTRY: "⛳",
+  SPORTS: "🏆",
+  POLO: "🐎",
+  YACHT: "⛵",
+  SPA: "💆",
+};
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -25,8 +36,22 @@ export async function generateMetadata({ params }: PageProps) {
 
 export default async function ClubDetailPage({ params }: PageProps) {
   const { id } = await params;
-  const club = await prisma.club.findUnique({ where: { id, published: true } });
+  const club = await prisma.club.findUnique({
+    where: { id, published: true },
+    include: {
+      happenings: {
+        where: { published: true },
+        orderBy: [{ startsAt: "asc" }, { createdAt: "desc" }],
+      },
+    },
+  });
   if (!club) notFound();
+
+  const offers = club.happenings.map((h) => ({
+    ...h,
+    startsAt: h.startsAt ? h.startsAt.toISOString() : null,
+    endsAt: h.endsAt ? h.endsAt.toISOString() : null,
+  }));
 
   const images = [
     ...(club.imageUrl ? [club.imageUrl] : []),
@@ -50,7 +75,7 @@ export default async function ClubDetailPage({ params }: PageProps) {
           </div>
         ) : (
           <div className="mb-8 h-64 rounded-2xl bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center">
-            <span className="text-8xl opacity-30">⛳</span>
+            <span className="text-8xl opacity-30">{CATEGORY_ICON[club.category]}</span>
           </div>
         )}
 
@@ -93,6 +118,19 @@ export default async function ClubDetailPage({ params }: PageProps) {
                 </div>
               ))}
             </div>
+
+            {offers.length > 0 && (
+              <div
+                id="offers"
+                className="scroll-mt-24 bg-gradient-to-br from-orange-50/70 to-white rounded-2xl border border-orange-100 p-6"
+              >
+                <div className="flex items-center gap-2 mb-4">
+                  <span aria-hidden>✨</span>
+                  <h2 className="text-lg font-semibold text-gray-900">Offers</h2>
+                </div>
+                <OffersList offers={offers} kind="clubHappening" />
+              </div>
+            )}
 
             {club.description && (
               <div className="bg-surface rounded-2xl border border-gray-100 p-6">

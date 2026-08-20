@@ -8,20 +8,13 @@ import { HotelGallery } from "@/components/hotels/HotelGallery";
 import { AmenityList } from "@/components/hotels/AmenityList";
 import { ReviewsList } from "@/components/hotels/ReviewsList";
 import { BookExternally } from "@/components/venues/BookExternally";
+import { OffersList } from "@/components/venues/OffersList";
 import { FEATURES } from "@/lib/features";
 import { HotelStars, StarRating } from "@/components/hotels/StarRating";
 import Link from "next/link";
 
 interface PageProps {
   params: Promise<{ id: string }>;
-}
-
-function formatHappeningRange(startsAt: Date | null, endsAt: Date | null): string | null {
-  if (!startsAt && !endsAt) return null;
-  const fmt = (d: Date) =>
-    d.toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
-  if (startsAt && endsAt) return `${fmt(startsAt)} – ${fmt(endsAt)}`;
-  return fmt((startsAt ?? endsAt) as Date);
 }
 
 export async function generateMetadata({ params }: PageProps) {
@@ -57,12 +50,27 @@ export default async function HotelDetailPage({ params }: PageProps) {
           where: { published: true },
           orderBy: [{ startsAt: "asc" }, { createdAt: "desc" }],
         },
+        spaOffers: {
+          where: { published: true },
+          orderBy: [{ startsAt: "asc" }, { createdAt: "desc" }],
+        },
         _count: { select: { bookings: true, reviews: true } },
       },
     }),
   ]);
 
   if (!hotel) notFound();
+
+  const happenings = hotel.happenings.map((h) => ({
+    ...h,
+    startsAt: h.startsAt ? h.startsAt.toISOString() : null,
+    endsAt: h.endsAt ? h.endsAt.toISOString() : null,
+  }));
+  const spaOffers = hotel.spaOffers.map((o) => ({
+    ...o,
+    startsAt: o.startsAt ? o.startsAt.toISOString() : null,
+    endsAt: o.endsAt ? o.endsAt.toISOString() : null,
+  }));
 
   const ratings = hotel.reviews.map((r) => r.rating);
   const avgRating =
@@ -165,44 +173,15 @@ export default async function HotelDetailPage({ params }: PageProps) {
               <div className="flex items-center gap-2 mb-4">
                 <span aria-hidden>✨</span>
                 <h2 className="text-lg font-semibold text-gray-900">Happenings</h2>
-                {hotel.happenings.length === 0 && (
+                {happenings.length === 0 && (
                   <span className="text-xs font-medium text-orange-700 bg-orange-100 rounded-full px-2.5 py-0.5">
                     Coming soon
                   </span>
                 )}
               </div>
 
-              {hotel.happenings.length > 0 ? (
-                <div className="space-y-4">
-                  {hotel.happenings.map((happening) => (
-                    <div
-                      key={happening.id}
-                      className="flex items-start gap-4 bg-surface rounded-xl border border-orange-100 p-4"
-                    >
-                      {happening.flyerUrl && (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={happening.flyerUrl}
-                          alt={happening.title}
-                          className="w-20 h-20 rounded-lg object-cover flex-shrink-0"
-                        />
-                      )}
-                      <div className="min-w-0">
-                        <h3 className="font-semibold text-gray-900">{happening.title}</h3>
-                        {formatHappeningRange(happening.startsAt, happening.endsAt) && (
-                          <p className="text-xs text-orange-700 font-medium mt-0.5">
-                            {formatHappeningRange(happening.startsAt, happening.endsAt)}
-                          </p>
-                        )}
-                        {happening.description && (
-                          <p className="text-sm text-gray-600 leading-relaxed mt-1.5 whitespace-pre-line">
-                            {happening.description}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
+              {happenings.length > 0 ? (
+                <OffersList offers={happenings} kind="hotelHappening" />
               ) : (
                 <p className="text-sm text-gray-600 leading-relaxed max-w-prose">
                   Restaurant events and activities at {hotel.name} — Sunday brunch, live band
@@ -224,6 +203,22 @@ export default async function HotelDetailPage({ params }: PageProps) {
                 </p>
               )}
             </div>
+
+            {/* Spa & Wellness — separate section below Happenings, only
+                shown when the hotel has actually added something, so a
+                hotel with no spa doesn't get an empty tab. */}
+            {spaOffers.length > 0 && (
+              <div
+                id="spa"
+                className="scroll-mt-24 bg-gradient-to-br from-orange-50/70 to-white rounded-2xl border border-orange-100 p-6"
+              >
+                <div className="flex items-center gap-2 mb-4">
+                  <span aria-hidden>💆</span>
+                  <h2 className="text-lg font-semibold text-gray-900">Spa &amp; Wellness</h2>
+                </div>
+                <OffersList offers={spaOffers} kind="hotelSpaOffer" />
+              </div>
+            )}
 
             {/* Description */}
             {hotel.description && (

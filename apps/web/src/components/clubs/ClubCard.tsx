@@ -5,6 +5,15 @@ import { AccessBadge } from "./AccessBadge";
 import { formatCurrency } from "@/lib/format";
 import type { ClubAccess, ClubCategory } from "@prisma/client";
 
+const CATEGORY_ICON: Record<ClubCategory, string> = {
+  GOLF: "⛳",
+  COUNTRY: "⛳",
+  SPORTS: "🏆",
+  POLO: "🐎",
+  YACHT: "⛵",
+  SPA: "💆",
+};
+
 export interface ClubCardData {
   id: string;
   name: string;
@@ -46,7 +55,7 @@ export function ClubCard({ club, priority = false }: { club: ClubCardData; prior
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <span className="text-5xl opacity-30">⛳</span>
+            <span className="text-5xl opacity-30">{CATEGORY_ICON[club.category]}</span>
           </div>
         )}
         <div className="absolute top-3 left-3">

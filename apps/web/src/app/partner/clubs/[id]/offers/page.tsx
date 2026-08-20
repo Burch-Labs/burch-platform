@@ -5,14 +5,14 @@ import { prisma } from "@/lib/prisma";
 import { NavBar } from "@/components/layout/NavBar";
 import Link from "next/link";
 import { HappeningsManager } from "@/components/venues/HappeningsManager";
-import { createHappening, updateHappening, deleteHappening } from "./actions";
+import { createOffer, updateOffer, deleteOffer } from "./actions";
 import { isAdminRole } from "@/lib/roles";
 
 interface Props {
   params: Promise<{ id: string }>;
 }
 
-export default async function ManageHappeningsPage({ params }: Props) {
+export default async function ManageClubOffersPage({ params }: Props) {
   const { id } = await params;
 
   const session = await getServerSession(authOptions);
@@ -27,7 +27,7 @@ export default async function ManageHappeningsPage({ params }: Props) {
   });
   if (!partner) redirect("/partner/onboarding");
 
-  const hotel = await prisma.hotel.findFirst({
+  const club = await prisma.club.findFirst({
     where: { id, partnerId: partner.id },
     select: {
       id: true,
@@ -46,19 +46,19 @@ export default async function ManageHappeningsPage({ params }: Props) {
       },
     },
   });
-  if (!hotel) notFound();
+  if (!club) notFound();
 
-  const happenings = hotel.happenings.map((h) => ({
+  const offers = club.happenings.map((h) => ({
     ...h,
     startsAt: h.startsAt ? h.startsAt.toISOString() : null,
     endsAt: h.endsAt ? h.endsAt.toISOString() : null,
   }));
 
-  const boundCreate = createHappening.bind(null, hotel.id);
+  const boundCreate = createOffer.bind(null, club.id);
   const updateActions = Object.fromEntries(
-    happenings.map((h) => [h.id, updateHappening.bind(null, hotel.id, h.id)])
+    offers.map((o) => [o.id, updateOffer.bind(null, club.id, o.id)])
   );
-  const boundDelete = deleteHappening.bind(null, hotel.id);
+  const boundDelete = deleteOffer.bind(null, club.id);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -66,29 +66,29 @@ export default async function ManageHappeningsPage({ params }: Props) {
       <main className="max-w-3xl mx-auto px-6 py-12">
         {/* Breadcrumb */}
         <div className="flex items-center gap-3 mb-8 flex-wrap">
-          <Link href="/partner/hotels" className="text-sm text-gray-500 hover:text-gray-700">
-            ← My hotels
+          <Link href="/partner/clubs" className="text-sm text-gray-500 hover:text-gray-700">
+            ← My clubs
           </Link>
           <span className="text-gray-300">/</span>
           <Link
-            href={`/partner/hotels/${hotel.id}/edit`}
+            href={`/partner/clubs/${club.id}/edit`}
             className="text-sm text-gray-500 hover:text-gray-700 truncate max-w-[160px]"
           >
-            {hotel.name}
+            {club.name}
           </Link>
           <span className="text-gray-300">/</span>
-          <h1 className="text-sm font-semibold text-gray-900">Manage happenings</h1>
+          <h1 className="text-sm font-semibold text-gray-900">Manage offers</h1>
         </div>
 
         <div className="flex items-baseline justify-between mb-6">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Happenings</h2>
+            <h2 className="text-2xl font-bold text-gray-900">Offers</h2>
             <p className="text-sm text-gray-500 mt-1">
-              {happenings.length}/10 happening{happenings.length !== 1 ? "s" : ""} · {hotel.name}
+              {offers.length}/10 offer{offers.length !== 1 ? "s" : ""} · {club.name}
             </p>
           </div>
           <Link
-            href={`/hotels/${hotel.id}#happenings`}
+            href={`/clubs/${club.id}#offers`}
             target="_blank"
             className="text-sm font-medium text-orange-600 hover:text-orange-700 transition"
           >
@@ -97,10 +97,12 @@ export default async function ManageHappeningsPage({ params }: Props) {
         </div>
 
         <HappeningsManager
-          happenings={happenings}
+          happenings={offers}
           createAction={boundCreate}
           updateActions={updateActions}
           deleteAction={boundDelete}
+          visibleLabel="Visible on the club's public page"
+          emptyStateBody="Add a flyer and a few lines about a current offer, promotion, or event at this club."
         />
       </main>
     </div>

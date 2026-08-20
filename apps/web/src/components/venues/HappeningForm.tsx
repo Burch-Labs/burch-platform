@@ -9,17 +9,32 @@ export interface HappeningFormDefaults {
   startsAt?: string; // ISO string
   endsAt?: string;
   published?: boolean;
+  isFeatured?: boolean;
 }
 
 interface Props {
   action: (prev: { error?: string } | null, data: FormData) => Promise<{ error?: string }>;
   defaults?: HappeningFormDefaults;
   submitLabel?: string;
+  /** Overridable since this form is shared across hotel happenings, hotel
+      spa offers, and club offers — each has a different "public page". */
+  visibleLabel?: string;
+  /** Only admin routes pass this — pinning to the main-page row is a
+      super-admin curation call, never exposed on the partner form. */
+  showFeaturedToggle?: boolean;
   onSuccess: () => void;
   onCancel: () => void;
 }
 
-export function HappeningForm({ action, defaults = {}, submitLabel = "Save", onSuccess, onCancel }: Props) {
+export function HappeningForm({
+  action,
+  defaults = {},
+  submitLabel = "Save",
+  visibleLabel = "Visible on the hotel's public page",
+  showFeaturedToggle = false,
+  onSuccess,
+  onCancel,
+}: Props) {
   const [state, formAction, isPending] = useActionState(action, null);
 
   useEffect(() => {
@@ -197,8 +212,20 @@ export function HappeningForm({ action, defaults = {}, submitLabel = "Save", onS
           defaultChecked={defaults.published ?? true}
           className="rounded border-gray-300 text-orange-600 focus:ring-orange-400"
         />
-        Visible on the hotel's public page
+        {visibleLabel}
       </label>
+
+      {showFeaturedToggle && (
+        <label className="flex items-center gap-2 text-sm text-gray-700">
+          <input
+            type="checkbox"
+            name="isFeatured"
+            defaultChecked={defaults.isFeatured ?? false}
+            className="rounded border-gray-300 text-orange-600 focus:ring-orange-400"
+          />
+          <span aria-hidden>★</span> Pin to the main-page row, ahead of popularity ranking
+        </label>
+      )}
 
       <div className="flex items-center gap-3 pt-2">
         <button

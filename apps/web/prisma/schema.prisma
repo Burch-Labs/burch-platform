@@ -291,7 +291,8 @@ model Club {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  partner Partner @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  partner    Partner         @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  happenings ClubHappening[]
 
   @@index([city, published])
   @@map("clubs")
@@ -303,6 +304,7 @@ enum ClubCategory {
   SPORTS
   POLO
   YACHT
+  SPA
 }
 
 enum ClubAccess {
@@ -539,6 +541,7 @@ model Hotel {
   bookings   Booking[]
   reviews    HotelReview[]
   happenings HotelHappening[]
+  spaOffers  HotelSpaOffer[]
 
   @@index([published])
   @@map("hotels")
@@ -558,13 +561,76 @@ model HotelHappening {
   startsAt    DateTime?
   endsAt      DateTime?
   published   Boolean   @default(true)
+  /** Incremented when a guest opens the flyer — the popularity signal that
+      ranks it on the /hotels main-page row. Same "rough signal, not
+      deduplicated analytics" spirit as Event.viewCount. */
+  viewCount   Int       @default(0)
+  /** Super-admin pin, independent of viewCount — set only from the admin
+      side (never exposed on the partner form), same pattern as
+      Event.isFeatured. */
+  isFeatured  Boolean   @default(false)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
   hotel Hotel @relation(fields: [hotelId], references: [id], onDelete: Cascade)
 
   @@index([hotelId, published])
+  @@index([published, isFeatured])
   @@map("hotel_happenings")
+}
+
+/**
+ * A hotel's own in-house spa/wellness offers — same flyer mechanic as
+ * Happenings, kept as a separate model (not a Happening category) because
+ * the hotel detail page renders it as its own section below Happenings,
+ * and a hotel with no spa shouldn't have an empty "Spa" tab to hide.
+ */
+model HotelSpaOffer {
+  id          String    @id @default(cuid())
+  hotelId     String
+  title       String
+  description String?
+  flyerUrl    String?
+  startsAt    DateTime?
+  endsAt      DateTime?
+  published   Boolean   @default(true)
+  viewCount   Int       @default(0)
+  isFeatured  Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  hotel Hotel @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+  @@index([hotelId, published])
+  @@index([published, isFeatured])
+  @@map("hotel_spa_offers")
+}
+
+/**
+ * Offers/flyers for a Club (any category — golf, spa, sports…), owned once
+ * the club is claimed. Same flyer mechanic as HotelHappening; kept as its
+ * own model rather than a shared polymorphic table since neither side
+ * needs to query across both venue types at once.
+ */
+model ClubHappening {
+  id          String    @id @default(cuid())
+  clubId      String
+  title       String
+  description String?
+  flyerUrl    String?
+  startsAt    DateTime?
+  endsAt      DateTime?
+  published   Boolean   @default(true)
+  viewCount   Int       @default(0)
+  isFeatured  Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  club Club @relation(fields: [clubId], references: [id], onDelete: Cascade)
+
+  @@index([clubId, published])
+  @@index([published, isFeatured])
+  @@map("club_happenings")
 }
 
 model Room {

@@ -8,6 +8,7 @@ const CATEGORIES = [
   { value: "SPORTS",  label: "Sports club" },
   { value: "POLO",    label: "Polo club" },
   { value: "YACHT",   label: "Yacht club" },
+  { value: "SPA",     label: "Spa & Wellness" },
 ];
 
 const ACCESS_OPTIONS = [

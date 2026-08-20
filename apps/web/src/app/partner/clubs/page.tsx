@@ -13,6 +13,7 @@ const CATEGORY_LABEL: Record<string, string> = {
   SPORTS: "Sports club",
   POLO: "Polo club",
   YACHT: "Yacht club",
+  SPA: "Spa & Wellness",
 };
 
 export default async function PartnerClubsPage() {

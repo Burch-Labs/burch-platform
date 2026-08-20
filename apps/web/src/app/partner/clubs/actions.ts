@@ -23,6 +23,21 @@ async function requirePartner() {
   return partner;
 }
 
+/** Same shape as hotels' canEditHotel — an admin can edit any club without
+ * needing a partner profile of their own; a partner is scoped to what they own. */
+async function canEditClub(clubId: string): Promise<boolean> {
+  const session = await getServerSession(authOptions);
+  if (!session) return false;
+  if (isAdminRole(session.user.role)) {
+    return !!(await prisma.club.findUnique({ where: { id: clubId }, select: { id: true } }));
+  }
+  if (session.user.role !== "PARTNER") return false;
+  const partner = await prisma.partner.findUnique({ where: { userId: session.user.id }, select: { id: true } });
+  if (!partner) return false;
+  const owned = await prisma.club.findFirst({ where: { id: clubId, partnerId: partner.id }, select: { id: true } });
+  return !!owned;
+}
+
 function parseFormData(data: FormData) {
   const holesRaw = data.get("holes") as string | null;
   const parRaw = data.get("par") as string | null;
@@ -91,18 +106,9 @@ export async function updateClub(
   _prev: { error?: string } | null,
   data: FormData,
 ): Promise<{ error?: string }> {
-  let partner;
-  try {
-    partner = await requirePartner();
-  } catch (e: unknown) {
-    return { error: (e as Error).message };
+  if (!(await canEditClub(clubId))) {
+    return { error: "Club not found or access denied" };
   }
-
-  const existing = await prisma.club.findFirst({
-    where: { id: clubId, partnerId: partner.id },
-    select: { id: true },
-  });
-  if (!existing) return { error: "Club not found or access denied" };
 
   const fields = parseFormData(data);
   if (!fields.name)     return { error: "Club name is required" };
@@ -122,8 +128,13 @@ export async function updateClub(
   revalidatePath("/clubs");
   revalidatePath(`/clubs/${clubId}`);
   revalidatePath("/partner/clubs");
+  revalidatePath("/admin/clubs");
 
-  redirect("/partner/clubs");
+  // An admin editing someone else's club has no partner profile of their
+  // own, so /partner/clubs would just bounce them to onboarding — send
+  // them back to the admin listing instead.
+  const session = await getServerSession(authOptions);
+  redirect(isAdminRole(session?.user?.role) ? "/admin/clubs" : "/partner/clubs");
 }
 
 // ─── Delete ───────────────────────────────────────────────────────────────────

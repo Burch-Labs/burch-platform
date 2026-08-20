@@ -5,14 +5,14 @@ import { prisma } from "@/lib/prisma";
 import { NavBar } from "@/components/layout/NavBar";
 import Link from "next/link";
 import { HappeningsManager } from "@/components/venues/HappeningsManager";
-import { createHappening, updateHappening, deleteHappening } from "./actions";
+import { createSpaOffer, updateSpaOffer, deleteSpaOffer } from "./actions";
 import { isAdminRole } from "@/lib/roles";
 
 interface Props {
   params: Promise<{ id: string }>;
 }
 
-export default async function ManageHappeningsPage({ params }: Props) {
+export default async function ManageSpaOffersPage({ params }: Props) {
   const { id } = await params;
 
   const session = await getServerSession(authOptions);
@@ -32,7 +32,7 @@ export default async function ManageHappeningsPage({ params }: Props) {
     select: {
       id: true,
       name: true,
-      happenings: {
+      spaOffers: {
         orderBy: { createdAt: "desc" },
         select: {
           id: true,
@@ -48,17 +48,17 @@ export default async function ManageHappeningsPage({ params }: Props) {
   });
   if (!hotel) notFound();
 
-  const happenings = hotel.happenings.map((h) => ({
-    ...h,
-    startsAt: h.startsAt ? h.startsAt.toISOString() : null,
-    endsAt: h.endsAt ? h.endsAt.toISOString() : null,
+  const spaOffers = hotel.spaOffers.map((o) => ({
+    ...o,
+    startsAt: o.startsAt ? o.startsAt.toISOString() : null,
+    endsAt: o.endsAt ? o.endsAt.toISOString() : null,
   }));
 
-  const boundCreate = createHappening.bind(null, hotel.id);
+  const boundCreate = createSpaOffer.bind(null, hotel.id);
   const updateActions = Object.fromEntries(
-    happenings.map((h) => [h.id, updateHappening.bind(null, hotel.id, h.id)])
+    spaOffers.map((o) => [o.id, updateSpaOffer.bind(null, hotel.id, o.id)])
   );
-  const boundDelete = deleteHappening.bind(null, hotel.id);
+  const boundDelete = deleteSpaOffer.bind(null, hotel.id);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -77,18 +77,18 @@ export default async function ManageHappeningsPage({ params }: Props) {
             {hotel.name}
           </Link>
           <span className="text-gray-300">/</span>
-          <h1 className="text-sm font-semibold text-gray-900">Manage happenings</h1>
+          <h1 className="text-sm font-semibold text-gray-900">Manage spa offers</h1>
         </div>
 
         <div className="flex items-baseline justify-between mb-6">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Happenings</h2>
+            <h2 className="text-2xl font-bold text-gray-900">Spa &amp; Wellness</h2>
             <p className="text-sm text-gray-500 mt-1">
-              {happenings.length}/10 happening{happenings.length !== 1 ? "s" : ""} · {hotel.name}
+              {spaOffers.length}/10 offer{spaOffers.length !== 1 ? "s" : ""} · {hotel.name}
             </p>
           </div>
           <Link
-            href={`/hotels/${hotel.id}#happenings`}
+            href={`/hotels/${hotel.id}#spa`}
             target="_blank"
             className="text-sm font-medium text-orange-600 hover:text-orange-700 transition"
           >
@@ -97,10 +97,12 @@ export default async function ManageHappeningsPage({ params }: Props) {
         </div>
 
         <HappeningsManager
-          happenings={happenings}
+          happenings={spaOffers}
           createAction={boundCreate}
           updateActions={updateActions}
           deleteAction={boundDelete}
+          visibleLabel="Visible on the hotel's public page, in the Spa & Wellness section"
+          emptyStateBody="Add a flyer and a few lines about your in-house spa — treatments, packages, seasonal offers."
         />
       </main>
     </div>

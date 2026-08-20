@@ -75,6 +75,24 @@ export default async function EditHotelPage({ params }: Props) {
           </div>
         )}
 
+        {/* Manage spa offers shortcut */}
+        {!isAdmin && (
+          <div className="mb-6 flex items-center justify-between bg-surface rounded-2xl border border-gray-200 px-6 py-4">
+            <div>
+              <p className="text-sm font-semibold text-gray-900">Spa &amp; Wellness</p>
+              <p className="text-xs text-gray-500 mt-0.5">
+                Add up to 10 flyers for your in-house spa — treatments, packages, seasonal offers
+              </p>
+            </div>
+            <Link
+              href={`/partner/hotels/${hotel.id}/spa`}
+              className="text-sm text-orange-600 hover:text-orange-700 font-medium px-4 py-2 rounded-xl hover:bg-orange-50 transition"
+            >
+              Manage spa offers →
+            </Link>
+          </div>
+        )}
+
         {/* Manage rooms shortcut */}
         <div className="mb-6 flex items-center justify-between bg-surface rounded-2xl border border-gray-200 px-6 py-4">
           <div>
