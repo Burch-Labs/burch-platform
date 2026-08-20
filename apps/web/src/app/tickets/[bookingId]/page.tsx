@@ -7,6 +7,7 @@ import { ticketToken, referenceCode } from "@/lib/tickets";
 import { qrSvg } from "@/lib/qr";
 import { LogoMark } from "@/components/layout/Logo";
 import { CATEGORY_LABELS } from "@/types/events";
+import { DownloadTicketsButton } from "./DownloadTicketsButton";
 
 export const metadata = { title: "Your tickets — dontbeboringKE" };
 
@@ -95,9 +96,12 @@ export default async function TicketWalletPage({
           <Link href="/tickets" className="text-xs font-medium text-orange-300 hover:text-orange-200">
             ← All tickets
           </Link>
-          <p className="text-xs text-gray-400">
-            {total} ticket{total !== 1 ? "s" : ""}
-          </p>
+          <div className="flex items-center gap-4">
+            <p className="text-xs text-gray-400">
+              {total} ticket{total !== 1 ? "s" : ""}
+            </p>
+            {total > 0 && <DownloadTicketsButton />}
+          </div>
         </div>
 
         {booking.status !== "CONFIRMED" && (

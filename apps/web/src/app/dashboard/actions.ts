@@ -8,6 +8,7 @@ import {
   sendGuestHotelConfirmation,
   sendGuestReservationConfirmation,
   sendGuestRequestDeclined,
+  sendPartnerBookingCancelledAlert,
 } from "@/lib/email";
 
 // ─── Partner actions ──────────────────────────────────────────────────────────
@@ -103,6 +104,12 @@ export async function partnerCancelBooking(bookingId: string): Promise<{ error?:
     await prisma.payment.updateMany({
       where: { bookingId, status: "PENDING" },
       data: { status: "FAILED" },
+    });
+    // Same reason as the guest-initiated cancel path: a VALID ticket on a
+    // CANCELLED booking would still admit at the door.
+    await prisma.ticket.updateMany({
+      where: { bookingId, status: "VALID" },
+      data: { status: "VOID" },
     });
   } else if (wasPendingEnquiry && booking.user?.email && booking.hotel) {
     const guestEmail = booking.user.email;
@@ -223,8 +230,29 @@ export async function cancelBooking(bookingId: string): Promise<{ error?: string
       id: true,
       userId: true,
       status: true,
+      type: true,
+      quantity: true,
       checkIn: true,
-      event: { select: { startDate: true } },
+      user: { select: { name: true, email: true } },
+      event: {
+        select: {
+          title: true,
+          startDate: true,
+          partner: { select: { user: { select: { email: true, name: true } } } },
+        },
+      },
+      hotel: {
+        select: {
+          name: true,
+          partner: { select: { user: { select: { email: true, name: true } } } },
+        },
+      },
+      restaurant: {
+        select: {
+          name: true,
+          partner: { select: { user: { select: { email: true, name: true } } } },
+        },
+      },
     },
   });
 
@@ -245,6 +273,8 @@ export async function cancelBooking(bookingId: string): Promise<{ error?: string
     }
   }
 
+  const wasConfirmed = booking.status === "CONFIRMED";
+
   await prisma.booking.update({
     where: { id: bookingId },
     data: { status: "CANCELLED" },
@@ -257,6 +287,47 @@ export async function cancelBooking(bookingId: string): Promise<{ error?: string
     where: { bookingId, status: "PENDING" },
     data: { status: "FAILED" },
   });
+
+  // A cancelled booking's tickets must stop admitting — a VALID ticket on a
+  // CANCELLED booking is a ticket that got refunded but would still let its
+  // holder through the door.
+  if (booking.type === "EVENT") {
+    await prisma.ticket.updateMany({
+      where: { bookingId, status: "VALID" },
+      data: { status: "VOID" },
+    });
+  }
+
+  // Alert the partner only when they lost something they already had —
+  // a PENDING enquiry going away isn't news to anyone yet.
+  if (wasConfirmed) {
+    const guestName = booking.user.name ?? booking.user.email ?? "A guest";
+    const property =
+      booking.type === "EVENT" ? booking.event
+      : booking.type === "HOTEL" ? booking.hotel
+      : booking.restaurant;
+    const partnerUser = property?.partner?.user;
+
+    if (partnerUser?.email) {
+      const propertyName =
+        booking.type === "EVENT" ? booking.event?.title
+        : booking.type === "HOTEL" ? booking.hotel?.name
+        : booking.restaurant?.name;
+      const bookingDetail =
+        booking.type === "EVENT" ? `${booking.quantity} ticket${booking.quantity !== 1 ? "s" : ""}`
+        : booking.type === "HOTEL" ? "Stay booking"
+        : "Table reservation";
+
+      await sendPartnerBookingCancelledAlert({
+        partnerEmail: partnerUser.email,
+        partnerName: partnerUser.name ?? "Partner",
+        guestName,
+        propertyName: propertyName ?? "your listing",
+        propertyType: booking.type === "EVENT" ? "event" : booking.type === "HOTEL" ? "hotel" : "restaurant",
+        bookingDetail,
+      }).catch((err) => console.error("[partner-alert] booking cancellation email failed:", err));
+    }
+  }
 
   revalidatePath("/dashboard");
   revalidatePath("/bookings");

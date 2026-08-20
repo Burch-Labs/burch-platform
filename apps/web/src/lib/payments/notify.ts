@@ -1,5 +1,8 @@
 import { after } from "next/server";
 import { sendGuestEventConfirmation, sendPartnerBookingNotification } from "@/lib/email";
+import { prisma } from "@/lib/prisma";
+import { ticketToken, referenceCode } from "@/lib/tickets";
+import { qrPngBuffer } from "@/lib/qr";
 import type { BookingWithContext } from "./ledger";
 
 /**
@@ -35,17 +38,41 @@ export function notifyEventBookingConfirmed(booking: BookingWithContext): void {
 
   if (user.email) {
     const guestEmail = user.email;
-    after(() =>
-      sendGuestEventConfirmation({
-        guestEmail,
-        guestName: user.name ?? guestEmail,
-        eventTitle: event.title,
-        eventDate: event.startDate,
-        quantity,
-        totalAmount: Number(totalAmount),
-        currency,
-        bookingId,
-      }).catch((err) => console.error("[guest-confirm] event booking email failed:", err))
-    );
+    after(async () => {
+      // Best-effort: a QR render failure should not cost the guest their
+      // confirmation email, just the attachment on it.
+      let ticketAttachments: { filename: string; content: Buffer }[] | undefined;
+      try {
+        const tickets = await prisma.ticket.findMany({
+          where: { bookingId, status: "VALID" },
+          orderBy: { serial: "asc" },
+          select: { id: true, serial: true },
+        });
+        ticketAttachments = await Promise.all(
+          tickets.map(async (t) => ({
+            filename: `ticket-${t.serial}-${referenceCode(t.id)}.png`,
+            content: await qrPngBuffer(ticketToken(t.id)),
+          }))
+        );
+      } catch (err) {
+        console.error("[guest-confirm] ticket QR attachment generation failed:", err);
+      }
+
+      try {
+        await sendGuestEventConfirmation({
+          guestEmail,
+          guestName: user.name ?? guestEmail,
+          eventTitle: event.title,
+          eventDate: event.startDate,
+          quantity,
+          totalAmount: Number(totalAmount),
+          currency,
+          bookingId,
+          ticketAttachments,
+        });
+      } catch (err) {
+        console.error("[guest-confirm] event booking email failed:", err);
+      }
+    });
   }
 }

@@ -785,12 +785,18 @@ export interface GuestEventConfirmationParams {
   currency: string;
   /** Needed for the link to the tickets themselves — the point of the email. */
   bookingId: string;
+  /**
+   * One QR PNG per ticket, so the code itself is in the inbox rather than
+   * only reachable by following the link. Optional: a booking with no
+   * issued tickets yet (or a failed QR render) still gets the email.
+   */
+  ticketAttachments?: { filename: string; content: Buffer }[];
 }
 
 export async function sendGuestEventConfirmation(
   params: GuestEventConfirmationParams
 ): Promise<void> {
-  const { guestEmail, guestName, eventTitle, eventDate, quantity, totalAmount, currency, bookingId } = params;
+  const { guestEmail, guestName, eventTitle, eventDate, quantity, totalAmount, currency, bookingId, ticketAttachments } = params;
 
   const subject = `Your tickets for ${eventTitle} are confirmed`;
 
@@ -814,6 +820,11 @@ export async function sendGuestEventConfirmation(
     from: FROM,
     to: OVERRIDE_TO ?? guestEmail,
     subject,
+    attachments: ticketAttachments?.map((a) => ({
+      filename: a.filename,
+      content: a.content,
+      contentType: "image/png",
+    })),
     html: emailWrapper(`
       <h2 style="margin:0 0 8px;font-size:20px;color:#131E30;">Tickets confirmed!</h2>
       <p style="margin:0 0 24px;font-size:15px;color:#435671;line-height:1.6;">
@@ -843,10 +854,129 @@ export async function sendGuestEventConfirmation(
       </table>
       ${primaryButton(ticketsUrl, quantity !== 1 ? "View your tickets" : "View your ticket")}
       <p style="margin:0 0 8px;font-size:13px;color:#5D708F;line-height:1.6;">
-        Open that link at the door and show the code on screen — a screenshot works just as
+        ${ticketAttachments?.length ? `Each code is also attached to this email as a PNG, so it's on your phone even offline. ` : ""}Open that link at the door and show the code on screen — a screenshot works just as
         well. Each code admits one person, once.
       </p>
       <p style="margin:0;font-size:13px;color:#5D708F;">We look forward to seeing you there.</p>
+    `),
+  });
+}
+
+// ─── Partner security/activity alerts ────────────────────────────────────────
+
+export interface PartnerBookingCancelledAlertParams {
+  partnerEmail: string;
+  partnerName: string;
+  guestName: string;
+  propertyName: string;
+  propertyType: "hotel" | "event" | "restaurant";
+  bookingDetail: string;
+  dashboardUrl?: string;
+}
+
+/**
+ * Tells a partner a guest cancelled something that was already confirmed —
+ * distinct from the "new request" email, and only fires for a guest's own
+ * cancellation. A partner cancelling their own booking already knows.
+ */
+export async function sendPartnerBookingCancelledAlert(
+  params: PartnerBookingCancelledAlertParams
+): Promise<void> {
+  const {
+    partnerEmail,
+    partnerName,
+    guestName,
+    propertyName,
+    propertyType,
+    bookingDetail,
+    dashboardUrl = `${BASE_URL}/partner/bookings`,
+  } = params;
+
+  const typeLabel = propertyType === "hotel" ? "booking" : propertyType === "event" ? "ticket order" : "reservation";
+  const subject = `A ${typeLabel} was cancelled — ${propertyName}`;
+
+  if (!HAS_RESEND) {
+    devLog(subject, dashboardUrl);
+    console.log(`  Guest: ${guestName} | Property: ${propertyName} | Detail: ${bookingDetail}`);
+    return;
+  }
+
+  const { Resend } = await import("resend");
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  await resend.emails.send({
+    from: FROM,
+    to: OVERRIDE_TO ?? partnerEmail,
+    subject,
+    html: emailWrapper(`
+      <h2 style="margin:0 0 8px;font-size:20px;color:#131E30;">A ${typeLabel} was cancelled</h2>
+      <p style="margin:0 0 24px;font-size:15px;color:#435671;line-height:1.6;">
+        Hi ${partnerName}, ${guestName} cancelled a confirmed ${typeLabel} at <strong style="color:#131E30;">${propertyName}</strong>.
+        ${propertyType === "event" ? "Any tickets already issued on it have been voided — they will no longer admit at the door." : ""}
+      </p>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#5D708F;width:40%;">Guest</td>
+          <td style="padding:8px 0;font-size:14px;color:#131E30;font-weight:600;">${guestName}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#5D708F;">Details</td>
+          <td style="padding:8px 0;font-size:14px;color:#131E30;font-weight:600;">${bookingDetail}</td>
+        </tr>
+      </table>
+      ${primaryButton(dashboardUrl, "View on dashboard")}
+    `),
+  });
+}
+
+export interface PartnerDuplicateScanAlertParams {
+  partnerEmail: string;
+  partnerName: string;
+  eventTitle: string;
+  ticketRef: string;
+  firstCheckedInAt: Date | null;
+  dashboardUrl?: string;
+}
+
+/**
+ * A ticket that was already admitted got scanned again. Not necessarily
+ * fraud — could be an honest re-scan by door staff — but it's exactly the
+ * signal that catches a screenshot passed to a second person, so it goes
+ * out immediately rather than waiting on a digest.
+ */
+export async function sendPartnerDuplicateScanAlert(
+  params: PartnerDuplicateScanAlertParams
+): Promise<void> {
+  const { partnerEmail, partnerName, eventTitle, ticketRef, firstCheckedInAt, dashboardUrl = `${BASE_URL}/partner/events` } = params;
+
+  const subject = `⚠️ Duplicate scan attempt — ${eventTitle}`;
+  const whenLabel = firstCheckedInAt
+    ? firstCheckedInAt.toLocaleString("en-KE", { dateStyle: "medium", timeStyle: "short" })
+    : "an earlier scan";
+
+  if (!HAS_RESEND) {
+    devLog(subject, dashboardUrl);
+    console.log(`  Event: ${eventTitle} | Ticket: ${ticketRef} | First admitted: ${whenLabel}`);
+    return;
+  }
+
+  const { Resend } = await import("resend");
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  await resend.emails.send({
+    from: FROM,
+    to: OVERRIDE_TO ?? partnerEmail,
+    subject,
+    html: emailWrapper(`
+      <h2 style="margin:0 0 8px;font-size:20px;color:#131E30;">Duplicate scan attempt</h2>
+      <p style="margin:0 0 24px;font-size:15px;color:#435671;line-height:1.6;">
+        Hi ${partnerName}, ticket <strong style="color:#131E30;">${ticketRef}</strong> for
+        <strong style="color:#131E30;">${eventTitle}</strong> was scanned again after already
+        being admitted at ${whenLabel}. The second scan was refused — only the first entry was
+        let in — but a repeat attempt is worth a look. The most common cause is a screenshot
+        shared with someone else.
+      </p>
+      ${primaryButton(dashboardUrl, "Review at the door")}
     `),
   });
 }
