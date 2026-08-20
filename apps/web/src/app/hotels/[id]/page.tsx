@@ -150,7 +150,7 @@ export default async function HotelDetailPage({ params }: PageProps) {
                 { label: "Check-out", value: hotel.checkOutTime },
                 { label: "Contact", value: hotel.phone ?? hotel.email ?? "At reception" },
               ].map(({ label, value }) => (
-                <div key={label} className="bg-white rounded-xl border border-gray-100 p-3">
+                <div key={label} className="bg-surface rounded-xl border border-gray-100 p-3">
                   <p className="text-xs text-gray-400 mb-0.5">{label}</p>
                   <p className="text-sm font-semibold text-gray-900 truncate">{value}</p>
                 </div>
@@ -177,7 +177,7 @@ export default async function HotelDetailPage({ params }: PageProps) {
                   {hotel.happenings.map((happening) => (
                     <div
                       key={happening.id}
-                      className="flex items-start gap-4 bg-white rounded-xl border border-orange-100 p-4"
+                      className="flex items-start gap-4 bg-surface rounded-xl border border-orange-100 p-4"
                     >
                       {happening.flyerUrl && (
                         // eslint-disable-next-line @next/next/no-img-element
@@ -227,7 +227,7 @@ export default async function HotelDetailPage({ params }: PageProps) {
 
             {/* Description */}
             {hotel.description && (
-              <div className="bg-white rounded-2xl border border-gray-100 p-6">
+              <div className="bg-surface rounded-2xl border border-gray-100 p-6">
                 <h2 className="text-lg font-semibold text-gray-900 mb-3">About</h2>
                 <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">
                   {hotel.description}
@@ -237,7 +237,7 @@ export default async function HotelDetailPage({ params }: PageProps) {
 
             {/* Amenities */}
             {hotel.amenities.length > 0 && (
-              <div className="bg-white rounded-2xl border border-gray-100 p-6">
+              <div className="bg-surface rounded-2xl border border-gray-100 p-6">
                 <h2 className="text-lg font-semibold text-gray-900 mb-4">Amenities</h2>
                 <AmenityList amenities={hotel.amenities} />
               </div>

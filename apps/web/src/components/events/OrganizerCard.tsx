@@ -19,7 +19,7 @@ export function OrganizerCard({ partner }: OrganizerCardProps) {
     .toUpperCase();
 
   return (
-    <div className="rounded-2xl border border-gray-100 bg-white p-5">
+    <div className="rounded-2xl border border-gray-100 bg-surface p-5">
       <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">
         Organized by
       </p>

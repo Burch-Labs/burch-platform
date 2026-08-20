@@ -32,7 +32,7 @@ export function ReservationForm({ restaurantId, restaurantName, isAuthenticated 
 
   if (!isAuthenticated) {
     return (
-      <div className="bg-white rounded-2xl border border-gray-100 p-5 text-center">
+      <div className="bg-surface rounded-2xl border border-gray-100 p-5 text-center">
         <div className="text-3xl mb-3">🍽️</div>
         <p className="text-sm text-gray-600 mb-4">Sign in to make a table reservation.</p>
         <a
@@ -47,7 +47,7 @@ export function ReservationForm({ restaurantId, restaurantName, isAuthenticated 
 
   if (confirmed) {
     return (
-      <div className="bg-white rounded-2xl border border-amber-100 p-6 text-center">
+      <div className="bg-surface rounded-2xl border border-amber-100 p-6 text-center">
         <div className="text-4xl mb-3">📨</div>
         <h3 className="font-bold text-gray-900 mb-1">Request sent!</h3>
         <p className="text-sm text-gray-500 mb-1">
@@ -88,7 +88,7 @@ export function ReservationForm({ restaurantId, restaurantName, isAuthenticated 
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-5">
+    <div className="bg-surface rounded-2xl border border-gray-100 p-5">
       <h3 className="font-semibold text-gray-900 mb-4">Reserve a table</h3>
       <form onSubmit={handleSubmit} className="space-y-3">
         <div className="grid grid-cols-2 gap-3">

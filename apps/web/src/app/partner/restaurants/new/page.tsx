@@ -33,7 +33,7 @@ export default async function NewRestaurantPage() {
           <h1 className="text-2xl font-bold text-gray-900">New restaurant</h1>
         </div>
 
-        <div className="bg-white rounded-2xl border border-gray-200 p-8">
+        <div className="bg-surface rounded-2xl border border-gray-200 p-8">
           <RestaurantForm action={createRestaurant} submitLabel="Create restaurant" />
         </div>
       </main>

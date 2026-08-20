@@ -119,7 +119,7 @@ export function HappeningForm({ action, defaults = {}, submitLabel = "Save", onS
             <button
               type="button"
               onClick={handleRemoveFlyer}
-              className="absolute top-2 right-2 bg-white/80 hover:bg-white text-gray-700 rounded-full p-1 shadow transition"
+              className="absolute top-2 right-2 bg-surface/80 hover:bg-surface text-gray-700 rounded-full p-1 shadow transition"
               title="Remove flyer"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">

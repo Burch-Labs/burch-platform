@@ -47,7 +47,7 @@ export default async function EditRestaurantPage({ params }: Props) {
           <h1 className="text-2xl font-bold text-gray-900 truncate">{restaurant.name}</h1>
         </div>
 
-        <div className="bg-white rounded-2xl border border-gray-200 p-8">
+        <div className="bg-surface rounded-2xl border border-gray-200 p-8">
           <RestaurantForm
             action={boundUpdate}
             submitLabel="Save changes"

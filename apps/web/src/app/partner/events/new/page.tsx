@@ -33,7 +33,7 @@ export default async function NewEventPage() {
           <h1 className="text-2xl font-bold text-gray-900">New event</h1>
         </div>
 
-        <div className="bg-white rounded-2xl border border-gray-200 p-8">
+        <div className="bg-surface rounded-2xl border border-gray-200 p-8">
           <EventForm action={createEvent} submitLabel="Create event" />
         </div>
       </main>

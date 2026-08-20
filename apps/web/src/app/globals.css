@@ -36,15 +36,55 @@
   --color-orange-700: #9A3412;
   --color-orange-800: #7C2D12;
   --color-orange-900: #4A1D09;
+
+  /* Card/panel surface — every "raised over the page background" element uses
+     this instead of the literal `white` token, so dark mode can recolour
+     surfaces without touching `text-white`/`border-white`, which stay
+     literal white on purpose (buttons, badges, gradient hero overlays). */
+  --color-surface: #FFFFFF;
+}
+
+/* ─── Dark mode ────────────────────────────────────────────────────────────────
+   A full mirror-swap of the neutral ramp (50↔900, 100↔800, …) so every
+   existing text-gray-900-on-bg-gray-50 pairing built for light mode still
+   reads correctly once the values invert — text-gray-900 becomes light text,
+   bg-gray-50 becomes a dark canvas, border-gray-200 becomes a dark subtle
+   border, all from the same class names already in every component.
+   The orange accent ramp is intentionally left unchanged in both themes —
+   already calibrated to clear 4.5:1 on white, and warm orange reads even
+   more vividly against a dark navy canvas.
+   Gated by [data-theme], set by the toggle + persisted to localStorage; the
+   inline script in layout.tsx applies it before paint to avoid a flash. */
+:root[data-theme="dark"] {
+  --color-gray-50:  #131E30;
+  --color-gray-100: #1F2D42;
+  --color-gray-200: #2E3F58;
+  --color-gray-300: #435671;
+  --color-gray-400: #5D708F;
+  --color-gray-500: #8395B3;
+  --color-gray-600: #B6C3D8;
+  --color-gray-700: #D8E0EC;
+  --color-gray-800: #EBEFF6;
+  --color-gray-900: #F6F8FB;
+
+  --color-surface: #1F2D42;
 }
 
 /* ─── Base ─────────────────────────────────────────────────────────────────── */
+html {
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
 body {
-  background: #F6F8FB;
-  color: #131E30;
+  background: var(--color-gray-50);
+  color: var(--color-gray-900);
   font-family: var(--font-inter, ui-sans-serif, system-ui, sans-serif);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 /* ─── Display font — Playfair Display for hero & section headings ──────────── */

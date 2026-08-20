@@ -70,7 +70,7 @@ function TierForm({
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1">Currency</label>
           <select name="currency" defaultValue={defaults?.currency ?? "KES"}
-            className="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-orange-500">
+            className="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-orange-500">
             {["KES", "USD", "EUR", "GBP"].map((c) => <option key={c} value={c}>{c}</option>)}
           </select>
         </div>
@@ -130,20 +130,20 @@ export function TiersManager({ tiers, createAction, updateActions, deleteAction 
         </button>
       )}
       {showAdd && (
-        <div className="bg-white rounded-2xl border border-orange-200 p-5">
+        <div className="bg-surface rounded-2xl border border-orange-200 p-5">
           <h3 className="text-sm font-semibold text-gray-900 mb-3">New tier</h3>
           <TierForm action={createAction} submitLabel="Add tier" onCancel={() => setShowAdd(false)} />
         </div>
       )}
 
       {tiers.length === 0 && !showAdd ? (
-        <p className="text-sm text-gray-400 bg-white rounded-xl border border-dashed border-gray-200 px-5 py-6 text-center">
+        <p className="text-sm text-gray-400 bg-surface rounded-xl border border-dashed border-gray-200 px-5 py-6 text-center">
           No tiers yet — the event's flat price applies until you add one.
         </p>
       ) : (
         <div className="space-y-3">
           {tiers.map((t) => (
-            <div key={t.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <div key={t.id} className="bg-surface rounded-xl border border-gray-200 overflow-hidden">
               {editingId === t.id ? (
                 <div className="p-4">
                   <h3 className="text-sm font-semibold text-gray-900 mb-3">Edit tier</h3>

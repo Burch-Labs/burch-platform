@@ -246,7 +246,7 @@ export function TicketSelector({
   }
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+    <div className="rounded-2xl border border-gray-200 bg-surface p-5 shadow-sm">
       <p className="text-sm font-medium text-gray-700 mb-3">Select tickets</p>
 
       {isSoldOut ? (

@@ -59,7 +59,7 @@ export default async function PartnerEventsPage() {
         </div>
 
         {events.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-dashed border-gray-200 px-8 py-14 text-center">
+          <div className="bg-surface rounded-2xl border border-dashed border-gray-200 px-8 py-14 text-center">
             <p className="text-4xl mb-4">🎉</p>
             <h2 className="text-lg font-semibold text-gray-900 mb-2">No events yet</h2>
             <p className="text-sm text-gray-500 mb-6 max-w-xs mx-auto">
@@ -73,7 +73,7 @@ export default async function PartnerEventsPage() {
             </Link>
           </div>
         ) : (
-          <div className="bg-white rounded-2xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
+          <div className="bg-surface rounded-2xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
             {events.map((event) => (
               <div key={event.id} className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition">
                 <div className="flex-1 min-w-0">

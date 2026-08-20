@@ -128,7 +128,7 @@ export function RoomForm({ action, defaults = {}, submitLabel = "Add room", onSu
             <button
               type="button"
               onClick={handleRemoveImage}
-              className="absolute top-2 right-2 bg-white/80 hover:bg-white text-gray-700 rounded-full p-1 shadow transition"
+              className="absolute top-2 right-2 bg-surface/80 hover:bg-surface text-gray-700 rounded-full p-1 shadow transition"
               title="Remove photo"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
@@ -197,7 +197,7 @@ export function RoomForm({ action, defaults = {}, submitLabel = "Add room", onSu
           <select
             name="currency"
             defaultValue={defaults.currency ?? "KES"}
-            className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white"
+            className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-surface"
           >
             {CURRENCIES.map((c) => (
               <option key={c} value={c}>{c}</option>
@@ -246,7 +246,7 @@ export function RoomForm({ action, defaults = {}, submitLabel = "Add room", onSu
         <select
           name="bedType"
           defaultValue={defaults.bedType ?? ""}
-          className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white"
+          className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-surface"
         >
           <option value="">— select —</option>
           {BED_TYPES.map((b) => (

@@ -98,7 +98,7 @@ export default async function MyBookingsPage() {
         </div>
 
         {nothingYet ? (
-          <div className="bg-white rounded-2xl border border-dashed border-gray-200 px-6 py-14 text-center">
+          <div className="bg-surface rounded-2xl border border-dashed border-gray-200 px-6 py-14 text-center">
             <p className="text-3xl mb-2">🧳</p>
             <p className="text-sm text-gray-600 font-medium">You have no bookings yet.</p>
             <p className="text-xs text-gray-400 mt-1">
@@ -125,7 +125,7 @@ export default async function MyBookingsPage() {
                 </span>
               </h2>
               {upcomingBookings.length === 0 && upcomingReservations.length === 0 ? (
-                <p className="text-sm text-gray-400 bg-white rounded-xl border border-dashed border-gray-200 px-5 py-6 text-center">
+                <p className="text-sm text-gray-400 bg-surface rounded-xl border border-dashed border-gray-200 px-5 py-6 text-center">
                   Nothing coming up. Time to plan your next outing!
                 </p>
               ) : (
@@ -177,7 +177,7 @@ type HotelBooking = Awaited<ReturnType<typeof prisma.booking.findMany<{
 
 function HotelRow({ booking: b, showCancel }: { booking: HotelBooking; showCancel: boolean }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-100 p-4 flex items-center gap-4">
+    <div className="bg-surface rounded-xl border border-gray-100 p-4 flex items-center gap-4">
       {b.hotel?.imageUrl ? (
         <img
           src={b.hotel.imageUrl}
@@ -218,7 +218,7 @@ type Reservation = Awaited<ReturnType<typeof prisma.tableReservation.findMany<{
 
 function ReservationRow({ reservation: r, showCancel }: { reservation: Reservation; showCancel: boolean }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-100 p-4 flex items-center gap-4">
+    <div className="bg-surface rounded-xl border border-gray-100 p-4 flex items-center gap-4">
       {r.restaurant?.imageUrl ? (
         <img
           src={r.restaurant.imageUrl}

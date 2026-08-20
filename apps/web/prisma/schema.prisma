@@ -395,6 +395,9 @@ model Event {
    * on, so approval doesn't change how the rest of the app finds events.
    */
   published   Boolean       @default(false)
+  /** Curated by an admin for the homepage "Top Picks" row. Purely editorial —
+      unrelated to published/approvalStatus. */
+  isFeatured  Boolean       @default(false)
   /**
    * APPROVED by default — an existing partner creating an event through
    * their own dashboard is already a vetted business and publishes
@@ -422,6 +425,8 @@ model Event {
   // Speeds up the common listing queries: published feed sorted by date, and city filter
   @@index([published, startDate])
   @@index([published, city])
+  // Homepage "Top Picks" row
+  @@index([published, isFeatured])
   // The admin review queue's whole query is "find everything PENDING."
   @@index([approvalStatus])
   @@map("events")

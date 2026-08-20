@@ -16,7 +16,7 @@ export function ReviewCard({ review }: ReviewCardProps) {
     .toUpperCase();
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-5">
+    <div className="bg-surface rounded-2xl border border-gray-100 p-5">
       {/* Header */}
       <div className="flex items-start gap-3 mb-3">
         {review.user.image ? (

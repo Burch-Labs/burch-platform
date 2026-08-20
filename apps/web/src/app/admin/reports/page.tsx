@@ -49,26 +49,26 @@ export default async function AdminReportsPage() {
         <AdminNav active="/admin/reports" counts={counts} />
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-          <div className="bg-white rounded-2xl border border-gray-100 p-5">
+          <div className="bg-surface rounded-2xl border border-gray-100 p-5">
             <p className="text-xl font-bold text-gray-900">{totalViews.toLocaleString()}</p>
             <p className="text-xs text-gray-500 mt-0.5">Total views</p>
           </div>
-          <div className="bg-white rounded-2xl border border-gray-100 p-5">
+          <div className="bg-surface rounded-2xl border border-gray-100 p-5">
             <p className="text-xl font-bold text-gray-900">{totalTickets.toLocaleString()}</p>
             <p className="text-xs text-gray-500 mt-0.5">Tickets sold</p>
           </div>
-          <div className="bg-white rounded-2xl border border-gray-100 p-5">
+          <div className="bg-surface rounded-2xl border border-gray-100 p-5">
             <p className="text-xl font-bold text-gray-900">KES {totalRevenue.toLocaleString()}</p>
             <p className="text-xs text-gray-500 mt-0.5">Confirmed booking revenue</p>
           </div>
         </div>
 
         {events.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-gray-100 p-10 text-center">
+          <div className="bg-surface rounded-2xl border border-gray-100 p-10 text-center">
             <p className="text-sm text-gray-500">No events yet.</p>
           </div>
         ) : (
-          <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+          <div className="bg-surface rounded-2xl border border-gray-100 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>

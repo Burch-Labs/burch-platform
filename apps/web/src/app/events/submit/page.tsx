@@ -25,7 +25,7 @@ export default async function SubmitEventPage() {
         </p>
 
         {!session ? (
-          <div className="bg-white rounded-2xl border border-dashed border-gray-200 p-10 text-center">
+          <div className="bg-surface rounded-2xl border border-dashed border-gray-200 p-10 text-center">
             <p className="text-4xl mb-4">🎟️</p>
             <h2 className="text-lg font-semibold text-gray-900 mb-2">Sign in to get started</h2>
             <p className="text-sm text-gray-500 mb-6 max-w-sm mx-auto">
@@ -39,7 +39,7 @@ export default async function SubmitEventPage() {
             </a>
           </div>
         ) : (
-          <div className="bg-white rounded-2xl border border-gray-200 p-6">
+          <div className="bg-surface rounded-2xl border border-gray-200 p-6">
             <SubmitEventForm existingBusinessName={partner?.name ?? null} />
           </div>
         )}

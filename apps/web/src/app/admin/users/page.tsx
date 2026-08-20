@@ -87,7 +87,7 @@ export default function AdminUsersPage() {
           </label>
         </div>
 
-        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+        <div className="bg-surface rounded-2xl border border-gray-200 overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
             <h2 className="font-semibold text-gray-900">Users</h2>
             <span className="text-xs text-gray-400">{users.length} shown</span>

@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
  */
 const LABELS: Record<ClubAccess, { label: string; tone: string }> = {
   MEMBERS_ONLY:     { label: "Members only",   tone: "bg-gray-900/85 text-white" },
-  BY_ARRANGEMENT:   { label: "Call ahead",     tone: "bg-white/90 text-gray-800" },
+  BY_ARRANGEMENT:   { label: "Call ahead",     tone: "bg-surface/90 text-gray-800" },
   VISITORS_WELCOME: { label: "Visitors welcome", tone: "bg-orange-100/95 text-orange-800" },
 };
 

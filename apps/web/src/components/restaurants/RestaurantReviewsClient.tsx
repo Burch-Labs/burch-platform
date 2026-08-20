@@ -45,7 +45,7 @@ export function RestaurantReviewsClient({ restaurantId, initialReviews, avgRatin
   return (
     <div>
       {avgRating !== null && total > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-100 p-6 mb-6 flex flex-col sm:flex-row gap-6">
+        <div className="bg-surface rounded-2xl border border-gray-100 p-6 mb-6 flex flex-col sm:flex-row gap-6">
           <div className="text-center sm:border-r sm:border-gray-100 sm:pr-6 flex-shrink-0">
             <p className="text-5xl font-extrabold text-gray-900">{avgRating.toFixed(1)}</p>
             <StarRating rating={avgRating} size="md" className="justify-center mt-2" />
@@ -81,7 +81,7 @@ export function RestaurantReviewsClient({ restaurantId, initialReviews, avgRatin
       {success && <div className="mb-5 bg-green-50 border border-green-200 rounded-xl px-5 py-3 text-sm text-green-700">✓ Your review has been published.</div>}
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-gray-100 p-5 mb-6 space-y-4">
+        <form onSubmit={handleSubmit} className="bg-surface rounded-2xl border border-gray-100 p-5 mb-6 space-y-4">
           <h3 className="font-semibold text-gray-900">Your review</h3>
           <div>
             <p className="text-xs text-gray-500 mb-1.5">Rating</p>

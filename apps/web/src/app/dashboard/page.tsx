@@ -59,7 +59,7 @@ function SectionHeader({ title, href, count }: { title: string; href: string; co
 
 function EmptyRow({ emoji, label, href }: { emoji: string; label: string; href: string }) {
   return (
-    <div className="bg-white rounded-xl border border-dashed border-gray-200 px-5 py-6 text-center">
+    <div className="bg-surface rounded-xl border border-dashed border-gray-200 px-5 py-6 text-center">
       <p className="text-2xl mb-1">{emoji}</p>
       <p className="text-sm text-gray-500">No {label} yet.</p>
       <Link href={href} className="mt-2 inline-block text-xs text-orange-600 hover:underline font-medium">
@@ -317,7 +317,7 @@ export default async function DashboardPage() {
             <Link
               key={label}
               href={href}
-              className="bg-white rounded-2xl border border-gray-200 p-6 hover:border-orange-300 hover:shadow-sm transition group"
+              className="bg-surface rounded-2xl border border-gray-200 p-6 hover:border-orange-300 hover:shadow-sm transition group"
             >
               <span className="text-3xl mb-3 block">{emoji}</span>
               <p className="font-semibold text-gray-900 group-hover:text-orange-600 transition">{label}</p>
@@ -331,7 +331,7 @@ export default async function DashboardPage() {
           <div className="space-y-10">
 
             {/* Full history link */}
-            <div className="flex items-center justify-between rounded-xl bg-white border border-gray-200 px-5 py-4">
+            <div className="flex items-center justify-between rounded-xl bg-surface border border-gray-200 px-5 py-4">
               <div>
                 <p className="text-sm font-semibold text-gray-900">Recent activity</p>
                 <p className="text-xs text-gray-500 mt-0.5">Showing your 5 most recent bookings per category.</p>
@@ -373,7 +373,7 @@ export default async function DashboardPage() {
                   {hotelBookings.map((b) => (
                     <div
                       key={b.id}
-                      className="bg-white rounded-xl border border-gray-100 p-4 flex items-center gap-4"
+                      className="bg-surface rounded-xl border border-gray-100 p-4 flex items-center gap-4"
                     >
                       {b.hotel?.imageUrl && (
                         <img
@@ -422,7 +422,7 @@ export default async function DashboardPage() {
                   {eventBookings.map((b) => (
                     <div
                       key={b.id}
-                      className="bg-white rounded-xl border border-gray-100 p-4 flex items-center gap-4"
+                      className="bg-surface rounded-xl border border-gray-100 p-4 flex items-center gap-4"
                     >
                       {b.event?.imageUrl && (
                         <img
@@ -470,7 +470,7 @@ export default async function DashboardPage() {
                   {reservations.map((r) => (
                     <div
                       key={r.id}
-                      className="bg-white rounded-xl border border-gray-100 p-4 flex items-center gap-4"
+                      className="bg-surface rounded-xl border border-gray-100 p-4 flex items-center gap-4"
                     >
                       {r.restaurant?.imageUrl && (
                         <img
@@ -569,7 +569,7 @@ export default async function DashboardPage() {
               {recentPartnerBookings.length === 0 ? (
                 <EmptyCard message="No confirmed or completed bookings yet." />
               ) : (
-                <div className="bg-white rounded-2xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
+                <div className="bg-surface rounded-2xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
                   {recentPartnerBookings.map((b) => (
                     <PartnerBookingRow key={b.id} booking={b} />
                   ))}
@@ -581,7 +581,7 @@ export default async function DashboardPage() {
             {recentPartnerReservations.length > 0 && (
               <section>
                 <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent table reservations</h2>
-                <div className="bg-white rounded-2xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
+                <div className="bg-surface rounded-2xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
                   {recentPartnerReservations.map((r) => (
                     <PartnerReservationRow key={r.id} reservation={r} />
                   ))}
@@ -591,7 +591,7 @@ export default async function DashboardPage() {
 
             <Link
               href="/partner"
-              className="inline-flex items-center gap-2 bg-white border border-gray-200 rounded-xl px-5 py-3 text-sm font-medium text-gray-700 hover:border-orange-300 hover:text-orange-600 transition"
+              className="inline-flex items-center gap-2 bg-surface border border-gray-200 rounded-xl px-5 py-3 text-sm font-medium text-gray-700 hover:border-orange-300 hover:text-orange-600 transition"
             >
               Go to Partner Portal →
             </Link>
@@ -614,7 +614,7 @@ export default async function DashboardPage() {
               {recentAdminBookings.length === 0 ? (
                 <EmptyCard message="No bookings recorded yet." />
               ) : (
-                <div className="bg-white rounded-2xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
+                <div className="bg-surface rounded-2xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
                   {recentAdminBookings.map((b) => (
                     <PartnerBookingRow key={b.id} booking={b} showUser />
                   ))}
@@ -741,7 +741,7 @@ function StatCard({
       className={`rounded-2xl border p-5 ${
         highlight && value > 0
           ? "bg-amber-50 border-amber-200"
-          : "bg-white border-gray-200"
+          : "bg-surface border-gray-200"
       }`}
     >
       <span className="text-2xl">{emoji}</span>
@@ -761,7 +761,7 @@ function StatCard({
 
 function EmptyCard({ message }: { message: string }) {
   return (
-    <div className="bg-white rounded-2xl border border-dashed border-gray-200 py-10 text-center px-6">
+    <div className="bg-surface rounded-2xl border border-dashed border-gray-200 py-10 text-center px-6">
       <p className="text-sm text-gray-500">{message}</p>
     </div>
   );

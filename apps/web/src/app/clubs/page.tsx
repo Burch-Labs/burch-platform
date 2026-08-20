@@ -45,7 +45,7 @@ export default async function ClubsPage({ searchParams }: PageProps) {
     <div className="min-h-screen bg-gray-50">
       <NavBar />
 
-      <section className="bg-white border-b border-gray-200">
+      <section className="bg-surface border-b border-gray-200">
         <div className="max-w-6xl mx-auto px-6 pt-10 pb-8">
           <h1 className="font-display text-4xl font-bold text-gray-900 mb-1">Golf &amp; clubs</h1>
           <p className="text-gray-500 mb-6">
@@ -65,7 +65,7 @@ export default async function ClubsPage({ searchParams }: PageProps) {
         </p>
 
         {clubs.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center">
+          <div className="bg-surface rounded-2xl border border-gray-100 p-12 text-center">
             <div className="text-4xl mb-3">⛳</div>
             <p className="text-gray-600 font-medium mb-1">Nothing matches that search</p>
             <p className="text-sm text-gray-400">Try a different town or clear the search.</p>

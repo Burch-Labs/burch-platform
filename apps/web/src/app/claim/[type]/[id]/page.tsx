@@ -41,7 +41,7 @@ export default async function ClaimPage({
           {venue.city && !venue.location.includes(venue.city) ? `, ${venue.city}` : ""}
         </p>
 
-        <div className="rounded-xl border border-gray-200 bg-white px-5 py-4 mb-6">
+        <div className="rounded-xl border border-gray-200 bg-surface px-5 py-4 mb-6">
           <p className="text-sm text-gray-600 leading-relaxed">
             We put this listing together from public information. If you work here, claiming it
             lets you correct the details, add your booking link, and take enquiries directly.

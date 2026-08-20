@@ -92,7 +92,7 @@ function LoginForm() {
             <div className="w-full border-t border-gray-100" />
           </div>
           <div className="relative flex justify-center">
-            <span className="bg-white px-3 text-xs text-gray-400">
+            <span className="bg-surface px-3 text-xs text-gray-400">
               or continue with email
             </span>
           </div>

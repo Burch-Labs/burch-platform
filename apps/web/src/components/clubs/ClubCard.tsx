@@ -32,7 +32,7 @@ export function ClubCard({ club, priority = false }: { club: ClubCardData; prior
   return (
     <Link
       href={`/clubs/${club.id}`}
-      className="group flex flex-col bg-white rounded-2xl border border-gray-100 overflow-hidden hover:border-orange-200 hover:shadow-md transition-all duration-200"
+      className="group flex flex-col bg-surface rounded-2xl border border-gray-100 overflow-hidden hover:border-orange-200 hover:shadow-md transition-all duration-200"
     >
       <div className="relative h-44 overflow-hidden bg-gradient-to-br from-gray-700 to-gray-900">
         {club.imageUrl ? (

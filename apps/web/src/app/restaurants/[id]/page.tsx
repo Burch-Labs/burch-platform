@@ -134,7 +134,7 @@ export default async function RestaurantDetailPage({ params }: PageProps) {
                   ? [{ label: "Menu items", value: `${restaurant.menuItems.length}` }]
                   : []),
               ].map(({ label, value }) => (
-                <div key={label} className="bg-white rounded-xl border border-gray-100 p-3">
+                <div key={label} className="bg-surface rounded-xl border border-gray-100 p-3">
                   <p className="text-xs text-gray-400 mb-0.5">{label}</p>
                   <p className="text-sm font-semibold text-gray-900 truncate">{value}</p>
                 </div>
@@ -143,7 +143,7 @@ export default async function RestaurantDetailPage({ params }: PageProps) {
 
             {/* Description */}
             {restaurant.description && (
-              <div className="bg-white rounded-2xl border border-gray-100 p-6">
+              <div className="bg-surface rounded-2xl border border-gray-100 p-6">
                 <h2 className="text-lg font-semibold text-gray-900 mb-3">About</h2>
                 <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">{restaurant.description}</p>
               </div>
@@ -151,7 +151,7 @@ export default async function RestaurantDetailPage({ params }: PageProps) {
 
             {/* Amenities */}
             {restaurant.amenities.length > 0 && (
-              <div className="bg-white rounded-2xl border border-gray-100 p-6">
+              <div className="bg-surface rounded-2xl border border-gray-100 p-6">
                 <h2 className="text-lg font-semibold text-gray-900 mb-4">Features</h2>
                 <AmenityList amenities={restaurant.amenities} />
               </div>
@@ -159,7 +159,7 @@ export default async function RestaurantDetailPage({ params }: PageProps) {
 
             {/* Menu */}
             {FEATURES.menus && (
-              <div className="bg-white rounded-2xl border border-gray-100 p-6">
+              <div className="bg-surface rounded-2xl border border-gray-100 p-6">
                 <h2 className="text-lg font-semibold text-gray-900 mb-4">
                   Menu
                   {restaurant.menuItems.length > 0 && (
@@ -171,7 +171,7 @@ export default async function RestaurantDetailPage({ params }: PageProps) {
             )}
 
             {/* Location placeholder */}
-            <div className="bg-white rounded-2xl border border-gray-100 p-6">
+            <div className="bg-surface rounded-2xl border border-gray-100 p-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-3">Location</h2>
               <p className="text-sm text-gray-600 mb-4">{formatVenueAddress(restaurant.location, restaurant.city)}</p>
               <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl flex items-center justify-center">

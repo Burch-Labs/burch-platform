@@ -146,7 +146,7 @@ export function EventForm({ action, defaults = {}, submitLabel = "Save event", c
             <button
               type="button"
               onClick={handleRemoveImage}
-              className="absolute top-2 right-2 bg-white/80 hover:bg-white text-gray-700 rounded-full p-1 shadow transition"
+              className="absolute top-2 right-2 bg-surface/80 hover:bg-surface text-gray-700 rounded-full p-1 shadow transition"
               title="Remove photo"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
@@ -204,7 +204,7 @@ export function EventForm({ action, defaults = {}, submitLabel = "Save event", c
           <select
             name="category"
             defaultValue={defaults.category ?? "OTHER"}
-            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent bg-white"
+            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent bg-surface"
           >
             {CATEGORIES.map((c) => (
               <option key={c.value} value={c.value}>{c.label}</option>

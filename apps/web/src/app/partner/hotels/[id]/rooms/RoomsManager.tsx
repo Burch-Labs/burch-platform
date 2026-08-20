@@ -73,7 +73,7 @@ export function RoomsManager({ rooms, createAction, updateActions, deleteAction 
 
       {/* Add room form */}
       {showAddForm && (
-        <div className="bg-white rounded-2xl border border-orange-200 p-6">
+        <div className="bg-surface rounded-2xl border border-orange-200 p-6">
           <h2 className="text-base font-semibold text-gray-900 mb-4">New room</h2>
           <RoomForm
             action={createAction}
@@ -92,7 +92,7 @@ export function RoomsManager({ rooms, createAction, updateActions, deleteAction 
 
       {/* Room list */}
       {rooms.length === 0 && !showAddForm ? (
-        <div className="bg-white rounded-2xl border border-dashed border-gray-200 px-8 py-14 text-center">
+        <div className="bg-surface rounded-2xl border border-dashed border-gray-200 px-8 py-14 text-center">
           <p className="text-4xl mb-4">🛏️</p>
           <h3 className="text-base font-semibold text-gray-900 mb-2">No rooms yet</h3>
           <p className="text-sm text-gray-500 mb-6 max-w-xs mx-auto">
@@ -108,7 +108,7 @@ export function RoomsManager({ rooms, createAction, updateActions, deleteAction 
       ) : (
         <div className="space-y-4">
           {rooms.map((room) => (
-            <div key={room.id} className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+            <div key={room.id} className="bg-surface rounded-2xl border border-gray-200 overflow-hidden">
               {editingId === room.id ? (
                 /* ── Inline edit form ── */
                 <div className="p-6">

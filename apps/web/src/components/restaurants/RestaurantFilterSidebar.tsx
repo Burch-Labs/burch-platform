@@ -29,7 +29,7 @@ export function RestaurantFilterSidebar({ cities, cuisines }: RestaurantFilterSi
 
   return (
     <aside className="w-full lg:w-56 flex-shrink-0">
-      <div className="bg-white rounded-2xl border border-gray-100 p-5 sticky top-20">
+      <div className="bg-surface rounded-2xl border border-gray-100 p-5 sticky top-20">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-semibold text-gray-900">Filters</h3>
           {hasFilters && (

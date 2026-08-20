@@ -68,7 +68,7 @@ export function HotelFilterSidebar({ cities }: HotelFilterSidebarProps) {
   }
 
   const body = (
-    <div className="bg-white rounded-2xl border border-gray-100 p-5 space-y-5">
+    <div className="bg-surface rounded-2xl border border-gray-100 p-5 space-y-5">
       {/* Header */}
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold text-gray-900">Filters</h3>
@@ -194,7 +194,7 @@ export function HotelFilterSidebar({ cities }: HotelFilterSidebarProps) {
       <div className="lg:hidden mb-4">
         <button
           onClick={() => setMobileOpen((v) => !v)}
-          className="flex items-center justify-between w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-700"
+          className="flex items-center justify-between w-full bg-surface border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-700"
         >
           <div className="flex items-center gap-2">
             <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -15,7 +15,7 @@ export function RestaurantCard({ restaurant, priority = false }: RestaurantCardP
   return (
     <Link
       href={`/restaurants/${restaurant.id}`}
-      className="group flex flex-col bg-white rounded-2xl border border-gray-100 overflow-hidden hover:border-orange-200 hover:shadow-md transition-all duration-200"
+      className="group flex flex-col bg-surface rounded-2xl border border-gray-100 overflow-hidden hover:border-orange-200 hover:shadow-md transition-all duration-200"
     >
       {/* Cover */}
       <div className="relative h-48 overflow-hidden">

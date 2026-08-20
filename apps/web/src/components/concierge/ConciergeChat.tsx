@@ -127,7 +127,7 @@ export function ConciergeChat() {
                 className={`rounded-2xl px-4 py-3 text-sm leading-relaxed ${
                   msg.role === "user"
                     ? "bg-orange-600 text-white rounded-tr-sm"
-                    : "bg-white border border-gray-100 text-gray-700 rounded-tl-sm shadow-sm"
+                    : "bg-surface border border-gray-100 text-gray-700 rounded-tl-sm shadow-sm"
                 }`}
               >
                 {msg.content}
@@ -144,7 +144,7 @@ export function ConciergeChat() {
 
               {/* Itinerary */}
               {msg.itinerary && msg.itinerary.length > 0 && (
-                <div className="mt-3 bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
+                <div className="mt-3 bg-surface border border-gray-100 rounded-2xl p-4 shadow-sm">
                   <p className="text-xs font-semibold text-orange-600 uppercase tracking-wide mb-3">
                     Your Itinerary
                   </p>
@@ -177,7 +177,7 @@ export function ConciergeChat() {
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center text-white text-sm mr-3 flex-shrink-0">
               ✦
             </div>
-            <div className="bg-white border border-gray-100 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
+            <div className="bg-surface border border-gray-100 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
               <div className="flex gap-1 items-center h-4">
                 {[0, 1, 2].map((i) => (
                   <div
@@ -213,7 +213,7 @@ export function ConciergeChat() {
       )}
 
       {/* Input */}
-      <div className="border-t border-gray-100 bg-white px-4 sm:px-6 py-4">
+      <div className="border-t border-gray-100 bg-surface px-4 sm:px-6 py-4">
         <div className="flex items-end gap-3">
           <textarea
             ref={inputRef}

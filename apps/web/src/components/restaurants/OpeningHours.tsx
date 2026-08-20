@@ -35,7 +35,7 @@ export function OpeningHours({ hours }: OpeningHoursProps) {
   const open = todayHours && !todayHours.closed && isOpenNow(todayHours);
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-5">
+    <div className="bg-surface rounded-2xl border border-gray-100 p-5">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-semibold text-gray-900">Opening hours</h3>
         <span className={cn("text-xs font-semibold px-2.5 py-1 rounded-full", open ? "bg-green-50 text-green-700" : "bg-red-50 text-red-600")}>

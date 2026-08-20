@@ -48,7 +48,7 @@ export default async function EditEventPage({ params }: Props) {
         </div>
 
         {/* Manage tickets shortcut */}
-        <div className="mb-6 flex items-center justify-between bg-white rounded-2xl border border-gray-200 px-6 py-4">
+        <div className="mb-6 flex items-center justify-between bg-surface rounded-2xl border border-gray-200 px-6 py-4">
           <div>
             <p className="text-sm font-semibold text-gray-900">Tickets</p>
             <p className="text-xs text-gray-500 mt-0.5">Set up tiers (Early Bird, VIP) and promo codes for checkout</p>
@@ -61,7 +61,7 @@ export default async function EditEventPage({ params }: Props) {
           </Link>
         </div>
 
-        <div className="bg-white rounded-2xl border border-gray-200 p-8">
+        <div className="bg-surface rounded-2xl border border-gray-200 p-8">
           <EventForm
             action={boundUpdate}
             submitLabel="Save changes"

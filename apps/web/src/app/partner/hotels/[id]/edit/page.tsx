@@ -59,7 +59,7 @@ export default async function EditHotelPage({ params }: Props) {
 
         {/* Manage happenings shortcut */}
         {!isAdmin && (
-          <div className="mb-6 flex items-center justify-between bg-white rounded-2xl border border-gray-200 px-6 py-4">
+          <div className="mb-6 flex items-center justify-between bg-surface rounded-2xl border border-gray-200 px-6 py-4">
             <div>
               <p className="text-sm font-semibold text-gray-900">Happenings</p>
               <p className="text-xs text-gray-500 mt-0.5">
@@ -76,7 +76,7 @@ export default async function EditHotelPage({ params }: Props) {
         )}
 
         {/* Manage rooms shortcut */}
-        <div className="mb-6 flex items-center justify-between bg-white rounded-2xl border border-gray-200 px-6 py-4">
+        <div className="mb-6 flex items-center justify-between bg-surface rounded-2xl border border-gray-200 px-6 py-4">
           <div>
             <p className="text-sm font-semibold text-gray-900">Rooms</p>
             <p className="text-xs text-gray-500 mt-0.5">Add, edit, or remove room types and pricing</p>
@@ -89,7 +89,7 @@ export default async function EditHotelPage({ params }: Props) {
           </Link>
         </div>
 
-        <div className="bg-white rounded-2xl border border-gray-200 p-8">
+        <div className="bg-surface rounded-2xl border border-gray-200 p-8">
           <HotelForm
             action={boundUpdate}
             submitLabel="Save changes"

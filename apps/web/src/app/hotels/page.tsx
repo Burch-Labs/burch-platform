@@ -263,7 +263,7 @@ export default function HotelsPage(props: PageProps) {
       <NavBar />
 
       {/* Hero */}
-      <div className="bg-white border-b border-gray-100">
+      <div className="bg-surface border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-6 py-10">
           <h1 className="text-3xl font-bold text-gray-900 mb-1">Hotels</h1>
           <p className="text-gray-500 mb-6">Discover exceptional stays across Kenya</p>
@@ -279,12 +279,12 @@ export default function HotelsPage(props: PageProps) {
             <div className="flex flex-col lg:flex-row gap-6">
               {/* Sidebar skeleton */}
               <div className="w-full lg:w-56 flex-shrink-0">
-                <div className="h-96 bg-white rounded-2xl border border-gray-100 animate-pulse" />
+                <div className="h-96 bg-surface rounded-2xl border border-gray-100 animate-pulse" />
               </div>
               {/* Grid skeleton */}
               <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="h-72 bg-white rounded-2xl border border-gray-100 animate-pulse" />
+                  <div key={i} className="h-72 bg-surface rounded-2xl border border-gray-100 animate-pulse" />
                 ))}
               </div>
             </div>

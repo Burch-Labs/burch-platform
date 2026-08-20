@@ -62,7 +62,7 @@ export default async function OrganizerPage({ params }: PageProps) {
       <main className="max-w-5xl mx-auto px-6">
         {/* Profile card — overlaps banner */}
         <div className="-mt-12 mb-8">
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+          <div className="bg-surface rounded-2xl border border-gray-100 shadow-sm p-6">
             <div className="flex flex-col sm:flex-row gap-5 items-start sm:items-center">
               {/* Avatar */}
               {organizer.logoUrl || organizer.user.image ? (

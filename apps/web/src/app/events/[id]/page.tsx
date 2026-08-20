@@ -207,7 +207,7 @@ export default async function EventDetailPage({ params }: PageProps) {
                   value: formatCurrency(price, event.currency),
                 },
               ].map(({ icon, label, value, link, linkLabel }) => (
-                <div key={label} className="bg-white rounded-2xl border border-gray-100 p-4 flex gap-3">
+                <div key={label} className="bg-surface rounded-2xl border border-gray-100 p-4 flex gap-3">
                   <div className="w-9 h-9 rounded-lg bg-orange-50 flex items-center justify-center flex-shrink-0">
                     <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       {icon}
@@ -233,7 +233,7 @@ export default async function EventDetailPage({ params }: PageProps) {
 
             {/* Description */}
             {event.description && (
-              <div className="bg-white rounded-2xl border border-gray-100 p-6">
+              <div className="bg-surface rounded-2xl border border-gray-100 p-6">
                 <h2 className="text-lg font-semibold text-gray-900 mb-3">About this event</h2>
                 <div className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">
                   {event.description}
@@ -283,7 +283,7 @@ export default async function EventDetailPage({ params }: PageProps) {
               />
 
               {/* Capacity info */}
-              <div className="bg-white rounded-2xl border border-gray-100 p-4">
+              <div className="bg-surface rounded-2xl border border-gray-100 p-4">
                 <div className="flex items-center justify-between text-sm mb-2">
                   <span className="text-gray-500">Tickets sold</span>
                   <span className="font-medium text-gray-900">

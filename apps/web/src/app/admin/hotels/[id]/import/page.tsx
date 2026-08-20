@@ -60,7 +60,7 @@ export default async function ImportHotelJsonPage({ params }: Props) {
           can point directly at a source's own hosting; nothing needs to be uploaded first.
         </p>
 
-        <div className="bg-white rounded-2xl border border-gray-200 p-8">
+        <div className="bg-surface rounded-2xl border border-gray-200 p-8">
           <ImportJsonForm action={boundImport} defaultJson={defaultJson} />
         </div>
       </main>

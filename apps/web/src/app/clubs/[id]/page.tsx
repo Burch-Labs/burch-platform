@@ -65,7 +65,7 @@ export default async function ClubDetailPage({ params }: PageProps) {
             </div>
 
             {/* Access comes first — everything below only matters if you can play. */}
-            <div className="bg-white rounded-2xl border border-gray-100 p-6">
+            <div className="bg-surface rounded-2xl border border-gray-100 p-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-2">Can you play here?</h2>
               <p className="text-sm text-gray-600 leading-relaxed">
                 {ACCESS_EXPLANATION[club.access]}
@@ -87,7 +87,7 @@ export default async function ClubDetailPage({ params }: PageProps) {
                 },
                 { label: "Phone", value: club.phone ?? "—" },
               ].map(({ label, value }) => (
-                <div key={label} className="bg-white rounded-xl border border-gray-100 p-3">
+                <div key={label} className="bg-surface rounded-xl border border-gray-100 p-3">
                   <p className="text-xs text-gray-400 mb-0.5">{label}</p>
                   <p className="text-sm font-semibold text-gray-900 truncate">{value}</p>
                 </div>
@@ -95,14 +95,14 @@ export default async function ClubDetailPage({ params }: PageProps) {
             </div>
 
             {club.description && (
-              <div className="bg-white rounded-2xl border border-gray-100 p-6">
+              <div className="bg-surface rounded-2xl border border-gray-100 p-6">
                 <h2 className="text-lg font-semibold text-gray-900 mb-3">About</h2>
                 <p className="text-sm text-gray-600 leading-relaxed">{club.description}</p>
               </div>
             )}
 
             {club.amenities.length > 0 && (
-              <div className="bg-white rounded-2xl border border-gray-100 p-6">
+              <div className="bg-surface rounded-2xl border border-gray-100 p-6">
                 <h2 className="text-lg font-semibold text-gray-900 mb-4">Facilities</h2>
                 <AmenityList amenities={club.amenities} />
               </div>

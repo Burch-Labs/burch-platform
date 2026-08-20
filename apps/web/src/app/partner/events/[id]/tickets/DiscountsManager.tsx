@@ -57,7 +57,7 @@ function DiscountForm({
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1">Type</label>
           <select name="type" defaultValue={defaults?.type ?? "PERCENTAGE"}
-            className="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-orange-500">
+            className="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-orange-500">
             <option value="PERCENTAGE">Percentage off</option>
             <option value="FIXED_AMOUNT">Fixed amount off</option>
           </select>
@@ -124,20 +124,20 @@ export function DiscountsManager({ discounts, createAction, updateActions, delet
         </button>
       )}
       {showAdd && (
-        <div className="bg-white rounded-2xl border border-orange-200 p-5">
+        <div className="bg-surface rounded-2xl border border-orange-200 p-5">
           <h3 className="text-sm font-semibold text-gray-900 mb-3">New promo code</h3>
           <DiscountForm action={createAction} submitLabel="Add code" onCancel={() => setShowAdd(false)} />
         </div>
       )}
 
       {discounts.length === 0 && !showAdd ? (
-        <p className="text-sm text-gray-400 bg-white rounded-xl border border-dashed border-gray-200 px-5 py-6 text-center">
+        <p className="text-sm text-gray-400 bg-surface rounded-xl border border-dashed border-gray-200 px-5 py-6 text-center">
           No promo codes for this event yet.
         </p>
       ) : (
         <div className="space-y-3">
           {discounts.map((d) => (
-            <div key={d.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <div key={d.id} className="bg-surface rounded-xl border border-gray-200 overflow-hidden">
               {editingId === d.id ? (
                 <div className="p-4">
                   <h3 className="text-sm font-semibold text-gray-900 mb-3">Edit code</h3>

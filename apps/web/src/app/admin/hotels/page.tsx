@@ -40,11 +40,11 @@ export default async function AdminHotelsPage() {
         <AdminNav active="/admin/hotels" counts={counts} />
 
         {hotels.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-gray-100 p-10 text-center">
+          <div className="bg-surface rounded-2xl border border-gray-100 p-10 text-center">
             <p className="text-sm text-gray-500">No hotels yet.</p>
           </div>
         ) : (
-          <div className="bg-white rounded-2xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
+          <div className="bg-surface rounded-2xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
             {hotels.map((hotel) => (
               <div
                 key={hotel.id}
