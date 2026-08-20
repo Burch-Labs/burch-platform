@@ -515,7 +515,19 @@ export default async function HomePage() {
             <p className="text-sm text-gray-400">
               © {new Date().getFullYear()} dontbeboringKE
             </p>
-            <p className="text-xs text-gray-400">Exceptional experiences across Kenya</p>
+            <div className="flex items-center gap-4">
+              <p className="text-xs text-gray-400">Exceptional experiences across Kenya</p>
+              {/* Social profiles aren't live yet — links the main site until
+                  Instagram/X/Facebook/YouTube accounts open, then swap in. */}
+              <a
+                href="https://unduguhalisinetwork.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-gray-400 hover:text-orange-600 transition underline decoration-gray-200 underline-offset-2"
+              >
+                unduguhalisinetwork.com
+              </a>
+            </div>
           </div>
         </div>
       </footer>
