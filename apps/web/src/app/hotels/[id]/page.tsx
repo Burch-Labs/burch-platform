@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { resolveBaseUrl } from "@/lib/config-check";
 import { NavBar } from "@/components/layout/NavBar";
 import { HotelGallery } from "@/components/hotels/HotelGallery";
 import { AmenityList } from "@/components/hotels/AmenityList";
@@ -23,12 +24,26 @@ export async function generateMetadata({ params }: PageProps) {
   const { id } = await params;
   const hotel = await prisma.hotel.findUnique({
     where: { id },
-    select: { name: true, description: true },
+    select: { name: true, description: true, imageUrl: true, city: true, location: true },
   });
   if (!hotel) return { title: "Hotel not found" };
+  const description =
+    hotel.description ?? `${hotel.name} in ${hotel.city} — ${hotel.location}. Book on dontbeboringKE.`;
   return {
-    title: `${hotel.name} — dontbeboringKE`,
-    description: hotel.description ?? undefined,
+    title: hotel.name,
+    description,
+    openGraph: {
+      title: hotel.name,
+      description,
+      type: "website",
+      images: hotel.imageUrl ? [{ url: hotel.imageUrl }] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: hotel.name,
+      description,
+      images: hotel.imageUrl ? [hotel.imageUrl] : undefined,
+    },
   };
 }
 
@@ -86,8 +101,38 @@ export default async function HotelDetailPage({ params }: PageProps) {
       ? Math.min(...rooms.map((r) => Number(r.price)))
       : null;
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "LodgingBusiness",
+    name: hotel.name,
+    description: hotel.description ?? undefined,
+    image: allImages.length > 0 ? allImages : undefined,
+    starRating: hotel.starRating ? { "@type": "Rating", ratingValue: hotel.starRating } : undefined,
+    telephone: hotel.phone ?? undefined,
+    email: hotel.email ?? undefined,
+    url: `${resolveBaseUrl()}/hotels/${hotel.id}`,
+    address: { "@type": "PostalAddress", streetAddress: hotel.location, addressLocality: hotel.city, addressCountry: "KE" },
+    ...(minPrice !== null
+      ? { priceRange: `KES ${minPrice.toLocaleString()}+` }
+      : {}),
+    ...(avgRating !== null
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: avgRating,
+            reviewCount: hotel._count.reviews,
+          },
+        }
+      : {}),
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <NavBar />
 
       <main className="max-w-6xl mx-auto px-6 py-8">

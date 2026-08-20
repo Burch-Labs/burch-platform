@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { resolveBaseUrl } from "@/lib/config-check";
 import { NavBar } from "@/components/layout/NavBar";
 import { HotelGallery } from "@/components/hotels/HotelGallery";
 import { AmenityList } from "@/components/hotels/AmenityList";
@@ -17,10 +18,26 @@ export async function generateMetadata({ params }: PageProps) {
   const { id } = await params;
   const club = await prisma.club.findUnique({
     where: { id },
-    select: { name: true, description: true },
+    select: { name: true, description: true, imageUrl: true, city: true, location: true },
   });
   if (!club) return { title: "Club not found" };
-  return { title: `${club.name} — dontbeboringKE`, description: club.description ?? undefined };
+  const description = club.description ?? `${club.name} in ${club.city} — ${club.location}. Details on dontbeboringKE.`;
+  return {
+    title: club.name,
+    description,
+    openGraph: {
+      title: club.name,
+      description,
+      type: "website",
+      images: club.imageUrl ? [{ url: club.imageUrl }] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: club.name,
+      description,
+      images: club.imageUrl ? [club.imageUrl] : undefined,
+    },
+  };
 }
 
 export default async function ClubDetailPage({ params }: PageProps) {
@@ -34,8 +51,25 @@ export default async function ClubDetailPage({ params }: PageProps) {
   ];
   const fee = club.visitorFee === null ? null : Number(club.visitorFee);
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": club.category === "GOLF" ? "GolfCourse" : "LocalBusiness",
+    name: club.name,
+    description: club.description ?? undefined,
+    image: images.length > 0 ? images : undefined,
+    telephone: club.phone ?? undefined,
+    email: club.email ?? undefined,
+    url: `${resolveBaseUrl()}/clubs/${club.id}`,
+    address: { "@type": "PostalAddress", streetAddress: club.location, addressLocality: club.city, addressCountry: "KE" },
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <NavBar />
       <main className="max-w-6xl mx-auto px-6 py-8">
         <div className="flex items-center gap-2 text-sm text-gray-400 mb-5">

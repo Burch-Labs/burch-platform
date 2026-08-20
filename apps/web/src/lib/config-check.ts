@@ -16,7 +16,7 @@ export interface ConfigIssue {
   message: string;
 }
 
-function resolveBaseUrl(): string {
+export function resolveBaseUrl(): string {
   if (process.env.NEXTAUTH_URL) return process.env.NEXTAUTH_URL;
   if (process.env.REPLIT_DOMAINS) {
     const primary = process.env.REPLIT_DOMAINS.split(",")[0].trim();

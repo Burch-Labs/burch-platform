@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { resolveBaseUrl } from "@/lib/config-check";
 import { NavBar } from "@/components/layout/NavBar";
 import { HotelGallery } from "@/components/hotels/HotelGallery";
 import { AmenityList } from "@/components/hotels/AmenityList";
@@ -23,9 +24,28 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps) {
   const { id } = await params;
-  const r = await prisma.restaurant.findUnique({ where: { id }, select: { name: true, description: true } });
+  const r = await prisma.restaurant.findUnique({
+    where: { id },
+    select: { name: true, description: true, imageUrl: true, city: true, location: true },
+  });
   if (!r) return { title: "Restaurant not found" };
-  return { title: `${r.name} — dontbeboringKE`, description: r.description ?? undefined };
+  const description = r.description ?? `${r.name} in ${r.city} — ${r.location}. See the menu on dontbeboringKE.`;
+  return {
+    title: r.name,
+    description,
+    openGraph: {
+      title: r.name,
+      description,
+      type: "website",
+      images: r.imageUrl ? [{ url: r.imageUrl }] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: r.name,
+      description,
+      images: r.imageUrl ? [r.imageUrl] : undefined,
+    },
+  };
 }
 
 export default async function RestaurantDetailPage({ params }: PageProps) {
@@ -72,8 +92,35 @@ export default async function RestaurantDetailPage({ params }: PageProps) {
     hotelId: r.restaurantId,
   }));
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Restaurant",
+    name: restaurant.name,
+    description: restaurant.description ?? undefined,
+    image: allImages.length > 0 ? allImages : undefined,
+    servesCuisine: restaurant.cuisines.length > 0 ? restaurant.cuisines : restaurant.cuisine ?? undefined,
+    telephone: restaurant.phone ?? undefined,
+    email: restaurant.email ?? undefined,
+    url: `${resolveBaseUrl()}/restaurants/${restaurant.id}`,
+    address: { "@type": "PostalAddress", streetAddress: restaurant.location, addressLocality: restaurant.city, addressCountry: "KE" },
+    ...(avgRating !== null
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: avgRating,
+            reviewCount: restaurant._count.reviews,
+          },
+        }
+      : {}),
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <NavBar />
       <main className="max-w-6xl mx-auto px-6 py-8">
         {/* Breadcrumb */}

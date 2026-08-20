@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { Providers } from "./providers";
+import { resolveBaseUrl } from "@/lib/config-check";
 
 // Fonts are self-hosted (variable woff2 files in ./fonts) so production
 // builds never depend on network access to Google Fonts.
@@ -21,9 +22,32 @@ const playfair = localFont({
   display: "swap",
 });
 
+const SITE_URL = resolveBaseUrl();
+const SITE_NAME = "dontbeboringKE";
+const SITE_DESCRIPTION =
+  "Exceptional hotels, restaurants, events and golf clubs across Kenya — discover, book, and go.";
+
 export const metadata: Metadata = {
-  title: "dontbeboringKE",
-  description: "Exceptional hotels, restaurants and events across Kenya.",
+  metadataBase: new URL(SITE_URL),
+  title: { default: SITE_NAME, template: `%s — ${SITE_NAME}` },
+  description: SITE_DESCRIPTION,
+  keywords: [
+    "Kenya events", "Nairobi hotels", "Kenya restaurants", "Kenya golf clubs",
+    "things to do in Nairobi", "Kenya event tickets", "Kenya hospitality",
+  ],
+  openGraph: {
+    type: "website",
+    siteName: SITE_NAME,
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+    url: SITE_URL,
+    locale: "en_KE",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+  },
 };
 
 export const viewport: Viewport = {

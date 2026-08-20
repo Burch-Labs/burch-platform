@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { resolveBaseUrl } from "@/lib/config-check";
 import { NavBar } from "@/components/layout/NavBar";
 import { EventGrid } from "@/components/events/EventGrid";
 import { OrganizerCard } from "@/components/events/OrganizerCard";
@@ -31,12 +32,26 @@ export async function generateMetadata({ params }: PageProps) {
   const { id } = await params;
   const event = await prisma.event.findUnique({
     where: { id },
-    select: { title: true, description: true },
+    select: { title: true, description: true, imageUrl: true, city: true, location: true },
   });
   if (!event) return { title: "Event not found" };
+  const description =
+    event.description ?? `${event.title} in ${event.city} — ${event.location}. Get your tickets on dontbeboringKE.`;
   return {
-    title: `${event.title} — dontbeboringKE`,
-    description: event.description ?? undefined,
+    title: event.title,
+    description,
+    openGraph: {
+      title: event.title,
+      description,
+      type: "website",
+      images: event.imageUrl ? [{ url: event.imageUrl }] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: event.title,
+      description,
+      images: event.imageUrl ? [event.imageUrl] : undefined,
+    },
   };
 }
 
@@ -105,8 +120,38 @@ export default async function EventDetailPage({ params }: PageProps) {
   const price = Number(event.price);
   const loginUrl = `/auth/login?callbackUrl=/events/${id}`;
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    name: event.title,
+    description: event.description ?? undefined,
+    startDate: event.startDate.toISOString(),
+    endDate: event.endDate.toISOString(),
+    eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+    eventStatus: "https://schema.org/EventScheduled",
+    image: event.imageUrl ? [event.imageUrl] : undefined,
+    location: {
+      "@type": "Place",
+      name: event.location,
+      address: { "@type": "PostalAddress", addressLocality: event.city, addressCountry: "KE" },
+    },
+    offers: {
+      "@type": "Offer",
+      price: price.toFixed(2),
+      priceCurrency: event.currency,
+      availability: "https://schema.org/InStock",
+      url: `${resolveBaseUrl()}/events/${event.id}`,
+    },
+    organizer: { "@type": "Organization", name: event.partner.user.name ?? event.partner.name },
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <NavBar />
 
       {/* Hero */}
