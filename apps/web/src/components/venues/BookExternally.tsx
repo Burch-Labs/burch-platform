@@ -42,7 +42,7 @@ export function BookExternally({
     return (
       <div className={cn("space-y-2", className)}>
         {(website || phone || email) && (
-          <div className="rounded-xl border border-gray-200 bg-white px-5 py-4 space-y-1">
+          <div className="rounded-xl border border-gray-200 bg-surface px-5 py-4 space-y-1">
             <p className="text-sm font-medium text-gray-700 mb-1">What we have</p>
             {website && (
               <p className="text-sm">

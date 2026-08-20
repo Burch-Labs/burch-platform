@@ -89,7 +89,7 @@ export function BookingsFilter({ properties, statusCounts, statusOrder }: Bookin
         <select
           value={currentStatus}
           onChange={(e) => update("status", e.target.value)}
-          className="text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-300"
+          className="text-sm border border-gray-200 rounded-lg px-3 py-2 bg-surface text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-300"
         >
           {STATUSES.map((s) => (
             <option key={s.value} value={s.value}>{s.label}</option>
@@ -101,7 +101,7 @@ export function BookingsFilter({ properties, statusCounts, statusOrder }: Bookin
           <select
             value={currentProperty}
             onChange={(e) => update("property", e.target.value)}
-            className="text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-300"
+            className="text-sm border border-gray-200 rounded-lg px-3 py-2 bg-surface text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-300"
           >
             <option value="">All properties</option>
             {properties.map((p) => (

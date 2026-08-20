@@ -3,6 +3,8 @@ import { authOptions } from "@/lib/auth";
 import Link from "next/link";
 import { SignOutButton } from "./SignOutButton";
 import { MobileMenu } from "./MobileMenu";
+import { HamburgerMenu } from "./HamburgerMenu";
+import { ThemeToggle } from "./ThemeToggle";
 import { Logo } from "./Logo";
 import { isAdminRole } from "@/lib/roles";
 
@@ -24,7 +26,7 @@ export async function NavBar() {
   const role = session?.user?.role ?? "CUSTOMER";
 
   return (
-    <header className="relative bg-white border-b border-gray-200 sticky top-0 z-40 shadow-[0_1px_3px_0_rgba(30,21,16,0.06)]">
+    <header className="relative bg-surface border-b border-gray-200 sticky top-0 z-40 shadow-[0_1px_3px_0_rgba(30,21,16,0.06)]">
       <div className="max-w-6xl mx-auto px-6 py-3.5 flex items-center justify-between gap-4">
         <div className="flex items-center gap-7">
           <Logo className="flex items-center gap-2 text-orange-600 flex-shrink-0" />
@@ -119,6 +121,11 @@ export async function NavBar() {
             </div>
           )}
 
+          <ThemeToggle />
+          <HamburgerMenu
+            isSignedIn={!!session}
+            userLabel={session?.user.name ?? session?.user.email}
+          />
           <MobileMenu
             isSignedIn={!!session}
             isCustomer={role === "CUSTOMER"}

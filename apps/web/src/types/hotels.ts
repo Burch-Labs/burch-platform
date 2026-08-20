@@ -16,7 +16,7 @@ export type HotelWithDetails = Hotel & {
 
 export type HotelCard = Hotel & {
   partner: Pick<Partner, "id" | "name">;
-  _count: { rooms: number; reviews: number };
+  _count: { rooms: number; reviews: number; happenings: number };
   rooms: Pick<Room, "price" | "currency">[];
   avgRating: number | null;
 };

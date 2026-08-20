@@ -139,7 +139,7 @@ export function SubmitEventForm({ existingBusinessName }: { existingBusinessName
                 <button
                   type="button"
                   onClick={() => removePhoto(url)}
-                  className="absolute top-1 right-1 bg-white/80 hover:bg-white text-gray-700 rounded-full p-0.5 shadow transition"
+                  className="absolute top-1 right-1 bg-surface/80 hover:bg-surface text-gray-700 rounded-full p-0.5 shadow transition"
                   title="Remove photo"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
@@ -185,7 +185,7 @@ export function SubmitEventForm({ existingBusinessName }: { existingBusinessName
           <select
             name="category"
             defaultValue="OTHER"
-            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent bg-white"
+            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent bg-surface"
           >
             {CATEGORIES.map((c) => (
               <option key={c.value} value={c.value}>{c.label}</option>

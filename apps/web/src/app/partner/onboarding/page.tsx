@@ -23,7 +23,7 @@ export default async function PartnerOnboardingPage() {
         <p className="text-sm text-gray-500 mb-8">
           A couple of details and you can start listing events, hotels, or restaurants.
         </p>
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="bg-surface rounded-2xl border border-gray-200 p-6">
           <OnboardingForm />
         </div>
       </main>

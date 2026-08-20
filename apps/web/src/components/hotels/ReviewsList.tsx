@@ -60,7 +60,7 @@ export function ReviewsList({
     <div>
       {/* Summary */}
       {avgRating !== null && total > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-100 p-6 mb-6 flex flex-col sm:flex-row gap-6">
+        <div className="bg-surface rounded-2xl border border-gray-100 p-6 mb-6 flex flex-col sm:flex-row gap-6">
           {/* Score */}
           <div className="text-center sm:border-r sm:border-gray-100 sm:pr-6 flex-shrink-0">
             <p className="text-5xl font-extrabold text-gray-900">{avgRating.toFixed(1)}</p>
@@ -116,7 +116,7 @@ export function ReviewsList({
       {showForm && (
         <form
           onSubmit={handleSubmit}
-          className="bg-white rounded-2xl border border-gray-100 p-5 mb-6 space-y-4"
+          className="bg-surface rounded-2xl border border-gray-100 p-5 mb-6 space-y-4"
         >
           <h3 className="font-semibold text-gray-900">Your review</h3>
 

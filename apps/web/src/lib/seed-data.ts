@@ -1527,6 +1527,68 @@ const CLUBS = [
   },
 ];
 
+// ─── Spa & Wellness (Club category: SPA) ───────────────────────────────────
+// Name + official website only, per the same "no invented photos, prices,
+// or amenities" rule as everything else seeded from public research — see
+// Club.verified's doc comment. Sourced from a live web search, not memory.
+
+const SPA_CLUBS = [
+  {
+    name: "Serenity Spa", city: "Nairobi", location: "Nairobi",
+    category: "SPA" as const, access: "VISITORS_WELCOME" as const,
+    description: "A Nairobi spa group with several locations across the city, offering massages, facials and body treatments.",
+    holes: null, par: null, visitorFee: null, currency: "KES",
+    visitorNotes: null,
+    phone: null, email: null, website: "https://www.serenityspa.co.ke/",
+    amenities: [],
+  },
+  {
+    name: "Blossom Spa", city: "Nairobi", location: "Westlands, Nairobi",
+    category: "SPA" as const, access: "VISITORS_WELCOME" as const,
+    description: "A Nairobi spa with branches in Westlands, Kilimani and Ngong Road offering massage, facials and grooming services.",
+    holes: null, par: null, visitorFee: null, currency: "KES",
+    visitorNotes: null,
+    phone: null, email: null, website: "https://blossomspa-ke.com/",
+    amenities: [],
+  },
+  {
+    name: "ORIKI Spa", city: "Nairobi", location: "Nairobi",
+    category: "SPA" as const, access: "VISITORS_WELCOME" as const,
+    description: "A Nairobi spa offering massage and body treatments.",
+    holes: null, par: null, visitorFee: null, currency: "KES",
+    visitorNotes: null,
+    phone: null, email: null, website: "https://www.orikigroup.com/pages/spa-in-nairobi",
+    amenities: [],
+  },
+  {
+    name: "Sabai Wellness Spa", city: "Nairobi", location: "Westlands, Nairobi",
+    category: "SPA" as const, access: "VISITORS_WELCOME" as const,
+    description: "A Westlands spa and wellness studio offering massage and beauty treatments.",
+    holes: null, par: null, visitorFee: null, currency: "KES",
+    visitorNotes: null,
+    phone: null, email: null, website: "https://sabaiwellnessspa.com/",
+    amenities: [],
+  },
+  {
+    name: "Blue Luxury Wellness Center", city: "Diani", location: "Diani Beach",
+    category: "SPA" as const, access: "VISITORS_WELCOME" as const,
+    description: "A Diani Beach spa offering massage, facials and Moroccan baths.",
+    holes: null, par: null, visitorFee: null, currency: "KES",
+    visitorNotes: null,
+    phone: null, email: null, website: "https://www.blueluxurywellnesscenter.com/",
+    amenities: [],
+  },
+  {
+    name: "Uzuri Spa & Fitness Centre", city: "Diani", location: "Leopard Beach Resort, Diani Beach",
+    category: "SPA" as const, access: "VISITORS_WELCOME" as const,
+    description: "A forest-set spa and fitness centre at Leopard Beach Resort in Diani, an award-winning spa on Kenya's south coast.",
+    holes: null, par: null, visitorFee: null, currency: "KES",
+    visitorNotes: null,
+    phone: null, email: null, website: "https://www.leopardbeachresort.com/uzuri-spa-fitness-centre.html",
+    amenities: [],
+  },
+];
+
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 export async function runSeed() {
@@ -1618,8 +1680,28 @@ export async function runSeed() {
         clubsCreated++;
       }
     }
+    let spaClubsCreated = 0;
+    for (const c of SPA_CLUBS) {
+      const existing = await prisma.club.findFirst({ where: { name: c.name } });
+      if (!existing) {
+        await prisma.club.create({
+          data: {
+            partnerId: hotelPartner.id,
+            name: c.name, description: c.description, city: c.city, location: c.location,
+            category: c.category, access: c.access,
+            holes: c.holes, par: c.par, visitorFee: c.visitorFee, currency: c.currency,
+            visitorNotes: c.visitorNotes,
+            phone: c.phone, email: c.email, website: c.website,
+            amenities: c.amenities, published: true, verified: !!c.website,
+          },
+        });
+        spaClubsCreated++;
+      }
+    }
+
     console.log(`✅  ${restaurantsCreated} restaurants seeded (${RESTAURANTS.length - restaurantsCreated} already existed)`);
     console.log(`✅  ${clubsCreated} clubs seeded    (${CLUBS.length - clubsCreated} already existed)`);
+    console.log(`✅  ${spaClubsCreated} spa & wellness venues seeded (${SPA_CLUBS.length - spaClubsCreated} already existed)`);
     // Passwords are gone: these accounts sign in with an emailed code like any
     // other. The hashes are seeded only so the legacy /auth/login route still
     // works for anyone who used it before the change.

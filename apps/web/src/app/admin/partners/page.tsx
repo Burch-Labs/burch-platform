@@ -34,7 +34,7 @@ export default async function AdminPartnersPage() {
         <AdminNav active="/admin/partners" counts={counts} />
 
         {partners.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-gray-100 p-10 text-center">
+          <div className="bg-surface rounded-2xl border border-gray-100 p-10 text-center">
             <p className="text-sm text-gray-500">No partners yet.</p>
           </div>
         ) : (
@@ -46,7 +46,7 @@ export default async function AdminPartnersPage() {
               return (
                 <div
                   key={p.id}
-                  className={`bg-white rounded-2xl border p-6 ${
+                  className={`bg-surface rounded-2xl border p-6 ${
                     suspended ? "border-red-200" : "border-gray-100"
                   }`}
                 >

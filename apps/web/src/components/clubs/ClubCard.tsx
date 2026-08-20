@@ -5,6 +5,15 @@ import { AccessBadge } from "./AccessBadge";
 import { formatCurrency } from "@/lib/format";
 import type { ClubAccess, ClubCategory } from "@prisma/client";
 
+const CATEGORY_ICON: Record<ClubCategory, string> = {
+  GOLF: "⛳",
+  COUNTRY: "⛳",
+  SPORTS: "🏆",
+  POLO: "🐎",
+  YACHT: "⛵",
+  SPA: "💆",
+};
+
 export interface ClubCardData {
   id: string;
   name: string;
@@ -32,7 +41,7 @@ export function ClubCard({ club, priority = false }: { club: ClubCardData; prior
   return (
     <Link
       href={`/clubs/${club.id}`}
-      className="group flex flex-col bg-white rounded-2xl border border-gray-100 overflow-hidden hover:border-orange-200 hover:shadow-md transition-all duration-200"
+      className="group flex flex-col bg-surface rounded-2xl border border-gray-100 overflow-hidden hover:border-orange-200 hover:shadow-md transition-all duration-200"
     >
       <div className="relative h-44 overflow-hidden bg-gradient-to-br from-gray-700 to-gray-900">
         {club.imageUrl ? (
@@ -46,7 +55,7 @@ export function ClubCard({ club, priority = false }: { club: ClubCardData; prior
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <span className="text-5xl opacity-30">⛳</span>
+            <span className="text-5xl opacity-30">{CATEGORY_ICON[club.category]}</span>
           </div>
         )}
         <div className="absolute top-3 left-3">

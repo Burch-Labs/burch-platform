@@ -55,6 +55,11 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+// Applied before first paint so a returning dark-mode visitor never sees a
+// flash of the light theme. Kept tiny and inline — an external script tag
+// would itself be render-blocking and defeat the point.
+const THEME_INIT_SCRIPT = `(function(){try{var t=localStorage.getItem("theme");if(t==="dark")document.documentElement.setAttribute("data-theme","dark");}catch(e){}})();`;
+
 export default function RootLayout({
   children,
 }: {
@@ -62,6 +67,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
       <body>
         <Providers>{children}</Providers>
       </body>

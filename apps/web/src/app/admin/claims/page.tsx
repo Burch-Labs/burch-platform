@@ -37,13 +37,13 @@ export default async function AdminClaimsPage() {
         <AdminNav active="/admin/claims" counts={counts} />
 
         {open.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-gray-100 p-10 text-center mb-10">
+          <div className="bg-surface rounded-2xl border border-gray-100 p-10 text-center mb-10">
             <p className="text-sm text-gray-500">No open claims.</p>
           </div>
         ) : (
           <div className="space-y-4 mb-10">
             {open.map((c) => (
-              <div key={c.id} className="bg-white rounded-2xl border border-gray-100 p-6">
+              <div key={c.id} className="bg-surface rounded-2xl border border-gray-100 p-6">
                 <div className="flex items-start justify-between gap-4 mb-3">
                   <div className="min-w-0">
                     <Link
@@ -81,7 +81,7 @@ export default async function AdminClaimsPage() {
         {closed.length === 0 ? (
           <p className="text-sm text-gray-400">Nothing closed yet.</p>
         ) : (
-          <div className="bg-white rounded-2xl border border-gray-100 divide-y divide-gray-50">
+          <div className="bg-surface rounded-2xl border border-gray-100 divide-y divide-gray-50">
             {closed.map((c) => (
               <div key={c.id} className="px-5 py-3 flex items-center justify-between gap-4">
                 <p className="text-sm text-gray-900 truncate">

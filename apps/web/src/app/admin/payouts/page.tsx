@@ -47,13 +47,13 @@ export default async function AdminPayoutsPage() {
         </h2>
 
         {pending.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-gray-100 p-10 text-center mb-10">
+          <div className="bg-surface rounded-2xl border border-gray-100 p-10 text-center mb-10">
             <p className="text-gray-500 text-sm">Nothing waiting. Everything submitted has been decided.</p>
           </div>
         ) : (
           <div className="space-y-4 mb-10">
             {pending.map((a) => (
-              <div key={a.id} className="bg-white rounded-2xl border border-gray-100 p-6">
+              <div key={a.id} className="bg-surface rounded-2xl border border-gray-100 p-6">
                 <div className="flex items-start justify-between gap-4 mb-4">
                   <div className="min-w-0">
                     <p className="font-semibold text-gray-900">{a.partner.name}</p>
@@ -83,7 +83,7 @@ export default async function AdminPayoutsPage() {
         {decided.length === 0 ? (
           <p className="text-sm text-gray-400">Nothing decided yet.</p>
         ) : (
-          <div className="bg-white rounded-2xl border border-gray-100 divide-y divide-gray-50">
+          <div className="bg-surface rounded-2xl border border-gray-100 divide-y divide-gray-50">
             {decided.map((a) => (
               <div key={a.id} className="px-5 py-3 flex items-center justify-between gap-4">
                 <div className="min-w-0">

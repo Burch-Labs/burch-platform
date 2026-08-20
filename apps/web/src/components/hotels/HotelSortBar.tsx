@@ -57,7 +57,7 @@ export function HotelSortBar({ total, hasFilters }: HotelSortBarProps) {
           id="hotel-sort"
           value={sort}
           onChange={(e) => handleSort(e.target.value)}
-          className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500 transition"
+          className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 text-gray-700 bg-surface focus:outline-none focus:ring-2 focus:ring-orange-500 transition"
         >
           {SORT_OPTIONS.map(({ value, label }) => (
             <option key={value} value={value}>{label}</option>

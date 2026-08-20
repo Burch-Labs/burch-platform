@@ -50,4 +50,14 @@ export const FEATURES = {
    * separate flow and is unaffected by this flag.
    */
   directBooking: false,
+
+  /**
+   * Per-night room rates on hotel cards and detail pages.
+   *
+   * Off alongside `directBooking`: once a guest cannot reserve through us, a
+   * price we are not honouring is just noise ahead of the link to the
+   * venue's own site. Room type, bed size and amenities still show — only
+   * the KES figure is hidden. Partner room management is unaffected.
+   */
+  roomRates: false,
 } as const;

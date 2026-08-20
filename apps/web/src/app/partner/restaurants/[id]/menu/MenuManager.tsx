@@ -51,7 +51,7 @@ export function MenuManager({ restaurantId, items }: Props) {
   return (
     <div className="space-y-6">
       {/* Add item */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-6">
+      <div className="bg-surface rounded-2xl border border-gray-200 p-6">
         {showAdd ? (
           <>
             <h2 className="text-base font-semibold text-gray-900 mb-4">Add menu item</h2>
@@ -77,7 +77,7 @@ export function MenuManager({ restaurantId, items }: Props) {
 
       {/* Items */}
       {items.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-dashed border-gray-200 px-8 py-12 text-center">
+        <div className="bg-surface rounded-2xl border border-dashed border-gray-200 px-8 py-12 text-center">
           <p className="text-4xl mb-3">📋</p>
           <h2 className="text-base font-semibold text-gray-900 mb-1">No menu items yet</h2>
           <p className="text-sm text-gray-500 max-w-xs mx-auto">
@@ -86,7 +86,7 @@ export function MenuManager({ restaurantId, items }: Props) {
         </div>
       ) : (
         categories.map((category) => (
-          <div key={category} className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+          <div key={category} className="bg-surface rounded-2xl border border-gray-200 overflow-hidden">
             <h3 className="text-sm font-semibold text-gray-900 px-6 pt-4 pb-3 border-b border-gray-100">
               {category}
               <span className="ml-2 text-xs font-normal text-gray-400">

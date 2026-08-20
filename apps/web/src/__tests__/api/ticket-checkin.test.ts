@@ -84,7 +84,7 @@ describe("checkInTicket", () => {
       scannedBy: "organiser-1",
     });
 
-    expect(result).toEqual({ status: "already-used", checkedInAt });
+    expect(result).toEqual({ status: "already-used", ticketId: TICKET_ID, checkedInAt });
   });
 
   it("refuses the loser of a simultaneous double scan", async () => {

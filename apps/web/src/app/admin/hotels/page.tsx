@@ -17,10 +17,10 @@ export default async function AdminHotelsPage() {
 
   const [hotels, counts] = await Promise.all([
     prisma.hotel.findMany({
-      orderBy: { createdAt: "desc" },
+      orderBy: { name: "asc" },
       include: {
         partner: { select: { name: true } },
-        _count: { select: { bookings: true, rooms: true } },
+        _count: { select: { bookings: true, rooms: true, happenings: true } },
       },
     }),
     getQueueCounts(),
@@ -32,23 +32,23 @@ export default async function AdminHotelsPage() {
       <main className="max-w-5xl mx-auto px-6 py-8">
         <h1 className="text-2xl font-bold text-gray-900 mb-1">Hotels</h1>
         <p className="text-sm text-gray-500 mb-6">
-          Every hotel listed on the platform. Admins can edit any hotel's info and photos,
-          regardless of which partner owns it — useful for correcting or filling in real venue
-          details.
+          Edit any hotel's info and photos regardless of which partner owns it, or add flyers
+          and text for what's on at its restaurant — brunch, live music, seasonal specials.
+          Guests never see rooms or rates; that's not managed from here.
         </p>
 
         <AdminNav active="/admin/hotels" counts={counts} />
 
         {hotels.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-gray-100 p-10 text-center">
+          <div className="bg-surface rounded-2xl border border-gray-100 p-10 text-center">
             <p className="text-sm text-gray-500">No hotels yet.</p>
           </div>
         ) : (
-          <div className="bg-white rounded-2xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
+          <div className="bg-surface rounded-2xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
             {hotels.map((hotel) => (
               <div
                 key={hotel.id}
-                className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition"
+                className="flex items-center justify-between gap-4 px-6 py-4 hover:bg-gray-50 transition"
               >
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
@@ -74,7 +74,24 @@ export default async function AdminHotelsPage() {
                     {hotel._count.bookings} booking{hotel._count.bookings !== 1 ? "s" : ""}
                   </p>
                 </div>
-                <div className="flex items-center gap-2 ml-4 shrink-0">
+                <div className="flex items-center gap-2 shrink-0">
+                  <span
+                    className={`hidden sm:inline-block text-xs font-medium px-2.5 py-1 rounded-full ${
+                      hotel._count.happenings > 0
+                        ? "bg-orange-50 text-orange-700 border border-orange-200"
+                        : "bg-gray-50 text-gray-500 border border-gray-200"
+                    }`}
+                  >
+                    {hotel._count.happenings > 0
+                      ? `${hotel._count.happenings} happening${hotel._count.happenings !== 1 ? "s" : ""}`
+                      : "No happenings"}
+                  </span>
+                  <Link
+                    href={`/admin/hotels/${hotel.id}`}
+                    className="text-sm text-orange-600 hover:text-orange-700 font-medium px-3 py-1.5 rounded-lg hover:bg-orange-50 transition"
+                  >
+                    Happenings
+                  </Link>
                   <Link
                     href={`/admin/hotels/${hotel.id}/import`}
                     className="text-sm text-gray-500 hover:text-gray-700 font-medium px-3 py-1.5 rounded-lg hover:bg-gray-50 transition"
@@ -83,7 +100,7 @@ export default async function AdminHotelsPage() {
                   </Link>
                   <Link
                     href={`/partner/hotels/${hotel.id}/edit`}
-                    className="text-sm text-orange-600 hover:text-orange-700 font-medium px-3 py-1.5 rounded-lg hover:bg-orange-50 transition"
+                    className="text-sm text-gray-500 hover:text-gray-700 font-medium px-3 py-1.5 rounded-lg hover:bg-gray-50 transition"
                   >
                     Edit
                   </Link>

@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { after } from "next/server";
 import { getServerSession } from "next-auth";
 import { z } from "zod";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { checkInTicket } from "@/lib/tickets";
+import { checkInTicket, referenceCode } from "@/lib/tickets";
 import { isAdminRole } from "@/lib/roles";
+import { sendPartnerDuplicateScanAlert } from "@/lib/email";
 
 const schema = z.object({
   token: z.string().min(1).max(500),
@@ -39,7 +41,11 @@ export async function POST(req: NextRequest) {
 
   const event = await prisma.event.findUnique({
     where: { id: body.eventId },
-    select: { id: true, partner: { select: { userId: true } } },
+    select: {
+      id: true,
+      title: true,
+      partner: { select: { userId: true, user: { select: { email: true, name: true } } } },
+    },
   });
   if (!event) {
     return NextResponse.json({ error: "Event not found." }, { status: 404 });
@@ -59,6 +65,25 @@ export async function POST(req: NextRequest) {
     eventId: body.eventId,
     scannedBy: session.user.id,
   });
+
+  // A duplicate scan is the signal that catches a shared screenshot — worth
+  // an immediate alert, not silence just because the door already refused it.
+  if (result.status === "already-used") {
+    const partnerUser = event.partner?.user;
+    if (partnerUser?.email) {
+      const ticketId = result.ticketId;
+      const checkedInAt = result.checkedInAt;
+      after(() =>
+        sendPartnerDuplicateScanAlert({
+          partnerEmail: partnerUser.email,
+          partnerName: partnerUser.name ?? "Partner",
+          eventTitle: event.title,
+          ticketRef: referenceCode(ticketId),
+          firstCheckedInAt: checkedInAt,
+        }).catch((err) => console.error("[partner-alert] duplicate scan email failed:", err))
+      );
+    }
+  }
 
   return NextResponse.json(result);
 }

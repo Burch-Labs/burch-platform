@@ -11,7 +11,7 @@ import { TicketSelector } from "@/components/events/TicketSelector";
 import { EventActions } from "@/components/events/EventActions";
 import { Badge } from "@/components/ui/Badge";
 import { HAS_MPESA } from "@/lib/payments/mpesa";
-import { HAS_FLUTTERWAVE } from "@/lib/payments/flutterwave";
+import { HAS_PESAPAL } from "@/lib/payments/pesapal";
 import {
   CATEGORY_LABELS,
   CATEGORY_COLORS,
@@ -115,6 +115,34 @@ export default async function EventDetailPage({ params }: PageProps) {
   });
   const booked = totalBooked._sum.quantity ?? 0;
   const remaining = ticketsRemaining(event.capacity, booked);
+
+  // Ticket tiers — an empty list here is the common case (event still on
+  // its flat price) and TicketSelector already treats that as "no tiers".
+  const now = new Date();
+  const rawTiers = await prisma.ticketTier.findMany({
+    where: {
+      eventId: id,
+      isActive: true,
+      OR: [{ salesStart: null }, { salesStart: { lte: now } }],
+      AND: [{ OR: [{ salesEnd: null }, { salesEnd: { gte: now } }] }],
+    },
+    orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+  });
+  const soldByTier = rawTiers.length
+    ? await prisma.booking.groupBy({
+        by: ["ticketTierId"],
+        where: { ticketTierId: { in: rawTiers.map((t) => t.id) }, status: { not: "CANCELLED" } },
+        _sum: { quantity: true },
+      })
+    : [];
+  const tierSoldMap = new Map(soldByTier.map((r) => [r.ticketTierId, r._sum.quantity ?? 0]));
+  const tiers = rawTiers.map((t) => ({
+    id: t.id,
+    name: t.name,
+    price: Number(t.price),
+    currency: t.currency,
+    remaining: Math.max(0, t.capacity - (tierSoldMap.get(t.id) ?? 0)),
+  }));
 
   const colors = CATEGORY_COLORS[event.category];
   const price = Number(event.price);
@@ -224,7 +252,7 @@ export default async function EventDetailPage({ params }: PageProps) {
                   value: formatCurrency(price, event.currency),
                 },
               ].map(({ icon, label, value, link, linkLabel }) => (
-                <div key={label} className="bg-white rounded-2xl border border-gray-100 p-4 flex gap-3">
+                <div key={label} className="bg-surface rounded-2xl border border-gray-100 p-4 flex gap-3">
                   <div className="w-9 h-9 rounded-lg bg-orange-50 flex items-center justify-center flex-shrink-0">
                     <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       {icon}
@@ -250,7 +278,7 @@ export default async function EventDetailPage({ params }: PageProps) {
 
             {/* Description */}
             {event.description && (
-              <div className="bg-white rounded-2xl border border-gray-100 p-6">
+              <div className="bg-surface rounded-2xl border border-gray-100 p-6">
                 <h2 className="text-lg font-semibold text-gray-900 mb-3">About this event</h2>
                 <div className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">
                   {event.description}
@@ -292,14 +320,15 @@ export default async function EventDetailPage({ params }: PageProps) {
                 price={price}
                 currency={event.currency}
                 remaining={remaining}
+                tiers={tiers}
                 isAuthenticated={!!session}
                 loginUrl={loginUrl}
                 hasMpesa={HAS_MPESA}
-                hasFlutterwave={HAS_FLUTTERWAVE}
+                hasPesapal={HAS_PESAPAL}
               />
 
               {/* Capacity info */}
-              <div className="bg-white rounded-2xl border border-gray-100 p-4">
+              <div className="bg-surface rounded-2xl border border-gray-100 p-4">
                 <div className="flex items-center justify-between text-sm mb-2">
                   <span className="text-gray-500">Tickets sold</span>
                   <span className="font-medium text-gray-900">

@@ -7,6 +7,7 @@ import { AdminNav } from "../AdminNav";
 import { getQueueCounts } from "../queue-counts";
 import { isAdminRole, isSuperAdmin } from "@/lib/roles";
 import { EventReviewControls } from "./EventReviewControls";
+import { FeaturedToggle } from "./FeaturedToggle";
 
 export const metadata = { title: "Event submissions — dontbeboringKE" };
 export const dynamic = "force-dynamic";
@@ -32,6 +33,12 @@ export default async function AdminEventsPage() {
     getQueueCounts(),
   ]);
 
+  const published = await prisma.event.findMany({
+    where: { published: true },
+    orderBy: [{ isFeatured: "desc" }, { startDate: "asc" }],
+    include: { partner: { select: { name: true } } },
+  });
+
   return (
     <div className="min-h-screen bg-gray-50">
       <NavBar />
@@ -45,13 +52,13 @@ export default async function AdminEventsPage() {
         <AdminNav active="/admin/events" counts={counts} />
 
         {pending.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-gray-100 p-10 text-center mb-10">
+          <div className="bg-surface rounded-2xl border border-gray-100 p-10 text-center mb-10">
             <p className="text-sm text-gray-500">Nothing waiting for review.</p>
           </div>
         ) : (
           <div className="space-y-4 mb-10">
             {pending.map((event) => (
-              <div key={event.id} className="bg-white rounded-2xl border border-gray-100 p-6">
+              <div key={event.id} className="bg-surface rounded-2xl border border-gray-100 p-6">
                 <div className="flex items-start justify-between gap-4 mb-3">
                   <div className="min-w-0">
                     <p className="font-semibold text-gray-900">{event.title}</p>
@@ -114,7 +121,7 @@ export default async function AdminEventsPage() {
         {reviewed.length === 0 ? (
           <p className="text-sm text-gray-400">Nothing reviewed yet.</p>
         ) : (
-          <div className="bg-white rounded-2xl border border-gray-100 divide-y divide-gray-50">
+          <div className="bg-surface rounded-2xl border border-gray-100 divide-y divide-gray-50">
             {reviewed.map((event) => (
               <div key={event.id} className="px-5 py-3 flex items-center justify-between gap-4">
                 <p className="text-sm text-gray-900 truncate">
@@ -129,6 +136,25 @@ export default async function AdminEventsPage() {
                 >
                   {event.approvalStatus === "APPROVED" ? "Approved" : "Rejected"}
                 </span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <h2 className="text-sm font-semibold text-gray-900 mb-1 mt-10">Top Picks</h2>
+        <p className="text-sm text-gray-500 mb-3">
+          Curate which live events show in the homepage &quot;Top Picks&quot; row. Doesn&apos;t affect whether an event is published.
+        </p>
+        {published.length === 0 ? (
+          <p className="text-sm text-gray-400">No published events yet.</p>
+        ) : (
+          <div className="bg-surface rounded-2xl border border-gray-100 divide-y divide-gray-50">
+            {published.map((event) => (
+              <div key={event.id} className="px-5 py-3 flex items-center justify-between gap-4">
+                <p className="text-sm text-gray-900 truncate">
+                  {event.title} <span className="text-gray-400">· {event.partner.name}</span>
+                </p>
+                <FeaturedToggle eventId={event.id} initial={event.isFeatured} />
               </div>
             ))}
           </div>

@@ -7,7 +7,7 @@ type Props = {
 
 export default function EventCard({ event }: Props) {
   return (
-    <div className="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-lg transition overflow-hidden">
+    <div className="rounded-xl border border-gray-200 bg-surface shadow-sm hover:shadow-lg transition overflow-hidden">
       <div className="h-48 bg-gray-200"></div>
 
       <div className="p-5">

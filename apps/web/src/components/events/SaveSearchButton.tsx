@@ -89,7 +89,7 @@ export function SaveSearchButton({ isLoggedIn }: SaveSearchButtonProps) {
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
           onClick={(e) => { if (e.target === e.currentTarget) setOpen(false); }}
         >
-          <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm">
+          <div className="bg-surface rounded-2xl shadow-xl p-6 w-full max-w-sm">
             {saved ? (
               <div className="text-center py-4">
                 <span className="text-3xl">🎉</span>

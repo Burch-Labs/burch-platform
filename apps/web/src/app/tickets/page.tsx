@@ -59,7 +59,7 @@ export default async function MyTicketsPage() {
         </div>
 
         {bookings.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-dashed border-gray-200 px-6 py-14 text-center">
+          <div className="bg-surface rounded-2xl border border-dashed border-gray-200 px-6 py-14 text-center">
             <p className="text-3xl mb-2">🎟️</p>
             <p className="text-sm text-gray-600 font-medium">No tickets yet.</p>
             <p className="text-xs text-gray-400 mt-1">
@@ -105,7 +105,7 @@ function Section({ title, bookings, empty }: { title: string; bookings: Row[]; e
         <span className="ml-2 text-xs font-normal text-gray-400">({bookings.length})</span>
       </h2>
       {bookings.length === 0 ? (
-        <p className="text-sm text-gray-400 bg-white rounded-xl border border-dashed border-gray-200 px-5 py-6 text-center">
+        <p className="text-sm text-gray-400 bg-surface rounded-xl border border-dashed border-gray-200 px-5 py-6 text-center">
           {empty}
         </p>
       ) : (
@@ -116,7 +116,7 @@ function Section({ title, bookings, empty }: { title: string; bookings: Row[]; e
               <Link
                 key={b.id}
                 href={`/tickets/${b.id}`}
-                className="block bg-white rounded-xl border border-gray-100 p-4 flex items-center gap-4 hover:border-orange-300 transition-colors"
+                className="block bg-surface rounded-xl border border-gray-100 p-4 flex items-center gap-4 hover:border-orange-300 transition-colors"
               >
                 {b.event?.imageUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element

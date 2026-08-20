@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { NavBar } from "@/components/layout/NavBar";
 import { ClubCard } from "@/components/clubs/ClubCard";
 import { SearchBar } from "@/components/events/SearchBar";
+import { OffersList } from "@/components/venues/OffersList";
 import { Suspense } from "react";
 
 export const metadata = {
@@ -19,6 +20,20 @@ export default async function ClubsPage({ searchParams }: PageProps) {
   const sp = await searchParams;
   const q = sp.q?.trim() ?? "";
   const city = sp.city?.trim() ?? "";
+  const hasFilters = !!(q || city);
+
+  const topOffers = hasFilters
+    ? []
+    : await prisma.clubHappening.findMany({
+        where: { published: true, club: { published: true } },
+        orderBy: [{ isFeatured: "desc" }, { viewCount: "desc" }, { createdAt: "desc" }],
+        take: 6,
+      });
+  const offers = topOffers.map((o) => ({
+    ...o,
+    startsAt: o.startsAt ? o.startsAt.toISOString() : null,
+    endsAt: o.endsAt ? o.endsAt.toISOString() : null,
+  }));
 
   const clubs = await prisma.club.findMany({
     where: {
@@ -45,7 +60,7 @@ export default async function ClubsPage({ searchParams }: PageProps) {
     <div className="min-h-screen bg-gray-50">
       <NavBar />
 
-      <section className="bg-white border-b border-gray-200">
+      <section className="bg-surface border-b border-gray-200">
         <div className="max-w-6xl mx-auto px-6 pt-10 pb-8">
           <h1 className="font-display text-4xl font-bold text-gray-900 mb-1">Golf &amp; clubs</h1>
           <p className="text-gray-500 mb-6">
@@ -58,6 +73,13 @@ export default async function ClubsPage({ searchParams }: PageProps) {
       </section>
 
       <main className="max-w-6xl mx-auto px-6 py-8">
+        {offers.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-lg font-semibold text-gray-900 mb-3">✨ Current offers</h2>
+            <OffersList offers={offers} kind="clubHappening" />
+          </div>
+        )}
+
         <p className="text-sm text-gray-500 mb-4">
           {clubs.length === 0
             ? "No clubs found"
@@ -65,7 +87,7 @@ export default async function ClubsPage({ searchParams }: PageProps) {
         </p>
 
         {clubs.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center">
+          <div className="bg-surface rounded-2xl border border-gray-100 p-12 text-center">
             <div className="text-4xl mb-3">⛳</div>
             <p className="text-gray-600 font-medium mb-1">Nothing matches that search</p>
             <p className="text-sm text-gray-400">Try a different town or clear the search.</p>

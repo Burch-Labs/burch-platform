@@ -62,7 +62,7 @@ export function EventActions(props: EventActionsProps) {
   const pageUrl = typeof window !== "undefined" ? window.location.href : "";
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-4 space-y-3">
+    <div className="bg-surface rounded-2xl border border-gray-100 p-4 space-y-3">
       <a
         href={googleCalendarUrl(props)}
         target="_blank"

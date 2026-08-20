@@ -190,7 +190,7 @@ export default async function BookingHistoryPage({
         </div>
 
         {total === 0 ? (
-          <div className="bg-white rounded-xl border border-dashed border-gray-200 px-5 py-10 text-center">
+          <div className="bg-surface rounded-xl border border-dashed border-gray-200 px-5 py-10 text-center">
             <p className="text-3xl mb-2">🗂️</p>
             <p className="text-sm text-gray-500">You have no bookings yet.</p>
             <div className="mt-3 flex justify-center gap-4 text-xs font-medium">
@@ -205,7 +205,7 @@ export default async function BookingHistoryPage({
               {pageRows.map((row) => (
                 <div
                   key={`${row.kind}-${row.id}`}
-                  className="bg-white rounded-xl border border-gray-100 p-4 flex items-center gap-4"
+                  className="bg-surface rounded-xl border border-gray-100 p-4 flex items-center gap-4"
                 >
                   {row.imageUrl ? (
                     <img
@@ -244,7 +244,7 @@ export default async function BookingHistoryPage({
                 {safePage > 1 ? (
                   <Link
                     href={`/dashboard/bookings?page=${safePage - 1}`}
-                    className="text-xs font-medium text-orange-600 hover:text-orange-700 bg-white border border-gray-200 rounded-lg px-3 py-1.5"
+                    className="text-xs font-medium text-orange-600 hover:text-orange-700 bg-surface border border-gray-200 rounded-lg px-3 py-1.5"
                   >
                     ← Previous
                   </Link>
@@ -257,7 +257,7 @@ export default async function BookingHistoryPage({
                 {safePage < totalPages ? (
                   <Link
                     href={`/dashboard/bookings?page=${safePage + 1}`}
-                    className="text-xs font-medium text-orange-600 hover:text-orange-700 bg-white border border-gray-200 rounded-lg px-3 py-1.5"
+                    className="text-xs font-medium text-orange-600 hover:text-orange-700 bg-surface border border-gray-200 rounded-lg px-3 py-1.5"
                   >
                     Next →
                   </Link>

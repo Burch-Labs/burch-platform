@@ -41,3 +41,23 @@ export async function qrSvg(payload: string, size = 240): Promise<string> {
     color: { dark: "#131E30", light: "#FFFFFF" },
   });
 }
+
+/**
+ * Same code, rasterized to a PNG buffer for the one context an inline SVG
+ * can't reach: an email attachment. Unlike the page render, this needs a
+ * real quiet zone — there's no surrounding card to supply the white margin
+ * once it's a standalone image file.
+ */
+export async function qrPngBuffer(payload: string, size = 480): Promise<Buffer> {
+  if (!SAFE_PAYLOAD.test(payload)) {
+    throw new Error("Refusing to encode a QR payload with unexpected characters");
+  }
+
+  return QRCode.toBuffer(payload, {
+    type: "png",
+    errorCorrectionLevel: "M",
+    margin: 2,
+    width: size,
+    color: { dark: "#131E30", light: "#FFFFFF" },
+  });
+}

@@ -1,0 +1,115 @@
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { NavBar } from "@/components/layout/NavBar";
+import Link from "next/link";
+import { AdminNav } from "../AdminNav";
+import { getQueueCounts } from "../queue-counts";
+import { isAdminRole } from "@/lib/roles";
+
+export const metadata = { title: "Clubs — dontbeboringKE" };
+export const dynamic = "force-dynamic";
+
+const CATEGORY_LABEL: Record<string, string> = {
+  GOLF: "Golf course",
+  COUNTRY: "Country club",
+  SPORTS: "Sports club",
+  POLO: "Polo club",
+  YACHT: "Yacht club",
+  SPA: "Spa & Wellness",
+};
+
+export default async function AdminClubsPage() {
+  const session = await getServerSession(authOptions);
+  if (!session || !isAdminRole(session.user.role)) redirect("/dashboard?error=unauthorized");
+
+  const [clubs, counts] = await Promise.all([
+    prisma.club.findMany({
+      orderBy: { name: "asc" },
+      include: {
+        partner: { select: { name: true } },
+        _count: { select: { happenings: true } },
+      },
+    }),
+    getQueueCounts(),
+  ]);
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <NavBar />
+      <main className="max-w-5xl mx-auto px-6 py-8">
+        <h1 className="text-2xl font-bold text-gray-900 mb-1">Clubs</h1>
+        <p className="text-sm text-gray-500 mb-6">
+          Golf courses, country clubs, sports clubs and Spa &amp; Wellness venues. Manage a
+          club's offers regardless of which partner owns it, and pin the ones that should show
+          on the Golf &amp; Clubs main page.
+        </p>
+
+        <AdminNav active="/admin/clubs" counts={counts} />
+
+        {clubs.length === 0 ? (
+          <div className="bg-surface rounded-2xl border border-gray-100 p-10 text-center">
+            <p className="text-sm text-gray-500">No clubs yet.</p>
+          </div>
+        ) : (
+          <div className="bg-surface rounded-2xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
+            {clubs.map((club) => (
+              <div
+                key={club.id}
+                className="flex items-center justify-between gap-4 px-6 py-4 hover:bg-gray-50 transition"
+              >
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <p className="font-medium text-gray-900 truncate">{club.name}</p>
+                    <span
+                      className={`shrink-0 inline-block text-xs font-medium px-2 py-0.5 rounded-full border ${
+                        club.published
+                          ? "bg-green-50 text-green-700 border-green-200"
+                          : "bg-gray-50 text-gray-500 border-gray-200"
+                      }`}
+                    >
+                      {club.published ? "Published" : "Draft"}
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    {club.partner.name}
+                    {" · "}
+                    {club.city}
+                    {" · "}
+                    {CATEGORY_LABEL[club.category] ?? club.category}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span
+                    className={`hidden sm:inline-block text-xs font-medium px-2.5 py-1 rounded-full ${
+                      club._count.happenings > 0
+                        ? "bg-orange-50 text-orange-700 border border-orange-200"
+                        : "bg-gray-50 text-gray-500 border border-gray-200"
+                    }`}
+                  >
+                    {club._count.happenings > 0
+                      ? `${club._count.happenings} offer${club._count.happenings !== 1 ? "s" : ""}`
+                      : "No offers"}
+                  </span>
+                  <Link
+                    href={`/admin/clubs/${club.id}`}
+                    className="text-sm text-orange-600 hover:text-orange-700 font-medium px-3 py-1.5 rounded-lg hover:bg-orange-50 transition"
+                  >
+                    Offers
+                  </Link>
+                  <Link
+                    href={`/partner/clubs/${club.id}/edit`}
+                    className="text-sm text-gray-500 hover:text-gray-700 font-medium px-3 py-1.5 rounded-lg hover:bg-gray-50 transition"
+                  >
+                    Edit
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </main>
+    </div>
+  );
+}

@@ -31,7 +31,7 @@ export function PayoutForm({ defaults }: PayoutFormProps) {
   });
 
   return (
-    <form action={action} className="bg-white rounded-2xl border border-gray-100 p-6 space-y-5">
+    <form action={action} className="bg-surface rounded-2xl border border-gray-100 p-6 space-y-5">
       <Field
         name="legalName"
         label="Name on your ID or certificate"

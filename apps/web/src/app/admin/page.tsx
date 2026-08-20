@@ -58,7 +58,7 @@ export default async function AdminOfficePage() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
           {tiles.map(({ label, value, emoji, href }) => {
             const content = (
-              <div className="bg-white rounded-2xl border border-gray-100 p-5">
+              <div className="bg-surface rounded-2xl border border-gray-100 p-5">
                 <span className="text-xl">{emoji}</span>
                 <p className="text-xl font-bold text-gray-900 mt-2">{value}</p>
                 <p className="text-xs text-gray-500 mt-0.5">{label}</p>
@@ -79,11 +79,11 @@ export default async function AdminOfficePage() {
           <div className="lg:col-span-2">
             <h2 className="text-sm font-semibold text-gray-900 mb-3">Recent activity</h2>
             {activity.length === 0 ? (
-              <div className="bg-white rounded-2xl border border-gray-100 p-8 text-center">
+              <div className="bg-surface rounded-2xl border border-gray-100 p-8 text-center">
                 <p className="text-sm text-gray-500">Nothing has happened yet.</p>
               </div>
             ) : (
-              <div className="bg-white rounded-2xl border border-gray-100 divide-y divide-gray-50">
+              <div className="bg-surface rounded-2xl border border-gray-100 divide-y divide-gray-50">
                 {activity.map((item) => {
                   const row = (
                     <div className="flex items-start gap-3 px-5 py-3.5">
@@ -115,11 +115,11 @@ export default async function AdminOfficePage() {
               </Link>
             </div>
             {topEvents.length === 0 ? (
-              <div className="bg-white rounded-2xl border border-gray-100 p-6 text-center">
+              <div className="bg-surface rounded-2xl border border-gray-100 p-6 text-center">
                 <p className="text-sm text-gray-500">No published events yet.</p>
               </div>
             ) : (
-              <div className="bg-white rounded-2xl border border-gray-100 divide-y divide-gray-50">
+              <div className="bg-surface rounded-2xl border border-gray-100 divide-y divide-gray-50">
                 {topEvents.map((e) => (
                   <div key={e.id} className="px-4 py-3">
                     <p className="text-sm font-medium text-gray-900 truncate">{e.title}</p>

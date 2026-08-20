@@ -5,7 +5,7 @@ import { getServerSession } from "next-auth";
 import { z } from "zod";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { isSuperAdmin } from "@/lib/roles";
+import { isAdminRole, isSuperAdmin } from "@/lib/roles";
 import { sendEventApprovedEmail, sendEventRejectedEmail } from "@/lib/email";
 
 const schema = z.object({
@@ -68,7 +68,7 @@ export async function reviewEventSubmission(
     },
   });
 
-  if (approve) revalidateTag("events-listing");
+  if (approve) revalidateTag("events-listing", { expire: 0 });
   revalidatePath("/admin/events");
   revalidatePath("/partner/events");
 
@@ -92,4 +92,23 @@ export async function reviewEventSubmission(
   }
 
   return { message: approve ? "Event approved and published." : "Event rejected." };
+}
+
+/**
+ * Toggles an event's homepage "Top Picks" curation flag. Purely editorial —
+ * open to any admin, not just SUPER_ADMIN, since it can't put an unvetted
+ * event in front of the public (published/approvalStatus are unaffected).
+ */
+export async function toggleEventFeatured(eventId: string, next: boolean) {
+  const session = await getServerSession(authOptions);
+  if (!session || !isAdminRole(session.user.role)) {
+    throw new Error("Not authorized.");
+  }
+  await prisma.event.update({
+    where: { id: eventId },
+    data: { isFeatured: next },
+  });
+  revalidatePath("/admin/events");
+  revalidateTag("events-listing", { expire: 0 });
+  revalidatePath("/");
 }

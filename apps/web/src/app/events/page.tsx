@@ -148,7 +148,7 @@ export default function EventsPage(props: PageProps) {
       <NavBar />
 
       {/* Hero */}
-      <div className="bg-white border-b border-gray-100">
+      <div className="bg-surface border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-6 py-10">
           <div className="flex items-start justify-between gap-4 mb-1">
             <h1 className="text-3xl font-bold text-gray-900">Discover Events</h1>
@@ -172,10 +172,10 @@ export default function EventsPage(props: PageProps) {
         <Suspense
           fallback={
             <div className="flex flex-col lg:flex-row gap-6">
-              <div className="w-full lg:w-56 h-24 lg:h-96 bg-white rounded-2xl border border-gray-100 animate-pulse flex-shrink-0" />
+              <div className="w-full lg:w-56 h-24 lg:h-96 bg-surface rounded-2xl border border-gray-100 animate-pulse flex-shrink-0" />
               <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="h-64 bg-white rounded-2xl border border-gray-100 animate-pulse" />
+                  <div key={i} className="h-64 bg-surface rounded-2xl border border-gray-100 animate-pulse" />
                 ))}
               </div>
             </div>

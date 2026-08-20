@@ -291,7 +291,8 @@ model Club {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  partner Partner @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  partner    Partner         @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  happenings ClubHappening[]
 
   @@index([city, published])
   @@map("clubs")
@@ -303,6 +304,7 @@ enum ClubCategory {
   SPORTS
   POLO
   YACHT
+  SPA
 }
 
 enum ClubAccess {
@@ -395,6 +397,9 @@ model Event {
    * on, so approval doesn't change how the rest of the app finds events.
    */
   published   Boolean       @default(false)
+  /** Curated by an admin for the homepage "Top Picks" row. Purely editorial —
+      unrelated to published/approvalStatus. */
+  isFeatured  Boolean       @default(false)
   /**
    * APPROVED by default — an existing partner creating an event through
    * their own dashboard is already a vetted business and publishes
@@ -413,13 +418,17 @@ model Event {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
-  partner  Partner   @relation(fields: [partnerId], references: [id], onDelete: Cascade)
-  bookings Booking[]
-  tickets  Ticket[]
+  partner       Partner        @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  bookings      Booking[]
+  tickets       Ticket[]
+  tiers         TicketTier[]
+  discountCodes DiscountCode[]
 
   // Speeds up the common listing queries: published feed sorted by date, and city filter
   @@index([published, startDate])
   @@index([published, city])
+  // Homepage "Top Picks" row
+  @@index([published, isFeatured])
   // The admin review queue's whole query is "find everything PENDING."
   @@index([approvalStatus])
   @@map("events")
@@ -429,6 +438,70 @@ enum EventApprovalStatus {
   PENDING
   APPROVED
   REJECTED
+}
+
+// ─── Ticket tiers & discount codes ──────────────────────────────────────────
+// Event.price/capacity stay as the fallback for an event with no tiers — a
+// tier is an opt-in refinement, not a replacement, so every event created
+// before this existed keeps working unchanged.
+//
+// Deliberately no stored "sold" counter here. reserveEventBooking already
+// proves the right pattern for this exact problem: a Serializable
+// transaction with a live aggregate at booking time, not a counter that
+// needs +1/-1 discipline across booking, cancellation and payment-failure
+// paths kept in sync forever. Sold count for a tier is computed the same way.
+
+model TicketTier {
+  id         String    @id @default(cuid())
+  eventId    String
+  name       String
+  price      Decimal   @db.Decimal(10, 2)
+  currency   String    @default("KES")
+  capacity   Int
+  /** Both optional: a tier with neither is on sale whenever the event is. */
+  salesStart DateTime?
+  salesEnd   DateTime?
+  sortOrder  Int       @default(0)
+  isActive   Boolean   @default(true)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  event    Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  bookings Booking[]
+
+  @@index([eventId, isActive, sortOrder])
+  @@map("ticket_tiers")
+}
+
+model DiscountCode {
+  id        String       @id @default(cuid())
+  /** Null = platform-wide, usable at checkout for any event. */
+  eventId   String?
+  code      String       @unique
+  type      DiscountType
+  value     Decimal      @db.Decimal(10, 2)
+  /**
+   * Global cap, unlike tier capacity: this is a "don't hand out unlimited
+   * free money" ceiling, not an oversell-prevention mechanism, so a stored
+   * counter carries much less risk here than the same idea would for a tier.
+   */
+  maxUses   Int?
+  usedCount Int          @default(0)
+  expiresAt DateTime?
+  isActive  Boolean      @default(true)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  event    Event?    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  bookings Booking[]
+
+  @@index([code])
+  @@map("discount_codes")
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED_AMOUNT
 }
 
 // ─── Hotels ──────────────────────────────────────────────────────────────────
@@ -463,13 +536,101 @@ model Hotel {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  partner  Partner       @relation(fields: [partnerId], references: [id], onDelete: Cascade)
-  rooms    Room[]
-  bookings Booking[]
-  reviews  HotelReview[]
+  partner    Partner          @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  rooms      Room[]
+  bookings   Booking[]
+  reviews    HotelReview[]
+  happenings HotelHappening[]
+  spaOffers  HotelSpaOffer[]
 
   @@index([published])
   @@map("hotels")
+}
+
+// What's on at a hotel's restaurant right now — brunch, a live band, a
+// seasonal menu — as opposed to Room, which is what's bookable year-round.
+// Deliberately time-bounded and disposable: a happening is meant to be
+// swapped out "now and then" as the hotel's own promotions change, not
+// curated once and left stale like the rest of the seeded listing data.
+model HotelHappening {
+  id          String    @id @default(cuid())
+  hotelId     String
+  title       String
+  description String?
+  flyerUrl    String?
+  startsAt    DateTime?
+  endsAt      DateTime?
+  published   Boolean   @default(true)
+  /** Incremented when a guest opens the flyer — the popularity signal that
+      ranks it on the /hotels main-page row. Same "rough signal, not
+      deduplicated analytics" spirit as Event.viewCount. */
+  viewCount   Int       @default(0)
+  /** Super-admin pin, independent of viewCount — set only from the admin
+      side (never exposed on the partner form), same pattern as
+      Event.isFeatured. */
+  isFeatured  Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  hotel Hotel @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+  @@index([hotelId, published])
+  @@index([published, isFeatured])
+  @@map("hotel_happenings")
+}
+
+/**
+ * A hotel's own in-house spa/wellness offers — same flyer mechanic as
+ * Happenings, kept as a separate model (not a Happening category) because
+ * the hotel detail page renders it as its own section below Happenings,
+ * and a hotel with no spa shouldn't have an empty "Spa" tab to hide.
+ */
+model HotelSpaOffer {
+  id          String    @id @default(cuid())
+  hotelId     String
+  title       String
+  description String?
+  flyerUrl    String?
+  startsAt    DateTime?
+  endsAt      DateTime?
+  published   Boolean   @default(true)
+  viewCount   Int       @default(0)
+  isFeatured  Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  hotel Hotel @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+  @@index([hotelId, published])
+  @@index([published, isFeatured])
+  @@map("hotel_spa_offers")
+}
+
+/**
+ * Offers/flyers for a Club (any category — golf, spa, sports…), owned once
+ * the club is claimed. Same flyer mechanic as HotelHappening; kept as its
+ * own model rather than a shared polymorphic table since neither side
+ * needs to query across both venue types at once.
+ */
+model ClubHappening {
+  id          String    @id @default(cuid())
+  clubId      String
+  title       String
+  description String?
+  flyerUrl    String?
+  startsAt    DateTime?
+  endsAt      DateTime?
+  published   Boolean   @default(true)
+  viewCount   Int       @default(0)
+  isFeatured  Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  club Club @relation(fields: [clubId], references: [id], onDelete: Cascade)
+
+  @@index([clubId, published])
+  @@index([published, isFeatured])
+  @@map("club_happenings")
 }
 
 model Room {
@@ -623,21 +784,36 @@ model Booking {
   paymentRef    String?
   paymentMethod String?
   notes         String?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  /**
+   * A ticket reserved with nothing charged yet — the guest pays cash or
+   * M-Pesa in person at the door. Still a real, issued ticket (same
+   * instant-confirm path as a free one), just flagged so door staff know
+   * to collect before admitting rather than treating a scan as proof of
+   * payment the way it is for every other booking.
+   */
+  payAtGate  Boolean   @default(false)
+  gatePaidAt DateTime?
+  /** User id of whoever marked it collected — usually door staff at check-in. */
+  gatePaidBy String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 
-  eventId      String?
-  hotelId      String?
-  roomId       String?
-  restaurantId String?
+  eventId        String?
+  hotelId        String?
+  roomId         String?
+  restaurantId   String?
+  ticketTierId   String?
+  discountCodeId String?
 
-  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  event      Event?      @relation(fields: [eventId], references: [id])
-  hotel      Hotel?      @relation(fields: [hotelId], references: [id])
-  room       Room?       @relation(fields: [roomId], references: [id])
-  restaurant Restaurant? @relation(fields: [restaurantId], references: [id])
-  payments   Payment[]
-  tickets    Ticket[]
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event        Event?        @relation(fields: [eventId], references: [id])
+  hotel        Hotel?        @relation(fields: [hotelId], references: [id])
+  room         Room?         @relation(fields: [roomId], references: [id])
+  restaurant   Restaurant?   @relation(fields: [restaurantId], references: [id])
+  ticketTier   TicketTier?   @relation(fields: [ticketTierId], references: [id])
+  discountCode DiscountCode? @relation(fields: [discountCodeId], references: [id])
+  payments     Payment[]
+  tickets      Ticket[]
 
   @@map("bookings")
 }
@@ -656,8 +832,8 @@ model Payment {
   amount      Decimal         @db.Decimal(10, 2)
   currency    String          @default("KES")
   phone       String? // M-Pesa payer phone (MSISDN)
-  providerRef String? // Daraja CheckoutRequestID / Flutterwave tx_ref
-  receiptRef  String? // Daraja MpesaReceiptNumber / Flutterwave transaction_id, set on success
+  providerRef String? // Daraja CheckoutRequestID / Pesapal merchant reference (our own Payment id)
+  receiptRef  String? // Daraja MpesaReceiptNumber / Pesapal confirmation code, set on success
   rawCallback Json?
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
@@ -762,7 +938,7 @@ enum ReservationStatus {
 
 enum PaymentProvider {
   MPESA
-  FLUTTERWAVE
+  PESAPAL
 }
 
 enum PaymentStatus {

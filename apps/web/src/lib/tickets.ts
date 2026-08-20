@@ -105,7 +105,7 @@ export async function issueTicketsForBooking(
 
 export type CheckInResult =
   | { status: "admitted"; ticket: { id: string; serial: number; attendeeName: string | null } }
-  | { status: "already-used"; checkedInAt: Date | null }
+  | { status: "already-used"; ticketId: string; checkedInAt: Date | null }
   | { status: "void" }
   | { status: "wrong-event" }
   | { status: "not-found" }
@@ -150,7 +150,7 @@ export async function checkInTicket(params: {
       where: { id: existing.id },
       select: { checkedInAt: true },
     });
-    return { status: "already-used", checkedInAt: now?.checkedInAt ?? existing.checkedInAt };
+    return { status: "already-used", ticketId: existing.id, checkedInAt: now?.checkedInAt ?? existing.checkedInAt };
   }
 
   return {

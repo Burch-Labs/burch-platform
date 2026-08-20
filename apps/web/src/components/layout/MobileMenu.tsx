@@ -56,7 +56,7 @@ export function MobileMenu({ isSignedIn, isCustomer, isAdmin, userLabel }: Props
       </button>
 
       {open && (
-        <div className="absolute inset-x-0 top-full bg-white border-b border-gray-200 shadow-lg z-50">
+        <div className="absolute inset-x-0 top-full bg-surface border-b border-gray-200 shadow-lg z-50">
           <nav className="max-w-6xl mx-auto px-6 py-3 flex flex-col">
             {NAV_LINKS.map(({ href, label }) => (
               <Link

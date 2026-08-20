@@ -57,8 +57,44 @@ export default async function EditHotelPage({ params }: Props) {
           <h1 className="text-2xl font-bold text-gray-900 truncate">{hotel.name}</h1>
         </div>
 
+        {/* Manage happenings shortcut */}
+        {!isAdmin && (
+          <div className="mb-6 flex items-center justify-between bg-surface rounded-2xl border border-gray-200 px-6 py-4">
+            <div>
+              <p className="text-sm font-semibold text-gray-900">Happenings</p>
+              <p className="text-xs text-gray-500 mt-0.5">
+                Add up to 10 flyers for what's on at your restaurant — brunch, live music, seasonal specials
+              </p>
+            </div>
+            <Link
+              href={`/partner/hotels/${hotel.id}/happenings`}
+              className="text-sm text-orange-600 hover:text-orange-700 font-medium px-4 py-2 rounded-xl hover:bg-orange-50 transition"
+            >
+              Manage happenings →
+            </Link>
+          </div>
+        )}
+
+        {/* Manage spa offers shortcut */}
+        {!isAdmin && (
+          <div className="mb-6 flex items-center justify-between bg-surface rounded-2xl border border-gray-200 px-6 py-4">
+            <div>
+              <p className="text-sm font-semibold text-gray-900">Spa &amp; Wellness</p>
+              <p className="text-xs text-gray-500 mt-0.5">
+                Add up to 10 flyers for your in-house spa — treatments, packages, seasonal offers
+              </p>
+            </div>
+            <Link
+              href={`/partner/hotels/${hotel.id}/spa`}
+              className="text-sm text-orange-600 hover:text-orange-700 font-medium px-4 py-2 rounded-xl hover:bg-orange-50 transition"
+            >
+              Manage spa offers →
+            </Link>
+          </div>
+        )}
+
         {/* Manage rooms shortcut */}
-        <div className="mb-6 flex items-center justify-between bg-white rounded-2xl border border-gray-200 px-6 py-4">
+        <div className="mb-6 flex items-center justify-between bg-surface rounded-2xl border border-gray-200 px-6 py-4">
           <div>
             <p className="text-sm font-semibold text-gray-900">Rooms</p>
             <p className="text-xs text-gray-500 mt-0.5">Add, edit, or remove room types and pricing</p>
@@ -71,7 +107,7 @@ export default async function EditHotelPage({ params }: Props) {
           </Link>
         </div>
 
-        <div className="bg-white rounded-2xl border border-gray-200 p-8">
+        <div className="bg-surface rounded-2xl border border-gray-200 p-8">
           <HotelForm
             action={boundUpdate}
             submitLabel="Save changes"

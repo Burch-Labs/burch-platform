@@ -202,15 +202,19 @@ function checkConfig(): ConfigIssue[] {
     });
   }
 
-  // ── Flutterwave (card payments) ──────────────────────────────────────────
-  if (process.env.FLUTTERWAVE_SECRET_KEY && !process.env.FLUTTERWAVE_SECRET_HASH) {
+  // ── Pesapal (card payments) ───────────────────────────────────────────────
+  if (
+    process.env.PESAPAL_CONSUMER_KEY &&
+    process.env.PESAPAL_CONSUMER_SECRET &&
+    !process.env.PESAPAL_IPN_ID
+  ) {
     issues.push({
       level: isProd ? "error" : "warn",
-      key: "FLUTTERWAVE_SECRET_HASH",
+      key: "PESAPAL_IPN_ID",
       message:
-        "FLUTTERWAVE_SECRET_KEY is set but FLUTTERWAVE_SECRET_HASH is missing. " +
-        "Card payments can still be initiated, but the webhook will reject every callback (no valid signature to check against), " +
-        "so confirmation relies entirely on the browser-redirect fallback. Set FLUTTERWAVE_SECRET_HASH to the value configured in your Flutterwave dashboard webhook settings.",
+        "PESAPAL_CONSUMER_KEY/SECRET are set but PESAPAL_IPN_ID is missing. " +
+        "That id doesn't come from a dashboard field — it's returned by a one-time call to Pesapal's " +
+        "RegisterIPN endpoint against this deployment's own webhook URL. Card payments stay disabled until it's set.",
     });
   }
 

@@ -71,7 +71,7 @@ export default async function PartnerPage() {
 
         {!partner ? (
           /* Onboarding CTA */
-          <div className="bg-white rounded-2xl border border-dashed border-gray-200 p-10 text-center">
+          <div className="bg-surface rounded-2xl border border-dashed border-gray-200 p-10 text-center">
             <p className="text-4xl mb-4">🏢</p>
             <h2 className="text-lg font-semibold text-gray-900 mb-2">Set up your business</h2>
             <p className="text-sm text-gray-500 mb-6 max-w-sm mx-auto">
@@ -126,7 +126,7 @@ export default async function PartnerPage() {
                 <Link
                   key={label}
                   href={href}
-                  className="bg-white rounded-2xl border border-gray-200 p-6 hover:border-orange-300 hover:shadow-sm transition group"
+                  className="bg-surface rounded-2xl border border-gray-200 p-6 hover:border-orange-300 hover:shadow-sm transition group"
                 >
                   <span className="text-2xl mb-2 block">{emoji}</span>
                   <p className="text-3xl font-bold text-gray-900 group-hover:text-orange-600 transition">
@@ -140,7 +140,7 @@ export default async function PartnerPage() {
             {/* Bookings shortcut */}
             <Link
               href="/partner/bookings"
-              className="mb-4 flex items-center justify-between bg-white rounded-2xl border border-gray-200 px-6 py-4 hover:border-orange-300 hover:shadow-sm transition group"
+              className="mb-4 flex items-center justify-between bg-surface rounded-2xl border border-gray-200 px-6 py-4 hover:border-orange-300 hover:shadow-sm transition group"
             >
               <div className="flex items-center gap-3">
                 <span className="text-2xl">📋</span>
@@ -164,7 +164,7 @@ export default async function PartnerPage() {
             </Link>
 
             {/* Quick actions */}
-            <div className="bg-white rounded-2xl border border-gray-200 p-6">
+            <div className="bg-surface rounded-2xl border border-gray-200 p-6">
               <h2 className="font-semibold text-gray-900 mb-4">Quick actions</h2>
               <div className="flex flex-wrap gap-3">
                 {[

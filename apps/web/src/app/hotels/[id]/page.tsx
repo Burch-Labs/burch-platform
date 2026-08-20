@@ -1,5 +1,4 @@
 import { formatVenueAddress } from "@/lib/utils";
-import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -9,10 +8,9 @@ import { NavBar } from "@/components/layout/NavBar";
 import { HotelGallery } from "@/components/hotels/HotelGallery";
 import { AmenityList } from "@/components/hotels/AmenityList";
 import { ReviewsList } from "@/components/hotels/ReviewsList";
-import { BookingForm } from "@/components/hotels/BookingForm";
 import { BookExternally } from "@/components/venues/BookExternally";
+import { OffersList } from "@/components/venues/OffersList";
 import { FEATURES } from "@/lib/features";
-import { RoomCard } from "@/components/hotels/RoomCard";
 import { HotelStars, StarRating } from "@/components/hotels/StarRating";
 import Link from "next/link";
 
@@ -58,14 +56,18 @@ export default async function HotelDetailPage({ params }: PageProps) {
         partner: {
           include: { user: { select: { id: true, name: true, image: true } } },
         },
-        rooms: {
-          where: { available: true },
-          orderBy: { price: "asc" },
-        },
         reviews: {
           include: { user: { select: { id: true, name: true, image: true } } },
           orderBy: { createdAt: "desc" },
           take: 20,
+        },
+        happenings: {
+          where: { published: true },
+          orderBy: [{ startsAt: "asc" }, { createdAt: "desc" }],
+        },
+        spaOffers: {
+          where: { published: true },
+          orderBy: [{ startsAt: "asc" }, { createdAt: "desc" }],
         },
         _count: { select: { bookings: true, reviews: true } },
       },
@@ -73,6 +75,17 @@ export default async function HotelDetailPage({ params }: PageProps) {
   ]);
 
   if (!hotel) notFound();
+
+  const happenings = hotel.happenings.map((h) => ({
+    ...h,
+    startsAt: h.startsAt ? h.startsAt.toISOString() : null,
+    endsAt: h.endsAt ? h.endsAt.toISOString() : null,
+  }));
+  const spaOffers = hotel.spaOffers.map((o) => ({
+    ...o,
+    startsAt: o.startsAt ? o.startsAt.toISOString() : null,
+    endsAt: o.endsAt ? o.endsAt.toISOString() : null,
+  }));
 
   const ratings = hotel.reviews.map((r) => r.rating);
   const avgRating =
@@ -89,18 +102,6 @@ export default async function HotelDetailPage({ params }: PageProps) {
     ...hotel.images.filter((img) => img !== hotel.imageUrl),
   ];
 
-  // Serialize Prisma Decimal → number so rooms can cross the RSC→client boundary
-  // (React 19 / Next.js 15 rejects non-plain objects at the serialization boundary)
-  const rooms = hotel.rooms.map((r) => ({
-    ...r,
-    price: Number(r.price) as unknown as (typeof r)["price"],
-  }));
-
-  const minPrice =
-    rooms.length > 0
-      ? Math.min(...rooms.map((r) => Number(r.price)))
-      : null;
-
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "LodgingBusiness",
@@ -112,9 +113,6 @@ export default async function HotelDetailPage({ params }: PageProps) {
     email: hotel.email ?? undefined,
     url: `${resolveBaseUrl()}/hotels/${hotel.id}`,
     address: { "@type": "PostalAddress", streetAddress: hotel.location, addressLocality: hotel.city, addressCountry: "KE" },
-    ...(minPrice !== null
-      ? { priceRange: `KES ${minPrice.toLocaleString()}+` }
-      : {}),
     ...(avgRating !== null
       ? {
           aggregateRating: {
@@ -150,19 +148,21 @@ export default async function HotelDetailPage({ params }: PageProps) {
           <div className="mb-8">
             <HotelGallery images={allImages} name={hotel.name} />
           </div>
-        ) : (
-          <div className="mb-8 h-64 sm:h-72 md:h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-gray-700 to-gray-900 flex flex-col items-center justify-center gap-3">
+        ) : hotel.website ? (
+          <a
+            href={hotel.website}
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+            className="group mb-8 h-64 sm:h-72 md:h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-gray-700 to-gray-900 flex flex-col items-center justify-center gap-3 hover:from-gray-800 hover:to-black transition-colors"
+          >
             <span className="text-7xl opacity-60">🏨</span>
-            {hotel.website && (
-              <a
-                href={hotel.website}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm font-medium text-white/90 hover:text-white underline underline-offset-4"
-              >
-                See photos on the official website →
-              </a>
-            )}
+            <span className="text-sm font-medium text-white/90 group-hover:text-white transition-colors">
+              See photos on {hotel.name}&apos;s official website →
+            </span>
+          </a>
+        ) : (
+          <div className="mb-8 h-64 sm:h-72 md:h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center">
+            <span className="text-7xl opacity-60">🏨</span>
           </div>
         )}
 
@@ -194,26 +194,77 @@ export default async function HotelDetailPage({ params }: PageProps) {
             </div>
 
             {/* Quick-info strip */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="grid grid-cols-3 gap-3">
               {[
                 { label: "Check-in",  value: hotel.checkInTime },
                 { label: "Check-out", value: hotel.checkOutTime },
-                {
-                  label: "Room types",
-                  value: `${rooms.length} type${rooms.length !== 1 ? "s" : ""}`,
-                },
                 { label: "Contact", value: hotel.phone ?? hotel.email ?? "At reception" },
               ].map(({ label, value }) => (
-                <div key={label} className="bg-white rounded-xl border border-gray-100 p-3">
+                <div key={label} className="bg-surface rounded-xl border border-gray-100 p-3">
                   <p className="text-xs text-gray-400 mb-0.5">{label}</p>
                   <p className="text-sm font-semibold text-gray-900 truncate">{value}</p>
                 </div>
               ))}
             </div>
 
+            {/* Happenings */}
+            <div
+              id="happenings"
+              className="scroll-mt-24 bg-gradient-to-br from-orange-50/70 to-white rounded-2xl border border-orange-100 p-6"
+            >
+              <div className="flex items-center gap-2 mb-4">
+                <span aria-hidden>✨</span>
+                <h2 className="text-lg font-semibold text-gray-900">Happenings</h2>
+                {happenings.length === 0 && (
+                  <span className="text-xs font-medium text-orange-700 bg-orange-100 rounded-full px-2.5 py-0.5">
+                    Coming soon
+                  </span>
+                )}
+              </div>
+
+              {happenings.length > 0 ? (
+                <OffersList offers={happenings} kind="hotelHappening" />
+              ) : (
+                <p className="text-sm text-gray-600 leading-relaxed max-w-prose">
+                  Restaurant events and activities at {hotel.name} — Sunday brunch, live band
+                  nights, seasonal specials, and more — will show up here as we add them.
+                </p>
+              )}
+
+              {hotel.website && (
+                <p className="text-sm text-gray-500 mt-4">
+                  Booking a stay?{" "}
+                  <a
+                    href={hotel.website}
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    className="text-orange-700 font-medium hover:underline"
+                  >
+                    Visit {hotel.name}&apos;s official site ↗
+                  </a>
+                </p>
+              )}
+            </div>
+
+            {/* Spa & Wellness — separate section below Happenings, only
+                shown when the hotel has actually added something, so a
+                hotel with no spa doesn't get an empty tab. */}
+            {spaOffers.length > 0 && (
+              <div
+                id="spa"
+                className="scroll-mt-24 bg-gradient-to-br from-orange-50/70 to-white rounded-2xl border border-orange-100 p-6"
+              >
+                <div className="flex items-center gap-2 mb-4">
+                  <span aria-hidden>💆</span>
+                  <h2 className="text-lg font-semibold text-gray-900">Spa &amp; Wellness</h2>
+                </div>
+                <OffersList offers={spaOffers} kind="hotelSpaOffer" />
+              </div>
+            )}
+
             {/* Description */}
             {hotel.description && (
-              <div className="bg-white rounded-2xl border border-gray-100 p-6">
+              <div className="bg-surface rounded-2xl border border-gray-100 p-6">
                 <h2 className="text-lg font-semibold text-gray-900 mb-3">About</h2>
                 <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">
                   {hotel.description}
@@ -223,66 +274,9 @@ export default async function HotelDetailPage({ params }: PageProps) {
 
             {/* Amenities */}
             {hotel.amenities.length > 0 && (
-              <div className="bg-white rounded-2xl border border-gray-100 p-6">
+              <div className="bg-surface rounded-2xl border border-gray-100 p-6">
                 <h2 className="text-lg font-semibold text-gray-900 mb-4">Amenities</h2>
                 <AmenityList amenities={hotel.amenities} />
-              </div>
-            )}
-
-            {/* ── Room Types ─────────────────────────────── */}
-            {rooms.length > 0 && (
-              <div>
-                <div className="flex items-baseline justify-between mb-4">
-                  <h2 className="text-lg font-semibold text-gray-900">
-                    Room types
-                    <span className="ml-2 text-sm font-normal text-gray-400">
-                      ({rooms.length})
-                    </span>
-                  </h2>
-                  {minPrice !== null && (
-                    <p className="text-sm text-gray-500">
-                      from{" "}
-                      <span className="font-semibold text-gray-900">
-                        KES {minPrice.toLocaleString()}
-                      </span>
-                      <span className="text-gray-400"> / night</span>
-                    </p>
-                  )}
-                </div>
-
-                <div className="space-y-4">
-                  {rooms.map((room) => (
-                    <RoomCard
-                      key={room.id}
-                      room={room}
-                      hotelId={hotel.id}
-                      showBookButton={FEATURES.directBooking && !!session}
-                    />
-                  ))}
-                </div>
-
-                {!session && (
-                  <p className="text-sm text-center text-gray-400 mt-4">
-                    <Link
-                      href={`/auth/login?callbackUrl=/hotels/${hotel.id}`}
-                      className="text-orange-600 font-medium hover:underline"
-                    >
-                      Sign in
-                    </Link>{" "}
-                    to check availability and reserve a room.
-                  </p>
-                )}
-              </div>
-            )}
-
-            {/* Empty rooms state */}
-            {rooms.length === 0 && (
-              <div className="bg-white rounded-2xl border border-gray-100 p-8 text-center">
-                <p className="text-2xl mb-2">🛏️</p>
-                <p className="text-sm text-gray-500">No rooms listed yet. Contact the hotel directly.</p>
-                {hotel.phone && (
-                  <p className="text-sm font-medium text-orange-600 mt-2">{hotel.phone}</p>
-                )}
               </div>
             )}
 
@@ -308,32 +302,18 @@ export default async function HotelDetailPage({ params }: PageProps) {
             </div>
           </div>
 
-          {/* ── Right: date picker + live availability ───── */}
+          {/* ── Right: accommodation — a link out, nothing else ───── */}
           <div className="lg:w-96 flex-shrink-0">
             <div className="sticky top-20">
-              {FEATURES.directBooking ? (
-                <Suspense
-                  fallback={
-                    <div className="h-64 bg-white rounded-2xl border border-gray-100 animate-pulse" />
-                  }
-                >
-                  <BookingForm
-                    hotelId={hotel.id}
-                    rooms={rooms}
-                    isAuthenticated={!!session}
-                  />
-                </Suspense>
-              ) : (
-                <BookExternally
-                  website={hotel.website}
-                  venueName={hotel.name}
-                  phone={hotel.phone}
-                  email={hotel.email}
-                  verified={hotel.verified}
-                  venueType="hotel"
-                  venueId={hotel.id}
-                />
-              )}
+              <BookExternally
+                website={hotel.website}
+                venueName={hotel.name}
+                phone={hotel.phone}
+                email={hotel.email}
+                verified={hotel.verified}
+                venueType="hotel"
+                venueId={hotel.id}
+              />
             </div>
           </div>
         </div>

@@ -105,7 +105,7 @@ export function SavedSearchesList({ searches: initial }: SavedSearchesListProps)
 
   if (searches.length === 0) {
     return (
-      <div className="bg-white rounded-xl border border-dashed border-gray-200 px-5 py-6 text-center">
+      <div className="bg-surface rounded-xl border border-dashed border-gray-200 px-5 py-6 text-center">
         <p className="text-2xl mb-1">🔖</p>
         <p className="text-sm text-gray-500">No saved searches yet.</p>
         <Link
@@ -123,7 +123,7 @@ export function SavedSearchesList({ searches: initial }: SavedSearchesListProps)
       {searches.map((s) => (
         <div
           key={s.id}
-          className="bg-white rounded-xl border border-gray-100 px-4 py-3 flex items-center gap-3"
+          className="bg-surface rounded-xl border border-gray-100 px-4 py-3 flex items-center gap-3"
         >
           <span className="text-lg shrink-0">🔍</span>
           <div className="flex-1 min-w-0">

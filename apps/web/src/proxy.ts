@@ -2,7 +2,7 @@ import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
 
 export default withAuth(
-  function middleware(req) {
+  function proxy(req) {
     const { pathname } = req.nextUrl;
     const token = req.nextauth.token;
     const role = token?.role as string | undefined;
@@ -31,12 +31,12 @@ export default withAuth(
     return NextResponse.next();
   },
   {
-    // Mirror the authOptions fallback so the middleware can decode JWTs
+    // Mirror the authOptions fallback so the proxy can decode JWTs
     // even when NEXTAUTH_SECRET is absent and SESSION_SECRET is used instead.
     secret: process.env.NEXTAUTH_SECRET ?? process.env.SESSION_SECRET,
     callbacks: {
       // /admin/login must be reachable without a token, same reason as above —
-      // withAuth's authorized gate runs before the middleware function, so the
+      // withAuth's authorized gate runs before the proxy function, so the
       // bypass has to live here too or an anonymous visitor never gets past it.
       authorized: ({ token, req }) =>
         req.nextUrl.pathname.startsWith("/admin/login") || !!token,

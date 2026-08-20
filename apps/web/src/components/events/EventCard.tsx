@@ -22,7 +22,7 @@ export function EventCard({ event, priority = false }: EventCardProps) {
   return (
     <Link
       href={`/events/${event.id}`}
-      className="group flex flex-col bg-white rounded-2xl border border-gray-100 overflow-hidden hover:border-orange-200 hover:shadow-md transition-all duration-200"
+      className="group flex flex-col bg-surface rounded-2xl border border-gray-100 overflow-hidden hover:border-orange-200 hover:shadow-md transition-all duration-200"
     >
       {/* Cover image / gradient */}
       <div className="relative h-44 overflow-hidden">

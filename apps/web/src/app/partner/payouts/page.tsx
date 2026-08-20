@@ -61,7 +61,7 @@ export default async function PayoutsPage() {
         />
 
         {locked ? (
-          <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-3">
+          <div className="bg-surface rounded-2xl border border-gray-100 p-6 space-y-3">
             <Row label="Name" value={account?.legalName} />
             <Row label="KRA PIN" value={mask(account?.taxId)} />
             <Row label="ID / registration" value={mask(account?.idNumber)} />

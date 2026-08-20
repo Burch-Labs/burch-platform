@@ -193,7 +193,7 @@ export default async function PartnerBookingsPage({ searchParams }: PageProps) {
                   ...(propertyParam ? { property: propertyParam } : {}),
                 }).toString()}`}
                 download="reservations-export.csv"
-                className="inline-flex items-center gap-1.5 bg-white border border-gray-200 text-gray-700 text-sm font-medium px-4 py-2 rounded-xl hover:bg-gray-50 transition"
+                className="inline-flex items-center gap-1.5 bg-surface border border-gray-200 text-gray-700 text-sm font-medium px-4 py-2 rounded-xl hover:bg-gray-50 transition"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M8 12l4 4m0 0l4-4m-4 4V4" />
@@ -212,7 +212,7 @@ export default async function PartnerBookingsPage({ searchParams }: PageProps) {
                     : ""
                 }`}
                 download="bookings-export.csv"
-                className="inline-flex items-center gap-1.5 bg-white border border-gray-200 text-gray-700 text-sm font-medium px-4 py-2 rounded-xl hover:bg-gray-50 transition"
+                className="inline-flex items-center gap-1.5 bg-surface border border-gray-200 text-gray-700 text-sm font-medium px-4 py-2 rounded-xl hover:bg-gray-50 transition"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M8 12l4 4m0 0l4-4m-4 4V4" />
@@ -245,7 +245,7 @@ export default async function PartnerBookingsPage({ searchParams }: PageProps) {
 
         {/* No properties at all */}
         {noProperties && (
-          <div className="bg-white rounded-2xl border border-dashed border-gray-200 px-8 py-12 text-center">
+          <div className="bg-surface rounded-2xl border border-dashed border-gray-200 px-8 py-12 text-center">
             <p className="text-3xl mb-3">🏢</p>
             <p className="text-sm font-medium text-gray-700 mb-1">No published properties yet</p>
             <p className="text-xs text-gray-400 mb-4">
@@ -262,7 +262,7 @@ export default async function PartnerBookingsPage({ searchParams }: PageProps) {
 
         {/* No results for this filter */}
         {!noProperties && totalCount === 0 && (
-          <div className="bg-white rounded-2xl border border-dashed border-gray-200 px-8 py-12 text-center">
+          <div className="bg-surface rounded-2xl border border-dashed border-gray-200 px-8 py-12 text-center">
             <p className="text-3xl mb-3">📭</p>
             <p className="text-sm font-medium text-gray-700 mb-1">No bookings found</p>
             <p className="text-xs text-gray-400">
@@ -279,7 +279,7 @@ export default async function PartnerBookingsPage({ searchParams }: PageProps) {
             <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
               Bookings ({bookings.length})
             </h2>
-            <div className="bg-white rounded-2xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
+            <div className="bg-surface rounded-2xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
               {bookings.map((b) => {
                 const isHotel = b.type === "HOTEL";
                 const isEvent = b.type === "EVENT";
@@ -325,7 +325,7 @@ export default async function PartnerBookingsPage({ searchParams }: PageProps) {
             <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
               Table Reservations ({reservations.length})
             </h2>
-            <div className="bg-white rounded-2xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
+            <div className="bg-surface rounded-2xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
               {reservations.map((r) => (
                 <div
                   key={r.id}
