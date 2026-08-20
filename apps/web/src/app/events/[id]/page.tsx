@@ -101,6 +101,34 @@ export default async function EventDetailPage({ params }: PageProps) {
   const booked = totalBooked._sum.quantity ?? 0;
   const remaining = ticketsRemaining(event.capacity, booked);
 
+  // Ticket tiers — an empty list here is the common case (event still on
+  // its flat price) and TicketSelector already treats that as "no tiers".
+  const now = new Date();
+  const rawTiers = await prisma.ticketTier.findMany({
+    where: {
+      eventId: id,
+      isActive: true,
+      OR: [{ salesStart: null }, { salesStart: { lte: now } }],
+      AND: [{ OR: [{ salesEnd: null }, { salesEnd: { gte: now } }] }],
+    },
+    orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+  });
+  const soldByTier = rawTiers.length
+    ? await prisma.booking.groupBy({
+        by: ["ticketTierId"],
+        where: { ticketTierId: { in: rawTiers.map((t) => t.id) }, status: { not: "CANCELLED" } },
+        _sum: { quantity: true },
+      })
+    : [];
+  const tierSoldMap = new Map(soldByTier.map((r) => [r.ticketTierId, r._sum.quantity ?? 0]));
+  const tiers = rawTiers.map((t) => ({
+    id: t.id,
+    name: t.name,
+    price: Number(t.price),
+    currency: t.currency,
+    remaining: Math.max(0, t.capacity - (tierSoldMap.get(t.id) ?? 0)),
+  }));
+
   const colors = CATEGORY_COLORS[event.category];
   const price = Number(event.price);
   const loginUrl = `/auth/login?callbackUrl=/events/${id}`;
@@ -247,6 +275,7 @@ export default async function EventDetailPage({ params }: PageProps) {
                 price={price}
                 currency={event.currency}
                 remaining={remaining}
+                tiers={tiers}
                 isAuthenticated={!!session}
                 loginUrl={loginUrl}
                 hasMpesa={HAS_MPESA}

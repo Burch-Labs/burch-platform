@@ -47,6 +47,20 @@ export default async function EditEventPage({ params }: Props) {
           <h1 className="text-2xl font-bold text-gray-900 truncate">{event.title}</h1>
         </div>
 
+        {/* Manage tickets shortcut */}
+        <div className="mb-6 flex items-center justify-between bg-white rounded-2xl border border-gray-200 px-6 py-4">
+          <div>
+            <p className="text-sm font-semibold text-gray-900">Tickets</p>
+            <p className="text-xs text-gray-500 mt-0.5">Set up tiers (Early Bird, VIP) and promo codes for checkout</p>
+          </div>
+          <Link
+            href={`/partner/events/${event.id}/tickets`}
+            className="text-sm text-orange-600 hover:text-orange-700 font-medium px-4 py-2 rounded-xl hover:bg-orange-50 transition"
+          >
+            Manage tickets →
+          </Link>
+        </div>
+
         <div className="bg-white rounded-2xl border border-gray-200 p-8">
           <EventForm
             action={boundUpdate}

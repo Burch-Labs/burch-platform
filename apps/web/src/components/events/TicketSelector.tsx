@@ -4,11 +4,21 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { formatCurrency } from "@/lib/format";
 
+export interface TierOption {
+  id: string;
+  name: string;
+  price: number;
+  currency: string;
+  remaining: number;
+}
+
 interface TicketSelectorProps {
   eventId: string;
   price: number;
   currency: string;
   remaining: number;
+  /** Empty when the event has no tiers — the flat price/currency/remaining above apply. */
+  tiers: TierOption[];
   isAuthenticated: boolean;
   loginUrl: string;
   hasMpesa: boolean;
@@ -17,6 +27,7 @@ interface TicketSelectorProps {
 
 type PaymentMethod = "mpesa" | "pesapal";
 type Step = "select" | "awaiting-mpesa" | "success" | "failed";
+type PromoStatus = "idle" | "checking" | "applied" | "error";
 
 const POLL_INTERVAL_MS = 3000;
 const POLL_TIMEOUT_MS = 120_000;
@@ -26,28 +37,73 @@ export function TicketSelector({
   price,
   currency,
   remaining,
+  tiers,
   isAuthenticated,
   loginUrl,
   hasMpesa,
   hasPesapal,
 }: TicketSelectorProps) {
   const router = useRouter();
+  const hasTiers = tiers.length > 0;
+  const [selectedTierId, setSelectedTierId] = useState<string | null>(
+    hasTiers ? tiers.find((t) => t.remaining > 0)?.id ?? tiers[0].id : null
+  );
+  const selectedTier = tiers.find((t) => t.id === selectedTierId) ?? null;
+
+  const unitPrice = selectedTier ? selectedTier.price : price;
+  const unitCurrency = selectedTier ? selectedTier.currency : currency;
+  const availableCount = selectedTier ? selectedTier.remaining : remaining;
+
   const [quantity, setQuantity] = useState(1);
   const [method, setMethod] = useState<PaymentMethod | null>(hasMpesa ? "mpesa" : hasPesapal ? "pesapal" : null);
   const [phone, setPhone] = useState("");
+  const [payAtGate, setPayAtGate] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [step, setStep] = useState<Step>("select");
   const [statusMessage, setStatusMessage] = useState("");
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  useEffect(() => () => { if (pollRef.current) clearInterval(pollRef.current); }, []);
+  // Promo code
+  const [promoCode, setPromoCode] = useState("");
+  const [promoStatus, setPromoStatus] = useState<PromoStatus>("idle");
+  const [promoError, setPromoError] = useState("");
+  const [discountApplied, setDiscountApplied] = useState(0);
 
-  const isFree = price === 0;
-  const isSoldOut = remaining === 0;
-  const maxQty = Math.min(10, remaining);
-  const total = price * quantity;
+  useEffect(() => () => { if (pollRef.current) clearInterval(pollRef.current); }, []);
+  // A tier/quantity change invalidates a previously-applied code's total.
+  useEffect(() => { setPromoStatus("idle"); setDiscountApplied(0); }, [selectedTierId, quantity]);
+
+  const isSoldOut = availableCount === 0;
+  const maxQty = Math.min(10, availableCount);
+  const rawTotal = unitPrice * quantity;
+  const total = Math.max(0, rawTotal - (promoStatus === "applied" ? discountApplied : 0));
+  const isFree = total === 0;
   const paymentsConfigured = hasMpesa || hasPesapal;
+
+  async function handleApplyPromo() {
+    if (!promoCode.trim()) return;
+    setPromoStatus("checking");
+    setPromoError("");
+    try {
+      const res = await fetch(`/api/events/${eventId}/promo`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: promoCode, quantity, ticketTierId: selectedTierId ?? undefined }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setPromoStatus("error");
+        setPromoError(data.error ?? "That code didn't work.");
+        return;
+      }
+      setDiscountApplied(data.discountApplied);
+      setPromoStatus("applied");
+    } catch {
+      setPromoStatus("error");
+      setPromoError("Could not check that code — try again.");
+    }
+  }
 
   function pollBookingStatus(bookingId: string) {
     const startedAt = Date.now();
@@ -85,7 +141,7 @@ export function TicketSelector({
 
     setError("");
 
-    if (!isFree) {
+    if (!isFree && !payAtGate) {
       if (!method) {
         setError("Choose a payment method.");
         return;
@@ -101,9 +157,14 @@ export function TicketSelector({
     const res = await fetch(`/api/events/${eventId}/book`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(
-        isFree ? { quantity } : { quantity, method, phone: method === "mpesa" ? phone : undefined }
-      ),
+      body: JSON.stringify({
+        quantity,
+        ticketTierId: selectedTierId ?? undefined,
+        promoCode: promoStatus === "applied" ? promoCode : undefined,
+        payAtGate: !isFree && payAtGate ? true : undefined,
+        method: isFree || payAtGate ? undefined : method,
+        phone: !isFree && !payAtGate && method === "mpesa" ? phone : undefined,
+      }),
     });
 
     const data = await res.json();
@@ -114,7 +175,7 @@ export function TicketSelector({
       return;
     }
 
-    if (isFree) {
+    if (isFree || payAtGate) {
       setStep("success");
       return;
     }
@@ -135,10 +196,16 @@ export function TicketSelector({
     return (
       <div className="rounded-2xl border border-green-200 bg-green-50 p-6 text-center">
         <p className="text-2xl mb-2">🎉</p>
-        <p className="font-semibold text-green-800 mb-1">Booking confirmed!</p>
+        <p className="font-semibold text-green-800 mb-1">
+          {payAtGate && !isFree ? "Ticket reserved!" : "Booking confirmed!"}
+        </p>
         <p className="text-sm text-green-700 mb-4">
-          {quantity} ticket{quantity > 1 ? "s" : ""} for{" "}
-          {isFree ? "free" : formatCurrency(total, currency)}
+          {quantity} ticket{quantity > 1 ? "s" : ""}
+          {isFree
+            ? " for free"
+            : payAtGate
+            ? ` — pay ${formatCurrency(total, unitCurrency)} at the door`
+            : ` for ${formatCurrency(total, unitCurrency)}`}
         </p>
         <button
           onClick={() => router.push("/dashboard/bookings")}
@@ -189,6 +256,40 @@ export function TicketSelector({
         </div>
       ) : (
         <>
+          {/* Tier picker */}
+          {hasTiers && (
+            <div className="mb-4 space-y-2">
+              {tiers.map((t) => {
+                const soldOut = t.remaining === 0;
+                return (
+                  <button
+                    key={t.id}
+                    type="button"
+                    disabled={soldOut}
+                    onClick={() => { setSelectedTierId(t.id); setQuantity(1); }}
+                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg border text-left transition ${
+                      soldOut
+                        ? "border-gray-100 bg-gray-50 opacity-50 cursor-not-allowed"
+                        : selectedTierId === t.id
+                        ? "border-orange-600 bg-orange-50"
+                        : "border-gray-200 hover:bg-gray-50"
+                    }`}
+                  >
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">{t.name}</p>
+                      <p className="text-xs text-gray-400">
+                        {soldOut ? "Sold out" : `${t.remaining} left`}
+                      </p>
+                    </div>
+                    <p className="text-sm font-semibold text-gray-900">
+                      {t.price === 0 ? "Free" : formatCurrency(t.price, t.currency)}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
           {/* Quantity */}
           <div className="flex items-center gap-3 mb-4">
             <button
@@ -209,26 +310,82 @@ export function TicketSelector({
               +
             </button>
             <span className="text-xs text-gray-400 ml-1">
-              {remaining} available
+              {availableCount} available
             </span>
           </div>
+
+          {/* Promo code */}
+          {unitPrice > 0 && (
+            <div className="mb-4">
+              <p className="text-xs font-medium text-gray-500 mb-1.5">Have a promo code?</p>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={promoCode}
+                  onChange={(e) => { setPromoCode(e.target.value); setPromoStatus("idle"); }}
+                  placeholder="PROMO CODE"
+                  className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm uppercase focus:outline-none focus:ring-2 focus:ring-orange-200"
+                />
+                <button
+                  type="button"
+                  onClick={handleApplyPromo}
+                  disabled={!promoCode.trim() || promoStatus === "checking" || promoStatus === "applied"}
+                  className="px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 text-gray-700 hover:bg-gray-50 disabled:opacity-50 transition"
+                >
+                  {promoStatus === "checking" ? "Checking…" : promoStatus === "applied" ? "Applied" : "Apply"}
+                </button>
+              </div>
+              {promoStatus === "error" && <p className="text-xs text-red-600 mt-1">{promoError}</p>}
+              {promoStatus === "applied" && (
+                <p className="text-xs text-green-700 mt-1">
+                  {formatCurrency(discountApplied, unitCurrency)} off applied
+                </p>
+              )}
+            </div>
+          )}
 
           {/* Price breakdown */}
           <div className="bg-gray-50 rounded-xl p-3 mb-4 space-y-1.5 text-sm">
             <div className="flex justify-between text-gray-600">
               <span>
-                {formatCurrency(price, currency)} × {quantity}
+                {formatCurrency(unitPrice, unitCurrency)} × {quantity}
               </span>
-              <span>{formatCurrency(total, currency)}</span>
+              <span>{formatCurrency(rawTotal, unitCurrency)}</span>
             </div>
+            {promoStatus === "applied" && discountApplied > 0 && (
+              <div className="flex justify-between text-green-700">
+                <span>Promo discount</span>
+                <span>−{formatCurrency(discountApplied, unitCurrency)}</span>
+              </div>
+            )}
             <div className="flex justify-between font-semibold text-gray-900 border-t border-gray-200 pt-1.5">
               <span>Total</span>
-              <span>{isFree ? "Free" : formatCurrency(total, currency)}</span>
+              <span>{isFree ? "Free" : formatCurrency(total, unitCurrency)}</span>
             </div>
           </div>
 
-          {/* Payment method (paid events only) */}
+          {/* Pay at the gate (paid tickets only) */}
           {!isFree && isAuthenticated && (
+            <label className="mb-4 flex items-start gap-2.5 text-sm text-gray-700 bg-gray-50 rounded-lg p-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={payAtGate}
+                onChange={(e) => setPayAtGate(e.target.checked)}
+                className="w-4 h-4 mt-0.5 accent-orange-600 flex-shrink-0"
+              />
+              <span>
+                <span className="font-medium text-gray-900">Pay at the gate</span>
+                <br />
+                <span className="text-xs text-gray-500">
+                  Reserve now, pay cash or M-Pesa in person at the door. Your ticket is issued
+                  right away either way.
+                </span>
+              </span>
+            </label>
+          )}
+
+          {/* Payment method (paid, not pay-at-gate) */}
+          {!isFree && !payAtGate && isAuthenticated && (
             <div className="mb-4">
               {!paymentsConfigured ? (
                 <p className="text-xs text-red-600 bg-red-50 rounded-lg p-2.5">
@@ -286,16 +443,18 @@ export function TicketSelector({
 
           <button
             onClick={handleBook}
-            disabled={loading || (!isFree && isAuthenticated && !paymentsConfigured)}
+            disabled={loading || (!isFree && !payAtGate && isAuthenticated && !paymentsConfigured)}
             className="w-full bg-orange-600 text-white py-3 rounded-xl font-semibold text-sm hover:bg-orange-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading
               ? "Processing…"
-              : isAuthenticated
-              ? isFree
-                ? "Get free ticket"
-                : `Buy ${quantity} ticket${quantity > 1 ? "s" : ""}`
-              : "Sign in to buy tickets"}
+              : !isAuthenticated
+              ? "Sign in to buy tickets"
+              : isFree
+              ? "Get free ticket"
+              : payAtGate
+              ? `Reserve ${quantity} ticket${quantity > 1 ? "s" : ""} — pay at gate`
+              : `Buy ${quantity} ticket${quantity > 1 ? "s" : ""}`}
           </button>
         </>
       )}

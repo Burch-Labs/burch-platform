@@ -413,9 +413,11 @@ model Event {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
-  partner  Partner   @relation(fields: [partnerId], references: [id], onDelete: Cascade)
-  bookings Booking[]
-  tickets  Ticket[]
+  partner       Partner        @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  bookings      Booking[]
+  tickets       Ticket[]
+  tiers         TicketTier[]
+  discountCodes DiscountCode[]
 
   // Speeds up the common listing queries: published feed sorted by date, and city filter
   @@index([published, startDate])
@@ -429,6 +431,70 @@ enum EventApprovalStatus {
   PENDING
   APPROVED
   REJECTED
+}
+
+// ─── Ticket tiers & discount codes ──────────────────────────────────────────
+// Event.price/capacity stay as the fallback for an event with no tiers — a
+// tier is an opt-in refinement, not a replacement, so every event created
+// before this existed keeps working unchanged.
+//
+// Deliberately no stored "sold" counter here. reserveEventBooking already
+// proves the right pattern for this exact problem: a Serializable
+// transaction with a live aggregate at booking time, not a counter that
+// needs +1/-1 discipline across booking, cancellation and payment-failure
+// paths kept in sync forever. Sold count for a tier is computed the same way.
+
+model TicketTier {
+  id         String    @id @default(cuid())
+  eventId    String
+  name       String
+  price      Decimal   @db.Decimal(10, 2)
+  currency   String    @default("KES")
+  capacity   Int
+  /** Both optional: a tier with neither is on sale whenever the event is. */
+  salesStart DateTime?
+  salesEnd   DateTime?
+  sortOrder  Int       @default(0)
+  isActive   Boolean   @default(true)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  event    Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  bookings Booking[]
+
+  @@index([eventId, isActive, sortOrder])
+  @@map("ticket_tiers")
+}
+
+model DiscountCode {
+  id        String       @id @default(cuid())
+  /** Null = platform-wide, usable at checkout for any event. */
+  eventId   String?
+  code      String       @unique
+  type      DiscountType
+  value     Decimal      @db.Decimal(10, 2)
+  /**
+   * Global cap, unlike tier capacity: this is a "don't hand out unlimited
+   * free money" ceiling, not an oversell-prevention mechanism, so a stored
+   * counter carries much less risk here than the same idea would for a tier.
+   */
+  maxUses   Int?
+  usedCount Int          @default(0)
+  expiresAt DateTime?
+  isActive  Boolean      @default(true)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  event    Event?    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  bookings Booking[]
+
+  @@index([code])
+  @@map("discount_codes")
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED_AMOUNT
 }
 
 // ─── Hotels ──────────────────────────────────────────────────────────────────
@@ -647,21 +713,36 @@ model Booking {
   paymentRef    String?
   paymentMethod String?
   notes         String?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  /**
+   * A ticket reserved with nothing charged yet — the guest pays cash or
+   * M-Pesa in person at the door. Still a real, issued ticket (same
+   * instant-confirm path as a free one), just flagged so door staff know
+   * to collect before admitting rather than treating a scan as proof of
+   * payment the way it is for every other booking.
+   */
+  payAtGate  Boolean   @default(false)
+  gatePaidAt DateTime?
+  /** User id of whoever marked it collected — usually door staff at check-in. */
+  gatePaidBy String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 
-  eventId      String?
-  hotelId      String?
-  roomId       String?
-  restaurantId String?
+  eventId        String?
+  hotelId        String?
+  roomId         String?
+  restaurantId   String?
+  ticketTierId   String?
+  discountCodeId String?
 
-  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  event      Event?      @relation(fields: [eventId], references: [id])
-  hotel      Hotel?      @relation(fields: [hotelId], references: [id])
-  room       Room?       @relation(fields: [roomId], references: [id])
-  restaurant Restaurant? @relation(fields: [restaurantId], references: [id])
-  payments   Payment[]
-  tickets    Ticket[]
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event        Event?        @relation(fields: [eventId], references: [id])
+  hotel        Hotel?        @relation(fields: [hotelId], references: [id])
+  room         Room?         @relation(fields: [roomId], references: [id])
+  restaurant   Restaurant?   @relation(fields: [restaurantId], references: [id])
+  ticketTier   TicketTier?   @relation(fields: [ticketTierId], references: [id])
+  discountCode DiscountCode? @relation(fields: [discountCodeId], references: [id])
+  payments     Payment[]
+  tickets      Ticket[]
 
   @@map("bookings")
 }

@@ -13,11 +13,20 @@ import { Prisma } from "@prisma/client";
 import type { PaymentProvider } from "@prisma/client";
 
 export class CapacityError extends Error {}
+export class DiscountError extends Error {}
 
 /**
  * Checks remaining capacity and creates the booking in one transaction.
  * Bookings that were CANCELLED (payment failed/expired) don't count against
  * capacity, so a failed M-Pesa attempt doesn't permanently hold a seat.
+ *
+ * When a tier is given, its capacity is checked the same way and in the same
+ * transaction as the event's — a tier oversold is exactly as much of a
+ * problem as the event as a whole being oversold. A pre-validated discount
+ * code's usage cap is re-checked and incremented here too, for the same
+ * reason: validating it before the transaction started is a fast-fail for a
+ * dead/expired code, not the actual race guard for "two people redeem the
+ * last use of a maxUses:1 code at once."
  */
 export async function reserveEventBooking(params: {
   userId: string;
@@ -27,13 +36,19 @@ export async function reserveEventBooking(params: {
   unitPrice: number;
   currency: string;
   status: "PENDING" | "CONFIRMED";
+  ticketTierId?: string;
+  tierCapacity?: number;
+  discountCodeId?: string;
+  payAtGate?: boolean;
+  /** Overrides unitPrice * quantity — the actual amount to charge after a
+   * discount code is applied. Omit to charge full price. */
+  totalAmountOverride?: number;
 }) {
-  const { userId, eventId, quantity, capacity, unitPrice, currency, status } = params;
+  const {
+    userId, eventId, quantity, capacity, unitPrice, currency, status,
+    ticketTierId, tierCapacity, discountCodeId, payAtGate, totalAmountOverride,
+  } = params;
 
-  // Counting sold tickets and then inserting is a read-modify-write, and under
-  // Postgres' default Read Committed two buyers can both read the last seat as
-  // available before either has written. Serializable makes the database detect
-  // that overlap and abort one of them, which is what stops the oversell.
   return prisma.$transaction(
     async (tx) => {
       const totalBooked = await tx.booking.aggregate({
@@ -45,20 +60,93 @@ export async function reserveEventBooking(params: {
         throw new CapacityError(`Only ${Math.max(0, capacity - booked)} tickets remaining.`);
       }
 
+      if (ticketTierId && tierCapacity !== undefined) {
+        const tierBooked = await tx.booking.aggregate({
+          where: { ticketTierId, status: { not: "CANCELLED" } },
+          _sum: { quantity: true },
+        });
+        const tierSold = tierBooked._sum.quantity ?? 0;
+        if (tierSold + quantity > tierCapacity) {
+          throw new CapacityError(`Only ${Math.max(0, tierCapacity - tierSold)} tickets remaining in this tier.`);
+        }
+      }
+
+      if (discountCodeId) {
+        const discount = await tx.discountCode.findUnique({ where: { id: discountCodeId } });
+        if (!discount || !discount.isActive) {
+          throw new DiscountError("That promo code is no longer valid.");
+        }
+        if (discount.maxUses !== null && discount.usedCount >= discount.maxUses) {
+          throw new DiscountError("That promo code has just reached its usage limit.");
+        }
+        await tx.discountCode.update({
+          where: { id: discountCodeId },
+          data: { usedCount: { increment: 1 } },
+        });
+      }
+
       return tx.booking.create({
         data: {
           userId,
           type: "EVENT",
           status,
           quantity,
-          totalAmount: unitPrice * quantity,
+          totalAmount: totalAmountOverride ?? unitPrice * quantity,
           currency,
           eventId,
+          ticketTierId,
+          discountCodeId,
+          payAtGate: payAtGate ?? false,
         },
       });
     },
     { isolationLevel: Prisma.TransactionIsolationLevel.Serializable }
   );
+}
+
+export interface DiscountApplication {
+  discountCodeId: string;
+  discountApplied: number;
+  finalAmount: number;
+}
+
+/**
+ * Fast-fail validation before the booking transaction even starts — gives
+ * the buyer an immediate, specific error ("expired", "wrong event") rather
+ * than a generic failure. The transaction inside reserveEventBooking is
+ * still what actually prevents two people redeeming the last use of the
+ * same code at once; this is UX, not the race guard.
+ */
+export async function validateDiscountCode(params: {
+  code: string;
+  eventId: string;
+  amount: number;
+}): Promise<DiscountApplication> {
+  const { eventId, amount } = params;
+  const code = params.code.trim().toUpperCase();
+  if (!code) throw new DiscountError("Enter a promo code.");
+
+  const discount = await prisma.discountCode.findUnique({ where: { code } });
+  if (!discount) throw new DiscountError("That promo code doesn't exist.");
+  if (!discount.isActive) throw new DiscountError("That promo code is no longer active.");
+  if (discount.expiresAt && discount.expiresAt < new Date()) {
+    throw new DiscountError("That promo code has expired.");
+  }
+  if (discount.eventId && discount.eventId !== eventId) {
+    throw new DiscountError("That promo code isn't valid for this event.");
+  }
+  if (discount.maxUses !== null && discount.usedCount >= discount.maxUses) {
+    throw new DiscountError("That promo code has reached its usage limit.");
+  }
+
+  const rawValue = Number(discount.value);
+  const discountApplied =
+    discount.type === "PERCENTAGE"
+      ? Math.round(amount * (rawValue / 100) * 100) / 100
+      : Math.min(amount, rawValue);
+  const finalAmount = Math.max(0, Math.round((amount - discountApplied) * 100) / 100);
+
+  return { discountCodeId: discount.id, discountApplied, finalAmount };
 }
 
 export async function createPendingPayment(params: {
